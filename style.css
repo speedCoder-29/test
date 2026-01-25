@@ -16,8 +16,58 @@ body {
 
 h1 {
   color: #fff;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   font-size: 2.5rem;
+}
+
+.controls {
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px 25px;
+  border-radius: 10px;
+}
+
+.controls label {
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+#speedValue {
+  font-weight: bold;
+  color: #4ecdc4;
+  min-width: 40px;
+  display: inline-block;
+}
+
+#speed {
+  width: 200px;
+  height: 8px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#speed::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #4ecdc4;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+#speed::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #4ecdc4;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
 }
 
 .container {
@@ -69,4 +119,17 @@ h1 {
 #box6 {
   background: linear-gradient(135deg, #ec4899, #db2777);
   box-shadow: 0 8px 20px rgba(236, 72, 153, 0.4);
+}
+
+#bouncer {
+  background-color: #10b981;
+  color: #fff;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 40px;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
 }

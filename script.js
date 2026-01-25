@@ -1,5 +1,8 @@
+// Create a master timeline to control all animations
+const master = gsap.timeline();
+
 // Box 1 - Bounce Animation
-gsap.to("#box1", {
+const bounce = gsap.to("#box1", {
   y: -30,
   duration: 0.6,
   ease: "power2.out",
@@ -8,7 +11,7 @@ gsap.to("#box1", {
 });
 
 // Box 2 - Spin Animation
-gsap.to("#box2", {
+const spin = gsap.to("#box2", {
   rotation: 360,
   duration: 2,
   ease: "none",
@@ -16,7 +19,7 @@ gsap.to("#box2", {
 });
 
 // Box 3 - Pulse Animation
-gsap.to("#box3", {
+const pulse = gsap.to("#box3", {
   scale: 1.2,
   duration: 0.8,
   ease: "power1.inOut",
@@ -25,7 +28,7 @@ gsap.to("#box3", {
 });
 
 // Box 4 - Slide Animation
-gsap.to("#box4", {
+const slide = gsap.to("#box4", {
   x: 50,
   duration: 1,
   ease: "power2.inOut",
@@ -34,7 +37,7 @@ gsap.to("#box4", {
 });
 
 // Box 5 - Flip Animation
-gsap.to("#box5", {
+const flip = gsap.to("#box5", {
   rotationY: 180,
   duration: 1.5,
   ease: "power2.inOut",
@@ -43,11 +46,41 @@ gsap.to("#box5", {
 });
 
 // Box 6 - Wobble Animation
-gsap.to("#box6", {
+const wobble = gsap.to("#box6", {
   rotation: 15,
   duration: 0.15,
   ease: "power1.inOut",
   yoyo: true,
   repeat: -1,
   yoyoEase: true
+});
+
+// Store all animations in an array
+const animations = [bounce, spin, pulse, slide, flip, wobble];
+
+// Speed control
+const speedSlider = document.getElementById("speed");
+const speedValue = document.getElementById("speedValue");
+
+speedSlider.addEventListener("input", (e) => {
+  const speed = parseFloat(e.target.value);
+  speedValue.textContent = speed + "x";
+
+  // Update timeScale for all animations
+  animations.forEach(anim => {
+    anim.timeScale(speed);
+  });
+});
+
+// Bouncer button - click to bounce
+const bouncer = document.getElementById("bouncer");
+
+bouncer.addEventListener("click", () => {
+  gsap.to("#bouncer", {
+    y: -50,
+    duration: 0.5,
+    ease: "bounce.out",
+    yoyo: true,
+    repeat: 1
+  });
 });
