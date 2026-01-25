@@ -84,3 +84,12 @@ bouncer.addEventListener("click", () => {
     repeat: 1
   });
 });
+
+// Cascade cards animation on page load
+gsap.from(".card", {
+  x: -200,
+  opacity: 0,
+  duration: 0.8,
+  stagger: 0.15,
+  ease: "power2.out"
+});
