@@ -85,14 +85,19 @@ bouncer.addEventListener("click", () => {
   });
 });
 
-// Cascade cards animation on page load
-gsap.from(".card", {
-  x: -200,
-  opacity: 0,
-  duration: 0.8,
-  stagger: 0.15,
-  ease: "power2.out"
-});
+// Cascade cards animation - repeats forever
+gsap.fromTo(".card",
+  { x: -200, opacity: 0 },
+  {
+    x: 0,
+    opacity: 1,
+    duration: 0.8,
+    stagger: 0.15,
+    ease: "power2.out",
+    repeat: -1,
+    repeatDelay: 1
+  }
+);
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
