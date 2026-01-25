@@ -1,0 +1,72 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1 {
+  color: #fff;
+  margin-bottom: 40px;
+  font-size: 2.5rem;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  max-width: 800px;
+}
+
+.box {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+  border-radius: 12px;
+  cursor: pointer;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+#box1 {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+  box-shadow: 0 8px 20px rgba(238, 90, 90, 0.4);
+}
+
+#box2 {
+  background: linear-gradient(135deg, #4ecdc4, #44a08d);
+  box-shadow: 0 8px 20px rgba(78, 205, 196, 0.4);
+}
+
+#box3 {
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4);
+}
+
+#box4 {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
+}
+
+#box5 {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+
+#box6 {
+  background: linear-gradient(135deg, #ec4899, #db2777);
+  box-shadow: 0 8px 20px rgba(236, 72, 153, 0.4);
+}
