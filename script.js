@@ -93,3 +93,19 @@ gsap.from(".card", {
   stagger: 0.15,
   ease: "power2.out"
 });
+
+// Register ScrollTrigger plugin
+gsap.registerPlugin(ScrollTrigger);
+
+// Gallery items - fade and slide up on scroll
+gsap.from(".gallery-item", {
+  y: 80,
+  opacity: 0,
+  duration: 0.8,
+  stagger: 0.2,
+  ease: "power2.out",
+  scrollTrigger: {
+    trigger: ".gallery",
+    start: "top 85%"
+  }
+});
