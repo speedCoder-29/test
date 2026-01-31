@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <div class="dashboard">
+    <div class="dashboard-header">
+      <h1>User Dashboard</h1>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    <div class="dashboard-content">
+      <p class="welcome" id="welcome"></p>
+      <div class="panel">
+        <h2>Profile</h2>
+        <ul>
+          <li>Username: user</li>
+          <li>Role: Regular User</li>
+          <li>Member since: Jan 2026</li>
+          <li>Status: Active</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h2>Recent Activity</h2>
+        <ul>
+          <li>Logged in from new device</li>
+          <li>Updated profile settings</li>
+          <li>Completed onboarding</li>
+          <li>Account created</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <script src="login.js"></script>
+  <script>
+    const currentUser = checkAuth("user");
+    if (currentUser) {
+      document.getElementById("welcome").textContent = "Welcome back, " + currentUser.username + "!";
+    }
+  </script>
+</body>
+</html>

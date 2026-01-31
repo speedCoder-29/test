@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <div class="dashboard">
+    <div class="dashboard-header">
+      <h1>Admin Dashboard</h1>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    <div class="dashboard-content">
+      <p class="welcome" id="welcome"></p>
+      <div class="panel">
+        <h2>System Stats</h2>
+        <p class="stat">128</p>
+        <p>Total Users</p>
+        <br>
+        <p class="stat">12</p>
+        <p>Active Sessions</p>
+      </div>
+      <div class="panel">
+        <h2>User Management</h2>
+        <ul>
+          <li>admin - Admin - Active</li>
+          <li>user - Regular User - Active</li>
+          <li>jdoe - Regular User - Inactive</li>
+          <li>msmith - Regular User - Active</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h2>Recent Activity</h2>
+        <ul>
+          <li>User "msmith" logged in</li>
+          <li>User "jdoe" account deactivated</li>
+          <li>System backup completed</li>
+          <li>New user "user" registered</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <script src="login.js"></script>
+  <script>
+    const currentUser = checkAuth("admin");
+    if (currentUser) {
+      document.getElementById("welcome").textContent = "Welcome back, " + currentUser.username + "!";
+    }
+  </script>
+</body>
+</html>
