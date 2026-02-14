@@ -256,8 +256,46 @@
             font-size: 16px;
             color: #ccc;
         }
+        #loginArea {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            pointer-events: auto;
+        }
+        #loginArea input {
+            padding: 10px 20px;
+            font-size: 18px;
+            border: 2px solid #555;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            text-align: center;
+            outline: none;
+            width: 250px;
+        }
+        #loginArea input:focus {
+            border-color: #f80;
+        }
+        #loginArea .login-error {
+            color: #ff5555;
+            font-size: 14px;
+            display: none;
+        }
+        #playerTag {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            color: #f80;
+            font-size: 16px;
+            font-weight: bold;
+            z-index: 50;
+            text-shadow: 1px 1px 2px #000;
+            display: none;
+        }
         #startBtn {
-            margin-top: 30px;
+            margin-top: 10px;
             padding: 15px 50px;
             font-size: 24px;
             background: #f80;
@@ -360,13 +398,19 @@
 <body>
     <canvas id="gameCanvas"></canvas>
 
+    <div id="playerTag"></div>
+
     <div id="startScreen">
         <h1>SURVIV.IO</h1>
         <p>WASD - Move | Mouse - Aim & Shoot</p>
         <p>1-6 - Switch Weapons | F - Interact/Pickup</p>
         <p>G - Throw Grenade | Tab - Cycle Grenades</p>
         <p>E - Use Bandage | Q - Use Medkit</p>
-        <button id="startBtn">PLAY</button>
+        <div id="loginArea">
+            <input type="text" id="playerName" placeholder="Enter your name" maxlength="16">
+            <span class="login-error" id="loginError">Please enter a name to play</span>
+            <button id="startBtn">PLAY</button>
+        </div>
     </div>
 
     <div id="gameOver">
