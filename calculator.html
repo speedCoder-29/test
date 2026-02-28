@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+    }
+    .home-link {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 1rem;
+    }
+    .home-link:hover {
+      color: #fff;
+    }
+    .calculator {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      width: 580px;
+    }
+    .display {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 20px;
+      text-align: right;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .display .expression {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 1.05rem;
+      min-height: 24px;
+      word-break: break-all;
+    }
+    .display .result {
+      color: #fff;
+      font-size: 2.8rem;
+      font-weight: bold;
+      word-break: break-all;
+    }
+    .display .memory-indicator {
+      color: #f97316;
+      font-size: 0.8rem;
+      text-align: left;
+      min-height: 18px;
+    }
+    .mode-toggle {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 15px;
+    }
+    .mode-btn {
+      flex: 1;
+      padding: 10px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.5);
+      transition: background 0.15s, color 0.15s;
+    }
+    .mode-btn.active {
+      background: rgba(78, 205, 196, 0.2);
+      color: #4ecdc4;
+    }
+    .angle-toggle {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 15px;
+    }
+    .angle-btn {
+      flex: 1;
+      padding: 7px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.4);
+      transition: background 0.15s, color 0.15s;
+    }
+    .angle-btn.active {
+      background: rgba(249, 115, 22, 0.2);
+      color: #f97316;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    .buttons.basic-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .btn {
+      padding: 20px 10px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      font-weight: bold;
+    }
+    .btn:active {
+      transform: scale(0.95);
+    }
+    .btn-num {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    .btn-num:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+    .btn-op {
+      background: rgba(78, 205, 196, 0.2);
+      color: #4ecdc4;
+    }
+    .btn-op:hover {
+      background: rgba(78, 205, 196, 0.35);
+    }
+    .btn-func {
+      background: rgba(168, 85, 247, 0.2);
+      color: #a855f7;
+      font-size: 0.95rem;
+    }
+    .btn-func:hover {
+      background: rgba(168, 85, 247, 0.35);
+    }
+    .btn-mem {
+      background: rgba(249, 115, 22, 0.15);
+      color: #f97316;
+      font-size: 0.85rem;
+    }
+    .btn-mem:hover {
+      background: rgba(249, 115, 22, 0.3);
+    }
+    .btn-clear {
+      background: rgba(238, 90, 90, 0.2);
+      color: #ff6b6b;
+    }
+    .btn-clear:hover {
+      background: rgba(238, 90, 90, 0.35);
+    }
+    .btn-equals {
+      background: #4ecdc4;
+      color: #1a1a2e;
+      grid-column: span 2;
+    }
+    .btn-equals:hover {
+      background: #3dbdb5;
+    }
+    .btn-equals.basic-eq {
+      grid-column: span 2;
+    }
+    .history {
+      margin-top: 20px;
+      max-height: 200px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.2) transparent;
+    }
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .history h3 {
+      color: rgba(255,255,255,0.4);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .clear-hist {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.3);
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .clear-hist:hover {
+      color: #ff6b6b;
+    }
+    .history-item {
+      background: rgba(0,0,0,0.2);
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .history-item:hover {
+      background: rgba(0,0,0,0.35);
+    }
+    .history-item .hist-expr {
+      color: rgba(255,255,255,0.4);
+      font-size: 0.85rem;
+    }
+    .history-item .hist-result {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="home-link">&#8592; Home</a>
+  <div class="calculator">
+    <div class="display">
+      <div class="memory-indicator" id="memIndicator"></div>
+      <div class="expression" id="expression"></div>
+      <div class="result" id="result">0</div>
+    </div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="basicMode" onclick="setMode('basic')">Basic</button>
+      <button class="mode-btn" id="sciMode" onclick="setMode('scientific')">Scientific</button>
+      <button class="mode-btn" id="progMode" onclick="setMode('programmer')">Programmer</button>
+    </div>
+
+    <!-- Basic buttons -->
+    <div class="buttons basic-grid" id="basicButtons">
+      <button class="btn btn-clear" data-action="clear">AC</button>
+      <button class="btn btn-clear" data-action="backspace">&#9003;</button>
+      <button class="btn btn-op" data-action="operator" data-value="%">%</button>
+      <button class="btn btn-op" data-action="operator" data-value="/">&#247;</button>
+
+      <button class="btn btn-num" data-action="number" data-value="7">7</button>
+      <button class="btn btn-num" data-action="number" data-value="8">8</button>
+      <button class="btn btn-num" data-action="number" data-value="9">9</button>
+      <button class="btn btn-op" data-action="operator" data-value="*">&#215;</button>
+
+      <button class="btn btn-num" data-action="number" data-value="4">4</button>
+      <button class="btn btn-num" data-action="number" data-value="5">5</button>
+      <button class="btn btn-num" data-action="number" data-value="6">6</button>
+      <button class="btn btn-op" data-action="operator" data-value="-">&#8722;</button>
+
+      <button class="btn btn-num" data-action="number" data-value="1">1</button>
+      <button class="btn btn-num" data-action="number" data-value="2">2</button>
+      <button class="btn btn-num" data-action="number" data-value="3">3</button>
+      <button class="btn btn-op" data-action="operator" data-value="+">+</button>
+
+      <button class="btn btn-func" data-action="negate">&#177;</button>
+      <button class="btn btn-num" data-action="number" data-value="0">0</button>
+      <button class="btn btn-num" data-action="decimal">.</button>
+      <button class="btn btn-equals basic-eq" style="grid-column: span 1;" data-action="equals">=</button>
+    </div>
+
+    <!-- Scientific buttons -->
+    <div class="buttons" id="sciButtons" style="display: none;">
+      <button class="btn btn-func" data-action="func" data-value="sin">sin</button>
+      <button class="btn btn-func" data-action="func" data-value="cos">cos</button>
+      <button class="btn btn-func" data-action="func" data-value="tan">tan</button>
+      <button class="btn btn-func" data-action="func" data-value="log">log</button>
+      <button class="btn btn-func" data-action="func" data-value="ln">ln</button>
+
+      <button class="btn btn-func" data-action="func" data-value="asin">sin⁻¹</button>
+      <button class="btn btn-func" data-action="func" data-value="acos">cos⁻¹</button>
+      <button class="btn btn-func" data-action="func" data-value="atan">tan⁻¹</button>
+      <button class="btn btn-func" data-action="func" data-value="log2">log₂</button>
+      <button class="btn btn-func" data-action="func" data-value="exp">eˣ</button>
+
+      <button class="btn btn-func" data-action="func" data-value="sqrt">&#8730;</button>
+      <button class="btn btn-func" data-action="func" data-value="cbrt">&#8731;</button>
+      <button class="btn btn-func" data-action="func" data-value="square">x&#178;</button>
+      <button class="btn btn-func" data-action="func" data-value="cube">x&#179;</button>
+      <button class="btn btn-func" data-action="operator" data-value="**">x&#710;</button>
+
+      <button class="btn btn-func" data-action="func" data-value="fact">x!</button>
+      <button class="btn btn-func" data-action="func" data-value="inv">1/x</button>
+      <button class="btn btn-func" data-action="func" data-value="abs">|x|</button>
+      <button class="btn btn-func" data-action="func" data-value="floor">&#8970;x&#8971;</button>
+      <button class="btn btn-func" data-action="func" data-value="ceil">&#8968;x&#8969;</button>
+
+      <button class="btn btn-func" data-action="func" data-value="round">rnd</button>
+      <button class="btn btn-func" data-action="const" data-value="pi">&#960;</button>
+      <button class="btn btn-func" data-action="const" data-value="e">e</button>
+      <button class="btn btn-func" data-action="const" data-value="phi">&#966;</button>
+      <button class="btn btn-func" data-action="func" data-value="rand">rand</button>
+
+      <button class="btn btn-mem" data-action="memory" data-value="ms">MS</button>
+      <button class="btn btn-mem" data-action="memory" data-value="mr">MR</button>
+      <button class="btn btn-mem" data-action="memory" data-value="m+">M+</button>
+      <button class="btn btn-mem" data-action="memory" data-value="m-">M-</button>
+      <button class="btn btn-mem" data-action="memory" data-value="mc">MC</button>
+
+      <button class="btn btn-clear" data-action="clear">AC</button>
+      <button class="btn btn-clear" data-action="backspace">&#9003;</button>
+      <button class="btn btn-op" data-action="operator" data-value="%">%</button>
+      <button class="btn btn-op" data-action="operator" data-value="/">&#247;</button>
+      <button class="btn btn-op" data-action="operator" data-value="*">&#215;</button>
+
+      <button class="btn btn-num" data-action="number" data-value="7">7</button>
+      <button class="btn btn-num" data-action="number" data-value="8">8</button>
+      <button class="btn btn-num" data-action="number" data-value="9">9</button>
+      <button class="btn btn-op" data-action="operator" data-value="-">&#8722;</button>
+      <button class="btn btn-op" data-action="operator" data-value="+">+</button>
+
+      <button class="btn btn-num" data-action="number" data-value="4">4</button>
+      <button class="btn btn-num" data-action="number" data-value="5">5</button>
+      <button class="btn btn-num" data-action="number" data-value="6">6</button>
+      <button class="btn btn-func" data-action="negate">&#177;</button>
+      <button class="btn btn-num" data-action="decimal">.</button>
+
+      <button class="btn btn-num" data-action="number" data-value="1">1</button>
+      <button class="btn btn-num" data-action="number" data-value="2">2</button>
+      <button class="btn btn-num" data-action="number" data-value="3">3</button>
+      <button class="btn btn-equals" data-action="equals">=</button>
+
+      <button class="btn btn-num" style="grid-column: span 3;" data-action="number" data-value="0">0</button>
+    </div>
+
+    <!-- Programmer buttons -->
+    <div class="buttons" id="progButtons" style="display: none;">
+      <button class="btn btn-func" data-action="base" data-value="hex">HEX</button>
+      <button class="btn btn-func" data-action="base" data-value="dec">DEC</button>
+      <button class="btn btn-func" data-action="base" data-value="oct">OCT</button>
+      <button class="btn btn-func" data-action="base" data-value="bin">BIN</button>
+      <button class="btn btn-clear" data-action="clear">AC</button>
+
+      <button class="btn btn-func" data-action="bitop" data-value="and">AND</button>
+      <button class="btn btn-func" data-action="bitop" data-value="or">OR</button>
+      <button class="btn btn-func" data-action="bitop" data-value="xor">XOR</button>
+      <button class="btn btn-func" data-action="bitop" data-value="not">NOT</button>
+      <button class="btn btn-clear" data-action="backspace">&#9003;</button>
+
+      <button class="btn btn-func" data-action="bitop" data-value="lsh">LSH</button>
+      <button class="btn btn-func" data-action="bitop" data-value="rsh">RSH</button>
+      <button class="btn btn-num" data-action="hexnum" data-value="A">A</button>
+      <button class="btn btn-num" data-action="hexnum" data-value="B">B</button>
+      <button class="btn btn-op" data-action="operator" data-value="/">&#247;</button>
+
+      <button class="btn btn-num" data-action="hexnum" data-value="C">C</button>
+      <button class="btn btn-num" data-action="hexnum" data-value="D">D</button>
+      <button class="btn btn-num" data-action="number" data-value="7">7</button>
+      <button class="btn btn-num" data-action="number" data-value="8">8</button>
+      <button class="btn btn-op" data-action="operator" data-value="*">&#215;</button>
+
+      <button class="btn btn-num" data-action="hexnum" data-value="E">E</button>
+      <button class="btn btn-num" data-action="hexnum" data-value="F">F</button>
+      <button class="btn btn-num" data-action="number" data-value="4">4</button>
+      <button class="btn btn-num" data-action="number" data-value="5">5</button>
+      <button class="btn btn-op" data-action="operator" data-value="-">&#8722;</button>
+
+      <button class="btn btn-func" data-action="negate">&#177;</button>
+      <button class="btn btn-num" data-action="number" data-value="0">0</button>
+      <button class="btn btn-num" data-action="number" data-value="1">1</button>
+      <button class="btn btn-num" data-action="number" data-value="2">2</button>
+      <button class="btn btn-op" data-action="operator" data-value="+">+</button>
+
+      <button class="btn btn-op" data-action="operator" data-value="%">MOD</button>
+      <button class="btn btn-num" data-action="number" data-value="3">3</button>
+      <button class="btn btn-num" data-action="number" data-value="6">6</button>
+      <button class="btn btn-num" data-action="number" data-value="9">9</button>
+      <button class="btn btn-equals" data-action="equals">=</button>
+    </div>
+
+    <div id="angleToggle" style="display: none;">
+      <div class="angle-toggle">
+        <button class="angle-btn active" id="degBtn" onclick="setAngle('deg')">DEG</button>
+        <button class="angle-btn" id="radBtn" onclick="setAngle('rad')">RAD</button>
+      </div>
+    </div>
+
+    <div id="baseDisplay" style="display: none; margin-top: 12px;">
+      <div style="background: rgba(0,0,0,0.2); border-radius: 10px; padding: 12px; font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.8;">
+        <div>HEX: <span id="hexVal" style="color: #a855f7; font-weight: bold;">0</span></div>
+        <div>DEC: <span id="decVal" style="color: #4ecdc4; font-weight: bold;">0</span></div>
+        <div>OCT: <span id="octVal" style="color: #f97316; font-weight: bold;">0</span></div>
+        <div>BIN: <span id="binVal" style="color: #ff6b6b; font-weight: bold;">0</span></div>
+      </div>
+    </div>
+
+    <div class="history" id="history"></div>
+  </div>
+
+  <script>
+    const expressionEl = document.getElementById('expression');
+    const resultEl = document.getElementById('result');
+    const historyEl = document.getElementById('history');
+    const memIndicator = document.getElementById('memIndicator');
+
+    let current = '0';
+    let expression = '';
+    let lastOperator = false;
+    let justEvaluated = false;
+    let history = [];
+    let memoryValue = 0;
+    let angleMode = 'deg'; // deg or rad
+    let currentMode = 'basic';
+    let progBase = 'dec';
+
+    function updateDisplay() {
+      resultEl.textContent = current;
+      expressionEl.textContent = expression;
+      memIndicator.textContent = memoryValue !== 0 ? 'M = ' + memoryValue : '';
+
+      if (currentMode === 'programmer') {
+        updateBaseDisplay();
+      }
+    }
+
+    function updateBaseDisplay() {
+      const num = parseInt(current) || 0;
+      document.getElementById('hexVal').textContent = num.toString(16).toUpperCase();
+      document.getElementById('decVal').textContent = num.toString(10);
+      document.getElementById('octVal').textContent = num.toString(8);
+      document.getElementById('binVal').textContent = num.toString(2);
+    }
+
+    function toRadians(val) {
+      return angleMode === 'deg' ? val * Math.PI / 180 : val;
+    }
+
+    function fromRadians(val) {
+      return angleMode === 'deg' ? val * 180 / Math.PI : val;
+    }
+
+    function setAngle(mode) {
+      angleMode = mode;
+      document.getElementById('degBtn').classList.toggle('active', mode === 'deg');
+      document.getElementById('radBtn').classList.toggle('active', mode === 'rad');
+    }
+
+    function addHistory(expr, result) {
+      history.unshift({ expr, result });
+      if (history.length > 30) history.pop();
+      renderHistory();
+    }
+
+    function renderHistory() {
+      if (history.length === 0) {
+        historyEl.innerHTML = '';
+        return;
+      }
+      let html = '<div class="history-header"><h3>History</h3><button class="clear-hist" onclick="clearHistory()">Clear</button></div>';
+      history.forEach((item, i) => {
+        html += '<div class="history-item" onclick="loadHistory(' + i + ')">';
+        html += '<div class="hist-expr">' + item.expr + '</div>';
+        html += '<div class="hist-result">' + item.result + '</div>';
+        html += '</div>';
+      });
+      historyEl.innerHTML = html;
+    }
+
+    function clearHistory() {
+      history = [];
+      historyEl.innerHTML = '';
+    }
+
+    function loadHistory(index) {
+      current = history[index].result;
+      expression = '';
+      justEvaluated = true;
+      lastOperator = false;
+      updateDisplay();
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.getElementById('basicButtons').style.display = mode === 'basic' ? 'grid' : 'none';
+      document.getElementById('sciButtons').style.display = mode === 'scientific' ? 'grid' : 'none';
+      document.getElementById('progButtons').style.display = mode === 'programmer' ? 'grid' : 'none';
+      document.getElementById('angleToggle').style.display = mode === 'scientific' ? 'block' : 'none';
+      document.getElementById('baseDisplay').style.display = mode === 'programmer' ? 'block' : 'none';
+
+      document.getElementById('basicMode').classList.toggle('active', mode === 'basic');
+      document.getElementById('sciMode').classList.toggle('active', mode === 'scientific');
+      document.getElementById('progMode').classList.toggle('active', mode === 'programmer');
+
+      if (mode === 'programmer') updateBaseDisplay();
+    }
+
+    function handleNumber(value) {
+      if (justEvaluated) {
+        current = value;
+        expression = '';
+        justEvaluated = false;
+      } else if (current === '0') {
+        current = value;
+      } else {
+        current += value;
+      }
+      lastOperator = false;
+      updateDisplay();
+    }
+
+    function handleHexNum(value) {
+      if (currentMode !== 'programmer') return;
+      if (justEvaluated) {
+        current = value;
+        expression = '';
+        justEvaluated = false;
+      } else if (current === '0') {
+        current = value;
+      } else {
+        current += value;
+      }
+      lastOperator = false;
+      updateDisplay();
+    }
+
+    function handleDecimal() {
+      if (currentMode === 'programmer') return;
+      if (justEvaluated) {
+        current = '0.';
+        expression = '';
+        justEvaluated = false;
+      } else if (!current.includes('.')) {
+        current += '.';
+      }
+      lastOperator = false;
+      updateDisplay();
+    }
+
+    function handleOperator(op) {
+      justEvaluated = false;
+      if (lastOperator) {
+        expression = expression.slice(0, -3) + ' ' + op + ' ';
+      } else {
+        expression += current + ' ' + op + ' ';
+        current = '0';
+      }
+      lastOperator = true;
+      updateDisplay();
+    }
+
+    function factorial(n) {
+      n = Math.round(n);
+      if (n < 0) return NaN;
+      if (n > 170) return Infinity;
+      if (n === 0 || n === 1) return 1;
+      let result = 1;
+      for (let i = 2; i <= n; i++) result *= i;
+      return result;
+    }
+
+    function handleFunc(fn) {
+      const num = parseFloat(current);
+      if (isNaN(num) && current !== 'Error' && fn !== 'rand') return;
+
+      let result;
+      let label;
+      switch (fn) {
+        case 'sin':    result = Math.sin(toRadians(num)); label = 'sin(' + num + ')'; break;
+        case 'cos':    result = Math.cos(toRadians(num)); label = 'cos(' + num + ')'; break;
+        case 'tan':    result = Math.tan(toRadians(num)); label = 'tan(' + num + ')'; break;
+        case 'asin':   result = fromRadians(Math.asin(num)); label = 'sin\u207B\u00B9(' + num + ')'; break;
+        case 'acos':   result = fromRadians(Math.acos(num)); label = 'cos\u207B\u00B9(' + num + ')'; break;
+        case 'atan':   result = fromRadians(Math.atan(num)); label = 'tan\u207B\u00B9(' + num + ')'; break;
+        case 'log':    result = Math.log10(num); label = 'log(' + num + ')'; break;
+        case 'ln':     result = Math.log(num); label = 'ln(' + num + ')'; break;
+        case 'log2':   result = Math.log2(num); label = 'log\u2082(' + num + ')'; break;
+        case 'exp':    result = Math.exp(num); label = 'e^(' + num + ')'; break;
+        case 'sqrt':   result = Math.sqrt(num); label = '\u221A(' + num + ')'; break;
+        case 'cbrt':   result = Math.cbrt(num); label = '\u221B(' + num + ')'; break;
+        case 'square': result = num * num; label = '(' + num + ')\u00B2'; break;
+        case 'cube':   result = num * num * num; label = '(' + num + ')\u00B3'; break;
+        case 'inv':    result = 1 / num; label = '1/(' + num + ')'; break;
+        case 'fact':   result = factorial(num); label = num + '!'; break;
+        case 'abs':    result = Math.abs(num); label = '|' + num + '|'; break;
+        case 'floor':  result = Math.floor(num); label = '\u230A' + num + '\u230B'; break;
+        case 'ceil':   result = Math.ceil(num); label = '\u2308' + num + '\u2309'; break;
+        case 'round':  result = Math.round(num); label = 'round(' + num + ')'; break;
+        case 'rand':   result = Math.random(); label = 'rand()'; break;
+        default: return;
+      }
+
+      if (!isFinite(result) || isNaN(result)) {
+        expression = label + ' =';
+        current = 'Error';
+      } else {
+        result = parseFloat(result.toPrecision(12));
+        expression = label + ' =';
+        current = String(result);
+        addHistory(label, current);
+      }
+      justEvaluated = true;
+      lastOperator = false;
+      updateDisplay();
+    }
+
+    function handleConst(c) {
+      if (c === 'pi') current = String(Math.PI);
+      else if (c === 'e') current = String(Math.E);
+      else if (c === 'phi') current = String((1 + Math.sqrt(5)) / 2);
+      justEvaluated = false;
+      lastOperator = false;
+      updateDisplay();
+    }
+
+    function handleNegate() {
+      if (current === '0' || current === 'Error') return;
+      if (current.startsWith('-')) {
+        current = current.slice(1);
+      } else {
+        current = '-' + current;
+      }
+      updateDisplay();
+    }
+
+    function handleMemory(op) {
+      const num = parseFloat(current) || 0;
+      switch (op) {
+        case 'ms': memoryValue = num; break;
+        case 'mr': current = String(memoryValue); justEvaluated = true; break;
+        case 'm+': memoryValue += num; break;
+        case 'm-': memoryValue -= num; break;
+        case 'mc': memoryValue = 0; break;
+      }
+      updateDisplay();
+    }
+
+    function handleBitOp(op) {
+      const num = parseInt(current) || 0;
+      let result;
+      let label;
+
+      switch (op) {
+        case 'not':
+          result = ~num;
+          label = 'NOT(' + num + ')';
+          expression = label + ' =';
+          current = String(result);
+          addHistory(label, current);
+          justEvaluated = true;
+          lastOperator = false;
+          updateDisplay();
+          return;
+        case 'and': handleOperator('&'); return;
+        case 'or':  handleOperator('|'); return;
+        case 'xor': handleOperator('^'); return;
+        case 'lsh': handleOperator('<<'); return;
+        case 'rsh': handleOperator('>>'); return;
+      }
+    }
+
+    function handleBaseConvert(base) {
+      progBase = base;
+      const num = parseInt(current, 10) || 0;
+      updateDisplay();
+    }
+
+    function handleEquals() {
+      if (lastOperator) return;
+      const fullExpression = expression + current;
+      try {
+        let result = Function('"use strict"; return (' + fullExpression + ')')();
+        if (currentMode === 'programmer') result = Math.trunc(result);
+        if (!isFinite(result)) {
+          current = 'Error';
+        } else {
+          if (currentMode !== 'programmer') {
+            result = parseFloat(result.toPrecision(12));
+          }
+          current = String(result);
+          addHistory(fullExpression, current);
+        }
+      } catch {
+        current = 'Error';
+      }
+      expression = fullExpression + ' =';
+      lastOperator = false;
+      justEvaluated = true;
+      updateDisplay();
+    }
+
+    function handleClear() {
+      current = '0';
+      expression = '';
+      lastOperator = false;
+      justEvaluated = false;
+      updateDisplay();
+    }
+
+    function handleBackspace() {
+      if (justEvaluated) {
+        handleClear();
+        return;
+      }
+      if (current.length > 1) {
+        current = current.slice(0, -1);
+      } else {
+        current = '0';
+      }
+      updateDisplay();
+    }
+
+    document.querySelectorAll('.buttons').forEach(container => {
+      container.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn');
+        if (!btn) return;
+
+        const action = btn.dataset.action;
+        const value = btn.dataset.value;
+
+        switch (action) {
+          case 'number': handleNumber(value); break;
+          case 'hexnum': handleHexNum(value); break;
+          case 'decimal': handleDecimal(); break;
+          case 'operator': handleOperator(value); break;
+          case 'equals': handleEquals(); break;
+          case 'clear': handleClear(); break;
+          case 'backspace': handleBackspace(); break;
+          case 'func': handleFunc(value); break;
+          case 'const': handleConst(value); break;
+          case 'negate': handleNegate(); break;
+          case 'memory': handleMemory(value); break;
+          case 'bitop': handleBitOp(value); break;
+          case 'base': handleBaseConvert(value); break;
+        }
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key >= '0' && e.key <= '9') handleNumber(e.key);
+      else if (e.key === '.') handleDecimal();
+      else if (['+', '-', '*', '/', '%'].includes(e.key)) handleOperator(e.key);
+      else if (e.key === 'Enter' || e.key === '=') handleEquals();
+      else if (e.key === 'Backspace') handleBackspace();
+      else if (e.key === 'Escape') handleClear();
+    });
+  </script>
+</body>
+</html>

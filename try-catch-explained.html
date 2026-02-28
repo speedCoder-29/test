@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Try/Catch Explained</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .home-link {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 1rem;
+    }
+    .home-link:hover { color: #fff; }
+    .container {
+      max-width: 800px;
+      width: 100%;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+    }
+    h2 {
+      font-size: 1.5rem;
+      color: #4ecdc4;
+      margin-top: 40px;
+      margin-bottom: 15px;
+    }
+    p {
+      color: rgba(255,255,255,0.8);
+      line-height: 1.7;
+      margin-bottom: 15px;
+      font-size: 1.05rem;
+    }
+    .code-block {
+      background: rgba(0,0,0,0.4);
+      border-radius: 12px;
+      padding: 20px 25px;
+      margin: 15px 0 25px 0;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      border-left: 4px solid #4ecdc4;
+    }
+    .code-block .keyword { color: #c792ea; }
+    .code-block .string { color: #c3e88d; }
+    .code-block .comment { color: rgba(255,255,255,0.3); font-style: italic; }
+    .code-block .func { color: #82aaff; }
+    .code-block .error-text { color: #ff6b6b; }
+    .code-block .num { color: #f78c6c; }
+    .demo-box {
+      background: rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 25px;
+      margin: 20px 0;
+    }
+    .demo-box h3 {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      color: #f97316;
+    }
+    .demo-btn {
+      padding: 10px 25px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 5px;
+      transition: transform 0.1s;
+    }
+    .demo-btn:active { transform: scale(0.95); }
+    .demo-btn.green { background: #4ecdc4; color: #1a1a2e; }
+    .demo-btn.red { background: #ff6b6b; color: #fff; }
+    .demo-btn.purple { background: #a855f7; color: #fff; }
+    .demo-output {
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 12px;
+      font-family: 'Consolas', monospace;
+      font-size: 0.95rem;
+      min-height: 45px;
+      color: rgba(255,255,255,0.7);
+    }
+    .flow-diagram {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    .flow-step {
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+    .flow-arrow {
+      color: rgba(255,255,255,0.4);
+      font-size: 1.5rem;
+    }
+    .flow-try { background: rgba(78,205,196,0.2); color: #4ecdc4; }
+    .flow-catch { background: rgba(238,90,90,0.2); color: #ff6b6b; }
+    .flow-finally { background: rgba(168,85,247,0.2); color: #a855f7; }
+    .flow-ok { background: rgba(78,205,196,0.15); color: #4ecdc4; }
+    .flow-fail { background: rgba(238,90,90,0.15); color: #ff6b6b; }
+    .highlight {
+      background: rgba(78,205,196,0.15);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #4ecdc4;
+      font-family: 'Consolas', monospace;
+      font-size: 0.95rem;
+    }
+    .warning {
+      background: rgba(249,115,22,0.15);
+      border-left: 4px solid #f97316;
+      padding: 15px 20px;
+      border-radius: 0 10px 10px 0;
+      margin: 15px 0;
+      color: rgba(255,255,255,0.8);
+    }
+    .section-num {
+      display: inline-block;
+      background: #4ecdc4;
+      color: #1a1a2e;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-right: 10px;
+    }
+    ul {
+      color: rgba(255,255,255,0.8);
+      padding-left: 25px;
+      margin-bottom: 15px;
+      line-height: 2;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    th {
+      color: #4ecdc4;
+      font-size: 0.95rem;
+    }
+    td {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.95rem;
+    }
+    td code {
+      font-family: 'Consolas', monospace;
+      background: rgba(0,0,0,0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="home-link">&larr; Home</a>
+  <div class="container">
+
+    <h1>Try / Catch Explained</h1>
+    <p class="subtitle">A complete guide to error handling in JavaScript</p>
+
+    <!-- SECTION 1 -->
+    <h2><span class="section-num">1</span>What is Try/Catch?</h2>
+    <p><span class="highlight">try/catch</span> is JavaScript's way of handling errors gracefully. Instead of your program crashing when something goes wrong, you can <strong>catch</strong> the error and decide what to do about it.</p>
+    <p>Think of it like a safety net. If a tightrope walker (your code) falls, the net (catch) is there to prevent disaster.</p>
+
+    <div class="code-block">
+      <span class="keyword">try</span> {<br>
+      &nbsp;&nbsp;<span class="comment">// Code that might fail</span><br>
+      &nbsp;&nbsp;<span class="func">riskyOperation</span>();<br>
+      } <span class="keyword">catch</span> (error) {<br>
+      &nbsp;&nbsp;<span class="comment">// Runs ONLY if something broke above</span><br>
+      &nbsp;&nbsp;<span class="func">console.log</span>(<span class="string">"Error:"</span>, error.message);<br>
+      }
+    </div>
+
+    <!-- SECTION 2 -->
+    <h2><span class="section-num">2</span>How Does It Flow?</h2>
+    <p><strong>If the code succeeds:</strong></p>
+    <div class="flow-diagram">
+      <div class="flow-step flow-try">try block runs</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step flow-ok">Code works!</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step" style="background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.3); text-decoration: line-through;">catch is SKIPPED</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step flow-ok">Program continues</div>
+    </div>
+
+    <p><strong>If the code fails:</strong></p>
+    <div class="flow-diagram">
+      <div class="flow-step flow-try">try block runs</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step flow-fail">Error thrown!</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step flow-catch">catch runs</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step flow-ok">Program continues</div>
+    </div>
+
+    <p>The key takeaway: <strong>your program keeps running either way</strong>. Without try/catch, an error would crash everything.</p>
+
+    <!-- SECTION 3 -->
+    <h2><span class="section-num">3</span>Interactive Examples</h2>
+
+    <div class="demo-box">
+      <h3>Example 1: Parsing JSON</h3>
+      <p style="font-size:0.95rem; color:rgba(255,255,255,0.6);">JSON.parse() throws an error if the string isn't valid JSON. Try both buttons:</p>
+      <button class="demo-btn green" onclick="demo1(true)">Parse Valid JSON</button>
+      <button class="demo-btn red" onclick="demo1(false)">Parse Invalid JSON</button>
+      <div class="demo-output" id="demo1Output">Click a button to see the result...</div>
+    </div>
+
+    <div class="code-block">
+      <span class="keyword">try</span> {<br>
+      &nbsp;&nbsp;<span class="keyword">const</span> data = <span class="func">JSON.parse</span>(jsonString);<br>
+      &nbsp;&nbsp;<span class="func">console.log</span>(<span class="string">"Name:"</span>, data.name);<br>
+      } <span class="keyword">catch</span> (error) {<br>
+      &nbsp;&nbsp;<span class="func">console.log</span>(<span class="string">"Invalid JSON!"</span>, error.message);<br>
+      }
+    </div>
+
+    <div class="demo-box">
+      <h3>Example 2: Accessing Properties</h3>
+      <p style="font-size:0.95rem; color:rgba(255,255,255,0.6);">Trying to access a property on null or undefined throws a TypeError:</p>
+      <button class="demo-btn green" onclick="demo2(true)">Access Valid Object</button>
+      <button class="demo-btn red" onclick="demo2(false)">Access Null Object</button>
+      <div class="demo-output" id="demo2Output">Click a button to see the result...</div>
+    </div>
+
+    <div class="code-block">
+      <span class="keyword">try</span> {<br>
+      &nbsp;&nbsp;<span class="keyword">const</span> length = user.name.length;<br>
+      &nbsp;&nbsp;<span class="func">console.log</span>(<span class="string">"Name length:"</span>, length);<br>
+      } <span class="keyword">catch</span> (error) {<br>
+      &nbsp;&nbsp;<span class="func">console.log</span>(<span class="string">"User is missing!"</span>, error.message);<br>
+      }
+    </div>
+
+    <div class="demo-box">
+      <h3>Example 3: Math Expression (from your calculator!)</h3>
+      <p style="font-size:0.95rem; color:rgba(255,255,255,0.6);">Evaluating user input can easily go wrong:</p>
+      <button class="demo-btn green" onclick="demo3('2 + 3 * 4')">Evaluate "2 + 3 * 4"</button>
+      <button class="demo-btn red" onclick="demo3('2 +* 3 /')">Evaluate "2 +* 3 /"</button>
+      <button class="demo-btn purple" onclick="demo3('Math.sqrt(16)')">Evaluate "Math.sqrt(16)"</button>
+      <div class="demo-output" id="demo3Output">Click a button to see the result...</div>
+    </div>
+
+    <!-- SECTION 4 -->
+    <h2><span class="section-num">4</span>The Error Object</h2>
+    <p>When an error is caught, the <span class="highlight">error</span> object gives you useful information:</p>
+
+    <table>
+      <tr>
+        <th>Property</th>
+        <th>What it contains</th>
+        <th>Example</th>
+      </tr>
+      <tr>
+        <td><code>error.message</code></td>
+        <td>Human-readable description</td>
+        <td>"Unexpected token"</td>
+      </tr>
+      <tr>
+        <td><code>error.name</code></td>
+        <td>Type of error</td>
+        <td>"SyntaxError"</td>
+      </tr>
+      <tr>
+        <td><code>error.stack</code></td>
+        <td>Full stack trace showing where it happened</td>
+        <td>"SyntaxError: ... at line 5"</td>
+      </tr>
+    </table>
+
+    <div class="demo-box">
+      <h3>Inspect the Error Object</h3>
+      <button class="demo-btn red" onclick="demo4()">Trigger an Error</button>
+      <div class="demo-output" id="demo4Output">Click to see error properties...</div>
+    </div>
+
+    <!-- SECTION 5 -->
+    <h2><span class="section-num">5</span>Finally Block</h2>
+    <p>The <span class="highlight">finally</span> block runs <strong>no matter what</strong> &mdash; whether the code succeeded or failed. It's useful for cleanup tasks.</p>
+
+    <div class="code-block">
+      <span class="keyword">try</span> {<br>
+      &nbsp;&nbsp;<span class="func">openFile</span>();<br>
+      &nbsp;&nbsp;<span class="func">readData</span>();<br>
+      } <span class="keyword">catch</span> (error) {<br>
+      &nbsp;&nbsp;<span class="func">console.log</span>(<span class="string">"Failed to read file"</span>);<br>
+      } <span class="keyword">finally</span> {<br>
+      &nbsp;&nbsp;<span class="comment">// Always runs - success or failure</span><br>
+      &nbsp;&nbsp;<span class="func">closeFile</span>();<br>
+      }
+    </div>
+
+    <div class="flow-diagram">
+      <div class="flow-step flow-try">try</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step flow-catch">catch (if error)</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step flow-finally">finally (ALWAYS)</div>
+    </div>
+
+    <div class="demo-box">
+      <h3>Finally in Action</h3>
+      <button class="demo-btn green" onclick="demo5(true)">Success + Finally</button>
+      <button class="demo-btn red" onclick="demo5(false)">Error + Finally</button>
+      <div class="demo-output" id="demo5Output">Click to see how finally always runs...</div>
+    </div>
+
+    <!-- SECTION 6 -->
+    <h2><span class="section-num">6</span>Throwing Your Own Errors</h2>
+    <p>You can use <span class="highlight">throw</span> to create your own errors. This is useful for validating data:</p>
+
+    <div class="code-block">
+      <span class="keyword">function</span> <span class="func">divide</span>(a, b) {<br>
+      &nbsp;&nbsp;<span class="keyword">if</span> (b === <span class="num">0</span>) {<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">throw new</span> <span class="func">Error</span>(<span class="string">"Cannot divide by zero!"</span>);<br>
+      &nbsp;&nbsp;}<br>
+      &nbsp;&nbsp;<span class="keyword">return</span> a / b;<br>
+      }<br><br>
+      <span class="keyword">try</span> {<br>
+      &nbsp;&nbsp;<span class="func">divide</span>(<span class="num">10</span>, <span class="num">0</span>);<br>
+      } <span class="keyword">catch</span> (error) {<br>
+      &nbsp;&nbsp;<span class="func">console.log</span>(error.message); <span class="comment">// "Cannot divide by zero!"</span><br>
+      }
+    </div>
+
+    <div class="demo-box">
+      <h3>Custom Error Demo</h3>
+      <button class="demo-btn green" onclick="demo6(10, 2)">divide(10, 2)</button>
+      <button class="demo-btn red" onclick="demo6(10, 0)">divide(10, 0)</button>
+      <button class="demo-btn purple" onclick="demo6(-5, 3)">divide(-5, 3)</button>
+      <div class="demo-output" id="demo6Output">Click to test the divide function...</div>
+    </div>
+
+    <!-- SECTION 7 -->
+    <h2><span class="section-num">7</span>Common Error Types</h2>
+    <table>
+      <tr>
+        <th>Error Type</th>
+        <th>When it happens</th>
+        <th>Example trigger</th>
+      </tr>
+      <tr>
+        <td><code>SyntaxError</code></td>
+        <td>Invalid code structure</td>
+        <td><code>JSON.parse("not json")</code></td>
+      </tr>
+      <tr>
+        <td><code>TypeError</code></td>
+        <td>Wrong type used</td>
+        <td><code>null.toString()</code></td>
+      </tr>
+      <tr>
+        <td><code>ReferenceError</code></td>
+        <td>Variable doesn't exist</td>
+        <td><code>console.log(x)</code> when x is not defined</td>
+      </tr>
+      <tr>
+        <td><code>RangeError</code></td>
+        <td>Value out of range</td>
+        <td><code>new Array(-1)</code></td>
+      </tr>
+      <tr>
+        <td><code>URIError</code></td>
+        <td>Bad URI function usage</td>
+        <td><code>decodeURI("%")</code></td>
+      </tr>
+    </table>
+
+    <div class="demo-box">
+      <h3>Trigger Different Error Types</h3>
+      <button class="demo-btn red" onclick="demoError('syntax')">SyntaxError</button>
+      <button class="demo-btn red" onclick="demoError('type')">TypeError</button>
+      <button class="demo-btn red" onclick="demoError('reference')">ReferenceError</button>
+      <button class="demo-btn red" onclick="demoError('range')">RangeError</button>
+      <div class="demo-output" id="demoErrorOutput">Click to see each error type...</div>
+    </div>
+
+    <!-- SECTION 8 -->
+    <h2><span class="section-num">8</span>Real-World Examples in Your Projects</h2>
+
+    <p><strong>Calculator</strong> &mdash; evaluating user expressions:</p>
+    <div class="code-block">
+      <span class="keyword">try</span> {<br>
+      &nbsp;&nbsp;<span class="keyword">let</span> result = <span class="func">Function</span>(<span class="string">'"use strict"; return ('</span> + expression + <span class="string">')'</span>)();<br>
+      &nbsp;&nbsp;current = <span class="func">String</span>(result);<br>
+      } <span class="keyword">catch</span> {<br>
+      &nbsp;&nbsp;current = <span class="string">"Error"</span>; <span class="comment">// Show "Error" instead of crashing</span><br>
+      }
+    </div>
+
+    <p><strong>Login System</strong> &mdash; parsing stored session data:</p>
+    <div class="code-block">
+      <span class="keyword">try</span> {<br>
+      &nbsp;&nbsp;<span class="keyword">const</span> user = <span class="func">JSON.parse</span>(<span class="func">sessionStorage.getItem</span>(<span class="string">"loggedInUser"</span>));<br>
+      &nbsp;&nbsp;<span class="comment">// Use user data...</span><br>
+      } <span class="keyword">catch</span> (error) {<br>
+      &nbsp;&nbsp;<span class="comment">// Corrupt data? Redirect to login</span><br>
+      &nbsp;&nbsp;window.location.href = <span class="string">"login.html"</span>;<br>
+      }
+    </div>
+
+    <div class="warning">
+      <strong>Tip:</strong> Don't wrap everything in try/catch. Only use it around code that can genuinely fail (user input, JSON parsing, network requests, file operations). Using it everywhere hides bugs that should be fixed.
+    </div>
+
+    <p style="text-align:center; margin-top:50px; color:rgba(255,255,255,0.3);">End of guide</p>
+  </div>
+
+  <script>
+    function demo1(valid) {
+      const output = document.getElementById('demo1Output');
+      const jsonString = valid ? '{"name": "Alice", "age": 25}' : '{not valid json!!!}';
+
+      let html = '<span style="color:rgba(255,255,255,0.4)">Input: ' + jsonString + '</span><br>';
+      try {
+        const data = JSON.parse(jsonString);
+        html += '<span style="color:#4ecdc4">Success! Name: ' + data.name + ', Age: ' + data.age + '</span>';
+      } catch (error) {
+        html += '<span style="color:#ff6b6b">Caught: ' + error.message + '</span>';
+      }
+      output.innerHTML = html;
+    }
+
+    function demo2(valid) {
+      const output = document.getElementById('demo2Output');
+      const user = valid ? { name: "Alice" } : null;
+
+      let html = '<span style="color:rgba(255,255,255,0.4)">user = ' + JSON.stringify(user) + '</span><br>';
+      try {
+        const length = user.name.length;
+        html += '<span style="color:#4ecdc4">Success! Name length: ' + length + '</span>';
+      } catch (error) {
+        html += '<span style="color:#ff6b6b">Caught ' + error.name + ': ' + error.message + '</span>';
+      }
+      output.innerHTML = html;
+    }
+
+    function demo3(expr) {
+      const output = document.getElementById('demo3Output');
+      let html = '<span style="color:rgba(255,255,255,0.4)">Expression: "' + expr + '"</span><br>';
+      try {
+        const result = Function('"use strict"; return (' + expr + ')')();
+        html += '<span style="color:#4ecdc4">Result: ' + result + '</span>';
+      } catch (error) {
+        html += '<span style="color:#ff6b6b">Caught: ' + error.message + '</span>';
+      }
+      output.innerHTML = html;
+    }
+
+    function demo4() {
+      const output = document.getElementById('demo4Output');
+      try {
+        JSON.parse("{ bad json }");
+      } catch (error) {
+        output.innerHTML =
+          '<span style="color:#ff6b6b">error.name:</span> ' + error.name + '<br>' +
+          '<span style="color:#f97316">error.message:</span> ' + error.message + '<br>' +
+          '<span style="color:#a855f7">error.stack:</span> <span style="font-size:0.8rem">' + error.stack.split('\n')[0] + '</span>';
+      }
+    }
+
+    function demo5(succeed) {
+      const output = document.getElementById('demo5Output');
+      let log = [];
+      try {
+        log.push('<span style="color:#4ecdc4">1. try block started</span>');
+        if (!succeed) throw new Error("Something broke!");
+        log.push('<span style="color:#4ecdc4">2. try block finished successfully</span>');
+      } catch (error) {
+        log.push('<span style="color:#ff6b6b">2. catch block: ' + error.message + '</span>');
+      } finally {
+        log.push('<span style="color:#a855f7">3. finally block ALWAYS runs</span>');
+      }
+      output.innerHTML = log.join('<br>');
+    }
+
+    function divide(a, b) {
+      if (b === 0) {
+        throw new Error("Cannot divide by zero!");
+      }
+      return a / b;
+    }
+
+    function demo6(a, b) {
+      const output = document.getElementById('demo6Output');
+      let html = '<span style="color:rgba(255,255,255,0.4)">divide(' + a + ', ' + b + ')</span><br>';
+      try {
+        const result = divide(a, b);
+        html += '<span style="color:#4ecdc4">Result: ' + result + '</span>';
+      } catch (error) {
+        html += '<span style="color:#ff6b6b">Caught: ' + error.message + '</span>';
+      }
+      output.innerHTML = html;
+    }
+
+    function demoError(type) {
+      const output = document.getElementById('demoErrorOutput');
+      try {
+        switch (type) {
+          case 'syntax': JSON.parse("not json"); break;
+          case 'type': null.toString(); break;
+          case 'reference': Function('"use strict"; return undefinedVar')(); break;
+          case 'range': new Array(-1); break;
+        }
+      } catch (error) {
+        output.innerHTML =
+          '<span style="color:#ff6b6b">' + error.name + '</span>: ' + error.message;
+      }
+    }
+  </script>
+</body>
+</html>
