@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:earlygame.com)"
+      "WebFetch(domain:earlygame.com)",
+      "Bash(node -e:*)",
+      "WebFetch(domain:among-us.fandom.com)"
     ]
   }
 }
