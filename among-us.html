@@ -165,8 +165,10 @@
   <div id="sabotageHUD"></div>
   <div id="sabotageBar"><div id="sabotageFill"></div></div>
   <div id="sabotageControls">
-    <button class="sab-btn" id="sabLights" onclick="startSabotage('lights')">Lights</button>
-    <button class="sab-btn" id="sabO2" onclick="startSabotage('o2')">O2</button>
+    <button class="sab-btn" id="sabLights" onclick="startSabotage('lights')">Fix Lights</button>
+    <button class="sab-btn" id="sabO2" onclick="startSabotage('o2')">O2 Depleted</button>
+    <button class="sab-btn" id="sabReactor" onclick="startSabotage('reactor')">Reactor Meltdown</button>
+    <button class="sab-btn" id="sabComms" onclick="startSabotage('comms')">Comms Sabotaged</button>
   </div>
   <div id="taskProgress"><div id="taskProgressFill"></div></div>
   <div id="ventHint"></div>
@@ -245,7 +247,12 @@
         bgColor: '#0a0a18', wallColor: '#4a4a60', floorColor: 'rgba(180,180,255,0.04)', gridColor: 'rgba(255,255,255,0.025)',
         spawnX: 1450, spawnY: 320,
         emergencyBtn: { x: 1450, y: 290, radius: 22 },
-        sabotageFixLocations: { lights: { x: 700, y: 1450 }, o2: { x: 2050, y: 770 } },
+        sabotageFixLocations: {
+          lights: { x: 700, y: 1450 },        // Electrical room light panel
+          o2: { x: 2050, y: 770 },             // O2 room + Admin room number pads
+          reactor: { x: 220, y: 710 },          // Reactor room hand readers
+          comms: { x: 1910, y: 1300 },          // Communications room radio dial
+        },
         walls: (function() {
           const w = [];
 
@@ -313,20 +320,21 @@
           w.push({ x: 140, y: 1508, w: 120, h: 16 });   // bottom inner
 
           // --- Reactor (far left, tall room with reactor core) ---
+          // Reactor is FULLY enclosed - no direct connection to Security
           w.push({ x: 60, y: 378, w: 16, h: 60 });
-          w.push({ x: 380, y: 420, w: 16, h: 180 });    // right wall top
-          w.push({ x: 380, y: 680, w: 16, h: 80 });     // right wall mid (gap to Security)
-          w.push({ x: 380, y: 840, w: 16, h: 180 });    // right wall bottom
+          w.push({ x: 380, y: 420, w: 16, h: 584 });    // right wall (SOLID - no gap to Security)
           w.push({ x: 76, y: 420, w: 320, h: 16 });     // top
           w.push({ x: 76, y: 1004, w: 150, h: 16 });    // bottom left
           w.push({ x: 290, y: 1004, w: 106, h: 16 });   // bottom right
+          // Reactor exit is through the top or bottom (to engine corridors)
 
-          // --- Security (small room, right of Reactor) ---
-          w.push({ x: 396, y: 580, w: 16, h: 100 });    // left top
-          w.push({ x: 396, y: 760, w: 16, h: 80 });     // left bottom
-          w.push({ x: 580, y: 560, w: 16, h: 300 });    // right
-          w.push({ x: 396, y: 560, w: 200, h: 16 });    // top
-          w.push({ x: 396, y: 844, w: 200, h: 16 });    // bottom
+          // --- Security (small room, separated from Reactor by solid wall) ---
+          // Security is accessed from the left vertical corridor, not from Reactor
+          w.push({ x: 396, y: 560, w: 16, h: 120 });    // left wall top
+          w.push({ x: 396, y: 760, w: 16, h: 84 });     // left wall bottom (gap = door)
+          w.push({ x: 580, y: 560, w: 16, h: 300 });    // right wall
+          w.push({ x: 396, y: 560, w: 200, h: 16 });    // top wall
+          w.push({ x: 396, y: 844, w: 200, h: 16 });    // bottom wall
 
           // --- MedBay (left-center top, between engines and cafeteria) ---
           w.push({ x: 520, y: 120, w: 16, h: 150 });    // left top
@@ -400,6 +408,92 @@
           w.push({ x: 2180, y: 1330, w: 16, h: 180 });  // left bottom
           w.push({ x: 2180, y: 1100, w: 400, h: 16 });  // top
           w.push({ x: 2180, y: 1494, w: 400, h: 16 });  // bottom
+
+          // ============ HALLWAY CORRIDOR WALLS ============
+          // These walls line the sides of hallways to prevent walking into void
+
+          // --- Upper Engine <-> MedBay corridor (horizontal, y~240) ---
+          w.push({ x: 430, y: 230, w: 90, h: 10 });     // top wall
+          w.push({ x: 430, y: 310, w: 90, h: 10 });     // bottom wall
+
+          // --- MedBay <-> Cafeteria corridor (horizontal, y~200) ---
+          w.push({ x: 880, y: 190, w: 90, h: 10 });     // top wall
+          w.push({ x: 880, y: 270, w: 90, h: 10 });     // bottom wall
+
+          // --- Cafeteria <-> Weapons corridor (horizontal, y~200) ---
+          w.push({ x: 1850, y: 190, w: 200, h: 10 });   // top wall
+          w.push({ x: 1850, y: 270, w: 200, h: 10 });   // bottom wall
+
+          // --- Upper Engine south corridor (vertical, x~414) ---
+          w.push({ x: 404, y: 410, w: 10, h: 170 });    // left wall
+          w.push({ x: 484, y: 410, w: 10, h: 170 });    // right wall
+
+          // --- Left main vertical corridor (x~414, down to Lower Engine area) ---
+          w.push({ x: 404, y: 860, w: 10, h: 350 });    // left wall
+          w.push({ x: 484, y: 860, w: 10, h: 350 });    // right wall
+
+          // --- Corridor -> Lower Engine connector ---
+          w.push({ x: 430, y: 1200, w: 90, h: 10 });    // top wall (into Lower Engine)
+
+          // --- MedBay south exit corridor (vertical, x~580) ---
+          w.push({ x: 570, y: 440, w: 10, h: 120 });    // left wall
+          w.push({ x: 650, y: 440, w: 10, h: 120 });    // right wall
+
+          // --- Left vertical corridor (x~580, connecting to Electrical) ---
+          w.push({ x: 570, y: 860, w: 10, h: 300 });    // left wall
+          w.push({ x: 650, y: 860, w: 10, h: 300 });    // right wall
+
+          // --- Main left corridor (x~660, long vertical) ---
+          w.push({ x: 650, y: 570, w: 10, h: 130 });    // left wall top
+          w.push({ x: 730, y: 570, w: 10, h: 130 });    // right wall top
+          w.push({ x: 650, y: 780, w: 10, h: 60 });     // left wall below horizontal junction
+          w.push({ x: 730, y: 780, w: 10, h: 60 });     // right wall below horizontal junction
+          w.push({ x: 650, y: 900, w: 10, h: 250 });    // left wall lower
+          w.push({ x: 730, y: 900, w: 10, h: 250 });    // right wall lower
+
+          // --- Horizontal corridor (left corridor -> Admin, y~700) ---
+          w.push({ x: 740, y: 690, w: 530, h: 10 });    // top wall
+          w.push({ x: 740, y: 770, w: 530, h: 10 });    // bottom wall
+
+          // --- Cafeteria south-left exit (to Admin corridor) ---
+          w.push({ x: 1240, y: 500, w: 10, h: 160 });   // left wall
+          w.push({ x: 1390, y: 500, w: 10, h: 160 });   // right wall
+
+          // --- Cafeteria south-right exit (right hallway) ---
+          w.push({ x: 1590, y: 500, w: 10, h: 160 });   // left wall
+          w.push({ x: 1670, y: 500, w: 10, h: 160 });   // right wall
+
+          // --- Admin <-> O2 hallway (horizontal, y~700) ---
+          w.push({ x: 1700, y: 690, w: 220, h: 10 });   // top wall
+          w.push({ x: 1700, y: 770, w: 220, h: 10 });   // bottom wall
+
+          // --- O2 <-> Navigation hallway (horizontal, y~650) ---
+          w.push({ x: 2300, y: 640, w: 250, h: 10 });   // top wall
+          w.push({ x: 2300, y: 720, w: 250, h: 10 });   // bottom wall
+
+          // --- Weapons <-> O2 connector (vertical, x~2230) ---
+          w.push({ x: 2220, y: 470, w: 10, h: 110 });   // left wall
+          w.push({ x: 2300, y: 470, w: 10, h: 110 });   // right wall
+
+          // --- Weapons <-> Nav upper connector (vertical, x~2470) ---
+          w.push({ x: 2460, y: 470, w: 10, h: 80 });    // left wall
+          w.push({ x: 2540, y: 470, w: 10, h: 80 });    // right wall
+
+          // --- Admin <-> Storage connector (vertical, x~1280) ---
+          w.push({ x: 1270, y: 950, w: 10, h: 150 });   // left wall
+          w.push({ x: 1350, y: 950, w: 10, h: 150 });   // right wall
+
+          // --- Storage <-> Comms area connector (horizontal, y~1050) ---
+          w.push({ x: 1540, y: 1040, w: 200, h: 10 });  // top wall
+          w.push({ x: 1540, y: 1106, w: 200, h: 10 });  // bottom wall
+
+          // --- Comms <-> Shields connector (horizontal, y~1200) ---
+          w.push({ x: 2100, y: 1190, w: 80, h: 10 });   // top wall
+          w.push({ x: 2100, y: 1270, w: 80, h: 10 });   // bottom wall
+
+          // --- Electrical <-> Storage connector (horizontal, y~1300) ---
+          w.push({ x: 920, y: 1290, w: 100, h: 10 });   // top wall
+          w.push({ x: 920, y: 1370, w: 100, h: 10 });   // bottom wall
 
           // ============ ROOM OBSTACLES (furniture/equipment) ============
 
@@ -517,50 +611,101 @@
           { x: 380, y: 700, w: 16, h: 80 },      // Reactor -> Security connector
         ],
         tasks: [
-          { x: 1500, y: 200, name: 'Swipe Card', room: 'Cafeteria' },
+          // Official Skeld task list per room
+          // Cafeteria
+          { x: 1200, y: 200, name: 'Download Data', room: 'Cafeteria' },
+          { x: 1500, y: 400, name: 'Empty Garbage', room: 'Cafeteria' },
+          { x: 1600, y: 200, name: 'Fix Wiring', room: 'Cafeteria' },
+          // Weapons
           { x: 2350, y: 230, name: 'Clear Asteroids', room: 'Weapons' },
+          { x: 2200, y: 300, name: 'Download Data', room: 'Weapons' },
+          // Navigation
           { x: 2780, y: 740, name: 'Chart Course', room: 'Navigation' },
-          { x: 2100, y: 770, name: 'Clean Filter', room: 'O2' },
-          { x: 1480, y: 830, name: 'Upload Data', room: 'Admin' },
+          { x: 2680, y: 680, name: 'Stabilize Steering', room: 'Navigation' },
+          { x: 2850, y: 800, name: 'Download Data', room: 'Navigation' },
+          { x: 2700, y: 850, name: 'Fix Wiring', room: 'Navigation' },
+          // O2
+          { x: 2100, y: 720, name: 'Clean O2 Filter', room: 'O2' },
+          { x: 2000, y: 820, name: 'Empty Chute', room: 'O2' },
+          // Admin
+          { x: 1480, y: 830, name: 'Swipe Card', room: 'Admin' },
+          { x: 1580, y: 750, name: 'Upload Data', room: 'Admin' },
+          { x: 1420, y: 900, name: 'Fix Wiring', room: 'Admin' },
+          // Shields
           { x: 2380, y: 1350, name: 'Prime Shields', room: 'Shields' },
+          // Communications
+          { x: 1910, y: 1300, name: 'Download Data', room: 'Communications' },
+          // Storage
           { x: 1270, y: 1400, name: 'Empty Garbage', room: 'Storage' },
+          { x: 1150, y: 1300, name: 'Fix Wiring', room: 'Storage' },
+          { x: 1350, y: 1500, name: 'Fuel Engines', room: 'Storage' },
+          // Electrical
           { x: 700, y: 1400, name: 'Calibrate Distributor', room: 'Electrical' },
-          { x: 220, y: 720, name: 'Start Reactor', room: 'Reactor' },
+          { x: 620, y: 1300, name: 'Divert Power', room: 'Electrical' },
+          { x: 800, y: 1350, name: 'Download Data', room: 'Electrical' },
+          { x: 650, y: 1500, name: 'Fix Wiring', room: 'Electrical' },
+          // Reactor
+          { x: 220, y: 650, name: 'Start Reactor', room: 'Reactor' },
+          { x: 220, y: 800, name: 'Unlock Manifolds', room: 'Reactor' },
+          // Security
+          { x: 490, y: 720, name: 'Accept Diverted Power', room: 'Security' },
+          // Upper Engine
+          { x: 280, y: 280, name: 'Align Engine Output', room: 'Upper Engine' },
+          { x: 280, y: 200, name: 'Fuel Engines', room: 'Upper Engine' },
+          // Lower Engine
+          { x: 280, y: 1380, name: 'Align Engine Output', room: 'Lower Engine' },
+          { x: 280, y: 1440, name: 'Fuel Engines', room: 'Lower Engine' },
+          // MedBay
           { x: 690, y: 280, name: 'Submit Scan', room: 'MedBay' },
+          { x: 690, y: 350, name: 'Inspect Sample', room: 'MedBay' },
         ],
         vents: [
-          // Reactor north <-> Upper Engine
-          { x: 160, y: 530, partner: 1 }, { x: 300, y: 340, partner: 0 },
-          // MedBay <-> Electrical
-          { x: 750, y: 360, partner: 3 }, { x: 650, y: 1350, partner: 2 },
-          // Cafeteria <-> Admin
-          { x: 1350, y: 200, partner: 5 }, { x: 1500, y: 900, partner: 4 },
-          // Weapons <-> Navigation
-          { x: 2350, y: 380, partner: 7 }, { x: 2750, y: 850, partner: 6 },
-          // Shields <-> Security
-          { x: 2380, y: 1400, partner: 9 }, { x: 490, y: 780, partner: 8 },
+          // Official Skeld vent network:
+          // Reactor north(0) <-> Upper Engine(1)
+          { x: 160, y: 530, partner: 1 },   // 0: Reactor north
+          { x: 300, y: 340, partner: 0 },   // 1: Upper Engine
+          // Reactor south(2) <-> Lower Engine(3)
+          { x: 160, y: 880, partner: 3 },   // 2: Reactor south
+          { x: 300, y: 1440, partner: 2 },  // 3: Lower Engine
+          // Electrical(4) <-> MedBay(5) <-> Security(6) (3-way)
+          { x: 650, y: 1350, partner: 5 },  // 4: Electrical
+          { x: 750, y: 360, partner: 6 },   // 5: MedBay
+          { x: 490, y: 780, partner: 4 },   // 6: Security
+          // Admin(7) <-> Cafeteria(8) <-> Hallway(9) (3-way)
+          { x: 1500, y: 900, partner: 8 },  // 7: Admin
+          { x: 1350, y: 200, partner: 9 },  // 8: Cafeteria
+          { x: 2100, y: 900, partner: 7 },  // 9: Hallway (between Shields/Nav corridor)
+          // Navigation north(10) <-> Weapons(11)
+          { x: 2750, y: 680, partner: 11 }, // 10: Navigation north
+          { x: 2350, y: 380, partner: 10 }, // 11: Weapons
+          // Navigation south(12) <-> Shields(13)
+          { x: 2750, y: 900, partner: 13 }, // 12: Navigation south
+          { x: 2380, y: 1400, partner: 12 },// 13: Shields
         ],
         doors: [
-          { x: 226, y: 1004, w: 64, h: 16, room: 'Reactor', dir: 'h' },
-          { x: 260, y: 394, w: 70, h: 16, room: 'Upper Engine', dir: 'h' },
-          { x: 260, y: 1210, w: 70, h: 16, room: 'Lower Engine', dir: 'h' },
-          { x: 414, y: 246, w: 16, h: 68, room: 'Upper Engine', dir: 'v' },
-          { x: 414, y: 1310, w: 16, h: 64, room: 'Lower Engine', dir: 'v' },
-          { x: 520, y: 270, w: 16, h: 70, room: 'MedBay', dir: 'v' },
-          { x: 396, y: 680, w: 16, h: 80, room: 'Security', dir: 'v' },
-          { x: 520, y: 1230, w: 16, h: 80, room: 'Electrical', dir: 'v' },
-          { x: 970, y: 246, w: 16, h: 84, room: 'Cafeteria', dir: 'v' },
-          { x: 1834, y: 246, w: 16, h: 84, room: 'Cafeteria', dir: 'v' },
-          { x: 1250, y: 484, w: 150, h: 16, room: 'Cafeteria', dir: 'h' },
-          { x: 1380, y: 780, w: 16, h: 80, room: 'Admin', dir: 'v' },
-          { x: 1020, y: 1280, w: 16, h: 90, room: 'Storage', dir: 'v' },
-          { x: 1524, y: 1280, w: 16, h: 90, room: 'Storage', dir: 'v' },
-          { x: 1220, y: 1100, w: 120, h: 16, room: 'Storage', dir: 'h' },
-          { x: 1920, y: 710, w: 16, h: 80, room: 'O2', dir: 'v' },
-          { x: 2050, y: 226, w: 16, h: 84, room: 'Weapons', dir: 'v' },
-          { x: 2550, y: 700, w: 16, h: 80, room: 'Navigation', dir: 'v' },
-          { x: 1740, y: 1230, w: 16, h: 90, room: 'Communications', dir: 'v' },
-          { x: 2180, y: 1240, w: 16, h: 90, room: 'Shields', dir: 'v' },
+          // Official Skeld door layout:
+          // Cafeteria: 3 doors (left exit to MedBay hall, right exit to Weapons hall, south to Admin)
+          { x: 970, y: 246, w: 16, h: 84, room: 'Cafeteria', dir: 'v' },      // left exit
+          { x: 1834, y: 246, w: 16, h: 84, room: 'Cafeteria', dir: 'v' },     // right exit
+          { x: 1250, y: 484, w: 150, h: 16, room: 'Cafeteria', dir: 'h' },    // south to Admin hall
+          // Upper Engine: 2 doors (east to MedBay hall, south to reactor corridor)
+          { x: 414, y: 246, w: 16, h: 68, room: 'Upper Engine', dir: 'v' },    // east exit
+          { x: 260, y: 394, w: 70, h: 16, room: 'Upper Engine', dir: 'h' },    // south exit
+          // Lower Engine: 2 doors (east to Electrical hall, north to reactor corridor)
+          { x: 414, y: 1310, w: 16, h: 64, room: 'Lower Engine', dir: 'v' },   // east exit
+          { x: 260, y: 1210, w: 70, h: 16, room: 'Lower Engine', dir: 'h' },   // north exit
+          // MedBay: 1 door (south exit to corridor)
+          { x: 520, y: 270, w: 16, h: 70, room: 'MedBay', dir: 'v' },          // south/east exit
+          // Security: 1 door (east exit to corridor)
+          { x: 396, y: 680, w: 16, h: 80, room: 'Security', dir: 'v' },        // east exit
+          // Electrical: 1 door (north exit to corridor)
+          { x: 520, y: 1230, w: 16, h: 80, room: 'Electrical', dir: 'v' },     // north exit
+          // Storage: 3 doors (left to Electrical hall, right to Comms hall, top to Admin hall)
+          { x: 1020, y: 1280, w: 16, h: 90, room: 'Storage', dir: 'v' },       // left exit
+          { x: 1524, y: 1280, w: 16, h: 90, room: 'Storage', dir: 'v' },       // right exit
+          { x: 1220, y: 1100, w: 120, h: 16, room: 'Storage', dir: 'h' },      // top exit
+          // Navigation: 1 door (west exit)
+          { x: 2550, y: 700, w: 16, h: 80, room: 'Navigation', dir: 'v' },     // west exit
         ],
         waypoints: [
           { x: 280, y: 250, room: 'Upper Engine' },  // 0
@@ -590,6 +735,42 @@
           [9,17],[9,12],[17,10],[10,16],[10,18],[10,20],[18,11],[11,12],[11,13],
           [11,19],[12,19],[13,19],[20,8],[14,15],[14,20],[8,14],
         ],
+        // Official 4 CCTV camera locations in hallways
+        cameras: [
+          { x: 480, y: 400, name: 'NW Hallway' },      // Northwestern hallway (near Upper Engine/MedBay)
+          { x: 660, y: 700, name: 'W Hallway' },        // Western hallway (near Security)
+          { x: 1280, y: 550, name: 'Central Hallway' }, // Central hallway (Cafeteria south exit)
+          { x: 2100, y: 500, name: 'E Hallway' },       // Eastern hallway (near Weapons/O2)
+        ],
+        // Exterior ship features for visual rendering
+        exteriorFeatures: {
+          // Two red energy cannons mounted top-right (Weapons room)
+          cannons: [
+            { x: 2500, y: 30, angle: -0.3 },
+            { x: 2550, y: 20, angle: -0.2 },
+          ],
+          // Two shield generators bottom-right (Shields room)
+          shieldDomes: [
+            { x: 2450, y: 1580 },
+            { x: 2550, y: 1580 },
+          ],
+          // Communication antennas near Comms
+          antennas: [
+            { x: 1900, y: 1620 },
+            { x: 1950, y: 1640 },
+            { x: 2000, y: 1620 },
+          ],
+          // Five thrusters at the rear (behind engines)
+          thrusters: [
+            { x: 40, y: 220 }, { x: 40, y: 280 }, // Upper engine thrusters
+            { x: 40, y: 700 },                      // Center thruster
+            { x: 40, y: 1320 }, { x: 40, y: 1380 }, // Lower engine thrusters
+          ],
+          // Garbage disposal chute (Storage)
+          garbageChute: { x: 1100, y: 1640 },
+          // Dropship bay
+          dropshipBay: { x: 1400, y: 1640 },
+        },
       },
       // ========== MIRA HQ ==========
       // Real layout: Y-shaped sky HQ, Launchpad far-left, long hallway to Y-junction
@@ -1468,7 +1649,10 @@
 
     // Active map data (loaded from selected map)
     let selectedMap = 'skeld';
-    let MAP_W, MAP_H, walls, rooms, taskLocations, vents, EMERGENCY_BTN;
+    let MAP_W, MAP_H, walls, rooms, taskLocations, vents, EMERGENCY_BTN, cameras = [], exteriorFeatures = null;
+    let viewingCameras = false;
+    // Security monitor location (where player stands to use cameras)
+    const SECURITY_MONITOR = { x: 490, y: 700 };
     let mapTheme = {};
     let doors = [];
     let waypoints = [];
@@ -1492,6 +1676,10 @@
       mapTheme = { bg: m.bgColor, wall: m.wallColor, floor: m.floorColor, grid: m.gridColor, floors: m.floors, sabFix: m.sabotageFixLocations };
       // Load doors
       doors = (m.doors || []).map(d => ({ ...d, closed: false, timer: 0 }));
+      // Load cameras
+      cameras = m.cameras || [];
+      // Load exterior features
+      exteriorFeatures = m.exteriorFeatures || null;
       // Load waypoints and build adjacency list
       waypoints = m.waypoints || [];
       waypointEdges = m.waypointEdges || [];
@@ -2313,15 +2501,27 @@
         sabotage.timer = 0; // lights stay off until fixed
         sabotage.maxTime = 0;
         visionRadius = VISION_LIGHTS_OUT;
-        document.getElementById('sabotageHUD').textContent = 'LIGHTS SABOTAGED';
+        document.getElementById('sabotageHUD').textContent = 'FIX LIGHTS - Vision reduced!';
         document.getElementById('sabotageHUD').style.display = 'block';
         document.getElementById('sabotageBar').style.display = 'none';
       } else if (type === 'o2') {
         sabotage.timer = 1800; // 30 seconds to fix
         sabotage.maxTime = 1800;
-        document.getElementById('sabotageHUD').textContent = 'O2 DEPLETING';
+        document.getElementById('sabotageHUD').textContent = 'OXYGEN DEPLETED';
         document.getElementById('sabotageHUD').style.display = 'block';
         document.getElementById('sabotageBar').style.display = 'block';
+      } else if (type === 'reactor') {
+        sabotage.timer = 1800; // 30 seconds to fix (requires 2 hand readers)
+        sabotage.maxTime = 1800;
+        document.getElementById('sabotageHUD').textContent = 'REACTOR MELTDOWN';
+        document.getElementById('sabotageHUD').style.display = 'block';
+        document.getElementById('sabotageBar').style.display = 'block';
+      } else if (type === 'comms') {
+        sabotage.timer = 0; // stays until fixed (non-critical)
+        sabotage.maxTime = 0;
+        document.getElementById('sabotageHUD').textContent = 'COMMS SABOTAGED - Cameras disabled!';
+        document.getElementById('sabotageHUD').style.display = 'block';
+        document.getElementById('sabotageBar').style.display = 'none';
       }
       document.getElementById('sabotageControls').style.display = 'none';
     }
@@ -2335,13 +2535,22 @@
         sabotage.timer--;
         const pct = (sabotage.timer / sabotage.maxTime) * 100;
         document.getElementById('sabotageFill').style.width = pct + '%';
-        document.getElementById('sabotageHUD').textContent = 'O2 DEPLETING - ' + Math.ceil(sabotage.timer / 60) + 's';
+        document.getElementById('sabotageHUD').textContent = 'OXYGEN DEPLETED - ' + Math.ceil(sabotage.timer / 60) + 's';
         if (sabotage.timer <= 0) {
-          // Crew failed to fix O2 - impostor wins
+          endGame(true);
+          return;
+        }
+      } else if (sabotage.type === 'reactor') {
+        sabotage.timer--;
+        const pct = (sabotage.timer / sabotage.maxTime) * 100;
+        document.getElementById('sabotageFill').style.width = pct + '%';
+        document.getElementById('sabotageHUD').textContent = 'REACTOR MELTDOWN - ' + Math.ceil(sabotage.timer / 60) + 's';
+        if (sabotage.timer <= 0) {
           endGame(true);
           return;
         }
       }
+      // Comms and lights have no timer - they stay until fixed
     }
 
     function fixSabotage() {
@@ -2512,6 +2721,17 @@
         }
       }
 
+      // Security camera monitor
+      if (selectedMap === 'skeld' && cameras.length > 0 && dist(player, SECURITY_MONITOR) < 70) {
+        if (sabotage.active && sabotage.type === 'comms') {
+          hint.textContent = 'Cameras disabled (Comms Sabotaged)';
+          hint.style.display = 'block';
+        } else {
+          hint.textContent = viewingCameras ? 'Press E - Stop viewing cameras' : 'Press E - View Security Cameras';
+          hint.style.display = 'block';
+        }
+      }
+
       // Emergency meeting button
       if (dist(player, EMERGENCY_BTN) < 60 && emergencyCooldown <= 0 && !sabotage.active) {
         ventHint.textContent = 'Press E near button - Emergency Meeting';
@@ -2570,6 +2790,13 @@
 
     function doTask() {
       if (playerDoingTask) return;
+      // Security camera monitor toggle
+      if (selectedMap === 'skeld' && cameras.length > 0 && dist(player, SECURITY_MONITOR) < 70) {
+        if (!sabotage.active || sabotage.type !== 'comms') {
+          viewingCameras = !viewingCameras;
+          return;
+        }
+      }
       // Emergency meeting button in cafeteria
       if (dist(player, EMERGENCY_BTN) < 60 && emergencyCooldown <= 0 && !sabotage.active) {
         callEmergency();
@@ -2830,11 +3057,23 @@
 
     // ====== TEXTURE & DECORATION SYSTEM ======
     const roomFloorColors = {
-      'Cafeteria':'#352c24','Weapons':'#252835','Navigation':'#1e2838',
-      'O2':'#1e3028','Admin':'#352c24','Shields':'#1e2545',
-      'Communications':'#282830','Storage':'#302a22','Electrical':'#353015',
-      'Lower Engine':'#252530','Reactor':'#351e1e','Security':'#222830',
-      'Upper Engine':'#252530','MedBay':'#1e3535',
+      // Color-coded per official Skeld map image:
+      // Beige/tan = Cafeteria, Purple = Reactor, Blue = MedBay
+      // Green = O2/Security, Red/dark red = Admin, Gray = Storage/Engineering
+      'Cafeteria':'#3a3228',    // beige/tan tiled
+      'Weapons':'#2a2535',      // dark blue-gray
+      'Navigation':'#1e2838',   // dark navy (cockpit)
+      'O2':'#1e3525',           // green-tinted (plants/life support)
+      'Admin':'#3a2222',        // reddish (command)
+      'Shields':'#1e2548',      // blue-purple (energy)
+      'Communications':'#1e3038', // teal
+      'Storage':'#2a2a22',      // gray-green (cargo)
+      'Electrical':'#2a2a18',   // dark industrial yellow-gray
+      'Lower Engine':'#282530', // gray-purple (machinery)
+      'Reactor':'#2a1830',      // purple (radiation)
+      'Security':'#1e2e22',     // greenish (monitoring)
+      'Upper Engine':'#282530', // gray-purple (machinery)
+      'MedBay':'#1e2e3a',      // sterile blue
       'Launchpad':'#282830','Office':'#2a2a38','Greenhouse':'#1e3520',
       'Locker Room':'#2a2a2a','Laboratory':'#2a2a40','Balcony':'#252a35',
       'Decontamination':'#252030','Dropship':'#282830',
@@ -3217,103 +3456,561 @@
       const cx = x + w / 2, cy = y + h / 2;
       switch (name) {
         case 'Cafeteria': {
-          ctx.fillStyle = '#5a4a3a';
-          const tbl = [[0.25,0.4],[0.5,0.6],[0.75,0.4]];
-          for (const [tx,ty] of tbl) {
-            ctx.beginPath(); ctx.arc(x+w*tx, y+h*ty, Math.min(w,h)*0.07, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = '#4a3a2a';
-            for (let a = 0; a < 4; a++) {
-              const ang = a*Math.PI/2, r = Math.min(w,h)*0.1;
-              ctx.fillRect(x+w*tx+Math.cos(ang)*r-3, y+h*ty+Math.sin(ang)*r-3, 6, 6);
+          // Diamond tile floor pattern (beige)
+          ctx.strokeStyle = 'rgba(200,180,140,0.08)'; ctx.lineWidth = 0.5;
+          for (let tx = 0; tx < w; tx += 30) {
+            for (let ty = 0; ty < h; ty += 30) {
+              ctx.save(); ctx.translate(x+tx+15, y+ty+15); ctx.rotate(Math.PI/4);
+              ctx.strokeRect(-12, -12, 24, 24); ctx.restore();
             }
-            ctx.fillStyle = '#5a4a3a';
           }
+          // 5 large round BLUE tables with center console panels
+          const tbl = [[0.15,0.38],[0.42,0.22],[0.7,0.38],[0.28,0.68],[0.58,0.68]];
+          for (const [tx,ty] of tbl) {
+            const tbx = x+w*tx, tby = y+h*ty, tr = Math.min(w,h)*0.075;
+            // Table shadow
+            ctx.fillStyle = 'rgba(0,0,0,0.2)';
+            ctx.beginPath(); ctx.arc(tbx+2, tby+3, tr+1, 0, Math.PI*2); ctx.fill();
+            // Blue table surface
+            ctx.fillStyle = '#2a4a6a';
+            ctx.beginPath(); ctx.arc(tbx, tby, tr, 0, Math.PI*2); ctx.fill();
+            // Table rim
+            ctx.strokeStyle = '#3a6a9a'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(tbx, tby, tr, 0, Math.PI*2); ctx.stroke();
+            // Center console/panel on each table
+            ctx.fillStyle = '#1a3a5a';
+            ctx.beginPath(); ctx.arc(tbx, tby, tr*0.3, 0, Math.PI*2); ctx.fill();
+            // Small light on center panel
+            ctx.fillStyle = 'rgba(100,200,255,0.3)';
+            ctx.beginPath(); ctx.arc(tbx, tby, 2, 0, Math.PI*2); ctx.fill();
+            // 6 chairs around table (small squares)
+            ctx.fillStyle = '#3a4a5a';
+            for (let a = 0; a < 6; a++) {
+              const ang = a*Math.PI/3, cr = tr + 12;
+              ctx.fillRect(tbx+Math.cos(ang)*cr-4, tby+Math.sin(ang)*cr-4, 8, 8);
+            }
+          }
+          // Emergency button pedestal (center, slightly larger table area)
+          ctx.fillStyle = '#3a2525';
+          ctx.beginPath(); ctx.arc(cx, cy, 14, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#5a3535'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.arc(cx, cy, 14, 0, Math.PI*2); ctx.stroke();
           break;
         }
         case 'Electrical': {
-          ctx.strokeStyle = '#ff8844'; ctx.lineWidth = 2;
-          for (let i = 0; i < 4; i++) {
-            const yy = y + h*0.2 + i*h*0.17;
-            ctx.beginPath(); ctx.moveTo(x+15, yy); ctx.lineTo(x+w*0.3, yy);
-            ctx.lineTo(x+w*0.3, yy+h*0.08); ctx.lineTo(x+w*0.55, yy+h*0.08); ctx.stroke();
+          // Dark industrial room - messy wiring everywhere
+          // Yellow hazard cables running across the floor
+          const wireColors = ['#dd8822','#cc3333','#33cc33','#3388dd','#cccc22'];
+          for (let i = 0; i < 8; i++) {
+            ctx.strokeStyle = wireColors[i % wireColors.length]; ctx.lineWidth = 1.8;
+            const yy = y + h*0.08 + i*h*0.11;
+            ctx.beginPath(); ctx.moveTo(x+5, yy);
+            ctx.bezierCurveTo(x+w*0.2, yy+10*(i%2?1:-1), x+w*0.4, yy-8*(i%3?1:-1), x+w*0.55, yy+h*0.04);
+            ctx.bezierCurveTo(x+w*0.65, yy+h*0.06, x+w*0.7, yy-4, x+w*0.68, yy+h*0.02);
+            ctx.stroke();
           }
-          ctx.fillStyle = '#444'; ctx.fillRect(x+w*0.7, y+h*0.15, w*0.2, h*0.65);
-          ctx.fillStyle = '#666';
-          for (let r = 0; r < 4; r++) ctx.fillRect(x+w*0.73, y+h*0.2+r*h*0.14, w*0.14, h*0.07);
+          // Yellow hazard tape on floor
+          ctx.fillStyle = 'rgba(200,180,0,0.06)';
+          ctx.fillRect(x+w*0.3, y, w*0.05, h);
+          ctx.fillRect(x, y+h*0.5, w, h*0.04);
+          // Large electrical panel on right wall (Fix Lights breaker box)
+          ctx.fillStyle = '#333'; ctx.fillRect(x+w*0.68, y+8, w*0.28, h-16);
+          ctx.strokeStyle = '#4a4a4a'; ctx.lineWidth = 1.5;
+          ctx.strokeRect(x+w*0.68, y+8, w*0.28, h-16);
+          // Rows of switches/breakers on the panel
+          for (let r = 0; r < 6; r++) {
+            for (let c = 0; c < 2; c++) {
+              const sx = x+w*0.72+c*w*0.12, sy = y+18+r*(h-40)/6;
+              ctx.fillStyle = r%2===0 ? '#5a5a5a' : '#4a4a4a';
+              ctx.fillRect(sx, sy, w*0.08, (h-40)/7);
+              // Switch toggle
+              ctx.fillStyle = r%3===0 ? '#44aa44' : '#aa4444';
+              ctx.fillRect(sx+w*0.025, sy+2, w*0.03, 6);
+            }
+          }
+          // Left equipment racks
+          ctx.fillStyle = '#2a2a2a'; ctx.fillRect(x+5, y+h*0.1, w*0.15, h*0.35);
+          ctx.fillRect(x+5, y+h*0.55, w*0.15, h*0.35);
+          // Rack panel details
+          ctx.fillStyle = '#3a3a3a';
+          for (let r = 0; r < 3; r++) {
+            ctx.fillRect(x+8, y+h*0.14+r*h*0.1, w*0.12, h*0.06);
+            ctx.fillRect(x+8, y+h*0.58+r*h*0.1, w*0.12, h*0.06);
+          }
+          // Warning sign
+          ctx.fillStyle = 'rgba(200,200,0,0.15)';
+          ctx.fillRect(x+w*0.38, y+5, 30, 15);
+          ctx.fillStyle = 'rgba(0,0,0,0.15)';
+          ctx.font = '8px Arial'; ctx.textAlign = 'center';
+          ctx.fillText('⚡', x+w*0.38+15, y+15);
           break;
         }
         case 'MedBay': {
-          ctx.fillStyle = '#2a5555'; ctx.fillRect(cx-25, cy-35, 50, 70);
-          ctx.strokeStyle = '#44aaaa'; ctx.lineWidth = 2; ctx.strokeRect(cx-25, cy-35, 50, 70);
-          ctx.fillStyle = '#44ffff'; ctx.globalAlpha = 0.4; ctx.fillRect(cx-20, cy-5, 40, 2);
+          // Sterile blue/white color palette room
+          // Medical scanner platform in center (circular device)
+          ctx.strokeStyle = '#44bbcc'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.arc(cx, cy, 28, 0, Math.PI*2); ctx.stroke();
+          // Scanner inner ring
+          ctx.strokeStyle = '#66ddee'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(cx, cy, 18, 0, Math.PI*2); ctx.stroke();
+          // Scanner platform fill
+          ctx.fillStyle = 'rgba(68,187,204,0.12)';
+          ctx.beginPath(); ctx.arc(cx, cy, 28, 0, Math.PI*2); ctx.fill();
+          // Scanning beam effect (vertical line)
+          ctx.fillStyle = 'rgba(100,255,255,0.15)';
+          ctx.fillRect(cx-1.5, cy-28, 3, 56);
+          // Two hospital beds with blue sheets (along top wall)
+          for (let b = 0; b < 2; b++) {
+            const bx = x + w*0.15 + b*w*0.45, by = y + 12;
+            // Bed frame
+            ctx.fillStyle = '#e0e8f0'; ctx.globalAlpha = 0.3;
+            ctx.fillRect(bx, by, w*0.28, h*0.22);
+            ctx.globalAlpha = 0.25;
+            // Blue sheet/mattress
+            ctx.fillStyle = '#4a7aaa';
+            ctx.fillRect(bx+3, by+3, w*0.28-6, h*0.22-6);
+            // Pillow
+            ctx.fillStyle = '#8ab0d0';
+            ctx.fillRect(bx+3, by+3, w*0.06, h*0.22-6);
+          }
+          // Wall cabinets (bottom wall)
+          ctx.fillStyle = '#3a5a6a';
+          ctx.fillRect(x+10, y+h-25, w*0.3, 15);
+          ctx.fillRect(x+w*0.4, y+h-25, w*0.3, 15);
+          // Cabinet doors
+          ctx.strokeStyle = '#4a6a7a'; ctx.lineWidth = 0.5;
+          ctx.strokeRect(x+10, y+h-25, w*0.15, 15);
+          ctx.strokeRect(x+10+w*0.15, y+h-25, w*0.15, 15);
+          // Medical equipment on side
+          ctx.fillStyle = '#5a7a8a';
+          ctx.fillRect(x+w-25, y+h*0.3, 15, 40);
+          // IV stand
+          ctx.strokeStyle = '#888'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(x+w-18, y+h*0.3); ctx.lineTo(x+w-18, y+h*0.15); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x+w-24, y+h*0.15); ctx.lineTo(x+w-12, y+h*0.15); ctx.stroke();
           break;
         }
         case 'Reactor': {
-          ctx.strokeStyle = '#ff4444'; ctx.lineWidth = 3;
-          ctx.beginPath(); ctx.arc(cx, cy, Math.min(w,h)*0.2, 0, Math.PI*2); ctx.stroke();
-          ctx.beginPath(); ctx.arc(cx, cy, Math.min(w,h)*0.1, 0, Math.PI*2); ctx.stroke();
-          ctx.strokeStyle = '#666'; ctx.lineWidth = 4;
-          ctx.beginPath(); ctx.moveTo(cx, cy-Math.min(w,h)*0.2); ctx.lineTo(cx, y+10); ctx.stroke();
-          ctx.beginPath(); ctx.moveTo(cx, cy+Math.min(w,h)*0.2); ctx.lineTo(cx, y+h-10); ctx.stroke();
+          const rr = Math.min(w,h)*0.16;
+          // Purple ambient glow for the whole room
+          const purpleAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.5);
+          purpleAmb.addColorStop(0, 'rgba(120,40,180,0.12)');
+          purpleAmb.addColorStop(1, 'rgba(80,20,120,0)');
+          ctx.fillStyle = purpleAmb;
+          ctx.fillRect(x, y, w, h);
+          // Large cylindrical reactor core - outer containment ring
+          ctx.strokeStyle = '#6a4aaa'; ctx.lineWidth = 4;
+          ctx.beginPath(); ctx.arc(cx, cy, rr, 0, Math.PI*2); ctx.stroke();
+          // Inner energy ring
+          ctx.strokeStyle = '#5ae0ff'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(cx, cy, rr*0.55, 0, Math.PI*2); ctx.stroke();
+          // Core center - bright cyan/blue glow
+          const coreGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, rr*0.5);
+          coreGlow.addColorStop(0, 'rgba(90,224,255,0.4)');
+          coreGlow.addColorStop(0.5, 'rgba(90,180,255,0.15)');
+          coreGlow.addColorStop(1, 'rgba(80,40,180,0)');
+          ctx.fillStyle = coreGlow;
+          ctx.beginPath(); ctx.arc(cx, cy, rr*0.5, 0, Math.PI*2); ctx.fill();
+          // Bright core center dot
+          ctx.fillStyle = 'rgba(200,240,255,0.5)';
+          ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI*2); ctx.fill();
+          // Tall vertical plasma rods/energy tubes connecting to hull
+          ctx.strokeStyle = '#5ae0ff'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.moveTo(cx, cy-rr); ctx.lineTo(cx, y+8); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx, cy+rr); ctx.lineTo(cx, y+h-8); ctx.stroke();
+          // Side plasma conduits
+          ctx.strokeStyle = 'rgba(90,180,255,0.3)'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(cx-rr, cy); ctx.lineTo(x+8, cy); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx+rr, cy); ctx.lineTo(x+w-8, cy); ctx.stroke();
+          // Metallic cables from core to corners
+          ctx.strokeStyle = '#555'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(cx-rr*0.7, cy-rr*0.7); ctx.lineTo(x+20, y+20); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx+rr*0.7, cy-rr*0.7); ctx.lineTo(x+w-20, y+20); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx-rr*0.7, cy+rr*0.7); ctx.lineTo(x+20, y+h-20); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx+rr*0.7, cy+rr*0.7); ctx.lineTo(x+w-20, y+h-20); ctx.stroke();
+          // Metallic support pillars at corners
+          ctx.fillStyle = '#4a4a5a';
+          ctx.fillRect(x+12, y+12, 20, 20);
+          ctx.fillRect(x+w-32, y+12, 20, 20);
+          ctx.fillRect(x+12, y+h-32, 20, 20);
+          ctx.fillRect(x+w-32, y+h-32, 20, 20);
+          // Hand reader panels for meltdown fix (left and right walls)
+          ctx.fillStyle = '#2a2a4a';
+          ctx.fillRect(x+8, cy-18, 28, 36);
+          ctx.fillRect(x+w-36, cy-18, 28, 36);
+          // Hand print outlines
+          ctx.strokeStyle = '#6a6aaa'; ctx.lineWidth = 1;
+          ctx.strokeRect(x+12, cy-14, 20, 28);
+          ctx.strokeRect(x+w-32, cy-14, 20, 28);
+          // Small indicator lights on readers
+          ctx.fillStyle = 'rgba(90,224,255,0.4)';
+          ctx.beginPath(); ctx.arc(x+22, cy-18, 3, 0, Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.arc(x+w-22, cy-18, 3, 0, Math.PI*2); ctx.fill();
           break;
         }
         case 'Navigation': {
-          ctx.fillStyle = '#334'; ctx.fillRect(cx-40, cy-20, 80, 40);
-          ctx.strokeStyle = '#558'; ctx.lineWidth = 2; ctx.strokeRect(cx-40, cy-20, 80, 40);
-          ctx.fillStyle = '#114'; ctx.fillRect(cx-30, cy-45, 60, 22);
-          ctx.fillStyle = '#3366aa'; ctx.fillRect(cx-28, cy-43, 56, 18);
+          // Cockpit/helm area - large viewing window showing space
+          ctx.fillStyle = '#050818';
+          ctx.fillRect(x+w*0.55, y+8, w*0.42, h-16);
+          ctx.strokeStyle = '#2a2a45'; ctx.lineWidth = 2;
+          ctx.strokeRect(x+w*0.55, y+8, w*0.42, h-16);
+          // Window frame dividers
+          ctx.strokeStyle = '#3a3a50'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(x+w*0.7, y+8); ctx.lineTo(x+w*0.7, y+h-8); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x+w*0.85, y+8); ctx.lineTo(x+w*0.85, y+h-8); ctx.stroke();
+          // Stars visible through window
+          ctx.fillStyle = 'rgba(255,255,255,0.35)';
+          for (let s = 0; s < 15; s++) {
+            const sx = x+w*0.58+(s*71)%(w*0.37), sy = y+12+(s*43)%(h-28);
+            const sz = s%3===0 ? 2 : 1;
+            ctx.fillRect(sx, sy, sz, sz);
+          }
+          // A distant planet/star
+          ctx.fillStyle = 'rgba(200,150,100,0.15)';
+          ctx.beginPath(); ctx.arc(x+w*0.78, y+h*0.35, 12, 0, Math.PI*2); ctx.fill();
+          // Two navigation consoles (side by side)
+          ctx.fillStyle = '#2a2a3a';
+          ctx.fillRect(x+w*0.1, cy-28, w*0.18, 56); // left console
+          ctx.fillRect(x+w*0.32, cy-28, w*0.18, 56); // right console
+          // Console screens
+          ctx.fillStyle = '#0a1525';
+          ctx.fillRect(x+w*0.12, cy-22, w*0.14, 22); // left screen (star map)
+          ctx.fillRect(x+w*0.34, cy-22, w*0.14, 22); // right screen (systems)
+          // Star map display on left screen
+          ctx.strokeStyle = 'rgba(100,150,255,0.3)'; ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(x+w*0.15, cy-15); ctx.lineTo(x+w*0.2, cy-8);
+          ctx.lineTo(x+w*0.18, cy-3); ctx.lineTo(x+w*0.22, cy-12);
+          ctx.stroke();
+          ctx.fillStyle = 'rgba(100,200,255,0.3)';
+          for (let d = 0; d < 5; d++) ctx.fillRect(x+w*0.14+d*w*0.025, cy-18+d*3, 2, 2);
+          // Control buttons on right console
+          ctx.fillStyle = 'rgba(200,100,100,0.2)'; ctx.fillRect(x+w*0.36, cy+5, 8, 8);
+          ctx.fillStyle = 'rgba(100,200,100,0.2)'; ctx.fillRect(x+w*0.4, cy+5, 8, 8);
+          ctx.fillStyle = 'rgba(100,100,200,0.2)'; ctx.fillRect(x+w*0.44, cy+5, 8, 8);
+          // Pilot chair (centered between consoles)
+          ctx.fillStyle = '#333';
+          ctx.fillRect(x+w*0.22, cy+25, 16, 20);
+          ctx.fillRect(x+w*0.2, cy+30, 20, 8);
           break;
         }
         case 'Weapons': {
-          ctx.fillStyle = '#334'; ctx.beginPath(); ctx.arc(cx, cy, 25, 0, Math.PI*2); ctx.fill();
-          ctx.strokeStyle = '#558'; ctx.lineWidth = 2;
-          ctx.beginPath(); ctx.arc(cx, cy, 25, 0, Math.PI*2); ctx.stroke();
+          // Viewport/window showing space (top right, cannon faces outward)
+          ctx.fillStyle = '#050818';
+          ctx.fillRect(x+w*0.45, y+5, w*0.5, h*0.35);
+          ctx.strokeStyle = '#2a2a40'; ctx.lineWidth = 1.5;
+          ctx.strokeRect(x+w*0.45, y+5, w*0.5, h*0.35);
+          // Stars through viewport
+          ctx.fillStyle = 'rgba(255,255,255,0.3)';
+          for (let s = 0; s < 10; s++) {
+            ctx.fillRect(x+w*0.5+s*w*0.04, y+10+s*7%Math.floor(h*0.3), 1.5, 1.5);
+          }
+          // Large turret-like cannon mounted in center
+          ctx.fillStyle = '#3a3040';
+          ctx.beginPath(); ctx.arc(cx, cy+h*0.1, 24, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#5a5068'; ctx.lineWidth = 2.5;
+          ctx.beginPath(); ctx.arc(cx, cy+h*0.1, 24, 0, Math.PI*2); ctx.stroke();
+          // Cannon barrel pointing toward viewport
+          ctx.fillStyle = '#4a4050';
+          ctx.fillRect(cx-6, y+h*0.15, 12, -(h*0.15-8));
+          // Targeting reticle on turret
           ctx.strokeStyle = '#ff4444'; ctx.lineWidth = 1;
-          ctx.beginPath(); ctx.moveTo(cx-15, cy); ctx.lineTo(cx+15, cy); ctx.stroke();
-          ctx.beginPath(); ctx.moveTo(cx, cy-15); ctx.lineTo(cx, cy+15); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx-16, cy+h*0.1); ctx.lineTo(cx+16, cy+h*0.1); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx, cy+h*0.1-16); ctx.lineTo(cx, cy+h*0.1+16); ctx.stroke();
+          ctx.beginPath(); ctx.arc(cx, cy+h*0.1, 12, 0, Math.PI*2); ctx.stroke();
+          // Controller grips (left and right of turret)
+          ctx.fillStyle = '#3a3a44';
+          ctx.fillRect(cx-35, cy+h*0.05, 12, 18);
+          ctx.fillRect(cx+23, cy+h*0.05, 12, 18);
+          // Ammo/targeting systems on left wall
+          ctx.fillStyle = '#2a2a35';
+          ctx.fillRect(x+5, y+h*0.3, w*0.18, h*0.5);
+          ctx.fillStyle = '#3a3a45';
+          for (let r = 0; r < 3; r++) ctx.fillRect(x+8, y+h*0.35+r*h*0.15, w*0.14, h*0.08);
           break;
         }
         case 'Admin': {
-          ctx.fillStyle = '#3a3020'; ctx.fillRect(cx-50, cy-25, 100, 50);
-          ctx.strokeStyle = '#5a5040'; ctx.lineWidth = 1; ctx.strokeRect(cx-50, cy-25, 100, 50);
-          ctx.strokeStyle = '#4a4030';
-          for (let gx = -40; gx <= 40; gx += 20) { ctx.beginPath(); ctx.moveTo(cx+gx, cy-20); ctx.lineTo(cx+gx, cy+20); ctx.stroke(); }
-          for (let gy = -15; gy <= 15; gy += 15) { ctx.beginPath(); ctx.moveTo(cx-45, cy+gy); ctx.lineTo(cx+45, cy+gy); ctx.stroke(); }
+          // Reddish command room
+          // Large rectangular table with glowing green map display (center)
+          ctx.fillStyle = '#3a2828';
+          ctx.fillRect(cx-60, cy-30, 120, 60);
+          ctx.strokeStyle = '#5a3838'; ctx.lineWidth = 1.5;
+          ctx.strokeRect(cx-60, cy-30, 120, 60);
+          // Glowing green map display on the table
+          ctx.fillStyle = '#0a2a0a';
+          ctx.fillRect(cx-50, cy-22, 100, 44);
+          // Ship outline on map
+          ctx.strokeStyle = '#2a8a2a'; ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(cx-40, cy); ctx.lineTo(cx-35, cy-12); ctx.lineTo(cx+25, cy-12);
+          ctx.lineTo(cx+40, cy); ctx.lineTo(cx+25, cy+12); ctx.lineTo(cx-35, cy+12);
+          ctx.closePath(); ctx.stroke();
+          // Glowing dots on map (player positions)
+          ctx.fillStyle = 'rgba(100,255,100,0.5)';
+          const dots = [[-25,-6],[8,3],[-10,10],[20,-5],[0,-12],[-18,8],[30,2]];
+          for (const [dx,dy] of dots) {
+            ctx.beginPath(); ctx.arc(cx+dx, cy+dy, 2.5, 0, Math.PI*2); ctx.fill();
+          }
+          // Map glow effect
+          const mapGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 55);
+          mapGlow.addColorStop(0, 'rgba(40,180,40,0.08)');
+          mapGlow.addColorStop(1, 'rgba(20,80,20,0)');
+          ctx.fillStyle = mapGlow;
+          ctx.fillRect(cx-55, cy-27, 110, 54);
+          // Three red chairs along top wall
+          ctx.fillStyle = '#6a2a2a';
+          for (let c = 0; c < 3; c++) {
+            ctx.fillRect(x+w*0.2+c*w*0.25, y+8, 18, 18);
+          }
+          // Computers/consoles around the room
+          ctx.fillStyle = '#2a2a3a';
+          ctx.fillRect(x+8, cy-18, 22, 36);
+          ctx.fillRect(x+w-30, cy-18, 22, 36);
+          // Screen glow on side consoles
+          ctx.fillStyle = 'rgba(100,150,255,0.15)';
+          ctx.fillRect(x+10, cy-14, 16, 12);
+          ctx.fillRect(x+w-28, cy-14, 16, 12);
+          // Card swipe station (bottom right area)
+          ctx.fillStyle = '#3a3a4a';
+          ctx.fillRect(x+w*0.65, y+h-30, 45, 22);
+          ctx.fillStyle = '#2a5a2a';
+          ctx.fillRect(x+w*0.67, y+h-24, 35, 5);
           break;
         }
         case 'Security': {
-          ctx.fillStyle = '#222'; ctx.fillRect(cx-35, cy-30, 70, 50);
-          ctx.fillStyle = '#1a2a1a';
-          ctx.fillRect(cx-32, cy-26, 28, 18); ctx.fillRect(cx+2, cy-26, 28, 18);
-          ctx.fillRect(cx-32, cy-2, 28, 18); ctx.fillRect(cx+2, cy-2, 28, 18);
+          // Green-tinted monitoring room
+          // Desk against the far wall
+          ctx.fillStyle = '#2a3a2a'; ctx.fillRect(x+10, y+10, w-20, h*0.35);
+          ctx.strokeStyle = '#3a4a3a'; ctx.lineWidth = 1; ctx.strokeRect(x+10, y+10, w-20, h*0.35);
+          // Wall of surveillance screens (4 monitors in a row)
+          const monW = (w-40)/4;
+          for (let m = 0; m < 4; m++) {
+            const mx = x + 16 + m*(monW+4), my = y + 14;
+            ctx.fillStyle = '#0a1a0a';
+            ctx.fillRect(mx, my, monW-2, h*0.25);
+            ctx.strokeStyle = '#2a3a2a'; ctx.lineWidth = 0.5;
+            ctx.strokeRect(mx, my, monW-2, h*0.25);
+            // Green-tinted camera feed scanlines
+            ctx.fillStyle = 'rgba(80,200,80,0.06)';
+            for (let sl = 0; sl < h*0.25; sl += 3) ctx.fillRect(mx+1, my+sl, monW-4, 1);
+            // Tiny camera view (static noise dots)
+            ctx.fillStyle = 'rgba(80,200,80,0.15)';
+            for (let d = 0; d < 6; d++) {
+              ctx.fillRect(mx+4+d*((monW-10)/6), my+5+d*3%Math.floor(h*0.2), 2, 2);
+            }
+          }
+          // Rolling chair in center
+          ctx.fillStyle = '#333';
+          ctx.beginPath(); ctx.arc(cx, cy+h*0.15, 12, 0, Math.PI*2); ctx.fill();
+          // Chair wheels
+          ctx.fillStyle = '#2a2a2a';
+          for (let a = 0; a < 5; a++) {
+            const ang = a*Math.PI*2/5;
+            ctx.fillRect(cx+Math.cos(ang)*14-2, cy+h*0.15+Math.sin(ang)*14-2, 4, 4);
+          }
+          // Coffee mug on desk
+          ctx.fillStyle = '#8a6a4a';
+          ctx.fillRect(x+w-35, y+h*0.28, 10, 12);
+          ctx.strokeStyle = '#9a7a5a'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.arc(x+w-20, y+h*0.33, 4, -Math.PI/2, Math.PI/2); ctx.stroke();
+          // Small keyboard on desk
+          ctx.fillStyle = '#2a2a2a';
+          ctx.fillRect(cx-15, y+h*0.3, 30, 8);
           break;
         }
         case 'Shields': {
-          ctx.strokeStyle = '#4466dd'; ctx.lineWidth = 2; ctx.beginPath();
-          ctx.moveTo(cx, cy-30); ctx.lineTo(cx+25, cy-10); ctx.lineTo(cx+20, cy+20);
-          ctx.lineTo(cx, cy+30); ctx.lineTo(cx-20, cy+20); ctx.lineTo(cx-25, cy-10);
+          // Circular floor pattern with energy motif
+          ctx.strokeStyle = 'rgba(100,150,255,0.08)'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.arc(cx, cy, Math.min(w,h)*0.35, 0, Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(cx, cy, Math.min(w,h)*0.25, 0, Math.PI*2); ctx.stroke();
+          // Triangular energy symbols on floor (6 around the circle)
+          ctx.fillStyle = 'rgba(100,150,255,0.06)';
+          for (let t = 0; t < 6; t++) {
+            const ang = t*Math.PI/3, r = Math.min(w,h)*0.3;
+            const tx = cx+Math.cos(ang)*r, ty = cy+Math.sin(ang)*r;
+            ctx.beginPath();
+            ctx.moveTo(tx, ty-8); ctx.lineTo(tx+7, ty+5); ctx.lineTo(tx-7, ty+5);
+            ctx.closePath(); ctx.fill();
+          }
+          // Central hexagonal shield control panel
+          ctx.strokeStyle = '#4466dd'; ctx.lineWidth = 3; ctx.beginPath();
+          ctx.moveTo(cx, cy-32); ctx.lineTo(cx+28, cy-16); ctx.lineTo(cx+28, cy+16);
+          ctx.lineTo(cx, cy+32); ctx.lineTo(cx-28, cy+16); ctx.lineTo(cx-28, cy-16);
           ctx.closePath(); ctx.stroke();
+          // Inner hex
+          ctx.strokeStyle = '#3355cc'; ctx.lineWidth = 1.5; ctx.beginPath();
+          ctx.moveTo(cx, cy-20); ctx.lineTo(cx+17, cy-10); ctx.lineTo(cx+17, cy+10);
+          ctx.lineTo(cx, cy+20); ctx.lineTo(cx-17, cy+10); ctx.lineTo(cx-17, cy-10);
+          ctx.closePath(); ctx.stroke();
+          // Shield energy glow from center
+          const shieldGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 30);
+          shieldGlow.addColorStop(0, 'rgba(100,150,255,0.25)');
+          shieldGlow.addColorStop(0.5, 'rgba(80,120,220,0.1)');
+          shieldGlow.addColorStop(1, 'rgba(60,80,200,0)');
+          ctx.fillStyle = shieldGlow;
+          ctx.beginPath(); ctx.arc(cx, cy, 30, 0, Math.PI*2); ctx.fill();
+          // White glowing shield panels along the walls
+          ctx.fillStyle = 'rgba(220,230,255,0.15)';
+          ctx.fillRect(x+w-18, y+h*0.15, 12, h*0.2);
+          ctx.fillRect(x+w-18, y+h*0.45, 12, h*0.2);
+          ctx.fillRect(x+w-18, y+h*0.75, 12, h*0.15);
+          // Panel glow
+          ctx.fillStyle = 'rgba(180,200,255,0.08)';
+          for (const py of [h*0.15, h*0.45, h*0.75]) {
+            ctx.fillRect(x+w-28, y+py, 28, py===h*0.75 ? h*0.15 : h*0.2);
+          }
+          // Control console (left side)
+          ctx.fillStyle = '#2a2a4a';
+          ctx.fillRect(x+8, cy-15, w*0.2, 30);
+          ctx.fillStyle = 'rgba(100,150,255,0.2)';
+          ctx.fillRect(x+12, cy-10, w*0.16, 10);
           break;
         }
         case 'Storage': {
-          ctx.fillStyle = '#3a3020';
-          ctx.fillRect(x+w*0.15, y+h*0.2, 35, 25); ctx.fillRect(x+w*0.15, y+h*0.5, 30, 30);
-          ctx.fillRect(x+w*0.6, y+h*0.3, 40, 25); ctx.fillRect(x+w*0.55, y+h*0.6, 35, 30);
+          // Yellow hazard grid markings on floor
+          ctx.strokeStyle = 'rgba(200,180,0,0.06)'; ctx.lineWidth = 1;
+          for (let gx = 0; gx < w; gx += 50) {
+            ctx.beginPath(); ctx.moveTo(x+gx, y); ctx.lineTo(x+gx, y+h); ctx.stroke();
+          }
+          for (let gy = 0; gy < h; gy += 50) {
+            ctx.beginPath(); ctx.moveTo(x, y+gy); ctx.lineTo(x+w, y+gy); ctx.stroke();
+          }
+          // Green cargo crates (stacked, various sizes)
+          const gc = '#2a5a2a', dc = '#1a4a1a', bc = '#3a3020';
+          // Left crate stack
+          ctx.fillStyle = gc;
+          ctx.fillRect(x+w*0.05, y+h*0.15, 45, 35);
+          ctx.fillRect(x+w*0.05, y+h*0.38, 40, 40);
+          ctx.fillStyle = dc;
+          ctx.fillRect(x+w*0.08, y+h*0.58, 50, 30);
+          // Center crate pile
+          ctx.fillStyle = gc;
+          ctx.fillRect(x+w*0.32, y+h*0.22, 42, 48);
+          ctx.fillStyle = bc;
+          ctx.fillRect(x+w*0.35, y+h*0.12, 32, 22);
+          ctx.fillStyle = dc;
+          ctx.fillRect(x+w*0.3, y+h*0.55, 38, 32);
+          // Right crate stack
+          ctx.fillStyle = gc;
+          ctx.fillRect(x+w*0.62, y+h*0.18, 48, 35);
+          ctx.fillRect(x+w*0.6, y+h*0.4, 55, 40);
+          ctx.fillStyle = dc;
+          ctx.fillRect(x+w*0.68, y+h*0.62, 40, 30);
+          // Crate markings (X patterns)
+          ctx.strokeStyle = '#4a6a4a'; ctx.lineWidth = 1;
+          const crates = [[x+w*0.05,y+h*0.15,45,35],[x+w*0.32,y+h*0.22,42,48],[x+w*0.62,y+h*0.18,48,35]];
+          for (const [bx,by,bw,bh] of crates) {
+            ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx+bw, by+bh); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(bx+bw, by); ctx.lineTo(bx, by+bh); ctx.stroke();
+          }
+          // Fuel barrels (cylindrical, brown)
+          ctx.fillStyle = '#5a3a1a';
+          for (const [fx,fy] of [[w*0.15,h*0.78],[w*0.22,h*0.78],[w*0.75,h*0.75]]) {
+            ctx.beginPath(); ctx.ellipse(x+fx+7, y+fy, 8, 5, 0, 0, Math.PI*2); ctx.fill();
+            ctx.fillRect(x+fx, y+fy, 14, 28);
+            ctx.beginPath(); ctx.ellipse(x+fx+7, y+fy+28, 8, 5, 0, 0, Math.PI*2); ctx.fill();
+          }
+          // Garbage disposal chute (bottom wall)
+          ctx.fillStyle = '#3a3a3a';
+          ctx.fillRect(x+w*0.4, y+h-16, w*0.2, 16);
+          ctx.strokeStyle = '#555'; ctx.lineWidth = 1;
+          ctx.strokeRect(x+w*0.4, y+h-16, w*0.2, 16);
+          ctx.fillStyle = 'rgba(0,0,0,0.2)';
+          ctx.fillRect(x+w*0.42, y+h-12, w*0.16, 8);
           break;
         }
         case 'Communications': {
-          ctx.fillStyle = '#334'; ctx.fillRect(cx-30, cy-15, 60, 30);
-          ctx.strokeStyle = '#558'; ctx.lineWidth = 1; ctx.strokeRect(cx-30, cy-15, 60, 30);
-          ctx.strokeStyle = '#888'; ctx.lineWidth = 2;
-          ctx.beginPath(); ctx.moveTo(cx, cy-15); ctx.lineTo(cx, cy-40); ctx.stroke();
-          ctx.beginPath(); ctx.moveTo(cx-10, cy-35); ctx.lineTo(cx+10, cy-35); ctx.stroke();
+          // Teal-tinted communications room
+          // Large communications console (against back wall)
+          ctx.fillStyle = '#1a3038';
+          ctx.fillRect(x+w*0.15, y+8, w*0.7, h*0.3);
+          ctx.strokeStyle = '#2a4048'; ctx.lineWidth = 1;
+          ctx.strokeRect(x+w*0.15, y+8, w*0.7, h*0.3);
+          // Multiple screens on console
+          ctx.fillStyle = '#0a1a1a';
+          ctx.fillRect(x+w*0.2, y+14, w*0.2, h*0.18);
+          ctx.fillRect(x+w*0.45, y+14, w*0.2, h*0.18);
+          ctx.fillRect(x+w*0.7, y+14, w*0.12, h*0.18);
+          // Screen static/data
+          ctx.fillStyle = 'rgba(80,200,200,0.1)';
+          for (let sl = 0; sl < h*0.15; sl += 3) {
+            ctx.fillRect(x+w*0.21, y+16+sl, w*0.18, 1);
+            ctx.fillRect(x+w*0.46, y+16+sl, w*0.18, 1);
+          }
+          // Radio dial panel (for fixing Comms Sabotaged)
+          ctx.fillStyle = '#2a2a3a';
+          ctx.fillRect(cx-25, cy+10, 50, 35);
+          ctx.strokeStyle = '#3a3a4a'; ctx.lineWidth = 1;
+          ctx.strokeRect(cx-25, cy+10, 50, 35);
+          // Radio frequency dial
+          ctx.fillStyle = '#3a3a44';
+          ctx.beginPath(); ctx.arc(cx, cy+28, 12, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#6a6a7a'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(cx, cy+28, 12, 0, Math.PI*2); ctx.stroke();
+          // Dial needle
+          ctx.strokeStyle = '#aaa'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(cx, cy+28); ctx.lineTo(cx+3, cy+18); ctx.stroke();
+          // Frequency display
+          ctx.fillStyle = 'rgba(100,255,200,0.2)';
+          ctx.fillRect(cx-18, cy+12, 36, 8);
+          // Swivel chair
+          ctx.fillStyle = '#333';
+          ctx.beginPath(); ctx.arc(cx, cy+h*0.25, 10, 0, Math.PI*2); ctx.fill();
+          // Wall transmission equipment (right side)
+          ctx.fillStyle = '#2a3035';
+          ctx.fillRect(x+w-25, y+h*0.15, 18, h*0.6);
+          ctx.fillStyle = '#3a4045';
+          for (let i = 0; i < 4; i++) ctx.fillRect(x+w-23, y+h*0.2+i*h*0.14, 14, h*0.08);
+          // Indicator lights
+          ctx.fillStyle = 'rgba(100,200,150,0.3)';
+          for (let i = 0; i < 3; i++) ctx.beginPath(), ctx.arc(x+w-16, y+h*0.22+i*h*0.14, 2, 0, Math.PI*2), ctx.fill();
           break;
         }
         case 'O2': {
-          ctx.fillStyle = '#2a4a3a';
-          ctx.beginPath(); ctx.arc(cx-20, cy, 18, 0, Math.PI*2); ctx.fill();
-          ctx.beginPath(); ctx.arc(cx+20, cy, 18, 0, Math.PI*2); ctx.fill();
-          ctx.fillStyle = '#3a5a4a'; ctx.fillRect(cx-22, cy-25, 8, 10); ctx.fillRect(cx+18, cy-25, 8, 10);
+          // Green-tinted life support room with plants
+          // Oxygen filtration machinery (large unit, left side)
+          ctx.fillStyle = '#2a4a38';
+          ctx.fillRect(x+8, y+h*0.15, w*0.25, h*0.5);
+          ctx.strokeStyle = '#3a6a4a'; ctx.lineWidth = 1;
+          ctx.strokeRect(x+8, y+h*0.15, w*0.25, h*0.5);
+          // Air filter vents on machinery
+          ctx.fillStyle = '#1a3a28';
+          for (let v = 0; v < 4; v++) ctx.fillRect(x+14, y+h*0.2+v*h*0.11, w*0.18, h*0.05);
+          // Connecting pipes running to ceiling
+          ctx.strokeStyle = '#4a6a5a'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.moveTo(x+w*0.15, y+h*0.15); ctx.lineTo(x+w*0.15, y+5); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x+w*0.25, y+h*0.15); ctx.lineTo(x+w*0.25, y+5); ctx.stroke();
+          // Oxygen tanks (cylindrical, right side)
+          ctx.fillStyle = '#4a7a5a';
+          for (let t = 0; t < 3; t++) {
+            const tx = x+w*0.65+t*22, ty = y+h*0.2;
+            ctx.beginPath(); ctx.ellipse(tx+8, ty, 8, 4, 0, 0, Math.PI*2); ctx.fill();
+            ctx.fillRect(tx, ty, 16, h*0.35);
+            ctx.beginPath(); ctx.ellipse(tx+8, ty+h*0.35, 8, 4, 0, 0, Math.PI*2); ctx.fill();
+          }
+          // Green plant growth units (bottom area)
+          ctx.fillStyle = '#3a2a1a'; // pots
+          const plantPositions = [[w*0.1,h*0.72],[w*0.25,h*0.75],[w*0.42,h*0.72],[w*0.6,h*0.75],[w*0.78,h*0.72]];
+          for (const [px,py] of plantPositions) {
+            ctx.fillRect(x+px-8, y+py+10, 16, 12);
+            // Plant leaves (lush green)
+            ctx.fillStyle = '#2a7a3a';
+            ctx.beginPath(); ctx.arc(x+px, y+py, 10, Math.PI, 0); ctx.fill();
+            ctx.fillStyle = '#1a6a2a';
+            ctx.beginPath(); ctx.arc(x+px-5, y+py-4, 6, Math.PI, 0); ctx.fill();
+            ctx.beginPath(); ctx.arc(x+px+5, y+py-4, 6, Math.PI, 0); ctx.fill();
+            ctx.fillStyle = '#3a2a1a';
+          }
+          // Number pad for O2 sabotage fix (on wall)
+          ctx.fillStyle = '#2a3a4a';
+          ctx.fillRect(x+w*0.4, y+10, 35, 45);
+          ctx.strokeStyle = '#4a6a8a'; ctx.lineWidth = 1;
+          ctx.strokeRect(x+w*0.4, y+10, 35, 45);
+          // Number pad buttons
+          ctx.fillStyle = '#3a4a5a';
+          for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
+            ctx.fillRect(x+w*0.4+5+c*10, y+15+r*12, 7, 8);
+          }
           break;
         }
         case 'Kitchen': {
@@ -3386,10 +4083,48 @@
           break;
         }
         case 'Upper Engine': case 'Lower Engine': case 'Engine Room': {
-          ctx.fillStyle = '#333'; ctx.fillRect(cx-25, cy-30, 50, 60);
-          ctx.strokeStyle = '#555'; ctx.lineWidth = 2; ctx.strokeRect(cx-25, cy-30, 50, 60);
-          ctx.fillStyle = '#444';
-          ctx.fillRect(cx-8, y+10, 16, cy-y-40); ctx.fillRect(cx-8, cy+30, 16, y+h-cy-40);
+          const er = Math.min(w,h)*0.25;
+          // Large circular thruster housing (protruding from left wall)
+          // Outer thruster ring - gray metallic
+          ctx.fillStyle = '#4a4a50';
+          ctx.beginPath(); ctx.arc(x + w*0.3, cy, er, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#5a5a60'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.arc(x + w*0.3, cy, er, 0, Math.PI*2); ctx.stroke();
+          // Inner thruster ring
+          ctx.strokeStyle = '#3a3a44'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(x + w*0.3, cy, er*0.7, 0, Math.PI*2); ctx.stroke();
+          // Engine core - light blue plasma glow
+          const engGlow = ctx.createRadialGradient(x+w*0.3, cy, 0, x+w*0.3, cy, er*0.6);
+          engGlow.addColorStop(0, 'rgba(120,180,255,0.4)');
+          engGlow.addColorStop(0.6, 'rgba(80,140,255,0.15)');
+          engGlow.addColorStop(1, 'rgba(40,80,200,0)');
+          ctx.fillStyle = engGlow;
+          ctx.beginPath(); ctx.arc(x+w*0.3, cy, er*0.6, 0, Math.PI*2); ctx.fill();
+          // Bright center
+          ctx.fillStyle = 'rgba(180,220,255,0.5)';
+          ctx.beginPath(); ctx.arc(x+w*0.3, cy, 4, 0, Math.PI*2); ctx.fill();
+          // Orange/gray mechanical components around engine
+          ctx.fillStyle = '#8a5a2a';
+          ctx.fillRect(x+w*0.3+er-5, cy-er*0.4, 10, er*0.3); // right support
+          ctx.fillRect(x+w*0.3+er-5, cy+er*0.1, 10, er*0.3); // right support lower
+          ctx.fillStyle = '#6a4a1a';
+          ctx.fillRect(x+w*0.3-er-5, cy-er*0.3, 10, er*0.6); // left support bracket
+          // Pipes and machinery (right side of room)
+          ctx.fillStyle = '#3a3a40';
+          ctx.fillRect(x+w*0.6, y+15, w*0.12, h-30); // vertical pipe
+          ctx.fillRect(x+w*0.75, y+15, w*0.08, h*0.3); // upper machinery
+          ctx.fillRect(x+w*0.75, y+h*0.6, w*0.08, h*0.3); // lower machinery
+          // Metallic platform railing
+          ctx.strokeStyle = '#5a5a60'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(x+w*0.55, y+10); ctx.lineTo(x+w*0.55, y+h-10); ctx.stroke();
+          // Control console
+          ctx.fillStyle = '#2a3a2a';
+          ctx.fillRect(x+w*0.8, cy-15, 25, 30);
+          ctx.fillStyle = 'rgba(100,200,100,0.3)';
+          ctx.fillRect(x+w*0.82, cy-10, 18, 8); // screen
+          // Fuel intake at bottom
+          ctx.fillStyle = '#4a3a2a';
+          ctx.fillRect(x+w*0.4, y+h-16, 30, 16);
           break;
         }
         case 'Cockpit': {
@@ -3667,6 +4402,137 @@
         ctx.fillRect(vx + 1, vy + 1, 38, 2);
       }
 
+      // CCTV Cameras (mounted on walls in hallways)
+      for (const cam of cameras) {
+        const cx = cam.x - ox, cy = cam.y - oy;
+        // Camera mount bracket
+        ctx.fillStyle = '#2a2a2a';
+        ctx.fillRect(cx - 3, cy - 14, 6, 14);
+        // Camera body
+        ctx.fillStyle = '#3a3a3a';
+        ctx.fillRect(cx - 10, cy - 8, 20, 12);
+        // Lens
+        ctx.fillStyle = '#1a1a1a';
+        ctx.beginPath(); ctx.arc(cx + 8, cy - 2, 4, 0, Math.PI * 2); ctx.fill();
+        // Status light (blinks red when not sabotaged)
+        const blinkOn = !sabotage.active || sabotage.type !== 'comms';
+        if (blinkOn && Math.floor(Date.now() / 800) % 2 === 0) {
+          ctx.fillStyle = 'rgba(255,50,50,0.9)';
+          ctx.beginPath(); ctx.arc(cx - 6, cy - 6, 2.5, 0, Math.PI * 2); ctx.fill();
+          // Red glow
+          ctx.fillStyle = 'rgba(255,50,50,0.15)';
+          ctx.beginPath(); ctx.arc(cx - 6, cy - 6, 8, 0, Math.PI * 2); ctx.fill();
+        } else {
+          ctx.fillStyle = 'rgba(80,80,80,0.6)';
+          ctx.beginPath(); ctx.arc(cx - 6, cy - 6, 2.5, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+
+      // Exterior ship features (rendered outside hull)
+      if (exteriorFeatures) {
+        ctx.save();
+        // Thrusters (rear of ship - animated flame)
+        if (exteriorFeatures.thrusters) {
+          for (const t of exteriorFeatures.thrusters) {
+            const tx = t.x - ox, ty = t.y - oy;
+            // Thruster nozzle
+            ctx.fillStyle = '#4a4a60';
+            ctx.fillRect(tx - 5, ty - 8, 10, 16);
+            // Flame (animated flicker)
+            const flicker = Math.sin(Date.now() / 100 + t.y) * 8;
+            const grad = ctx.createLinearGradient(tx - 30 - flicker, ty, tx, ty);
+            grad.addColorStop(0, 'rgba(255,100,30,0)');
+            grad.addColorStop(0.3, 'rgba(255,150,50,0.3)');
+            grad.addColorStop(0.7, 'rgba(100,150,255,0.5)');
+            grad.addColorStop(1, 'rgba(200,220,255,0.7)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(tx - 35 - flicker, ty - 6, 35 + flicker, 12);
+          }
+        }
+        // Cannons (top-right, near Weapons)
+        if (exteriorFeatures.cannons) {
+          for (const c of exteriorFeatures.cannons) {
+            const cx = c.x - ox, cy = c.y - oy;
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(c.angle || 0);
+            // Cannon base
+            ctx.fillStyle = '#5a3030';
+            ctx.fillRect(-6, -4, 12, 8);
+            // Cannon barrel
+            ctx.fillStyle = '#cc3333';
+            ctx.fillRect(10, -2, 20, 4);
+            // Muzzle glow
+            ctx.fillStyle = 'rgba(255,80,80,0.2)';
+            ctx.beginPath(); ctx.arc(30, 0, 5, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+          }
+        }
+        // Shield domes (bottom-right, near Shields room)
+        if (exteriorFeatures.shieldDomes) {
+          for (const s of exteriorFeatures.shieldDomes) {
+            const sx = s.x - ox, sy = s.y - oy;
+            // Shield dome base
+            ctx.fillStyle = 'rgba(60,60,180,0.4)';
+            ctx.beginPath(); ctx.arc(sx, sy, 18, 0, Math.PI * 2); ctx.fill();
+            // Inner energy ring
+            ctx.strokeStyle = 'rgba(100,150,255,0.5)';
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(sx, sy, 12, 0, Math.PI * 2); ctx.stroke();
+            // Pulsing glow
+            const pulse = Math.sin(Date.now() / 500 + s.x) * 0.15 + 0.25;
+            ctx.fillStyle = `rgba(100,150,255,${pulse})`;
+            ctx.beginPath(); ctx.arc(sx, sy, 8, 0, Math.PI * 2); ctx.fill();
+          }
+        }
+        // Communication antennas (near Comms)
+        if (exteriorFeatures.antennas) {
+          for (const a of exteriorFeatures.antennas) {
+            const ax = a.x - ox, ay = a.y - oy;
+            // Antenna pole
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(ax, ay + 30); ctx.stroke();
+            // Dish
+            ctx.fillStyle = '#888';
+            ctx.beginPath(); ctx.arc(ax, ay, 8, Math.PI * 0.8, Math.PI * 2.2); ctx.fill();
+            // Signal waves
+            const wave = Math.sin(Date.now() / 400 + a.x) * 0.3 + 0.2;
+            ctx.strokeStyle = `rgba(150,200,255,${wave})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.arc(ax, ay - 5, 14, -0.5, 0.5); ctx.stroke();
+            ctx.beginPath(); ctx.arc(ax, ay - 5, 20, -0.4, 0.4); ctx.stroke();
+          }
+        }
+        // Garbage disposal chute
+        if (exteriorFeatures.garbageChute) {
+          const gc = exteriorFeatures.garbageChute;
+          const gx = gc.x - ox, gy = gc.y - oy;
+          ctx.fillStyle = '#3a3a3a';
+          ctx.fillRect(gx - 15, gy, 30, 16);
+          ctx.fillStyle = '#2a2a2a';
+          ctx.fillRect(gx - 10, gy + 16, 20, 8);
+          // Hatch lines
+          ctx.strokeStyle = '#555';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(gx - 15, gy, 30, 16);
+        }
+        // Dropship bay
+        if (exteriorFeatures.dropshipBay) {
+          const db = exteriorFeatures.dropshipBay;
+          const dx = db.x - ox, dy = db.y - oy;
+          // Bay doors outline
+          ctx.strokeStyle = 'rgba(150,150,180,0.3)';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(dx - 40, dy, 80, 24);
+          // Hatch seam line
+          ctx.strokeStyle = 'rgba(200,200,220,0.2)';
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(dx, dy); ctx.lineTo(dx, dy + 24); ctx.stroke();
+        }
+        ctx.restore();
+      }
+
       // Emergency button (enhanced with platform and gradient)
       const ebx = EMERGENCY_BTN.x - ox, eby = EMERGENCY_BTN.y - oy;
       ctx.fillStyle = '#2a2a2a';
@@ -3819,7 +4685,173 @@
         killFlash--;
       }
 
+      // Security camera overlay
+      if (viewingCameras && cameras.length > 0) {
+        drawCameraOverlay();
+      }
+
       drawMinimap();
+    }
+
+    function drawCameraOverlay() {
+      const cw = canvas.width, ch = canvas.height;
+      const FEED_VIEW = 280; // world-units visible around each camera
+
+      // Dark overlay behind camera UI
+      ctx.fillStyle = 'rgba(0,0,0,0.82)';
+      ctx.fillRect(0, 0, cw, ch);
+
+      // Camera feed grid layout
+      const numCams = cameras.length; // 4
+      const cols = 2, rows = Math.ceil(numCams / cols);
+      const padding = 16;
+      const titleBarH = 48;
+      const feedW = Math.floor((cw - padding * (cols + 1)) / cols);
+      const feedH = Math.floor((ch - titleBarH - padding * (rows + 1)) / rows);
+
+      // Title bar
+      ctx.fillStyle = '#0a1a0a';
+      ctx.fillRect(0, 0, cw, titleBarH);
+      ctx.strokeStyle = '#2a5a2a';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, titleBarH); ctx.lineTo(cw, titleBarH); ctx.stroke();
+
+      // Title text
+      ctx.fillStyle = '#4aff4a';
+      ctx.font = 'bold 18px "Courier New", monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('SECURITY SYSTEM  //  SKELD CCTV NETWORK', 20, 32);
+
+      // Timestamp
+      const now = new Date();
+      const ts = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#2aaa2a';
+      ctx.font = '14px "Courier New", monospace';
+      ctx.fillText('REC ● ' + ts, cw - 20, 32);
+
+      // Draw each camera feed
+      for (let i = 0; i < numCams; i++) {
+        const cam = cameras[i];
+        const col = i % cols, row = Math.floor(i / cols);
+        const fx = padding + col * (feedW + padding);
+        const fy = titleBarH + padding + row * (feedH + padding);
+
+        // Feed background (very dark green-tinted like CCTV)
+        ctx.fillStyle = '#030a03';
+        ctx.fillRect(fx, fy, feedW, feedH);
+
+        // Render a scaled-down view of the world around this camera
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(fx, fy, feedW, feedH);
+        ctx.clip();
+
+        const scale = Math.min(feedW, feedH) / (FEED_VIEW * 2);
+        const worldOx = cam.x - FEED_VIEW;
+        const worldOy = cam.y - FEED_VIEW;
+
+        ctx.translate(fx, fy);
+        ctx.scale(scale, scale);
+        ctx.translate(-worldOx, -worldOy);
+
+        // Draw map background
+        ctx.fillStyle = mapTheme.bg;
+        ctx.fillRect(worldOx - 50, worldOy - 50, FEED_VIEW * 2 + 100, FEED_VIEW * 2 + 100);
+
+        // Draw floors visible in this camera area
+        if (mapTheme.floors) {
+          const rooms2 = rooms;
+          for (let fi = 0; fi < mapTheme.floors.length; fi++) {
+            const f = mapTheme.floors[fi];
+            ctx.fillStyle = fi < rooms2.length ? (roomFloorColors[rooms2[fi].name] || '#222228') : 'rgba(120,120,150,0.5)';
+            ctx.fillRect(f.x, f.y, f.w, f.h);
+          }
+        }
+
+        // Draw walls in view
+        ctx.fillStyle = mapTheme.wall;
+        for (const wall of walls) {
+          ctx.fillRect(wall.x, wall.y, wall.w, wall.h);
+        }
+
+        // Draw entities visible in this camera's view area
+        const camViewLeft = cam.x - FEED_VIEW, camViewRight = cam.x + FEED_VIEW;
+        const camViewTop = cam.y - FEED_VIEW, camViewBot = cam.y + FEED_VIEW;
+
+        // Dead bodies
+        for (const body of deadBodies) {
+          if (body.x >= camViewLeft && body.x <= camViewRight && body.y >= camViewTop && body.y <= camViewBot) {
+            drawDeadBody(ctx, body.x, body.y, body.color);
+          }
+        }
+
+        // NPCs and player
+        const allEntities = [...npcs];
+        if (!inVent) allEntities.push({ ...player, isPlayer: true });
+        for (const ent of allEntities) {
+          if (ent.x >= camViewLeft && ent.x <= camViewRight && ent.y >= camViewTop && ent.y <= camViewBot) {
+            if (ent.alive !== false) {
+              drawCrewmate(ctx, ent.x, ent.y, ent.w || 32, ent.h || 40, ent.color, '', true, null);
+            }
+          }
+        }
+
+        ctx.restore();
+
+        // Green-tinted scanline overlay for CRT effect
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(fx, fy, feedW, feedH);
+        ctx.clip();
+        ctx.fillStyle = 'rgba(0,255,0,0.03)';
+        for (let sl = 0; sl < feedH; sl += 3) ctx.fillRect(fx, fy + sl, feedW, 1);
+        // Subtle vignette
+        const vign = ctx.createRadialGradient(fx+feedW/2, fy+feedH/2, feedH*0.2, fx+feedW/2, fy+feedH/2, feedH*0.7);
+        vign.addColorStop(0, 'rgba(0,0,0,0)');
+        vign.addColorStop(1, 'rgba(0,20,0,0.5)');
+        ctx.fillStyle = vign;
+        ctx.fillRect(fx, fy, feedW, feedH);
+        ctx.restore();
+
+        // Camera crosshair at camera center
+        const screenCx = fx + feedW/2, screenCy = fy + feedH/2;
+        ctx.strokeStyle = 'rgba(0,200,0,0.25)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(screenCx - 12, screenCy); ctx.lineTo(screenCx + 12, screenCy);
+        ctx.moveTo(screenCx, screenCy - 12); ctx.lineTo(screenCx, screenCy + 12);
+        ctx.stroke();
+
+        // Feed border (green, active cameras glow)
+        ctx.strokeStyle = '#1a5a1a';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(fx, fy, feedW, feedH);
+
+        // Camera label bar at bottom of feed
+        ctx.fillStyle = 'rgba(0,20,0,0.85)';
+        ctx.fillRect(fx, fy + feedH - 24, feedW, 24);
+        ctx.fillStyle = '#3aff3a';
+        ctx.font = 'bold 12px "Courier New", monospace';
+        ctx.textAlign = 'left';
+        ctx.fillText('CAM ' + (i + 1) + ' — ' + cam.name.toUpperCase(), fx + 8, fy + feedH - 8);
+
+        // REC indicator blink
+        if (Math.floor(Date.now() / 800) % 2 === 0) {
+          ctx.fillStyle = '#ff3a3a';
+          ctx.beginPath(); ctx.arc(fx + feedW - 16, fy + feedH - 12, 4, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = '#ff8a8a';
+          ctx.font = '10px "Courier New", monospace';
+          ctx.textAlign = 'right';
+          ctx.fillText('REC', fx + feedW - 22, fy + feedH - 8);
+        }
+      }
+
+      // Exit hint at bottom
+      ctx.fillStyle = 'rgba(0,200,0,0.5)';
+      ctx.font = '14px "Courier New", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('[ E ] or [ ESC ] — Exit Security View', cw / 2, ch - 12);
     }
 
     let frameCount = 0;
@@ -3832,6 +4864,12 @@
       updateSabotage();
       // Holding E to fix sabotage
       if (keys['e'] && sabotage.active && !isImpostor) fixSabotage();
+      // Auto-close camera view if player walks away from Security or comms go down
+      if (viewingCameras) {
+        if (dist(player, SECURITY_MONITOR) > 100 || (sabotage.active && sabotage.type === 'comms')) {
+          viewingCameras = false;
+        }
+      }
       checkInteractions();
       if (frameCount % 60 === 0) updateActivityLog();
       render();
@@ -3860,6 +4898,9 @@
         } else if (!sabotage.active && sabotage.cooldown <= 0) {
           sabControls.style.display = 'flex';
         }
+      }
+      if (e.key === 'Escape') {
+        viewingCameras = false;
       }
     });
     document.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
