@@ -344,26 +344,26 @@
           w.push({ x: 520, y: 120, w: 16, h: 150 });   // left top (y:120-270, door gap 270-340)
           w.push({ x: 520, y: 340, w: 16, h: 90 });    // left bottom (y:340-430)
           w.push({ x: 520, y: 120, w: 360, h: 16 });   // top
-          w.push({ x: 864, y: 120, w: 16, h: 320 });   // right
+          w.push({ x: 864, y: 120, w: 16, h: 80 });    // right top (y:120-200, gap y:200-280 for MedBay→Cafeteria)
+          w.push({ x: 864, y: 280, w: 16, h: 160 });   // right bottom (y:280-440)
           w.push({ x: 520, y: 424, w: 360, h: 16 });   // bottom
 
           // --- Cafeteria (octagonal: chamfered corners via angled wall pieces) ---
-          w.push({ x: 970, y: 96,  w: 16, h: 150 });   // left top (door gap 246-330)
-          w.push({ x: 970, y: 330, w: 16, h: 170 });   // left bottom
+          w.push({ x: 970, y: 96,  w: 16, h: 104 });   // left top (y:96-200, gap y:200-280 for MedBay→Cafeteria)
+          w.push({ x: 970, y: 280, w: 16, h: 220 });   // left bottom (y:280-500)
           w.push({ x: 970, y: 96,  w: 880, h: 16 });   // top wall
-          w.push({ x: 1834, y: 96, w: 16, h: 150 });   // right top (door gap 246-330)
-          w.push({ x: 1834, y: 330, w: 16, h: 170 });  // right bottom
-          // Bottom walls with 3 openings (south-left, south-center gap, south-right)
+          w.push({ x: 1834, y: 96, w: 16, h: 104 });   // right top (y:96-200, gap y:200-280 for Cafeteria→Weapons)
+          w.push({ x: 1834, y: 280, w: 16, h: 220 });  // right bottom (y:280-500)
+          // Bottom walls: one opening (south-left x:1234-1400) for Admin/hallway exit
           w.push({ x: 970,  y: 484, w: 264, h: 16 }); // bottom-left (to south-left exit)
-          w.push({ x: 1400, y: 484, w: 184, h: 16 }); // bottom-center (between exits)
-          w.push({ x: 1680, y: 484, w: 170, h: 16 }); // bottom-right (to south-right exit)
+          w.push({ x: 1400, y: 484, w: 450, h: 16 }); // bottom-right (solid, x:1400-1850 — only one south exit)
 
           // --- Weapons ---
-          w.push({ x: 2050, y: 96,  w: 16, h: 144 });  // left top (door gap 240-310)
-          w.push({ x: 2050, y: 310, w: 16, h: 160 });  // left bottom
+          w.push({ x: 2050, y: 96,  w: 16, h: 104 });  // left top (y:96-200, gap y:200-280 for Cafeteria→Weapons)
+          w.push({ x: 2050, y: 280, w: 16, h: 190 });  // left bottom (y:280-470)
           w.push({ x: 2050, y: 96,  w: 200, h: 16 }); // top
           w.push({ x: 2050, y: 454, w: 180, h: 16 }); // bottom left (gap for W→O2)
-          w.push({ x: 2310, y: 454, w: 180, h: 16 }); // bottom right (gap for W→Nav)
+          w.push({ x: 2310, y: 454, w: 160, h: 16 }); // bottom right (x:2310-2470, gap x:2470+ for W→Nav)
 
           // --- O2 ---
           w.push({ x: 1920, y: 580, w: 16, h: 120 });  // left top (y:580-700, door gap y:700-780)
@@ -476,10 +476,6 @@
           // --- Cafeteria south-left exit (x:1234-1400, y:484-700) ---
           w.push({ x: 1234, y: 484, w: 16, h: 216 }); // left (extends to y:700)
           w.push({ x: 1400, y: 484, w: 16, h: 216 }); // right (extends to y:700)
-
-          // --- Cafeteria south-right exit (x:1600-1680, y:484-700) ---
-          w.push({ x: 1584, y: 484, w: 16, h: 216 }); // left (extends to y:700)
-          w.push({ x: 1680, y: 484, w: 16, h: 216 }); // right (extends to y:700)
 
           // --- O2 → Navigation (x:2284-2550, y:700-780, aligned with Nav door and O2 right door) ---
           w.push({ x: 2284, y: 684, w: 266, h: 16 }); // top
@@ -614,8 +610,7 @@
           { x: 660, y: 560, w: 80, h: 600 },     // main left vertical corridor
           { x: 740, y: 700, w: 540, h: 80 },     // left corridor -> Admin (horizontal)
           { x: 1250, y: 484, w: 150, h: 216 },   // Cafeteria south-left -> horizontal corridor (extended to y:700)
-          { x: 1600, y: 484, w: 84, h: 216 },    // Cafeteria south-right -> Admin/O2 corridor (extended to y:700)
-          { x: 1680, y: 700, w: 240, h: 80 },    // Admin/O2 hallway (meets Caf south-right at x:1680)
+          { x: 1680, y: 700, w: 240, h: 80 },    // Admin/O2 hallway (x:1680-1920, connects Admin right to O2 left)
           { x: 2284, y: 700, w: 266, h: 80 },    // O2 -> Navigation (aligned with Nav door y:700-780 and O2 right door)
           { x: 2230, y: 454, w: 80, h: 126 },    // Weapons -> O2 connector
           { x: 2470, y: 454, w: 80, h: 96 },     // Weapons -> Nav upper connector
@@ -700,8 +695,8 @@
         doors: [
           // Official Skeld door layout:
           // Cafeteria: 3 doors (left exit to MedBay hall, right exit to Weapons hall, south to Admin)
-          { x: 970, y: 246, w: 16, h: 84, room: 'Cafeteria', dir: 'v' },      // left exit
-          { x: 1834, y: 246, w: 16, h: 84, room: 'Cafeteria', dir: 'v' },     // right exit
+          { x: 970, y: 200, w: 16, h: 80, room: 'Cafeteria', dir: 'v' },      // left exit (matches gap y:200-280)
+          { x: 1834, y: 200, w: 16, h: 80, room: 'Cafeteria', dir: 'v' },     // right exit (matches gap y:200-280)
           { x: 1250, y: 484, w: 150, h: 16, room: 'Cafeteria', dir: 'h' },    // south to Admin hall
           // Upper Engine: 2 doors (east to MedBay hall, south to reactor corridor)
           { x: 414, y: 240, w: 16, h: 80, room: 'Upper Engine', dir: 'v' },    // east exit (matches wall gap y:240-320)
