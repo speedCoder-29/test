@@ -302,198 +302,209 @@
           w.push({ x: 60, y: 1212, w: 16, h: 326 });    // left lower wall
 
           // ============ INTERIOR ROOM WALLS ============
+          // All walls are 16px thick. Gap positions match door objects exactly.
 
-          // --- Upper Engine (top-left, small room with engine) ---
-          w.push({ x: 140, y: 130, w: 16, h: 70 });     // left inner
-          w.push({ x: 140, y: 130, w: 120, h: 16 });    // top inner
-          w.push({ x: 414, y: 96, w: 16, h: 150 });     // right top
-          w.push({ x: 414, y: 310, w: 16, h: 100 });    // right bottom
-          w.push({ x: 140, y: 394, w: 120, h: 16 });    // bottom left
-          w.push({ x: 330, y: 394, w: 100, h: 16 });    // bottom right
+          // --- Upper Engine ---
+          w.push({ x: 140, y: 130, w: 16, h: 70 });    // left inner
+          w.push({ x: 140, y: 130, w: 120, h: 16 });   // top inner
+          w.push({ x: 414, y: 96,  w: 16, h: 144 });   // right top (to door gap y:240)
+          w.push({ x: 414, y: 320, w: 16, h: 90 });    // right bottom (below door)
+          w.push({ x: 414, y: 394, w: 16, h: 16 });    // right corner at bottom
+          w.push({ x: 140, y: 394, w: 120, h: 16 });   // bottom left
+          w.push({ x: 330, y: 394, w: 100, h: 16 });   // bottom right (gap for south corridor)
 
-          // --- Lower Engine (bottom-left, mirrors upper) ---
-          w.push({ x: 140, y: 1210, w: 120, h: 16 });   // top left
-          w.push({ x: 330, y: 1210, w: 100, h: 16 });   // top right
-          w.push({ x: 414, y: 1210, w: 16, h: 100 });   // right top
-          w.push({ x: 414, y: 1374, w: 16, h: 150 });   // right bottom
-          w.push({ x: 140, y: 1522, w: 16, h: 70 });    // left inner
-          w.push({ x: 140, y: 1508, w: 120, h: 16 });   // bottom inner
+          // --- Lower Engine ---
+          w.push({ x: 140, y: 1210, w: 120, h: 16 });  // top left
+          w.push({ x: 330, y: 1210, w: 100, h: 16 });  // top right (gap for corridor)
+          w.push({ x: 414, y: 1210, w: 16, h: 70 });   // right top (to door gap y:1290)
+          w.push({ x: 414, y: 1374, w: 16, h: 150 });  // right bottom
+          w.push({ x: 140, y: 1522, w: 16, h: 70 });   // left inner
+          w.push({ x: 140, y: 1508, w: 120, h: 16 });  // bottom inner
 
-          // --- Reactor (far left, tall room with reactor core) ---
-          // Reactor is FULLY enclosed - no direct connection to Security
-          w.push({ x: 60, y: 378, w: 16, h: 60 });
-          w.push({ x: 380, y: 420, w: 16, h: 584 });    // right wall (SOLID - no gap to Security)
-          w.push({ x: 76, y: 420, w: 320, h: 16 });     // top
-          w.push({ x: 76, y: 1004, w: 150, h: 16 });    // bottom left
-          w.push({ x: 290, y: 1004, w: 106, h: 16 });   // bottom right
-          // Reactor exit is through the top or bottom (to engine corridors)
+          // --- Reactor (fully enclosed, exits via engine corridors top & bottom) ---
+          w.push({ x: 60,  y: 378, w: 16, h: 60 });    // top-left step
+          w.push({ x: 76,  y: 420, w: 320, h: 16 });   // top wall
+          // Right wall — solid, NO gap to Security
+          w.push({ x: 380, y: 420, w: 16, h: 584 });   // right wall full height
+          w.push({ x: 76,  y: 1004, w: 150, h: 16 });  // bottom left
+          w.push({ x: 290, y: 1004, w: 106, h: 16 });  // bottom right (gap for LE corridor)
 
-          // --- Security (small room, separated from Reactor by solid wall) ---
-          // Security is accessed from the left vertical corridor, not from Reactor
-          w.push({ x: 396, y: 560, w: 16, h: 120 });    // left wall top
-          w.push({ x: 396, y: 760, w: 16, h: 84 });     // left wall bottom (gap = door)
-          w.push({ x: 580, y: 560, w: 16, h: 300 });    // right wall
-          w.push({ x: 396, y: 560, w: 200, h: 16 });    // top wall
-          w.push({ x: 396, y: 844, w: 200, h: 16 });    // bottom wall
+          // --- Security (accessed from right side via corridor to main vertical) ---
+          // Left wall: SOLID against Reactor
+          w.push({ x: 396, y: 560, w: 16, h: 284 });   // left wall — full height, solid
+          // Right wall: door gap at y:700-780 (connects to Security→main corridor)
+          w.push({ x: 580, y: 560, w: 16, h: 140 });   // right top (y:560-700)
+          w.push({ x: 580, y: 780, w: 16, h: 64 });    // right bottom (y:780-844)
+          // Top & bottom walls
+          w.push({ x: 396, y: 560, w: 200, h: 16 });   // top wall
+          w.push({ x: 396, y: 844, w: 200, h: 16 });   // bottom wall
 
-          // --- MedBay (left-center top, between engines and cafeteria) ---
-          w.push({ x: 520, y: 120, w: 16, h: 150 });    // left top
-          w.push({ x: 520, y: 340, w: 16, h: 90 });     // left bottom
-          w.push({ x: 520, y: 120, w: 360, h: 16 });    // top
-          w.push({ x: 864, y: 120, w: 16, h: 320 });    // right
-          w.push({ x: 520, y: 424, w: 360, h: 16 });    // bottom
+          // --- MedBay ---
+          w.push({ x: 520, y: 120, w: 16, h: 150 });   // left top (y:120-270, door gap 270-340)
+          w.push({ x: 520, y: 340, w: 16, h: 90 });    // left bottom (y:340-430)
+          w.push({ x: 520, y: 120, w: 360, h: 16 });   // top
+          w.push({ x: 864, y: 120, w: 16, h: 320 });   // right
+          w.push({ x: 520, y: 424, w: 360, h: 16 });   // bottom
 
-          // --- Cafeteria (LARGE octagonal room, top center - spawn) ---
-          w.push({ x: 970, y: 96, w: 16, h: 150 });     // left top
-          w.push({ x: 970, y: 330, w: 16, h: 170 });    // left bottom
-          w.push({ x: 970, y: 96, w: 880, h: 16 });      // top
-          w.push({ x: 1834, y: 96, w: 16, h: 150 });    // right top
-          w.push({ x: 1834, y: 330, w: 16, h: 170 });   // right bottom
-          w.push({ x: 970, y: 484, w: 280, h: 16 });    // bottom left
-          w.push({ x: 1400, y: 484, w: 200, h: 16 });   // bottom center
-          w.push({ x: 1670, y: 484, w: 180, h: 16 });   // bottom right
+          // --- Cafeteria (octagonal: chamfered corners via angled wall pieces) ---
+          w.push({ x: 970, y: 96,  w: 16, h: 150 });   // left top (door gap 246-330)
+          w.push({ x: 970, y: 330, w: 16, h: 170 });   // left bottom
+          w.push({ x: 970, y: 96,  w: 880, h: 16 });   // top wall
+          w.push({ x: 1834, y: 96, w: 16, h: 150 });   // right top (door gap 246-330)
+          w.push({ x: 1834, y: 330, w: 16, h: 170 });  // right bottom
+          // Bottom walls with 3 openings (south-left, south-center gap, south-right)
+          w.push({ x: 970,  y: 484, w: 264, h: 16 }); // bottom-left (to south-left exit)
+          w.push({ x: 1400, y: 484, w: 184, h: 16 }); // bottom-center (between exits)
+          w.push({ x: 1680, y: 484, w: 170, h: 16 }); // bottom-right (to south-right exit)
 
-          // --- Weapons (top right, angular/wedge shape) ---
-          w.push({ x: 2050, y: 96, w: 16, h: 130 });    // left top
-          w.push({ x: 2050, y: 310, w: 16, h: 160 });   // left bottom
-          w.push({ x: 2050, y: 96, w: 200, h: 16 });    // top left part
-          w.push({ x: 2050, y: 454, w: 180, h: 16 });   // bottom left
-          w.push({ x: 2310, y: 454, w: 180, h: 16 });   // bottom right
+          // --- Weapons ---
+          w.push({ x: 2050, y: 96,  w: 16, h: 144 });  // left top (door gap 240-310)
+          w.push({ x: 2050, y: 310, w: 16, h: 160 });  // left bottom
+          w.push({ x: 2050, y: 96,  w: 200, h: 16 }); // top
+          w.push({ x: 2050, y: 454, w: 180, h: 16 }); // bottom left (gap for W→O2)
+          w.push({ x: 2310, y: 454, w: 180, h: 16 }); // bottom right (gap for W→Nav)
 
-          // --- O2 (right center, below weapons) ---
-          w.push({ x: 1920, y: 580, w: 16, h: 130 });   // left top
-          w.push({ x: 1920, y: 790, w: 16, h: 130 });   // left bottom
-          w.push({ x: 1920, y: 580, w: 380, h: 16 });   // top
-          w.push({ x: 2284, y: 580, w: 16, h: 340 });   // right
-          w.push({ x: 1920, y: 904, w: 380, h: 16 });   // bottom
+          // --- O2 ---
+          w.push({ x: 1920, y: 580, w: 16, h: 130 });  // left top (door gap y:710-790)
+          w.push({ x: 1920, y: 790, w: 16, h: 130 });  // left bottom
+          w.push({ x: 1920, y: 580, w: 380, h: 16 }); // top
+          w.push({ x: 2284, y: 580, w: 16, h: 340 }); // right
+          w.push({ x: 1920, y: 904, w: 380, h: 16 }); // bottom
 
-          // --- Navigation (far right, ship nose) ---
-          w.push({ x: 2550, y: 550, w: 16, h: 150 });   // left top
-          w.push({ x: 2550, y: 780, w: 16, h: 170 });   // left bottom
-          w.push({ x: 2550, y: 550, w: 380, h: 16 });   // top
-          w.push({ x: 2550, y: 934, w: 380, h: 16 });   // bottom
+          // --- Navigation ---
+          w.push({ x: 2550, y: 550, w: 16, h: 150 });  // left top (door gap y:700-780)
+          w.push({ x: 2550, y: 780, w: 16, h: 170 });  // left bottom
+          w.push({ x: 2550, y: 550, w: 380, h: 16 }); // top
+          w.push({ x: 2550, y: 934, w: 380, h: 16 }); // bottom
 
-          // --- Admin (center of ship, map table room) ---
-          w.push({ x: 1380, y: 660, w: 16, h: 120 });   // left top
-          w.push({ x: 1380, y: 860, w: 16, h: 130 });   // left bottom
-          w.push({ x: 1380, y: 660, w: 420, h: 16 });   // top
-          w.push({ x: 1784, y: 660, w: 16, h: 330 });   // right
-          w.push({ x: 1380, y: 974, w: 420, h: 16 });   // bottom
+          // --- Admin (left wall gap at y:700-780 aligns with horizontal corridor) ---
+          w.push({ x: 1380, y: 660, w: 16, h: 40 });   // left top (y:660-700)
+          w.push({ x: 1380, y: 780, w: 16, h: 210 });  // left bottom (y:780-990, gap y:700-780)
+          w.push({ x: 1380, y: 660, w: 420, h: 16 });  // top
+          w.push({ x: 1784, y: 660, w: 16, h: 330 });  // right
+          w.push({ x: 1380, y: 974, w: 420, h: 16 });  // bottom
 
-          // --- Electrical (bottom-left, cramped single entrance) ---
-          w.push({ x: 520, y: 1160, w: 16, h: 70 });    // left (entrance gap!)
-          w.push({ x: 520, y: 1310, w: 16, h: 300 });   // left below entrance
-          w.push({ x: 520, y: 1160, w: 400, h: 16 });   // top
-          w.push({ x: 904, y: 1160, w: 16, h: 450 });   // right
-          w.push({ x: 520, y: 1594, w: 400, h: 16 });   // bottom
+          // --- Electrical ---
+          w.push({ x: 520, y: 1160, w: 16, h: 70 });   // left top (door gap y:1230-1310)
+          w.push({ x: 520, y: 1310, w: 16, h: 300 });  // left bottom
+          w.push({ x: 520, y: 1160, w: 400, h: 16 });  // top
+          w.push({ x: 904, y: 1160, w: 16, h: 450 });  // right
+          w.push({ x: 520, y: 1594, w: 400, h: 16 });  // bottom
 
-          // --- Storage (LARGE room, bottom center) ---
-          w.push({ x: 1020, y: 1100, w: 16, h: 180 });  // left top
-          w.push({ x: 1020, y: 1370, w: 16, h: 260 });  // left bottom
-          w.push({ x: 1020, y: 1100, w: 200, h: 16 });  // top left
-          w.push({ x: 1340, y: 1100, w: 200, h: 16 });  // top right
-          w.push({ x: 1524, y: 1100, w: 16, h: 180 });  // right top
-          w.push({ x: 1524, y: 1370, w: 16, h: 260 });  // right bottom
-          w.push({ x: 1020, y: 1614, w: 520, h: 16 });  // bottom
+          // --- Storage ---
+          w.push({ x: 1020, y: 1100, w: 16, h: 180 }); // left top (door gap y:1280-1370)
+          w.push({ x: 1020, y: 1370, w: 16, h: 260 }); // left bottom
+          w.push({ x: 1020, y: 1100, w: 200, h: 16 }); // top left (gap for Admin→Storage)
+          w.push({ x: 1340, y: 1100, w: 200, h: 16 }); // top right (gap for Storage→Comms)
+          w.push({ x: 1524, y: 1100, w: 16, h: 180 }); // right top (door gap y:1280-1370)
+          w.push({ x: 1524, y: 1370, w: 16, h: 260 }); // right bottom
+          w.push({ x: 1020, y: 1614, w: 520, h: 16 }); // bottom
 
-          // --- Communications (bottom right) ---
-          w.push({ x: 1740, y: 1100, w: 16, h: 130 });  // left top
-          w.push({ x: 1740, y: 1320, w: 16, h: 200 });  // left bottom
-          w.push({ x: 1740, y: 1100, w: 360, h: 16 });  // top
-          w.push({ x: 2084, y: 1100, w: 16, h: 420 });  // right
-          w.push({ x: 1740, y: 1504, w: 360, h: 16 });  // bottom
+          // --- Communications ---
+          w.push({ x: 1740, y: 1100, w: 16, h: 130 }); // left top (door gap y:1230-1320)
+          w.push({ x: 1740, y: 1320, w: 16, h: 200 }); // left bottom
+          w.push({ x: 1740, y: 1100, w: 360, h: 16 }); // top
+          w.push({ x: 2084, y: 1100, w: 16, h: 100 }); // right top (gap for Comms→Shields)
+          w.push({ x: 2084, y: 1280, w: 16, h: 240 }); // right bottom
+          w.push({ x: 1740, y: 1504, w: 360, h: 16 }); // bottom
 
-          // --- Shields (bottom far right) ---
-          w.push({ x: 2180, y: 1100, w: 16, h: 140 });  // left top
-          w.push({ x: 2180, y: 1330, w: 16, h: 180 });  // left bottom
-          w.push({ x: 2180, y: 1100, w: 400, h: 16 });  // top
-          w.push({ x: 2180, y: 1494, w: 400, h: 16 });  // bottom
+          // --- Shields ---
+          w.push({ x: 2180, y: 1100, w: 16, h: 140 }); // left top (door gap y:1240-1330)
+          w.push({ x: 2180, y: 1330, w: 16, h: 180 }); // left bottom
+          w.push({ x: 2180, y: 1100, w: 400, h: 16 }); // top
+          w.push({ x: 2180, y: 1494, w: 400, h: 16 }); // bottom
 
           // ============ HALLWAY CORRIDOR WALLS ============
-          // These walls line the sides of hallways to prevent walking into void
+          // 16px walls placed OUTSIDE corridor bounds (inner edge = corridor edge)
+          // Horizontal corridors get top+bottom walls; vertical get left+right walls.
+          // Junction gaps are left where corridors intersect.
 
-          // --- Upper Engine <-> MedBay corridor (horizontal, y~240) ---
-          w.push({ x: 430, y: 230, w: 90, h: 10 });     // top wall
-          w.push({ x: 430, y: 310, w: 90, h: 10 });     // bottom wall
+          // --- UE → MedBay (x:414-520, y:240-320) ---
+          w.push({ x: 414, y: 224, w: 106, h: 16 }); // top
+          w.push({ x: 414, y: 320, w: 106, h: 16 }); // bottom
 
-          // --- MedBay <-> Cafeteria corridor (horizontal, y~200) ---
-          w.push({ x: 880, y: 190, w: 90, h: 10 });     // top wall
-          w.push({ x: 880, y: 270, w: 90, h: 10 });     // bottom wall
+          // --- MedBay → Cafeteria (x:864-970, y:200-280) ---
+          w.push({ x: 864, y: 184, w: 106, h: 16 }); // top
+          w.push({ x: 864, y: 280, w: 106, h: 16 }); // bottom
 
-          // --- Cafeteria <-> Weapons corridor (horizontal, y~200) ---
-          w.push({ x: 1850, y: 190, w: 200, h: 10 });   // top wall
-          w.push({ x: 1850, y: 270, w: 200, h: 10 });   // bottom wall
+          // --- Cafeteria → Weapons (x:1834-2050, y:200-280) ---
+          w.push({ x: 1834, y: 184, w: 216, h: 16 }); // top
+          w.push({ x: 1834, y: 280, w: 216, h: 16 }); // bottom
 
-          // --- Upper Engine south corridor (vertical, x~414) ---
-          w.push({ x: 404, y: 410, w: 10, h: 170 });    // left wall
-          w.push({ x: 484, y: 410, w: 10, h: 170 });    // right wall
+          // --- UE south vertical (x:414-494, y:394-580) ---
+          w.push({ x: 398, y: 410, w: 16, h: 170 }); // left
+          w.push({ x: 494, y: 410, w: 16, h: 170 }); // right
 
-          // --- Left main vertical corridor (x~414, down to Lower Engine area) ---
-          w.push({ x: 404, y: 860, w: 10, h: 350 });    // left wall
-          w.push({ x: 484, y: 860, w: 10, h: 350 });    // right wall
+          // --- Left corridor → LE (x:414-494, y:844-1210) ---
+          w.push({ x: 398, y: 844, w: 16, h: 366 }); // left
+          w.push({ x: 494, y: 844, w: 16, h: 366 }); // right
 
-          // --- Corridor -> Lower Engine connector ---
-          w.push({ x: 430, y: 1200, w: 90, h: 10 });    // top wall (into Lower Engine)
+          // --- Corridor → LE horizontal (x:414-520, y:1210-1290) ---
+          w.push({ x: 414, y: 1194, w: 106, h: 16 }); // top
+          w.push({ x: 414, y: 1290, w: 106, h: 16 }); // bottom
 
-          // --- MedBay south exit corridor (vertical, x~580) ---
-          w.push({ x: 570, y: 440, w: 10, h: 120 });    // left wall
-          w.push({ x: 650, y: 440, w: 10, h: 120 });    // right wall
+          // --- MedBay south (x:580-660, y:424-560) ---
+          w.push({ x: 564, y: 440, w: 16, h: 120 }); // left
+          w.push({ x: 660, y: 440, w: 16, h: 120 }); // right
 
-          // --- Left vertical corridor (x~580, connecting to Electrical) ---
-          w.push({ x: 570, y: 860, w: 10, h: 300 });    // left wall
-          w.push({ x: 650, y: 860, w: 10, h: 300 });    // right wall
+          // --- Left lower → Electrical (x:580-660, y:844-1160) ---
+          w.push({ x: 564, y: 844, w: 16, h: 316 }); // left
+          w.push({ x: 660, y: 844, w: 16, h: 316 }); // right
 
-          // --- Main left corridor (x~660, long vertical) ---
-          w.push({ x: 650, y: 570, w: 10, h: 130 });    // left wall top
-          w.push({ x: 730, y: 570, w: 10, h: 130 });    // right wall top
-          w.push({ x: 650, y: 780, w: 10, h: 60 });     // left wall below horizontal junction
-          w.push({ x: 730, y: 780, w: 10, h: 60 });     // right wall below horizontal junction
-          w.push({ x: 650, y: 900, w: 10, h: 250 });    // left wall lower
-          w.push({ x: 730, y: 900, w: 10, h: 250 });    // right wall lower
+          // --- Main left vertical (x:660-740, y:560-1160) ---
+          // Left wall: continuous
+          w.push({ x: 644, y: 560, w: 16, h: 600 }); // left (full)
+          // Right wall: gap at y:700-780 for horizontal corridor junction
+          w.push({ x: 740, y: 560, w: 16, h: 140 }); // right top (y:560-700)
+          w.push({ x: 740, y: 780, w: 16, h: 380 }); // right bottom (y:780-1160)
 
-          // --- Horizontal corridor (left corridor -> Admin, y~700) ---
-          w.push({ x: 740, y: 690, w: 530, h: 10 });    // top wall
-          w.push({ x: 740, y: 770, w: 530, h: 10 });    // bottom wall
+          // --- Security → main corridor (x:580-660, y:700-780) - connector ---
+          // Top & bottom walls shared with extended horizontal below
 
-          // --- Cafeteria south-left exit (to Admin corridor) ---
-          w.push({ x: 1240, y: 500, w: 10, h: 160 });   // left wall
-          w.push({ x: 1390, y: 500, w: 10, h: 160 });   // right wall
+          // --- Full horizontal corridor including Security connector ---
+          // Combined span x:580-1380 at y:700-780
+          w.push({ x: 580, y: 684, w: 800, h: 16 }); // top (Security exit → Admin entry)
+          w.push({ x: 580, y: 780, w: 800, h: 16 }); // bottom
 
-          // --- Cafeteria south-right exit (right hallway) ---
-          w.push({ x: 1590, y: 500, w: 10, h: 160 });   // left wall
-          w.push({ x: 1670, y: 500, w: 10, h: 160 });   // right wall
+          // --- Admin → O2 (x:1784-1920, y:700-780) ---
+          w.push({ x: 1784, y: 684, w: 136, h: 16 }); // top
+          w.push({ x: 1784, y: 780, w: 136, h: 16 }); // bottom
 
-          // --- Admin <-> O2 hallway (horizontal, y~700) ---
-          w.push({ x: 1700, y: 690, w: 220, h: 10 });   // top wall
-          w.push({ x: 1700, y: 770, w: 220, h: 10 });   // bottom wall
+          // --- Cafeteria south-left exit (x:1234-1400, y:484-700) ---
+          w.push({ x: 1234, y: 484, w: 16, h: 216 }); // left (extends to y:700)
+          w.push({ x: 1400, y: 484, w: 16, h: 176 }); // right (to y:660 Admin top)
 
-          // --- O2 <-> Navigation hallway (horizontal, y~650) ---
-          w.push({ x: 2300, y: 640, w: 250, h: 10 });   // top wall
-          w.push({ x: 2300, y: 720, w: 250, h: 10 });   // bottom wall
+          // --- Cafeteria south-right exit (x:1600-1680, y:484-700) ---
+          w.push({ x: 1584, y: 484, w: 16, h: 216 }); // left (extends to y:700)
+          w.push({ x: 1680, y: 484, w: 16, h: 216 }); // right (extends to y:700)
 
-          // --- Weapons <-> O2 connector (vertical, x~2230) ---
-          w.push({ x: 2220, y: 470, w: 10, h: 110 });   // left wall
-          w.push({ x: 2300, y: 470, w: 10, h: 110 });   // right wall
+          // --- O2 → Navigation (x:2284-2550, y:650-730) ---
+          w.push({ x: 2284, y: 634, w: 266, h: 16 }); // top
+          w.push({ x: 2284, y: 730, w: 266, h: 16 }); // bottom
 
-          // --- Weapons <-> Nav upper connector (vertical, x~2470) ---
-          w.push({ x: 2460, y: 470, w: 10, h: 80 });    // left wall
-          w.push({ x: 2540, y: 470, w: 10, h: 80 });    // right wall
+          // --- Weapons → O2 vertical (x:2230-2310, y:454-580) ---
+          w.push({ x: 2214, y: 454, w: 16, h: 126 }); // left
+          w.push({ x: 2310, y: 454, w: 16, h: 126 }); // right
 
-          // --- Admin <-> Storage connector (vertical, x~1280) ---
-          w.push({ x: 1270, y: 950, w: 10, h: 150 });   // left wall
-          w.push({ x: 1350, y: 950, w: 10, h: 150 });   // right wall
+          // --- Weapons → Navigation upper (x:2470-2550, y:454-550) ---
+          w.push({ x: 2454, y: 454, w: 16, h: 96 }); // left
+          w.push({ x: 2550, y: 454, w: 16, h: 96 }); // right
 
-          // --- Storage <-> Comms area connector (horizontal, y~1050) ---
-          w.push({ x: 1540, y: 1040, w: 200, h: 10 });  // top wall
-          w.push({ x: 1540, y: 1106, w: 200, h: 10 });  // bottom wall
+          // --- Admin → Storage vertical (x:1280-1360, y:974-1100) ---
+          w.push({ x: 1264, y: 934, w: 16, h: 166 }); // left
+          w.push({ x: 1360, y: 934, w: 16, h: 166 }); // right
 
-          // --- Comms <-> Shields connector (horizontal, y~1200) ---
-          w.push({ x: 2100, y: 1190, w: 80, h: 10 });   // top wall
-          w.push({ x: 2100, y: 1270, w: 80, h: 10 });   // bottom wall
+          // --- Storage → Comms horizontal (x:1524-1740, y:1050-1116) ---
+          w.push({ x: 1524, y: 1034, w: 216, h: 16 }); // top
+          w.push({ x: 1524, y: 1116, w: 216, h: 16 }); // bottom
 
-          // --- Electrical <-> Storage connector (horizontal, y~1300) ---
-          w.push({ x: 920, y: 1290, w: 100, h: 10 });   // top wall
-          w.push({ x: 920, y: 1370, w: 100, h: 10 });   // bottom wall
+          // --- Comms → Shields horizontal (x:2084-2180, y:1200-1280) ---
+          w.push({ x: 2084, y: 1184, w: 96, h: 16 }); // top
+          w.push({ x: 2084, y: 1280, w: 96, h: 16 }); // bottom
+
+          // --- Electrical → Storage horizontal (x:904-1020, y:1300-1380) ---
+          w.push({ x: 904, y: 1284, w: 116, h: 16 }); // top
+          w.push({ x: 904, y: 1380, w: 116, h: 16 }); // bottom
 
           // ============ ROOM OBSTACLES (furniture/equipment) ============
 
@@ -608,7 +619,7 @@
           { x: 1524, y: 1050, w: 216, h: 66 },   // Storage -> Comms area
           { x: 2084, y: 1200, w: 96, h: 80 },    // Comms -> Shields
           { x: 904, y: 1300, w: 116, h: 80 },    // Electrical -> Storage area
-          { x: 380, y: 700, w: 16, h: 80 },      // Reactor -> Security connector
+          { x: 580, y: 700, w: 80, h: 80 },      // Security -> main corridor connector
         ],
         tasks: [
           // Official Skeld task list per room
@@ -697,7 +708,7 @@
           // MedBay: 1 door (south exit to corridor)
           { x: 520, y: 270, w: 16, h: 70, room: 'MedBay', dir: 'v' },          // south/east exit
           // Security: 1 door (east exit to corridor)
-          { x: 396, y: 680, w: 16, h: 80, room: 'Security', dir: 'v' },        // east exit
+          { x: 580, y: 700, w: 16, h: 80, room: 'Security', dir: 'v' },        // east exit (right wall gap)
           // Electrical: 1 door (north exit to corridor)
           { x: 520, y: 1230, w: 16, h: 80, room: 'Electrical', dir: 'v' },     // north exit
           // Storage: 3 doors (left to Electrical hall, right to Comms hall, top to Admin hall)
