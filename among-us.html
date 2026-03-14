@@ -366,8 +366,8 @@
           w.push({ x: 2310, y: 454, w: 180, h: 16 }); // bottom right (gap for W→Nav)
 
           // --- O2 ---
-          w.push({ x: 1920, y: 580, w: 16, h: 120 });  // left top (door gap y:700-820)
-          w.push({ x: 1920, y: 820, w: 16, h: 100 });  // left bottom
+          w.push({ x: 1920, y: 580, w: 16, h: 120 });  // left top (y:580-700, door gap y:700-780)
+          w.push({ x: 1920, y: 780, w: 16, h: 140 });  // left bottom (y:780-920)
           w.push({ x: 1920, y: 580, w: 310, h: 16 }); // top (x:1920-2230, gap x:2230-2284 for W→O2)
           w.push({ x: 2284, y: 580, w: 16, h: 120 }); // right top (door gap y:700-780)
           w.push({ x: 2284, y: 780, w: 16, h: 140 }); // right bottom (y:780-920)
@@ -379,11 +379,12 @@
           w.push({ x: 2550, y: 550, w: 380, h: 16 }); // top
           w.push({ x: 2550, y: 934, w: 380, h: 16 }); // bottom
 
-          // --- Admin (left wall gap at y:700-780 aligns with horizontal corridor) ---
+          // --- Admin (left gap y:700-780 for horizontal corridor; right gap y:700-780 for Admin→O2) ---
           w.push({ x: 1380, y: 660, w: 16, h: 40 });   // left top (y:660-700)
           w.push({ x: 1380, y: 780, w: 16, h: 210 });  // left bottom (y:780-990, gap y:700-780)
           w.push({ x: 1380, y: 660, w: 420, h: 16 });  // top
-          w.push({ x: 1784, y: 660, w: 16, h: 330 });  // right
+          w.push({ x: 1784, y: 660, w: 16, h: 40 });   // right top (y:660-700)
+          w.push({ x: 1784, y: 780, w: 16, h: 210 });  // right bottom (y:780-990, gap y:700-780 for O2)
           w.push({ x: 1380, y: 974, w: 420, h: 16 });  // bottom
 
           // --- Electrical ---
@@ -468,9 +469,9 @@
           w.push({ x: 580, y: 780, w: 700, h: 16 }); // bottom left (x:580-1280)
           w.push({ x: 1360, y: 780, w:  20, h: 16 }); // bottom right (x:1360-1380, gap x:1280-1360 for Admin→Storage)
 
-          // --- Admin → O2 (x:1784-1920, y:700-780) ---
+          // --- Admin → O2 corridor (x:1784-1920, y:700-780) ---
           w.push({ x: 1784, y: 684, w: 136, h: 16 }); // top
-          w.push({ x: 1784, y: 780, w: 136, h: 16 }); // bottom
+          w.push({ x: 1784, y: 780, w: 136, h: 16 }); // bottom (shares with Admin right bottom)
 
           // --- Cafeteria south-left exit (x:1234-1400, y:484-700) ---
           w.push({ x: 1234, y: 484, w: 16, h: 216 }); // left (extends to y:700)
@@ -706,7 +707,7 @@
           { x: 414, y: 240, w: 16, h: 80, room: 'Upper Engine', dir: 'v' },    // east exit (matches wall gap y:240-320)
           { x: 260, y: 394, w: 70, h: 16, room: 'Upper Engine', dir: 'h' },    // south exit
           // Lower Engine: 2 doors (east to Electrical hall, north to reactor corridor)
-          { x: 414, y: 1310, w: 16, h: 64, room: 'Lower Engine', dir: 'v' },   // east exit
+          { x: 414, y: 1310, w: 16, h: 64, room: 'Lower Engine', dir: 'v' },   // east exit (wall gap y:1310-1374)
           { x: 260, y: 1210, w: 70, h: 16, room: 'Lower Engine', dir: 'h' },   // north exit
           // MedBay: 1 door (south exit to corridor)
           { x: 520, y: 270, w: 16, h: 70, room: 'MedBay', dir: 'v' },          // south/east exit
@@ -718,7 +719,8 @@
           { x: 1020, y: 1280, w: 16, h: 90, room: 'Storage', dir: 'v' },       // left exit
           { x: 1524, y: 1280, w: 16, h: 90, room: 'Storage', dir: 'v' },       // right exit
           { x: 1220, y: 1100, w: 120, h: 16, room: 'Storage', dir: 'h' },      // top exit
-          // O2: 1 door (right/east exit to Navigation corridor)
+          // O2: 2 doors (left/west from Admin corridor, right/east to Navigation corridor)
+          { x: 1920, y: 700, w: 16, h: 80, room: 'O2', dir: 'v' },             // west exit (matches O2 left wall gap)
           { x: 2284, y: 700, w: 16, h: 80, room: 'O2', dir: 'v' },             // east exit (matches O2 right wall gap)
           // Navigation: 1 door (west exit)
           { x: 2550, y: 700, w: 16, h: 80, room: 'Navigation', dir: 'v' },     // west exit
