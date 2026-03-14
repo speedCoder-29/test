@@ -986,91 +986,157 @@
       polus: {
         name: 'Polus', icon: '\u{2744}\uFE0F', desc: 'Snowy outpost',
         width: 3200, height: 2400,
-        bgColor: '#141428', wallColor: '#3a3a5a', floorColor: 'rgba(150,170,220,0.04)', gridColor: 'rgba(150,170,220,0.025)',
+        bgColor: '#000000', wallColor: '#ffffff', floorColor: 'rgba(255,180,190,0.15)', gridColor: 'rgba(255,255,255,0.06)',
+        terrainColor: '#c46878',
+        terrain: [
+          // Dropship pad
+          { x: 100, y: 30, w: 530, h: 340 },
+          // Office area + dropship connector
+          { x: 30, y: 280, w: 600, h: 650 },
+          // Weapons area
+          { x: 690, y: 130, w: 520, h: 470 },
+          // Office->Weapons connector
+          { x: 500, y: 440, w: 310, h: 180 },
+          // Weapons->Storage connector
+          { x: 1070, y: 270, w: 290, h: 180 },
+          // Storage area
+          { x: 1240, y: 340, w: 580, h: 520 },
+          // Storage->Admin connector
+          { x: 1690, y: 400, w: 270, h: 180 },
+          // Admin area
+          { x: 1840, y: 290, w: 560, h: 520 },
+          // Admin->Lab connector
+          { x: 2270, y: 270, w: 290, h: 180 },
+          // Laboratory area
+          { x: 2440, y: 50, w: 710, h: 570 },
+          // Comms area + office connector
+          { x: 30, y: 820, w: 430, h: 540 },
+          // Comms->Electrical connector
+          { x: 290, y: 1080, w: 260, h: 400 },
+          // Electrical area
+          { x: 30, y: 1360, w: 630, h: 500 },
+          // Weapons south path
+          { x: 850, y: 490, w: 260, h: 380 },
+          // Center horizontal connector
+          { x: 850, y: 660, w: 470, h: 250 },
+          // Storage->Decon upper path
+          { x: 1410, y: 740, w: 260, h: 330 },
+          // Admin->Decon lower path
+          { x: 1870, y: 690, w: 260, h: 380 },
+          // Decontamination upper
+          { x: 1340, y: 950, w: 350, h: 290 },
+          // Decontamination lower
+          { x: 1790, y: 950, w: 350, h: 290 },
+          // Decon upper->Specimen connector
+          { x: 1410, y: 1130, w: 260, h: 290 },
+          // Specimen Room area
+          { x: 1040, y: 1290, w: 720, h: 570 },
+          // Specimen->Lava connector
+          { x: 1620, y: 1420, w: 450, h: 180 },
+          // Lava Pit area
+          { x: 1940, y: 1440, w: 670, h: 560 },
+          // Electrical->Boiler connector
+          { x: 210, y: 1750, w: 250, h: 350 },
+          // Path toward O2
+          { x: 290, y: 1870, w: 480, h: 200 },
+          // O2 area
+          { x: 640, y: 1690, w: 540, h: 450 },
+          // O2 entrance connector
+          { x: 610, y: 1820, w: 200, h: 200 },
+          // Boiler Room area
+          { x: 140, y: 1990, w: 430, h: 370 },
+          // Boiler->O2 path
+          { x: 410, y: 2070, w: 350, h: 200 },
+          // Specimen south connector
+          { x: 1020, y: 1540, w: 200, h: 260 },
+        ],
         spawnX: 350, spawnY: 200,
         emergencyBtn: { x: 350, y: 650, radius: 22 },
         sabotageFixLocations: { lights: { x: 300, y: 1550 }, o2: { x: 900, y: 1850 } },
         walls: (function() {
           const w = [];
           w.push(...borderWalls(3200, 2400));
-          // === Dropship (top-left, spawn, medium) ===
+          // === Dropship (140px exit gap) ===
           w.push({ x: 150, y: 80, w: 16, h: 260 }); // left
           w.push({ x: 150, y: 80, w: 420, h: 16 }); // top
-          w.push({ x: 554, y: 80, w: 16, h: 110 }); // right-top
-          w.push({ x: 554, y: 260, w: 16, h: 80 }); // right-bottom
+          w.push({ x: 554, y: 80, w: 16, h: 75 }); // right-top
+          w.push({ x: 554, y: 295, w: 16, h: 45 }); // right-bottom
           w.push({ x: 150, y: 324, w: 420, h: 16 }); // bottom
-          // === Office (left, below dropship, LARGE with admin table + emergency) ===
+          // === Office (140px openings) ===
           w.push({ x: 80, y: 450, w: 16, h: 440 }); // left
           w.push({ x: 80, y: 450, w: 500, h: 16 }); // top
-          w.push({ x: 564, y: 450, w: 16, h: 180 }); // right-top
-          w.push({ x: 564, y: 710, w: 16, h: 180 }); // right-bottom
-          w.push({ x: 80, y: 874, w: 220, h: 16 }); // bottom-left
-          w.push({ x: 380, y: 874, w: 200, h: 16 }); // bottom-right
-          // === Communications (below office, small) ===
+          w.push({ x: 564, y: 450, w: 16, h: 150 }); // right-top
+          w.push({ x: 564, y: 740, w: 16, h: 150 }); // right-bottom
+          w.push({ x: 80, y: 874, w: 190, h: 16 }); // bottom-left
+          w.push({ x: 410, y: 874, w: 170, h: 16 }); // bottom-right
+          // === Communications (140px exit) ===
           w.push({ x: 80, y: 1020, w: 16, h: 280 }); // left
           w.push({ x: 80, y: 1020, w: 320, h: 16 }); // top
-          w.push({ x: 384, y: 1020, w: 16, h: 110 }); // right-top
-          w.push({ x: 384, y: 1210, w: 16, h: 90 }); // right-bottom
+          w.push({ x: 384, y: 1020, w: 16, h: 80 }); // right-top
+          w.push({ x: 384, y: 1240, w: 16, h: 60 }); // right-bottom
           w.push({ x: 80, y: 1284, w: 320, h: 16 }); // bottom
-          // === Weapons (center-left, medium) ===
-          w.push({ x: 750, y: 180, w: 16, h: 160 }); // left-top
-          w.push({ x: 750, y: 420, w: 16, h: 140 }); // left-bottom
+          // === Weapons (140px openings left + bottom) ===
+          w.push({ x: 750, y: 180, w: 16, h: 130 }); // left-top
+          w.push({ x: 750, y: 450, w: 16, h: 110 }); // left-bottom
           w.push({ x: 750, y: 180, w: 400, h: 16 }); // top
           w.push({ x: 1134, y: 180, w: 16, h: 380 }); // right
-          w.push({ x: 750, y: 544, w: 400, h: 16 }); // bottom
-          // === Electrical (left-bottom, medium) ===
+          w.push({ x: 750, y: 544, w: 160, h: 16 }); // bottom-left
+          w.push({ x: 1050, y: 544, w: 100, h: 16 }); // bottom-right
+          // === Electrical (140px top gap) ===
           w.push({ x: 80, y: 1420, w: 16, h: 400 }); // left
-          w.push({ x: 80, y: 1420, w: 220, h: 16 }); // top-left
-          w.push({ x: 380, y: 1420, w: 220, h: 16 }); // top-right
+          w.push({ x: 80, y: 1420, w: 190, h: 16 }); // top-left
+          w.push({ x: 410, y: 1420, w: 190, h: 16 }); // top-right
           w.push({ x: 584, y: 1420, w: 16, h: 400 }); // right
           w.push({ x: 80, y: 1804, w: 520, h: 16 }); // bottom
-          // === O2 (bottom-center-left, medium) ===
+          // === O2 (140px right gap) ===
           w.push({ x: 700, y: 1750, w: 16, h: 340 }); // left
           w.push({ x: 700, y: 1750, w: 420, h: 16 }); // top
-          w.push({ x: 1104, y: 1750, w: 16, h: 160 }); // right-top
-          w.push({ x: 1104, y: 1990, w: 16, h: 100 }); // right-bottom
+          w.push({ x: 1104, y: 1750, w: 16, h: 130 }); // right-top
+          w.push({ x: 1104, y: 2020, w: 16, h: 70 }); // right-bottom
           w.push({ x: 700, y: 2074, w: 420, h: 16 }); // bottom
-          // === Storage (center, medium-large) ===
-          w.push({ x: 1300, y: 400, w: 16, h: 170 }); // left-top
-          w.push({ x: 1300, y: 650, w: 16, h: 160 }); // left-bottom
+          // === Storage (140px left + bottom gaps) ===
+          w.push({ x: 1300, y: 400, w: 16, h: 140 }); // left-top
+          w.push({ x: 1300, y: 680, w: 16, h: 130 }); // left-bottom
           w.push({ x: 1300, y: 400, w: 470, h: 16 }); // top
           w.push({ x: 1754, y: 400, w: 16, h: 410 }); // right
-          w.push({ x: 1300, y: 794, w: 470, h: 16 }); // bottom
-          // === Admin (center-right, medium) ===
-          w.push({ x: 1900, y: 350, w: 16, h: 170 }); // left-top
-          w.push({ x: 1900, y: 600, w: 16, h: 160 }); // left-bottom
+          w.push({ x: 1300, y: 794, w: 170, h: 16 }); // bottom-left
+          w.push({ x: 1610, y: 794, w: 160, h: 16 }); // bottom-right
+          // === Admin (140px left + bottom gaps) ===
+          w.push({ x: 1900, y: 350, w: 16, h: 140 }); // left-top
+          w.push({ x: 1900, y: 630, w: 16, h: 130 }); // left-bottom
           w.push({ x: 1900, y: 350, w: 450, h: 16 }); // top
           w.push({ x: 2334, y: 350, w: 16, h: 410 }); // right
-          w.push({ x: 1900, y: 744, w: 450, h: 16 }); // bottom
-          // === Laboratory (top-right, VERY LARGE with vitals + telescope) ===
-          w.push({ x: 2500, y: 100, w: 16, h: 200 }); // left-top
-          w.push({ x: 2500, y: 380, w: 16, h: 200 }); // left-bottom
+          w.push({ x: 1900, y: 744, w: 30, h: 16 }); // bottom-left
+          w.push({ x: 2070, y: 744, w: 280, h: 16 }); // bottom-right
+          // === Laboratory (140px left gap) ===
+          w.push({ x: 2500, y: 100, w: 16, h: 170 }); // left-top
+          w.push({ x: 2500, y: 410, w: 16, h: 170 }); // left-bottom
           w.push({ x: 2500, y: 100, w: 600, h: 16 }); // top
           w.push({ x: 3084, y: 100, w: 16, h: 480 }); // right
           w.push({ x: 2500, y: 564, w: 600, h: 16 }); // bottom
-          // === Decontamination Upper (corridor connecting center to specimen) ===
+          // === Decontamination Upper ===
           w.push({ x: 1400, y: 1000, w: 16, h: 200 }); // left
           w.push({ x: 1400, y: 1000, w: 240, h: 16 }); // top
           w.push({ x: 1624, y: 1000, w: 16, h: 200 }); // right
           w.push({ x: 1400, y: 1184, w: 240, h: 16 }); // bottom
-          // === Specimen Room (bottom-center, LARGE) ===
-          w.push({ x: 1100, y: 1350, w: 16, h: 180 }); // left-top
-          w.push({ x: 1100, y: 1610, w: 16, h: 200 }); // left-bottom
+          // === Specimen Room (140px left gap) ===
+          w.push({ x: 1100, y: 1350, w: 16, h: 150 }); // left-top
+          w.push({ x: 1100, y: 1640, w: 16, h: 170 }); // left-bottom
           w.push({ x: 1100, y: 1350, w: 600, h: 16 }); // top
           w.push({ x: 1684, y: 1350, w: 16, h: 460 }); // right
           w.push({ x: 1100, y: 1794, w: 600, h: 16 }); // bottom
-          // === Decontamination Lower (corridor connecting right to specimen) ===
+          // === Decontamination Lower ===
           w.push({ x: 1850, y: 1000, w: 16, h: 200 }); // left
           w.push({ x: 1850, y: 1000, w: 240, h: 16 }); // top
           w.push({ x: 2074, y: 1000, w: 16, h: 200 }); // right
           w.push({ x: 1850, y: 1184, w: 240, h: 16 }); // bottom
-          // === Boiler Room (bottom-left, small) ===
+          // === Boiler Room (140px right gap) ===
           w.push({ x: 200, y: 2050, w: 16, h: 260 }); // left
           w.push({ x: 200, y: 2050, w: 320, h: 16 }); // top
-          w.push({ x: 504, y: 2050, w: 16, h: 110 }); // right-top
-          w.push({ x: 504, y: 2240, w: 16, h: 70 }); // right-bottom
+          w.push({ x: 504, y: 2050, w: 16, h: 80 }); // right-top
+          w.push({ x: 504, y: 2270, w: 16, h: 40 }); // right-bottom
           w.push({ x: 200, y: 2294, w: 320, h: 16 }); // bottom
-          // === Lava Pit area (bottom-right, hazard zone) ===
+          // === Lava Pit area ===
           w.push({ x: 2000, y: 1500, w: 550, h: 16 }); // north edge
           w.push({ x: 2000, y: 1500, w: 16, h: 450 }); // west edge
           w.push({ x: 2534, y: 1500, w: 16, h: 450 }); // east edge
@@ -1100,25 +1166,25 @@
           { x: 216, y: 2066, w: 288, h: 228 },    // Boiler Room
           { x: 1416, y: 1016, w: 208, h: 168 },   // Decontamination Upper
           { x: 1866, y: 1016, w: 208, h: 168 },   // Decontamination Lower
-          // Outdoor snowy paths (wide enough for player w=32)
-          { x: 320, y: 324, w: 80, h: 126 },      // Dropship->Office
-          { x: 300, y: 874, w: 80, h: 146 },      // Office->Comms
-          { x: 564, y: 530, w: 186, h: 80 },      // Office->Weapons
-          { x: 1134, y: 350, w: 166, h: 80 },     // Weapons->Storage
-          { x: 1754, y: 480, w: 146, h: 80 },     // Storage->Admin
-          { x: 2334, y: 350, w: 166, h: 80 },     // Admin->Lab
-          { x: 940, y: 544, w: 80, h: 200 },      // Weapons->south path
-          { x: 940, y: 744, w: 360, h: 80 },      // Center horizontal connector
-          { x: 1500, y: 794, w: 80, h: 206 },     // Storage->Decon upper
-          { x: 1960, y: 744, w: 80, h: 256 },     // Admin->Decon lower
-          { x: 1500, y: 1184, w: 80, h: 166 },    // Decon upper->Specimen
-          { x: 1684, y: 1500, w: 316, h: 80 },    // Specimen->Lava area
-          { x: 384, y: 1140, w: 80, h: 280 },     // Comms->Electrical
-          { x: 300, y: 1804, w: 80, h: 246 },     // Electrical->Boiler
-          { x: 380, y: 1950, w: 320, h: 80 },     // path toward O2
-          { x: 700, y: 1900, w: 80, h: 80 },      // connect to O2
-          { x: 1104, y: 1600, w: 80, h: 150 },    // Specimen->south
-          { x: 504, y: 2150, w: 196, h: 80 },     // Boiler->O2 path
+          // Outdoor snowy paths (140px wide for reference match)
+          { x: 290, y: 324, w: 140, h: 126 },     // Dropship->Office
+          { x: 270, y: 874, w: 140, h: 146 },     // Office->Comms
+          { x: 564, y: 500, w: 186, h: 140 },     // Office->Weapons
+          { x: 1134, y: 320, w: 166, h: 140 },    // Weapons->Storage
+          { x: 1754, y: 450, w: 146, h: 140 },    // Storage->Admin
+          { x: 2334, y: 320, w: 166, h: 140 },    // Admin->Lab
+          { x: 910, y: 544, w: 140, h: 200 },     // Weapons->south path
+          { x: 910, y: 714, w: 390, h: 140 },     // Center horizontal connector
+          { x: 1470, y: 794, w: 140, h: 206 },    // Storage->Decon upper
+          { x: 1930, y: 744, w: 140, h: 256 },    // Admin->Decon lower
+          { x: 1470, y: 1184, w: 140, h: 166 },   // Decon upper->Specimen
+          { x: 1684, y: 1470, w: 316, h: 140 },   // Specimen->Lava area
+          { x: 354, y: 1140, w: 140, h: 280 },    // Comms->Electrical
+          { x: 270, y: 1804, w: 140, h: 246 },    // Electrical->Boiler
+          { x: 350, y: 1920, w: 350, h: 140 },    // path toward O2
+          { x: 670, y: 1870, w: 140, h: 140 },    // connect to O2
+          { x: 1074, y: 1600, w: 140, h: 150 },   // Specimen->south
+          { x: 474, y: 2120, w: 226, h: 140 },    // Boiler->O2 path
         ],
         tasks: [
           { x: 320, y: 670, name: 'Swipe Card', room: 'Office' },
@@ -1143,18 +1209,18 @@
           { x: 2780, y: 450, partner: 6 },   // Laboratory
         ],
         doors: [
-          { x: 554, y: 190, w: 16, h: 70, room: 'Dropship', dir: 'v' },
-          { x: 564, y: 630, w: 16, h: 80, room: 'Office', dir: 'v' },
-          { x: 300, y: 874, w: 80, h: 16, room: 'Office', dir: 'h' },
-          { x: 300, y: 1420, w: 80, h: 16, room: 'Electrical', dir: 'h' },
-          { x: 750, y: 340, w: 16, h: 80, room: 'Weapons', dir: 'v' },
-          { x: 384, y: 1130, w: 16, h: 80, room: 'Communications', dir: 'v' },
-          { x: 1300, y: 570, w: 16, h: 80, room: 'Storage', dir: 'v' },
-          { x: 1900, y: 520, w: 16, h: 80, room: 'Admin', dir: 'v' },
-          { x: 2500, y: 300, w: 16, h: 80, room: 'Laboratory', dir: 'v' },
-          { x: 1100, y: 1530, w: 16, h: 80, room: 'Specimen Room', dir: 'v' },
-          { x: 1104, y: 1910, w: 16, h: 80, room: 'O2', dir: 'v' },
-          { x: 504, y: 2150, w: 16, h: 80, room: 'Boiler Room', dir: 'v' },
+          { x: 554, y: 155, w: 16, h: 140, room: 'Dropship', dir: 'v' },
+          { x: 564, y: 600, w: 16, h: 140, room: 'Office', dir: 'v' },
+          { x: 270, y: 874, w: 140, h: 16, room: 'Office', dir: 'h' },
+          { x: 270, y: 1420, w: 140, h: 16, room: 'Electrical', dir: 'h' },
+          { x: 750, y: 310, w: 16, h: 140, room: 'Weapons', dir: 'v' },
+          { x: 384, y: 1100, w: 16, h: 140, room: 'Communications', dir: 'v' },
+          { x: 1300, y: 540, w: 16, h: 140, room: 'Storage', dir: 'v' },
+          { x: 1900, y: 490, w: 16, h: 140, room: 'Admin', dir: 'v' },
+          { x: 2500, y: 270, w: 16, h: 140, room: 'Laboratory', dir: 'v' },
+          { x: 1100, y: 1500, w: 16, h: 140, room: 'Specimen Room', dir: 'v' },
+          { x: 1104, y: 1880, w: 16, h: 140, room: 'O2', dir: 'v' },
+          { x: 504, y: 2130, w: 16, h: 140, room: 'Boiler Room', dir: 'v' },
         ],
         waypoints: [
           { x: 360, y: 190, room: 'Dropship' },      // 0
@@ -1689,7 +1755,7 @@
       taskLocations = m.tasks.map(t => ({ ...t, done: false }));
       vents = m.vents;
       EMERGENCY_BTN = m.emergencyBtn;
-      mapTheme = { bg: m.bgColor, wall: m.wallColor, floor: m.floorColor, grid: m.gridColor, floors: m.floors, sabFix: m.sabotageFixLocations };
+      mapTheme = { bg: m.bgColor, wall: m.wallColor, floor: m.floorColor, grid: m.gridColor, floors: m.floors, sabFix: m.sabotageFixLocations, terrain: m.terrain, terrainColor: m.terrainColor };
       // Load doors
       doors = (m.doors || []).map(d => ({ ...d, closed: false, timer: 0 }));
       // Load cameras
@@ -1714,7 +1780,7 @@
     Object.entries(MAPS).forEach(([id, m], i) => {
       const card = document.createElement('div');
       card.className = 'map-card' + (i === 0 ? ' selected' : '');
-      card.style.background = m.bgColor;
+      card.style.background = m.terrainColor || m.bgColor;
       card.innerHTML = '<div class="map-icon">' + m.icon + '</div><div class="map-name">' + m.name + '</div><div class="map-size">' + m.desc + '</div>';
       card.onclick = () => {
         document.querySelectorAll('.map-card').forEach(c => c.classList.remove('selected'));
@@ -1852,6 +1918,7 @@
       visionRadius = VISION_NORMAL;
       doorCooldown = 0;
       for (const d of doors) { d.closed = false; d.timer = 0; }
+      if (selectedMap === 'polus') initSnow();
 
       taskLocations.forEach(t => t.done = false);
 
@@ -3092,8 +3159,8 @@
       'MedBay':'#1e2e3a',      // sterile blue
       'Launchpad':'#282830','Office':'#2a2a38','Greenhouse':'#1e3520',
       'Locker Room':'#2a2a2a','Laboratory':'#2a2a40','Balcony':'#252a35',
-      'Decontamination':'#252030','Dropship':'#282830',
-      'Specimen Room':'#2a2838','Boiler Room':'#352a18',
+      'Decontamination':'#cc1111','Dropship':'#cc1111',
+      'Specimen Room':'#cc1111','Boiler Room':'#cc1111',
       'Cockpit':'#322818','Gap Room':'#302a22','Meeting Room':'#352c24',
       'Kitchen':'#352e22','Main Hall':'#352c24','Engine Room':'#282830',
       'Cargo Bay':'#302a22','Showers':'#1e2838','Records':'#352e22',
@@ -3260,8 +3327,8 @@
 
       // === MAP-SPECIFIC HALLWAY DETAILS ===
       if (selectedMap === 'polus') {
-        // Snow tracks / footprints
-        ctx.fillStyle = 'rgba(200,220,255,0.05)';
+        // Snow tracks / footprints on light pink hallways
+        ctx.fillStyle = 'rgba(255,255,255,0.4)';
         const stepSpacing = 35;
         if (horiz) {
           for (let sx = 15; sx < w - 10; sx += stepSpacing) {
@@ -3275,7 +3342,7 @@
           }
         }
         // Ice crystal accents on edges
-        ctx.fillStyle = 'rgba(180,220,255,0.04)';
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
         for (let i = 0; i < len; i += 45) {
           const ix = horiz ? x + i : x + (i % 2 === 0 ? 2 : w - 6);
           const iy = horiz ? (i % 2 === 0 ? y + 2 : y + h - 6) : y + i;
@@ -4273,11 +4340,8 @@
           ctx.beginPath(); ctx.ellipse(sx - ox, sy - oy, 60, 20, 0, 0, Math.PI*2); ctx.fill();
         }
       } else if (selectedMap === 'polus') {
-        ctx.fillStyle = 'rgba(200,220,255,0.05)';
-        for (let i = 0; i < 50; i++) {
-          const sx = (i * 397 + 213) % MAP_W, sy = (i * 311 + 156) % MAP_H;
-          ctx.beginPath(); ctx.arc(sx - ox, sy - oy, 2 + (i % 3), 0, Math.PI*2); ctx.fill();
-        }
+        // Animated snowfall drawn here
+        drawSnow(ox, oy);
       } else if (selectedMap === 'fungle') {
         ctx.fillStyle = 'rgba(60,120,40,0.06)';
         for (let i = 0; i < 35; i++) {
@@ -4299,6 +4363,14 @@
       ctx.fillStyle = mapTheme.bg;
       ctx.fillRect(-ox, -oy, MAP_W, MAP_H);
 
+      // Terrain shape (Polus: dark pink map outline on black background)
+      if (mapTheme.terrain) {
+        ctx.fillStyle = mapTheme.terrainColor || '#c46878';
+        for (const t of mapTheme.terrain) {
+          ctx.fillRect(t.x - ox, t.y - oy, t.w, t.h);
+        }
+      }
+
       // Environment background (stars, snow, mushrooms, clouds)
       drawEnvironmentBG(ox, oy);
 
@@ -4309,19 +4381,19 @@
           const f = mapTheme.floors[i];
           const fx = f.x - ox, fy = f.y - oy;
           if (i < numRooms) {
-            // Room floor with unique color
-            ctx.fillStyle = roomFloorColors[rooms[i].name] || '#222228';
+            // Room floor with unique color (Polus uses dark red for all rooms)
+            ctx.fillStyle = selectedMap === 'polus' ? '#cc1111' : (roomFloorColors[rooms[i].name] || '#222228');
             ctx.fillRect(fx, fy, f.w, f.h);
             drawFloorTiles(fx, fy, f.w, f.h);
             // Room border glow
-            ctx.strokeStyle = 'rgba(255,255,255,0.04)';
-            ctx.lineWidth = 1;
+            ctx.strokeStyle = selectedMap === 'polus' ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.04)';
+            ctx.lineWidth = selectedMap === 'polus' ? 2 : 1;
             ctx.strokeRect(fx + 2, fy + 2, f.w - 4, f.h - 4);
             // Room decorations
             drawRoomDecor(rooms[i].name, fx, fy, f.w, f.h);
           } else {
             // Hallway
-            ctx.fillStyle = selectedMap === 'polus' ? 'rgba(120,130,160,0.06)' :
+            ctx.fillStyle = selectedMap === 'polus' ? '#f4b8bc' :
                             selectedMap === 'fungle' ? 'rgba(80,120,60,0.06)' :
                             selectedMap === 'mira' ? 'rgba(100,180,255,0.04)' :
                             'rgba(150,150,180,0.06)';
@@ -4594,7 +4666,25 @@
       minimapCtx.fillStyle = 'rgba(0,0,0,0.8)';
       minimapCtx.fillRect(0, 0, minimapCanvas.width, minimapCanvas.height);
 
-      minimapCtx.fillStyle = 'rgba(255,255,255,0.15)';
+      // Draw terrain shape on minimap (Polus)
+      if (mapTheme.terrain) {
+        minimapCtx.fillStyle = 'rgba(160,80,100,0.9)';
+        for (const t of mapTheme.terrain) {
+          minimapCtx.fillRect(t.x * scale, t.y * scale, t.w * scale, t.h * scale);
+        }
+      }
+
+      // Draw floors on minimap
+      if (selectedMap === 'polus' && mapTheme.floors) {
+        const numRooms = rooms.length;
+        for (let i = 0; i < mapTheme.floors.length; i++) {
+          const f = mapTheme.floors[i];
+          minimapCtx.fillStyle = i < numRooms ? 'rgba(200,20,20,0.8)' : 'rgba(240,180,185,0.7)';
+          minimapCtx.fillRect(f.x * scale, f.y * scale, f.w * scale, f.h * scale);
+        }
+      }
+
+      minimapCtx.fillStyle = selectedMap === 'polus' ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.15)';
       for (const w of walls) {
         minimapCtx.fillRect(w.x * scale, w.y * scale, Math.max(w.w * scale, 1), Math.max(w.h * scale, 1));
       }
@@ -4775,12 +4865,24 @@
         ctx.fillStyle = mapTheme.bg;
         ctx.fillRect(worldOx - 50, worldOy - 50, FEED_VIEW * 2 + 100, FEED_VIEW * 2 + 100);
 
+        // Draw terrain in camera view (Polus)
+        if (mapTheme.terrain) {
+          ctx.fillStyle = mapTheme.terrainColor || '#c46878';
+          for (const t of mapTheme.terrain) {
+            ctx.fillRect(t.x, t.y, t.w, t.h);
+          }
+        }
+
         // Draw floors visible in this camera area
         if (mapTheme.floors) {
           const rooms2 = rooms;
           for (let fi = 0; fi < mapTheme.floors.length; fi++) {
             const f = mapTheme.floors[fi];
-            ctx.fillStyle = fi < rooms2.length ? (roomFloorColors[rooms2[fi].name] || '#222228') : 'rgba(120,120,150,0.5)';
+            if (selectedMap === 'polus') {
+              ctx.fillStyle = fi < rooms2.length ? '#cc1111' : '#f4b8bc';
+            } else {
+              ctx.fillStyle = fi < rooms2.length ? (roomFloorColors[rooms2[fi].name] || '#222228') : 'rgba(120,120,150,0.5)';
+            }
             ctx.fillRect(f.x, f.y, f.w, f.h);
           }
         }
@@ -4870,10 +4972,48 @@
       ctx.fillText('[ E ] or [ ESC ] — Exit Security View', cw / 2, ch - 12);
     }
 
+    // Snow particle system for Polus
+    const snowParticles = [];
+    const SNOW_COUNT = 200;
+    function initSnow() {
+      snowParticles.length = 0;
+      for (let i = 0; i < SNOW_COUNT; i++) {
+        snowParticles.push({
+          x: Math.random() * 3200,
+          y: Math.random() * 2400,
+          r: 1 + Math.random() * 2.5,
+          vx: -0.3 + Math.random() * 0.2,
+          vy: 0.5 + Math.random() * 1.2,
+          opacity: 0.3 + Math.random() * 0.5,
+          wobble: Math.random() * Math.PI * 2,
+          wobbleSpeed: 0.02 + Math.random() * 0.03,
+        });
+      }
+    }
+    function updateSnow() {
+      for (const s of snowParticles) {
+        s.wobble += s.wobbleSpeed;
+        s.x += s.vx + Math.sin(s.wobble) * 0.3;
+        s.y += s.vy;
+        if (s.y > 2400) { s.y = -5; s.x = Math.random() * 3200; }
+        if (s.x < 0) s.x += 3200;
+        if (s.x > 3200) s.x -= 3200;
+      }
+    }
+    function drawSnow(ox, oy) {
+      for (const s of snowParticles) {
+        ctx.fillStyle = `rgba(255,255,255,${s.opacity})`;
+        ctx.beginPath();
+        ctx.arc(s.x - ox, s.y - oy, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
     let frameCount = 0;
     function gameLoop() {
       if (!gameStarted || gameOver) return;
       frameCount++;
+      if (selectedMap === 'polus') updateSnow();
       updatePlayer();
       updateNPCs();
       updateDoors();
