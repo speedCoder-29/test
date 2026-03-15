@@ -139,6 +139,42 @@
       text-decoration: none; font-size: 14px; z-index: 200;
     }
     .home-link:hover { color: #fff; }
+    #settingsPanel {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.78); z-index: 85; display: none;
+      justify-content: center; align-items: center;
+    }
+    .settings-inner {
+      background: #1a1e2e; border: 2px solid #4ecdc4; border-radius: 12px;
+      padding: 20px 24px; width: 540px; max-width: 94vw; max-height: 88vh;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .settings-inner h2 { color: #4ecdc4; text-align: center; margin-bottom: 12px; font-size: 20px; letter-spacing: 2px; }
+    #settingsContent { overflow-y: auto; flex: 1; padding: 0 2px; }
+    .sett-section { color: #7a8a9a; font-size: 11px; letter-spacing: 1.5px; margin: 14px 0 4px; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 3px; }
+    .sett-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 2px; border-bottom: 1px solid rgba(255,255,255,0.04); gap: 12px; }
+    .sett-label { color: #e0e0e0; font-size: 14px; font-weight: bold; flex: 1; }
+    .sett-hint { color: #666; font-size: 11px; margin-top: 1px; }
+    .sett-ctrl { display: flex; gap: 5px; align-items: center; flex-shrink: 0; }
+    .sett-val { color: #ffd700; font-weight: bold; font-size: 14px; min-width: 54px; text-align: center; }
+    .sett-opt { padding: 4px 10px; border: 1px solid #444; border-radius: 6px; background: rgba(255,255,255,0.06); color: #aaa; cursor: pointer; font-size: 12px; font-weight: bold; transition: background 0.1s; }
+    .sett-opt:hover { background: rgba(255,255,255,0.15); }
+    .sett-opt.on { background: #4ecdc4; color: #000; border-color: #4ecdc4; }
+    .sett-adj { width: 26px; height: 26px; border-radius: 5px; border: 1px solid #444; background: rgba(255,255,255,0.07); color: #fff; cursor: pointer; font-size: 17px; font-weight: bold; line-height: 24px; text-align: center; }
+    .sett-adj:hover { background: rgba(255,255,255,0.2); }
+    #settingsStartBtn { margin-top: 14px; padding: 13px; width: 100%; background: #117f2d; color: #fff; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; letter-spacing: 3px; }
+    #settingsStartBtn:hover { background: #14a034; }
+    #dropshipWardrobe {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: rgba(10,10,30,0.96); border: 2px solid #4ecdc4; border-radius: 12px;
+      padding: 24px 28px; z-index: 80; text-align: center; display: none; min-width: 300px;
+    }
+    #dropshipWardrobe h3 { color: #4ecdc4; margin-bottom: 16px; font-size: 20px; letter-spacing: 2px; }
+    .ds-done-btn {
+      margin-top: 16px; padding: 10px 30px; background: #4ecdc4; color: #000;
+      border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;
+    }
+    .ds-done-btn:hover { background: #6ef0e8; }
   </style>
 </head>
 <body>
@@ -184,6 +220,20 @@
     <h1 id="winTitle"></h1>
     <p id="winDesc"></p>
     <button id="restartBtn">PLAY AGAIN</button>
+  </div>
+
+  <div id="dropshipWardrobe">
+    <h3>CHANGE APPEARANCE</h3>
+    <div class="color-picker" id="dropshipColorPicker"></div>
+    <button class="ds-done-btn" onclick="closeDropshipWardrobe()">Done</button>
+  </div>
+
+  <div id="settingsPanel">
+    <div class="settings-inner">
+      <h2>GAME SETTINGS</h2>
+      <div id="settingsContent"></div>
+      <button id="settingsStartBtn" onclick="startFromSettings()">START ▶</button>
+    </div>
   </div>
 
   <script>
@@ -244,7 +294,7 @@
       skeld: {
         name: 'The Skeld', icon: '\u{1F680}', desc: 'Classic spaceship',
         width: 3200, height: 2000,
-        bgColor: '#0a0a18', wallColor: '#4a4a60', floorColor: 'rgba(180,180,255,0.04)', gridColor: 'rgba(255,255,255,0.025)',
+        bgColor: '#070710', wallColor: '#3c3e42', floorColor: 'rgba(195,198,208,0.10)', gridColor: 'rgba(255,255,255,0.025)',
         spawnX: 1450, spawnY: 320,
         emergencyBtn: { x: 1450, y: 290, radius: 22 },
         sabotageFixLocations: {
@@ -307,7 +357,7 @@
           // --- Upper Engine ---
           w.push({ x: 140, y: 130, w: 16, h: 70 });    // left inner
           w.push({ x: 140, y: 130, w: 120, h: 16 });   // top inner
-          w.push({ x: 414, y: 96,  w: 16, h: 144 });   // right top (to door gap y:240)
+          w.push({ x: 414, y: 96,  w: 16, h: 104 });   // right top (to door gap y:200, full corridor overlap)
           w.push({ x: 414, y: 320, w: 16, h: 90 });    // right bottom (below door)
           w.push({ x: 414, y: 394, w: 16, h: 16 });    // right corner at bottom
           w.push({ x: 140, y: 394, w: 120, h: 16 });   // bottom left
@@ -330,23 +380,23 @@
           w.push({ x: 76,  y: 1004, w: 184, h: 16 });  // bottom left (x:76-260, gap x:260-330 for LE north)
           w.push({ x: 330, y: 1004, w:  66, h: 16 });  // bottom right (x:330-396)
 
-          // --- Security (accessed from right side via corridor to main vertical) ---
-          // Left wall: SOLID against Reactor
-          w.push({ x: 396, y: 560, w: 16, h: 284 });   // left wall — full height, solid
-          // Right wall: door gap at y:700-780 (connects to Security→main corridor)
-          w.push({ x: 580, y: 560, w: 16, h: 140 });   // right top (y:560-700)
-          w.push({ x: 580, y: 780, w: 16, h: 64 });    // right bottom (y:780-844)
+          // --- Security (RIGHT of left vertical corridor, entry at x:740 gap y:700-780) ---
+          // Left wall = corridor right wall at x:740 (already has gap y:700-780) — no new wall needed
           // Top & bottom walls
-          w.push({ x: 396, y: 560, w: 200, h: 16 });   // top wall
-          w.push({ x: 396, y: 844, w: 200, h: 16 });   // bottom wall
+          w.push({ x: 660, y: 560, w: 232, h: 16 });   // top wall (y:560-576)
+          w.push({ x: 660, y: 844, w: 232, h: 16 });   // bottom wall
+          // Right wall
+          w.push({ x: 876, y: 560, w: 16, h: 300 });   // right wall (y:560-860)
 
-          // --- MedBay ---
-          w.push({ x: 520, y: 120, w: 16, h: 150 });   // left top (y:120-270, door gap 270-340)
-          w.push({ x: 520, y: 340, w: 16, h: 90 });    // left bottom (y:340-430)
-          w.push({ x: 520, y: 120, w: 360, h: 16 });   // top
-          w.push({ x: 864, y: 120, w: 16, h: 80 });    // right top (y:120-200, gap y:200-280 for MedBay→Cafeteria)
-          w.push({ x: 864, y: 280, w: 16, h: 160 });   // right bottom (y:280-440)
-          w.push({ x: 520, y: 424, w: 360, h: 16 });   // bottom
+          // --- MedBay (BELOW top corridor — top open to corridor at y:280) ---
+          // Top wall: none — corridor at y:200-280 feeds directly into MedBay top
+          // Left wall (gap y:400-480 for left vertical corridor connector)
+          w.push({ x: 520, y: 280, w: 16, h: 120 });   // left top (y:280-400)
+          w.push({ x: 520, y: 480, w: 16, h: 136 });   // left bottom (y:480-616)
+          // Right wall: solid
+          w.push({ x: 864, y: 280, w: 16, h: 320 });   // right (y:280-600)
+          // Bottom wall
+          w.push({ x: 520, y: 600, w: 360, h: 16 });   // bottom (y:600-616)
 
           // --- Cafeteria (octagonal: chamfered corners via angled wall pieces) ---
           w.push({ x: 970, y: 96,  w: 16, h: 104 });   // left top (y:96-200, gap y:200-280 for MedBay→Cafeteria)
@@ -355,8 +405,8 @@
           w.push({ x: 1834, y: 96, w: 16, h: 104 });   // right top (y:96-200, gap y:200-280 for Cafeteria→Weapons)
           w.push({ x: 1834, y: 280, w: 16, h: 220 });  // right bottom (y:280-500)
           // Bottom walls: one opening (south-left x:1234-1400) for Admin/hallway exit
-          w.push({ x: 970,  y: 484, w: 264, h: 16 }); // bottom-left (to south-left exit)
-          w.push({ x: 1400, y: 484, w: 450, h: 16 }); // bottom-right (solid, x:1400-1850 — only one south exit)
+          w.push({ x: 970,  y: 572, w: 264, h: 16 }); // bottom-left (to south-left exit)
+          w.push({ x: 1400, y: 572, w: 450, h: 16 }); // bottom-right (solid, x:1400-1850 — only one south exit)
 
           // --- Weapons ---
           w.push({ x: 2050, y: 96,  w: 16, h: 104 });  // left top (y:96-200, gap y:200-280 for Cafeteria→Weapons)
@@ -380,20 +430,20 @@
           w.push({ x: 2550, y: 934, w: 380, h: 16 }); // bottom
 
           // --- Admin (left gap y:700-780 for horizontal corridor; right gap y:700-780 for Admin→O2) ---
-          w.push({ x: 1380, y: 660, w: 16, h: 40 });   // left top (y:660-700)
+            // left top (y:660-700)
           w.push({ x: 1380, y: 780, w: 16, h: 210 });  // left bottom (y:780-990, gap y:700-780)
           w.push({ x: 1380, y: 660, w: 420, h: 16 });  // top
           w.push({ x: 1784, y: 660, w: 16, h: 40 });   // right top (y:660-700)
-          w.push({ x: 1784, y: 780, w: 16, h: 210 });  // right bottom (y:780-990, gap y:700-780 for O2)
+          w.push({ x: 1784, y: 780, w: 16, h: 210 });   // right bottom (y:780-990, gap y:700-780 for O2)
           w.push({ x: 1380, y: 974, w: 420, h: 16 });  // bottom
 
-          // --- Electrical ---
-          w.push({ x: 520, y: 1160, w: 16, h: 70 });   // left top (door gap y:1230-1310)
-          w.push({ x: 520, y: 1310, w: 16, h: 300 });  // left bottom
-          w.push({ x: 520, y: 1160, w:  60, h: 16 }); // top left (x:520-580, gap x:580-740 for corridors)
-          w.push({ x: 740, y: 1160, w: 180, h: 16 }); // top right (x:740-920)
-          w.push({ x: 904, y: 1160, w: 16, h: 450 });  // right
-          w.push({ x: 520, y: 1594, w: 400, h: 16 });  // bottom
+          // --- Electrical (ABOVE LE-Storage corridor — bottom at y:1290 opens to corridor below) ---
+          w.push({ x: 520, y: 924, w: 16, h: 66 });    // left top (door gap y:990-1070)
+          w.push({ x: 520, y: 1070, w: 16, h: 220 });  // left bottom (y:1070-1290)
+          w.push({ x: 520, y: 924, w:  60, h: 16 });   // top left (x:520-580, gap x:580-740 for corridors)
+          w.push({ x: 740, y: 924, w: 180, h: 16 });   // top right (x:740-920)
+          w.push({ x: 904, y: 924, w: 16, h: 366 });   // right (y:924-1290)
+          w.push({ x: 520, y: 1290, w: 400, h: 16 });  // bottom
 
           // --- Storage ---
           w.push({ x: 1020, y: 1100, w: 16, h: 180 }); // left top (door gap y:1280-1370)
@@ -404,18 +454,17 @@
           w.push({ x: 1524, y: 1370, w: 16, h: 260 }); // right bottom
           w.push({ x: 1020, y: 1614, w: 520, h: 16 }); // bottom
 
-          // --- Communications ---
-          w.push({ x: 1740, y: 1100, w: 16, h: 130 }); // left top (door gap y:1230-1320)
-          w.push({ x: 1740, y: 1320, w: 16, h: 200 }); // left bottom
-          w.push({ x: 1740, y: 1100, w: 360, h: 16 }); // top
-          w.push({ x: 2084, y: 1100, w: 16, h: 100 }); // right top (gap for Comms→Shields)
-          w.push({ x: 2084, y: 1280, w: 16, h: 240 }); // right bottom
-          w.push({ x: 1740, y: 1504, w: 360, h: 16 }); // bottom
+          // --- Communications (BELOW Storage→Shields corridor — top open to corridor at y:1370) ---
+          // Top: no wall — corridor connects from above at y:1370
+          w.push({ x: 1724, y: 1370, w: 16, h: 380 }); // left wall (y:1370-1750)
+          w.push({ x: 2084, y: 1370, w: 16, h: 380 }); // right wall (y:1370-1750)
+          w.push({ x: 1724, y: 1750, w: 376, h: 16 }); // bottom wall
 
           // --- Shields ---
           w.push({ x: 2180, y: 1100, w: 16, h: 140 }); // left top (door gap y:1240-1330)
           w.push({ x: 2180, y: 1330, w: 16, h: 180 }); // left bottom
-          w.push({ x: 2180, y: 1100, w: 400, h: 16 }); // top
+          w.push({ x: 2180, y: 1100, w: 248, h: 16 }); // top left (x:2180-2428)
+          w.push({ x: 2524, y: 1100, w: 56,  h: 16 }); // top right (x:2524-2580)
           w.push({ x: 2180, y: 1494, w: 400, h: 16 }); // bottom
 
           // ============ HALLWAY CORRIDOR WALLS ============
@@ -423,13 +472,10 @@
           // Horizontal corridors get top+bottom walls; vertical get left+right walls.
           // Junction gaps are left where corridors intersect.
 
-          // --- UE → MedBay (x:414-520, y:240-340) ---
-          w.push({ x: 414, y: 224, w: 106, h: 16 }); // top
-          w.push({ x: 414, y: 340, w: 106, h: 16 }); // bottom (extended to y:340 to cover MedBay door)
-
-          // --- MedBay → Cafeteria (x:864-970, y:200-280) ---
-          w.push({ x: 864, y: 184, w: 106, h: 16 }); // top
-          w.push({ x: 864, y: 280, w: 106, h: 16 }); // bottom
+          // --- Top horizontal corridor (x:414-986, y:200-280) — MedBay hangs below ---
+          w.push({ x: 414, y: 184, w: 572, h: 16 }); // top (full span UE right → Caf left)
+          w.push({ x: 414, y: 280, w: 106, h: 16 }); // bottom left (x:414-520, left of MedBay)
+          w.push({ x: 864, y: 280, w: 106, h: 16 }); // bottom right (x:864-970, right of MedBay)
 
           // --- Cafeteria → Weapons (x:1834-2050, y:200-280) ---
           w.push({ x: 1834, y: 184, w: 216, h: 16 }); // top
@@ -457,29 +503,34 @@
           // Left wall: continuous
           w.push({ x: 644, y: 560, w: 16, h: 600 }); // left (full)
           // Right wall: gap at y:700-780 for horizontal corridor junction
-          w.push({ x: 740, y: 560, w: 16, h: 140 }); // right top (y:560-700)
-          w.push({ x: 740, y: 780, w: 16, h: 380 }); // right bottom (y:780-1160)
+          // right top wall removed — Security now extends left to x:660
+          w.push({ x: 740, y: 844, w: 16, h: 316 }); // right bottom (y:844-1160, below Security)
 
           // --- Security → main corridor (x:580-660, y:700-780) - connector ---
           // Top & bottom walls shared with extended horizontal below
 
-          // --- Full horizontal corridor including Security connector ---
-          // Combined span x:580-1380 at y:700-780
-          w.push({ x: 580, y: 684, w: 800, h: 16 }); // top (Security exit → Admin entry)
-          w.push({ x: 580, y: 780, w: 700, h: 16 }); // bottom left (x:580-1280)
-          w.push({ x: 1360, y: 780, w:  20, h: 16 }); // bottom right (x:1360-1380, gap x:1280-1360 for Admin→Storage)
+          // --- Horizontal corridor y:700-780 (Security at x:740-956 is open — no walls through it) ---
+          w.push({ x: 580, y: 684, w: 80,  h: 16 }); // top left (x:580-660, leaves main corridor x:660-740 open)
+          w.push({ x: 956, y: 684, w: 278, h: 16 }); // top right (x:956-1234, ends before Cafeteria south connector)
+          w.push({ x: 580, y: 780, w: 80,  h: 16 }); // bottom left (x:580-660)
+          w.push({ x: 956, y: 780, w: 324, h: 16 }); // bottom right (x:956-1280)
+          w.push({ x: 1360, y: 780, w:  20, h: 16 }); // bottom far right (gap x:1280-1360 for Admin→Storage)
 
           // --- Admin → O2 corridor (x:1784-1920, y:700-780) ---
           w.push({ x: 1784, y: 684, w: 136, h: 16 }); // top
           w.push({ x: 1784, y: 780, w: 136, h: 16 }); // bottom (shares with Admin right bottom)
 
           // --- Cafeteria south-left exit (x:1234-1400, y:484-700) ---
-          w.push({ x: 1234, y: 484, w: 16, h: 216 }); // left (extends to y:700)
-          w.push({ x: 1400, y: 484, w: 16, h: 216 }); // right (extends to y:700)
+          w.push({ x: 1234, y: 572, w: 16, h: 128 }); // left (extends to y:700)
+          w.push({ x: 1400, y: 572, w: 16, h: 128 }); // right (extends to y:700)
 
           // --- O2 → Navigation (x:2284-2550, y:700-780, aligned with Nav door and O2 right door) ---
           w.push({ x: 2284, y: 684, w: 266, h: 16 }); // top
-          w.push({ x: 2284, y: 780, w: 266, h: 16 }); // bottom
+          w.push({ x: 2284, y: 780, w: 144, h: 16 }); // bottom left (x:2284-2428)
+          w.push({ x: 2524, y: 780, w: 26,  h: 16 }); // bottom right (x:2524-2550)
+          // East vertical corridor walls (x:2428-2524, y:796-1116 — connects O2/Nav corridor to Shields)
+          w.push({ x: 2412, y: 796, w: 16, h: 320 }); // east corridor left wall
+          w.push({ x: 2524, y: 796, w: 16, h: 304 }); // east corridor right wall
 
           // --- Weapons → O2 vertical (x:2230-2310, y:454-580) ---
           w.push({ x: 2214, y: 454, w: 16, h: 126 }); // left
@@ -493,13 +544,10 @@
           w.push({ x: 1264, y: 796, w: 16, h: 304 }); // left
           w.push({ x: 1360, y: 796, w: 16, h: 304 }); // right
 
-          // --- Storage → Comms horizontal (x:1524-1740, y:1280-1370, aligned with Storage right + Comms left doors) ---
-          w.push({ x: 1524, y: 1264, w: 216, h: 16 }); // top
-          w.push({ x: 1524, y: 1370, w: 216, h: 16 }); // bottom
-
-          // --- Comms → Shields horizontal (x:2084-2180, y:1200-1280) ---
-          w.push({ x: 2084, y: 1184, w: 96, h: 16 }); // top
-          w.push({ x: 2084, y: 1280, w: 96, h: 16 }); // bottom
+          // --- Storage → Shields corridor (x:1524-2180, y:1280-1370) — Comms hangs below ---
+          w.push({ x: 1524, y: 1264, w: 656, h: 16 }); // top (full span to Shields left)
+          w.push({ x: 1524, y: 1370, w: 216, h: 16 }); // bottom left (x:1524-1740, left of Comms entry)
+          w.push({ x: 2084, y: 1370, w: 96, h: 16 });  // bottom right (x:2084-2180, right of Comms entry)
 
           // --- Electrical → Storage horizontal (x:904-1020, y:1300-1380) ---
           w.push({ x: 904, y: 1284, w: 116, h: 16 }); // top
@@ -534,15 +582,15 @@
           w.push({ x: 1400, y: 1480, w: 55, h: 40 });   // crate bottom-right
           w.push({ x: 1200, y: 1520, w: 40, h: 35 });   // crate bottom-center
 
-          // --- Electrical: Equipment racks and panels ---
-          w.push({ x: 580, y: 1230, w: 16, h: 120 });   // left panel rack
-          w.push({ x: 700, y: 1200, w: 80, h: 16 });    // top horizontal panel
-          w.push({ x: 820, y: 1280, w: 16, h: 100 });   // right panel rack
-          w.push({ x: 620, y: 1430, w: 60, h: 16 });    // lower wire tray
-          w.push({ x: 760, y: 1460, w: 80, h: 16 });    // lower equipment shelf
+          // --- Electrical: Equipment racks and panels (shifted up by ~240 to match new y:940-1290) ---
+          w.push({ x: 580, y: 990, w: 16, h: 120 });    // left panel rack
+          w.push({ x: 700, y: 960, w: 80, h: 16 });     // top horizontal panel
+          w.push({ x: 820, y: 1040, w: 16, h: 100 });   // right panel rack
+          w.push({ x: 620, y: 1190, w: 60, h: 16 });    // lower wire tray
+          w.push({ x: 760, y: 1220, w: 80, h: 16 });    // lower equipment shelf
 
-          // --- MedBay: Scanner bed ---
-          w.push({ x: 660, y: 230, w: 60, h: 80 });     // scanner platform
+          // --- MedBay: Scanner bed (shifted down to new y:280-540 position) ---
+          w.push({ x: 660, y: 380, w: 60, h: 80 });     // scanner platform
 
           // --- Weapons: Asteroid turret seat ---
           w.push({ x: 2300, y: 200, w: 55, h: 55 });    // turret console
@@ -551,15 +599,15 @@
           w.push({ x: 2730, y: 690, w: 80, h: 16 });    // front console desk
           w.push({ x: 2820, y: 730, w: 40, h: 50 });    // steering wheel console
 
-          // --- Security: Camera monitor desk ---
-          w.push({ x: 450, y: 660, w: 70, h: 50 });     // monitor desk
+          // --- Security: Camera monitor desk (moved right of corridor) ---
+          w.push({ x: 720, y: 660, w: 70, h: 50 });     // monitor desk
 
           // --- O2: Plant shelves and filter equipment ---
           w.push({ x: 2000, y: 650, w: 50, h: 50 });    // filter unit
           w.push({ x: 2150, y: 750, w: 40, h: 40 });    // plant shelf
 
-          // --- Communications: Radio console ---
-          w.push({ x: 1860, y: 1260, w: 70, h: 40 });   // radio desk
+          // --- Communications: Radio console (moved below corridor) ---
+          w.push({ x: 1860, y: 1520, w: 70, h: 40 });   // radio desk
 
           // --- Shields: Shield generator ---
           w.push({ x: 2340, y: 1260, w: 50, h: 50 });   // shield hex console
@@ -576,30 +624,34 @@
           { name: 'Cafeteria', x: 1400, y: 260 }, { name: 'Weapons', x: 2300, y: 260 },
           { name: 'Navigation', x: 2750, y: 740 }, { name: 'O2', x: 2100, y: 740 },
           { name: 'Admin', x: 1480, y: 770 }, { name: 'Shields', x: 2380, y: 1290 },
-          { name: 'Communications', x: 1910, y: 1290 }, { name: 'Storage', x: 1270, y: 1360 },
-          { name: 'Electrical', x: 710, y: 1380 }, { name: 'Lower Engine', x: 280, y: 1360 },
-          { name: 'Reactor', x: 220, y: 710 }, { name: 'Security', x: 490, y: 700 },
-          { name: 'Upper Engine', x: 280, y: 250 }, { name: 'MedBay', x: 690, y: 260 },
+          { name: 'Communications', x: 1912, y: 1560 }, { name: 'Storage', x: 1270, y: 1360 },
+          { name: 'Electrical', x: 720, y: 1115 }, { name: 'Lower Engine', x: 280, y: 1360 },
+          { name: 'Reactor', x: 220, y: 710 }, { name: 'Security', x: 768, y: 710 },
+          { name: 'Upper Engine', x: 280, y: 250 }, { name: 'MedBay', x: 700, y: 410 },
+        ],
+        extraLabels: [
+          { name: 'HALLWAY', x: 960, y: 740 },
+          { name: 'HALLWAY', x: 2480, y: 950 },
         ],
         floors: [
           // Rooms
-          { x: 986, y: 112, w: 864, h: 372 },   // 0: Cafeteria (LARGE)
+          { x: 986, y: 112, w: 864, h: 460 },   // 0: Cafeteria (LARGE)
           { x: 2066, y: 112, w: 478, h: 342 },   // 1: Weapons
           { x: 2566, y: 566, w: 480, h: 368 },   // 2: Navigation (nose)
           { x: 1936, y: 596, w: 348, h: 308 },   // 3: O2
           { x: 1396, y: 676, w: 388, h: 298 },   // 4: Admin
           { x: 2196, y: 1116, w: 348, h: 378 },  // 5: Shields
-          { x: 1756, y: 1116, w: 328, h: 388 },  // 6: Communications
+          { x: 1740, y: 1370, w: 344, h: 380 },  // 6: Communications (BELOW corridor)
           { x: 1036, y: 1116, w: 488, h: 498 },  // 7: Storage (LARGE)
-          { x: 536, y: 1176, w: 368, h: 418 },   // 8: Electrical (cramped)
+          { x: 536, y: 940, w: 368, h: 350 },    // 8: Electrical (ABOVE corridor)
           { x: 156, y: 1226, w: 258, h: 282 },   // 9: Lower Engine
           { x: 76, y: 436, w: 304, h: 568 },     // 10: Reactor (tall)
-          { x: 412, y: 576, w: 168, h: 268 },    // 11: Security (tiny)
+          { x: 660, y: 576, w: 216, h: 268 },    // 11: Security (moved left, entry from main corridor)
           { x: 156, y: 146, w: 258, h: 248 },    // 12: Upper Engine
-          { x: 536, y: 136, w: 328, h: 288 },    // 13: MedBay
+          { x: 536, y: 280, w: 328, h: 320 },    // 13: MedBay (BELOW top corridor)
           // Hallways connecting rooms
-          { x: 414, y: 240, w: 106, h: 100 },    // Upper Engine -> MedBay (extended to y:340 for MedBay door)
-          { x: 864, y: 200, w: 106, h: 80 },     // MedBay -> Cafeteria
+          { x: 414, y: 200, w: 572, h: 80 },     // Top horizontal corridor UE→Caf (above MedBay)
+          { x: 1524, y: 1280, w: 656, h: 90 },    // Storage→Shields corridor (covers Comms top + Shields left)
           { x: 1834, y: 200, w: 216, h: 80 },    // Cafeteria -> Weapons
           { x: 244, y: 410, w: 86, h: 26 },      // UE south → Reactor connector (x:244-330, y:410-436)
           { x: 244, y: 1004, w: 86, h: 206 },    // Reactor → LE north corridor (x:244-330, y:1004-1210)
@@ -609,16 +661,16 @@
           { x: 580, y: 844, w: 80, h: 316 },     // left corridor lower -> Electrical
           { x: 660, y: 560, w: 80, h: 600 },     // main left vertical corridor
           { x: 740, y: 700, w: 540, h: 80 },     // left corridor -> Admin (horizontal)
-          { x: 1250, y: 484, w: 150, h: 216 },   // Cafeteria south-left -> horizontal corridor (extended to y:700)
+          { x: 1250, y: 572, w: 150, h: 128 },   // Cafeteria south -> horizontal corridor (y:572-700)
           { x: 1680, y: 700, w: 240, h: 80 },    // Admin/O2 hallway (x:1680-1920, connects Admin right to O2 left)
           { x: 2284, y: 700, w: 266, h: 80 },    // O2 -> Navigation (aligned with Nav door y:700-780 and O2 right door)
           { x: 2230, y: 454, w: 80, h: 126 },    // Weapons -> O2 connector
           { x: 2470, y: 454, w: 80, h: 96 },     // Weapons -> Nav upper connector
           { x: 1280, y: 796, w: 80, h: 304 },    // Storage vertical (from horizontal corridor junction y:796 to Storage top y:1100)
-          { x: 1524, y: 1280, w: 216, h: 90 },   // Storage right -> Comms left (aligned with doors y:1280-1370)
-          { x: 2084, y: 1200, w: 96, h: 80 },    // Comms -> Shields
+          { x: 580, y: 700, w: 80,  h: 80 },      // left corridor → Security entry (x:580-660)
+          { x: 2428, y: 796, w: 96, h: 320 },     // East vertical corridor (O2/Nav → Shields north)
           { x: 904, y: 1300, w: 116, h: 80 },    // Electrical -> Storage area
-          { x: 580, y: 700, w: 80, h: 80 },      // Security -> main corridor connector
+          { x: 580, y: 280, w: 80, h: 160 },      // left corridor below top corridor (y:280-440)
         ],
         tasks: [
           // Official Skeld task list per room
@@ -626,48 +678,60 @@
           { x: 1200, y: 200, name: 'Download Data', room: 'Cafeteria' },
           { x: 1500, y: 400, name: 'Empty Garbage', room: 'Cafeteria' },
           { x: 1600, y: 200, name: 'Fix Wiring', room: 'Cafeteria' },
+          { x: 1720, y: 350, name: 'Upload Data', room: 'Cafeteria' },
           // Weapons
-          { x: 2350, y: 230, name: 'Clear Asteroids', room: 'Weapons' },
+          { x: 2350, y: 230, name: 'Clear Asteroids', room: 'Weapons', visual: true },
           { x: 2200, y: 300, name: 'Download Data', room: 'Weapons' },
+          { x: 2450, y: 350, name: 'Accept Diverted Power', room: 'Weapons' },
           // Navigation
           { x: 2780, y: 740, name: 'Chart Course', room: 'Navigation' },
           { x: 2680, y: 680, name: 'Stabilize Steering', room: 'Navigation' },
           { x: 2850, y: 800, name: 'Download Data', room: 'Navigation' },
           { x: 2700, y: 850, name: 'Fix Wiring', room: 'Navigation' },
+          { x: 2620, y: 780, name: 'Accept Diverted Power', room: 'Navigation' },
           // O2
           { x: 2100, y: 720, name: 'Clean O2 Filter', room: 'O2' },
           { x: 2000, y: 820, name: 'Empty Chute', room: 'O2' },
+          { x: 2220, y: 650, name: 'Accept Diverted Power', room: 'O2' },
           // Admin
           { x: 1480, y: 830, name: 'Swipe Card', room: 'Admin' },
           { x: 1580, y: 750, name: 'Upload Data', room: 'Admin' },
           { x: 1420, y: 900, name: 'Fix Wiring', room: 'Admin' },
+          { x: 1700, y: 900, name: 'Accept Diverted Power', room: 'Admin' },
           // Shields
           { x: 2380, y: 1350, name: 'Prime Shields', room: 'Shields' },
+          { x: 2260, y: 1200, name: 'Accept Diverted Power', room: 'Shields' },
           // Communications
-          { x: 1910, y: 1300, name: 'Download Data', room: 'Communications' },
+          { x: 1910, y: 1540, name: 'Download Data', room: 'Communications' },
+          { x: 2050, y: 1570, name: 'Accept Diverted Power', room: 'Communications' },
           // Storage
           { x: 1270, y: 1400, name: 'Empty Garbage', room: 'Storage' },
           { x: 1150, y: 1300, name: 'Fix Wiring', room: 'Storage' },
-          { x: 1350, y: 1500, name: 'Fuel Engines', room: 'Storage' },
+          { x: 1100, y: 1500, name: 'Fuel Engines (Part 1)', room: 'Storage' },
+          { x: 1420, y: 1500, name: 'Fuel Engines (Part 3)', room: 'Storage' },
           // Electrical
-          { x: 700, y: 1400, name: 'Calibrate Distributor', room: 'Electrical' },
-          { x: 620, y: 1300, name: 'Divert Power', room: 'Electrical' },
-          { x: 800, y: 1350, name: 'Download Data', room: 'Electrical' },
-          { x: 650, y: 1500, name: 'Fix Wiring', room: 'Electrical' },
+          { x: 700, y: 1160, name: 'Calibrate Distributor', room: 'Electrical' },
+          { x: 590, y: 1070, name: 'Divert Power (to Shields)', room: 'Electrical' },
+          { x: 680, y: 1070, name: 'Divert Power (to Comms)', room: 'Electrical' },
+          { x: 800, y: 1110, name: 'Download Data', room: 'Electrical' },
+          { x: 650, y: 1260, name: 'Fix Wiring', room: 'Electrical' },
           // Reactor
           { x: 220, y: 650, name: 'Start Reactor', room: 'Reactor' },
           { x: 220, y: 800, name: 'Unlock Manifolds', room: 'Reactor' },
           // Security
-          { x: 490, y: 720, name: 'Accept Diverted Power', room: 'Security' },
+          { x: 768, y: 710, name: 'Accept Diverted Power', room: 'Security' },
           // Upper Engine
           { x: 280, y: 280, name: 'Align Engine Output', room: 'Upper Engine' },
-          { x: 280, y: 200, name: 'Fuel Engines', room: 'Upper Engine' },
+          { x: 330, y: 200, name: 'Fuel Engines (Part 2)', room: 'Upper Engine' },
+          { x: 200, y: 330, name: 'Accept Diverted Power', room: 'Upper Engine' },
           // Lower Engine
           { x: 280, y: 1380, name: 'Align Engine Output', room: 'Lower Engine' },
-          { x: 280, y: 1440, name: 'Fuel Engines', room: 'Lower Engine' },
+          { x: 330, y: 1460, name: 'Fuel Engines (Part 4)', room: 'Lower Engine' },
+          { x: 200, y: 1290, name: 'Accept Diverted Power', room: 'Lower Engine' },
           // MedBay
-          { x: 690, y: 280, name: 'Submit Scan', room: 'MedBay' },
-          { x: 690, y: 350, name: 'Inspect Sample', room: 'MedBay' },
+          { x: 690, y: 430, name: 'Submit Scan', room: 'MedBay', visual: true },
+          { x: 690, y: 490, name: 'Inspect Sample', room: 'MedBay' },
+          { x: 580, y: 350, name: 'Accept Diverted Power', room: 'MedBay' },
         ],
         vents: [
           // Official Skeld vent network:
@@ -678,9 +742,9 @@
           { x: 160, y: 880, partner: 3 },   // 2: Reactor south
           { x: 300, y: 1440, partner: 2 },  // 3: Lower Engine
           // Electrical(4) <-> MedBay(5) <-> Security(6) (3-way)
-          { x: 650, y: 1350, partner: 5 },  // 4: Electrical
-          { x: 750, y: 360, partner: 6 },   // 5: MedBay
-          { x: 490, y: 780, partner: 4 },   // 6: Security
+          { x: 650, y: 1110, partner: 5 },  // 4: Electrical
+          { x: 750, y: 460, partner: 6 },   // 5: MedBay
+          { x: 720, y: 720, partner: 4 },   // 6: Security
           // Admin(7) <-> Cafeteria(8) <-> Hallway(9) (3-way)
           { x: 1500, y: 900, partner: 8 },  // 7: Admin
           { x: 1350, y: 200, partner: 9 },  // 8: Cafeteria
@@ -697,7 +761,7 @@
           // Cafeteria: 3 doors (left exit to MedBay hall, right exit to Weapons hall, south to Admin)
           { x: 970, y: 200, w: 16, h: 80, room: 'Cafeteria', dir: 'v' },      // left exit (matches gap y:200-280)
           { x: 1834, y: 200, w: 16, h: 80, room: 'Cafeteria', dir: 'v' },     // right exit (matches gap y:200-280)
-          { x: 1250, y: 484, w: 150, h: 16, room: 'Cafeteria', dir: 'h' },    // south to Admin hall
+          { x: 1250, y: 572, w: 150, h: 16, room: 'Cafeteria', dir: 'h' },    // south to Admin hall
           // Upper Engine: 2 doors (east to MedBay hall, south to reactor corridor)
           { x: 414, y: 240, w: 16, h: 80, room: 'Upper Engine', dir: 'v' },    // east exit (matches wall gap y:240-320)
           { x: 260, y: 394, w: 70, h: 16, room: 'Upper Engine', dir: 'h' },    // south exit
@@ -705,11 +769,11 @@
           { x: 414, y: 1310, w: 16, h: 64, room: 'Lower Engine', dir: 'v' },   // east exit (wall gap y:1310-1374)
           { x: 260, y: 1210, w: 70, h: 16, room: 'Lower Engine', dir: 'h' },   // north exit
           // MedBay: 1 door (south exit to corridor)
-          { x: 520, y: 270, w: 16, h: 70, room: 'MedBay', dir: 'v' },          // south/east exit
+          { x: 520, y: 400, w: 16, h: 80, room: 'MedBay', dir: 'v' },          // south/east exit
           // Security: 1 door (east exit to corridor)
-          { x: 580, y: 700, w: 16, h: 80, room: 'Security', dir: 'v' },        // east exit (right wall gap)
+          { x: 660, y: 700, w: 16, h: 80, room: 'Security', dir: 'v' },        // west entry (left wall at x:660)
           // Electrical: 1 door (north exit to corridor)
-          { x: 520, y: 1230, w: 16, h: 80, room: 'Electrical', dir: 'v' },     // north exit
+          { x: 520, y: 990, w: 16, h: 80, room: 'Electrical', dir: 'v' },      // north exit
           // Storage: 3 doors (left to Electrical hall, right to Comms hall, top to Admin hall)
           { x: 1020, y: 1280, w: 16, h: 90, room: 'Storage', dir: 'v' },       // left exit
           { x: 1524, y: 1280, w: 16, h: 90, room: 'Storage', dir: 'v' },       // right exit
@@ -719,15 +783,17 @@
           { x: 2284, y: 700, w: 16, h: 80, room: 'O2', dir: 'v' },             // east exit (matches O2 right wall gap)
           // Navigation: 1 door (west exit)
           { x: 2550, y: 700, w: 16, h: 80, room: 'Navigation', dir: 'v' },     // west exit
+          // Shields: north door (east corridor entrance)
+          { x: 2428, y: 1100, w: 96, h: 16, room: 'Shields', dir: 'h' },       // north exit to east corridor
         ],
         waypoints: [
           { x: 280, y: 250, room: 'Upper Engine' },  // 0
           { x: 220, y: 710, room: 'Reactor' },       // 1
-          { x: 490, y: 700, room: 'Security' },       // 2
-          { x: 690, y: 260, room: 'MedBay' },         // 3
+          { x: 768, y: 710, room: 'Security' },       // 2
+          { x: 700, y: 410, room: 'MedBay' },         // 3
           { x: 700, y: 700, room: 'Hallway' },        // 4
-          { x: 700, y: 1050, room: 'Hallway' },       // 5
-          { x: 710, y: 1380, room: 'Electrical' },    // 6
+          { x: 700, y: 810, room: 'Hallway' },        // 5
+          { x: 710, y: 1115, room: 'Electrical' },    // 6
           { x: 280, y: 1360, room: 'Lower Engine' },  // 7
           { x: 1270, y: 1360, room: 'Storage' },      // 8
           { x: 1400, y: 260, room: 'Cafeteria' },     // 9
@@ -735,25 +801,27 @@
           { x: 2100, y: 740, room: 'O2' },            // 11
           { x: 2300, y: 260, room: 'Weapons' },       // 12
           { x: 2750, y: 740, room: 'Navigation' },    // 13
-          { x: 1910, y: 1290, room: 'Communications' }, // 14
+          { x: 1912, y: 1560, room: 'Communications' }, // 14
           { x: 2380, y: 1290, room: 'Shields' },      // 15
           { x: 1050, y: 700, room: 'Hallway' },       // 16
           { x: 1400, y: 550, room: 'Hallway' },       // 17
           { x: 1700, y: 700, room: 'Hallway' },       // 18
           { x: 2400, y: 550, room: 'Hallway' },       // 19
           { x: 1400, y: 1050, room: 'Hallway' },      // 20
+          { x: 2480, y: 950,  room: 'Hallway' },      // 21: East corridor (O2/Nav→Shields junction)
         ],
         waypointEdges: [
           [0,3],[0,1],[1,2],[2,4],[3,4],[3,9],[4,16],[4,5],[5,6],[5,7],[6,8],
           [9,17],[9,12],[17,10],[10,16],[10,18],[10,20],[18,11],[11,12],[11,13],
           [11,19],[12,19],[13,19],[20,8],[14,15],[14,20],[8,14],
+          [11,21],[21,15],[7,20],
         ],
-        // Official 4 CCTV camera locations in hallways
+        // Official 4 CCTV camera locations matching the real Skeld map
         cameras: [
-          { x: 480, y: 400, name: 'NW Hallway' },      // Northwestern hallway (near Upper Engine/MedBay)
-          { x: 660, y: 700, name: 'W Hallway' },        // Western hallway (near Security)
-          { x: 1280, y: 550, name: 'Central Hallway' }, // Central hallway (Cafeteria south exit)
-          { x: 2100, y: 500, name: 'E Hallway' },       // Eastern hallway (near Weapons/O2)
+          { x: 730, y: 470, name: 'Camera 3' },    // Upper corridor near MedBay/Security hallway
+          { x: 310, y: 710, name: 'Camera 4' },    // Inside Reactor room
+          { x: 790, y: 640, name: 'Camera 2' },    // Central corridor (Security→Admin hallway)
+          { x: 2195, y: 455, name: 'Camera 1' },   // East hallway (Weapons→O2 corridor)
         ],
         // Exterior ship features for visual rendering
         exteriorFeatures: {
@@ -1752,7 +1820,7 @@
       taskLocations = m.tasks.map(t => ({ ...t, done: false }));
       vents = m.vents;
       EMERGENCY_BTN = m.emergencyBtn;
-      mapTheme = { bg: m.bgColor, wall: m.wallColor, floor: m.floorColor, grid: m.gridColor, floors: m.floors, sabFix: m.sabotageFixLocations, terrain: m.terrain, terrainColor: m.terrainColor };
+      mapTheme = { bg: m.bgColor, wall: m.wallColor, floor: m.floorColor, grid: m.gridColor, floors: m.floors, sabFix: m.sabotageFixLocations, terrain: m.terrain, terrainColor: m.terrainColor, extraLabels: m.extraLabels || [] };
       // Load doors
       doors = (m.doors || []).map(d => ({ ...d, closed: false, timer: 0 }));
       // Load cameras
@@ -1823,6 +1891,40 @@
     let keys = {}, killCooldown, gameOver, npcTasksTotal, npcTasksDone;
     let inVent = false; // is player inside a vent
 
+    // ===== DROPSHIP LOBBY =====
+    const DS = {
+      W: 900, H: 700,
+      spawnX: 434, spawnY: 540,
+      seatW: 46, seatH: 34,
+      seatsLeft:  [{x:120,y:170},{x:120,y:220},{x:120,y:270},{x:120,y:320},{x:120,y:370}],
+      seatsRight: [{x:720,y:170},{x:720,y:220},{x:720,y:270},{x:720,y:320},{x:720,y:370}],
+      laptop:   {x:352, y:150, w:66, h:54},
+      wardrobe: {x:482, y:150, w:66, h:54},
+      crateL:   {x:200, y:448, w:134, h:108},
+      crateR:   {x:566, y:448, w:134, h:108},
+    };
+    let dropshipPhase = false;
+    let dropshipPlayer = null;
+    let dropshipWalls = [];
+    let dropshipCountdown = -1;
+    let dropshipCountdownFrames = 0;
+    let dropshipWardrobeOpen = false;
+    let dropshipHint = '';
+
+    const gameSettings = {
+      impostors: 1,
+      playerSpeed: 1.0,
+      crewVision: 1.0,
+      impVision: 1.5,
+      killCooldown: 25,
+      killDistance: 'Medium',
+      tasks: 5,
+      emergencyMeetings: 1,
+      emergencyCooldown: 15,
+      confirmEjects: true,
+      anonymousVotes: false,
+    };
+
     function createNPC(x, y, color, name, isImp) {
       return {
         x, y, w: 32, h: 40, color, name, speed: 2.2, isImpostor: isImp,
@@ -1859,9 +1961,10 @@
       loadMap(selectedMap);
       const m = MAPS[selectedMap];
       const name = document.getElementById('nameInput').value.trim() || 'Player';
-      player = { x: m.spawnX, y: m.spawnY, w: 32, h: 40, color: COLORS[selectedColor].hex, name, speed: 3, alive: true, isImpostor: false, visible: true };
+      const baseSpeed = 3 * gameSettings.playerSpeed;
+      player = { x: m.spawnX, y: m.spawnY, w: 32, h: 40, color: COLORS[selectedColor].hex, name, speed: baseSpeed, alive: true, isImpostor: false, visible: true };
 
-      isImpostor = Math.random() < 0.3;
+      isImpostor = Math.random() < (gameSettings.impostors / 10);
       player.isImpostor = isImpostor;
 
       const usedColors = [selectedColor];
@@ -1885,10 +1988,11 @@
       }
 
       // Assign impostor(s)
-      if (!isImpostor) {
-        const impIdx = Math.floor(Math.random() * npcs.length);
-        npcs[impIdx].isImpostor = true;
-        npcs[impIdx].speed = 2.5;
+      const npcImpCount = gameSettings.impostors - (isImpostor ? 1 : 0);
+      const shuffledForImp = [...npcs].sort(() => Math.random() - 0.5);
+      for (let i = 0; i < npcImpCount; i++) {
+        shuffledForImp[i].isImpostor = true;
+        shuffledForImp[i].speed = 2.5 * gameSettings.playerSpeed;
       }
 
       // Calculate total NPC tasks for the task bar
@@ -1902,7 +2006,7 @@
 
       deadBodies = [];
       tasksCompleted = 0;
-      totalTasks = taskLocations.length;
+      totalTasks = Math.min(gameSettings.tasks, taskLocations.length);
       killCooldown = 0;
       gameOver = false;
       inVent = false;
@@ -1910,9 +2014,9 @@
       playerTaskProgress = 0;
       currentPlayerTask = null;
       killFlash = 0;
-      emergencyCooldown = 600;
+      emergencyCooldown = gameSettings.emergencyCooldown * 60;
       sabotage = { active: false, type: null, timer: 0, maxTime: 0, cooldown: 0, fixProgress: 0 };
-      visionRadius = VISION_NORMAL;
+      visionRadius = VISION_NORMAL * (isImpostor ? gameSettings.impVision : gameSettings.crewVision);
       doorCooldown = 0;
       for (const d of doors) { d.closed = false; d.timer = 0; }
       if (selectedMap === 'polus') initSnow();
@@ -2892,11 +2996,12 @@
 
     function doKill() {
       if (!isImpostor || killCooldown > 0 || inVent) return;
+      const kDist = gameSettings.killDistance === 'Short' ? 40 : gameSettings.killDistance === 'Long' ? 80 : 60;
       for (const npc of npcs) {
-        if (npc.alive && !npc.isImpostor && dist(player, npc) < 60) {
+        if (npc.alive && !npc.isImpostor && dist(player, npc) < kDist) {
           npc.alive = false;
           deadBodies.push({ x: npc.x, y: npc.y, color: npc.color, name: npc.name });
-          killCooldown = 600;
+          killCooldown = gameSettings.killCooldown * 60;
           killFlash = 15; // red flash effect
           const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length;
           const aliveImpostors = npcs.filter(n => n.alive && n.isImpostor).length + 1;
@@ -3033,9 +3138,11 @@
       }
 
       voteResult.innerHTML = '<span style="color:' + ejected.color + '">' + ejected.name + '</span> was ejected.<br><br>' +
-        (ejected.isImpostor ?
-          '<span style="color:#4ecdc4">' + ejected.name + ' was the Impostor.</span>' :
-          '<span style="color:#ff4444">' + ejected.name + ' was not the Impostor.</span>');
+        (gameSettings.confirmEjects
+          ? (ejected.isImpostor
+              ? '<span style="color:#4ecdc4">' + ejected.name + ' was the Impostor.</span>'
+              : '<span style="color:#ff4444">' + ejected.name + ' was not the Impostor.</span>')
+          : '<span style="color:#aaa">Their role is unknown.</span>');
 
       // Apply ejection
       if (ejected.isPlayer) {
@@ -3138,22 +3245,20 @@
     // ====== TEXTURE & DECORATION SYSTEM ======
     const roomFloorColors = {
       // Color-coded per official Skeld map image:
-      // Beige/tan = Cafeteria, Purple = Reactor, Blue = MedBay
-      // Green = O2/Security, Red/dark red = Admin, Gray = Storage/Engineering
-      'Cafeteria':'#3a3228',    // beige/tan tiled
-      'Weapons':'#2a2535',      // dark blue-gray
-      'Navigation':'#1e2838',   // dark navy (cockpit)
-      'O2':'#1e3525',           // green-tinted (plants/life support)
-      'Admin':'#3a2222',        // reddish (command)
-      'Shields':'#1e2548',      // blue-purple (energy)
-      'Communications':'#1e3038', // teal
-      'Storage':'#2a2a22',      // gray-green (cargo)
-      'Electrical':'#2a2a18',   // dark industrial yellow-gray
-      'Lower Engine':'#282530', // gray-purple (machinery)
-      'Reactor':'#2a1830',      // purple (radiation)
-      'Security':'#1e2e22',     // greenish (monitoring)
-      'Upper Engine':'#282530', // gray-purple (machinery)
-      'MedBay':'#1e2e3a',      // sterile blue
+      'Cafeteria':'#524840',    // warm beige/tan
+      'Weapons':'#282438',      // dark blue-purple
+      'Navigation':'#1c2232',   // dark navy cockpit
+      'O2':'#1c2e20',           // dark green life support
+      'Admin':'#3c201e',        // dark reddish-brown command room
+      'Shields':'#1c2048',      // dark blue-purple energy
+      'Communications':'#1c2c32', // dark teal radio room
+      'Storage':'#282a22',      // dark gray-green cargo
+      'Electrical':'#28261a',   // dark industrial (yellow tint)
+      'Lower Engine':'#1c2028', // dark teal-gray
+      'Reactor':'#261430',      // deep purple reactor
+      'Security':'#1c2030',     // dark blue-purple monitoring
+      'Upper Engine':'#1c2028', // dark teal-gray
+      'MedBay':'#1c2836',      // sterile dark blue medical
       'Launchpad':'#282830','Office':'#2a2a38','Greenhouse':'#1e3520',
       'Locker Room':'#2a2a2a','Laboratory':'#2a2a40','Balcony':'#252a35',
       'Decontamination':'#cc1111','Dropship':'#cc1111',
@@ -3514,19 +3619,37 @@
     }
 
     function draw3DWall(x, y, w, h) {
+      // Solid dark grey wall - matching the reference map's dark structural grey
       ctx.fillStyle = mapTheme.wall;
       ctx.fillRect(x, y, w, h);
-      ctx.fillStyle = 'rgba(255,255,255,0.1)';
-      ctx.fillRect(x, y, w, 2);
-      ctx.fillRect(x, y, 2, h);
-      ctx.fillStyle = 'rgba(0,0,0,0.18)';
-      ctx.fillRect(x, y + h - 2, w, 2);
-      ctx.fillRect(x + w - 2, y, 2, h);
-      ctx.fillStyle = 'rgba(0,0,0,0.08)';
+      // Subtle top/left highlight edge
+      ctx.fillStyle = 'rgba(255,255,255,0.07)';
       if (w > h) {
-        for (let px = 50; px < w; px += 60) ctx.fillRect(x + px, y, 1, h);
+        ctx.fillRect(x, y, w, 2);       // top edge highlight
       } else {
-        for (let py = 50; py < h; py += 60) ctx.fillRect(x, y + py, w, 1);
+        ctx.fillRect(x, y, 2, h);       // left edge highlight
+      }
+      // Subtle bottom/right shadow edge
+      ctx.fillStyle = 'rgba(0,0,0,0.20)';
+      if (w > h) {
+        ctx.fillRect(x, y + h - 2, w, 2);  // bottom shadow
+      } else {
+        ctx.fillRect(x + w - 2, y, 2, h);  // right shadow
+      }
+      // Metal panel seam lines (riveted panel look)
+      ctx.fillStyle = 'rgba(0,0,0,0.10)';
+      if (w > h) {
+        for (let px = 80; px < w; px += 80) ctx.fillRect(x + px, y + 2, 1, h - 4);
+      } else {
+        for (let py = 80; py < h; py += 80) ctx.fillRect(x + 2, y + py, w - 4, 1);
+      }
+      // Rivet dots at seam intersections
+      ctx.fillStyle = 'rgba(255,255,255,0.05)';
+      if (w > h && h >= 10) {
+        for (let px = 80; px < w; px += 80) {
+          ctx.fillRect(x + px - 1, y + 2, 3, 3);
+          ctx.fillRect(x + px - 1, y + h - 5, 3, 3);
+        }
       }
     }
 
@@ -3536,6 +3659,19 @@
       const cx = x + w / 2, cy = y + h / 2;
       switch (name) {
         case 'Cafeteria': {
+          // Octagonal room shape: cut corners with dark triangles (matching reference image)
+          const cutSz = Math.min(w, h) * 0.16;
+          ctx.globalAlpha = 1.0;
+          ctx.fillStyle = mapTheme.wall || '#3c3e42';
+          // Top-left chamfer
+          ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x+cutSz, y); ctx.lineTo(x, y+cutSz); ctx.closePath(); ctx.fill();
+          // Top-right chamfer
+          ctx.beginPath(); ctx.moveTo(x+w, y); ctx.lineTo(x+w-cutSz, y); ctx.lineTo(x+w, y+cutSz); ctx.closePath(); ctx.fill();
+          // Bottom-left chamfer
+          ctx.beginPath(); ctx.moveTo(x, y+h); ctx.lineTo(x+cutSz, y+h); ctx.lineTo(x, y+h-cutSz); ctx.closePath(); ctx.fill();
+          // Bottom-right chamfer
+          ctx.beginPath(); ctx.moveTo(x+w, y+h); ctx.lineTo(x+w-cutSz, y+h); ctx.lineTo(x+w, y+h-cutSz); ctx.closePath(); ctx.fill();
+          ctx.globalAlpha = 0.25;
           // Diamond tile floor pattern (beige)
           ctx.strokeStyle = 'rgba(200,180,140,0.08)'; ctx.lineWidth = 0.5;
           for (let tx = 0; tx < w; tx += 30) {
@@ -3578,6 +3714,14 @@
           break;
         }
         case 'Electrical': {
+          // Minimap shape: cut bottom-left corner (step shape matches reference minimap)
+          if (selectedMap === 'skeld') {
+            const cut = Math.min(w, h) * 0.30;
+            ctx.globalAlpha = 1.0;
+            ctx.fillStyle = mapTheme.wall || '#3c3e42';
+            ctx.beginPath(); ctx.moveTo(x,y+h); ctx.lineTo(x+cut,y+h); ctx.lineTo(x,y+h-cut); ctx.closePath(); ctx.fill();
+            ctx.globalAlpha = 0.25;
+          }
           // Dark industrial room - messy wiring everywhere
           // Yellow hazard cables running across the floor
           const wireColors = ['#dd8822','#cc3333','#33cc33','#3388dd','#cccc22'];
@@ -3671,6 +3815,14 @@
           break;
         }
         case 'Reactor': {
+          // Minimap shape: cut top-right corner (notch matches reference minimap)
+          if (selectedMap === 'skeld') {
+            const cut = Math.min(w, h) * 0.28;
+            ctx.globalAlpha = 1.0;
+            ctx.fillStyle = mapTheme.wall || '#3c3e42';
+            ctx.beginPath(); ctx.moveTo(x+w,y); ctx.lineTo(x+w-cut,y); ctx.lineTo(x+w,y+cut); ctx.closePath(); ctx.fill();
+            ctx.globalAlpha = 0.25;
+          }
           const rr = Math.min(w,h)*0.16;
           // Purple ambient glow for the whole room
           const purpleAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.5);
@@ -3729,6 +3881,15 @@
           break;
         }
         case 'Navigation': {
+          // Minimap shape: arrow/pentagon pointing right — cut top-left and bottom-left corners
+          if (selectedMap === 'skeld') {
+            const cut = Math.min(w, h) * 0.28;
+            ctx.globalAlpha = 1.0;
+            ctx.fillStyle = mapTheme.wall || '#3c3e42';
+            ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+cut,y); ctx.lineTo(x,y+cut); ctx.closePath(); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(x,y+h); ctx.lineTo(x+cut,y+h); ctx.lineTo(x,y+h-cut); ctx.closePath(); ctx.fill();
+            ctx.globalAlpha = 0.25;
+          }
           // Cockpit/helm area - large viewing window showing space
           ctx.fillStyle = '#050818';
           ctx.fillRect(x+w*0.55, y+8, w*0.42, h-16);
@@ -3775,6 +3936,14 @@
           break;
         }
         case 'Weapons': {
+          // Minimap shape: cut bottom-left corner (matches reference minimap)
+          if (selectedMap === 'skeld') {
+            const cut = Math.min(w, h) * 0.30;
+            ctx.globalAlpha = 1.0;
+            ctx.fillStyle = mapTheme.wall || '#3c3e42';
+            ctx.beginPath(); ctx.moveTo(x,y+h); ctx.lineTo(x+cut,y+h); ctx.lineTo(x,y+h-cut); ctx.closePath(); ctx.fill();
+            ctx.globalAlpha = 0.25;
+          }
           // Viewport/window showing space (top right, cannon faces outward)
           ctx.fillStyle = '#050818';
           ctx.fillRect(x+w*0.45, y+5, w*0.5, h*0.35);
@@ -3947,6 +4116,15 @@
           break;
         }
         case 'Storage': {
+          // Minimap shape: cut top-left and top-right corners (octagonal top matches reference)
+          if (selectedMap === 'skeld') {
+            const cut = Math.min(w, h) * 0.18;
+            ctx.globalAlpha = 1.0;
+            ctx.fillStyle = mapTheme.wall || '#3c3e42';
+            ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+cut,y); ctx.lineTo(x,y+cut); ctx.closePath(); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(x+w,y); ctx.lineTo(x+w-cut,y); ctx.lineTo(x+w,y+cut); ctx.closePath(); ctx.fill();
+            ctx.globalAlpha = 0.25;
+          }
           // Yellow hazard grid markings on floor
           ctx.strokeStyle = 'rgba(200,180,0,0.06)'; ctx.lineWidth = 1;
           for (let gx = 0; gx < w; gx += 50) {
@@ -4091,6 +4269,65 @@
           for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
             ctx.fillRect(x+w*0.4+5+c*10, y+15+r*12, 7, 8);
           }
+          break;
+        }
+        case 'Upper Engine':
+        case 'Lower Engine': {
+          // Minimap shape: cut top-left corner (matches reference minimap)
+          if (selectedMap === 'skeld') {
+            const cut = Math.min(w, h) * 0.32;
+            ctx.globalAlpha = 1.0;
+            ctx.fillStyle = mapTheme.wall || '#3c3e42';
+            ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+cut,y); ctx.lineTo(x,y+cut); ctx.closePath(); ctx.fill();
+            ctx.globalAlpha = 0.25;
+          }
+          // Engine machinery room - teal/cyan theme
+          // Large circular engine turbine in center
+          const er = Math.min(w,h)*0.22;
+          // Outer turbine ring
+          ctx.strokeStyle = '#2a7a8a'; ctx.lineWidth = 4;
+          ctx.beginPath(); ctx.arc(cx, cy, er, 0, Math.PI*2); ctx.stroke();
+          // Inner spinning core
+          ctx.strokeStyle = '#3aaabb'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(cx, cy, er*0.55, 0, Math.PI*2); ctx.stroke();
+          // Turbine blades (6 blades)
+          ctx.strokeStyle = '#2a6a7a'; ctx.lineWidth = 3;
+          for (let b = 0; b < 6; b++) {
+            const ang = b*Math.PI/3;
+            ctx.beginPath();
+            ctx.moveTo(cx + Math.cos(ang)*er*0.55, cy + Math.sin(ang)*er*0.55);
+            ctx.lineTo(cx + Math.cos(ang)*er*0.95, cy + Math.sin(ang)*er*0.95);
+            ctx.stroke();
+          }
+          // Glow from engine core
+          const engGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, er*0.5);
+          engGlow.addColorStop(0, 'rgba(60,200,220,0.3)');
+          engGlow.addColorStop(0.6, 'rgba(40,140,160,0.1)');
+          engGlow.addColorStop(1, 'rgba(20,80,100,0)');
+          ctx.fillStyle = engGlow;
+          ctx.beginPath(); ctx.arc(cx, cy, er*0.5, 0, Math.PI*2); ctx.fill();
+          // Center bright core
+          ctx.fillStyle = 'rgba(100,220,240,0.5)';
+          ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI*2); ctx.fill();
+          // Control panel along right wall
+          ctx.fillStyle = '#2a3a3a';
+          ctx.fillRect(x+w*0.78, y+h*0.1, w*0.18, h*0.8);
+          ctx.strokeStyle = '#3a5a5a'; ctx.lineWidth = 1;
+          ctx.strokeRect(x+w*0.78, y+h*0.1, w*0.18, h*0.8);
+          // Panel gauges
+          ctx.fillStyle = '#1a2a2a';
+          for (let g = 0; g < 3; g++) {
+            ctx.fillRect(x+w*0.80, y+h*0.18+g*h*0.24, w*0.14, h*0.14);
+            // Gauge needle
+            ctx.strokeStyle = '#44aaaa'; ctx.lineWidth = 1;
+            const gCx = x+w*0.87, gCy = y+h*0.25+g*h*0.24;
+            ctx.beginPath(); ctx.arc(gCx, gCy, 6, 0, Math.PI*2); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(gCx, gCy); ctx.lineTo(gCx+4, gCy-4); ctx.stroke();
+          }
+          // Fuel lines connecting to walls
+          ctx.strokeStyle = '#3a8a9a'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(cx-er, cy); ctx.lineTo(x+5, cy); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx, cy-er); ctx.lineTo(cx, y+5); ctx.stroke();
           break;
         }
         case 'Kitchen': {
@@ -4323,11 +4560,37 @@
 
     function drawEnvironmentBG(ox, oy) {
       if (selectedMap === 'skeld' || selectedMap === 'airship') {
+        // Background stars in space
         ctx.fillStyle = 'rgba(255,255,255,0.12)';
         for (let i = 0; i < 80; i++) {
           const sx = (i * 347 + 123) % MAP_W, sy = (i * 271 + 456) % MAP_H;
           const sz = (i % 3 === 0) ? 2 : 1;
           ctx.fillRect(sx - ox, sy - oy, sz, sz);
+        }
+        // Skeld: fill entire ship body as dark grey so structure matches reference image
+        if (selectedMap === 'skeld') {
+          ctx.fillStyle = '#3c3e42';
+          ctx.beginPath();
+          const hull = [
+            [60,130],[260,130],[260,80],[944,80],[944,50],[1828,50],[1828,80],
+            [2242,80],[2242,50],[2576,50],[2576,250],[2760,250],[2760,468],
+            [2944,468],[2944,632],[3078,632],[3078,972],[2944,972],[2944,1136],
+            [2760,1136],[2760,1370],[2576,1370],[2576,1574],[2242,1574],[2242,1608],
+            [1828,1608],[1828,1638],[944,1638],[944,1668],[260,1608],[260,1538],
+            [60,1538],[60,1228],[30,1228],[30,394],[60,394],[60,210]
+          ];
+          ctx.moveTo(hull[0][0] - ox, hull[0][1] - oy);
+          for (let i = 1; i < hull.length; i++) ctx.lineTo(hull[i][0] - ox, hull[i][1] - oy);
+          ctx.closePath();
+          ctx.fill();
+          // Subtle ship body edge glow
+          ctx.strokeStyle = 'rgba(100,110,130,0.4)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(hull[0][0] - ox, hull[0][1] - oy);
+          for (let i = 1; i < hull.length; i++) ctx.lineTo(hull[i][0] - ox, hull[i][1] - oy);
+          ctx.closePath();
+          ctx.stroke();
         }
       } else if (selectedMap === 'mira') {
         // Cloud wisps
@@ -4383,8 +4646,9 @@
             ctx.fillRect(fx, fy, f.w, f.h);
             drawFloorTiles(fx, fy, f.w, f.h);
             // Room border glow
-            ctx.strokeStyle = selectedMap === 'polus' ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.04)';
-            ctx.lineWidth = selectedMap === 'polus' ? 2 : 1;
+            ctx.strokeStyle = selectedMap === 'polus' ? 'rgba(255,255,255,0.15)' :
+                              selectedMap === 'skeld' ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.04)';
+            ctx.lineWidth = selectedMap === 'polus' ? 2 : selectedMap === 'skeld' ? 1.5 : 1;
             ctx.strokeRect(fx + 2, fy + 2, f.w - 4, f.h - 4);
             // Room decorations
             drawRoomDecor(rooms[i].name, fx, fy, f.w, f.h);
@@ -4393,6 +4657,7 @@
             ctx.fillStyle = selectedMap === 'polus' ? '#f4b8bc' :
                             selectedMap === 'fungle' ? 'rgba(80,120,60,0.06)' :
                             selectedMap === 'mira' ? 'rgba(100,180,255,0.04)' :
+                            selectedMap === 'skeld' ? 'rgba(210,205,195,0.08)' :
                             'rgba(150,150,180,0.06)';
             ctx.fillRect(fx, fy, f.w, f.h);
             drawHallwayDetail(fx, fy, f.w, f.h);
@@ -4469,6 +4734,16 @@
         ctx.fillText(r.name, r.x - ox + 1, r.y - oy + 1);
         ctx.fillStyle = 'rgba(255,255,255,0.22)';
         ctx.fillText(r.name, r.x - ox, r.y - oy);
+      }
+      // Extra labels (e.g. HALLWAY corridor labels)
+      if (mapTheme.extraLabels) {
+        ctx.font = 'bold 13px Arial';
+        for (const r of mapTheme.extraLabels) {
+          ctx.fillStyle = 'rgba(0,0,0,0.4)';
+          ctx.fillText(r.name, r.x - ox + 1, r.y - oy + 1);
+          ctx.fillStyle = 'rgba(200,200,255,0.35)';
+          ctx.fillText(r.name, r.x - ox, r.y - oy);
+        }
       }
 
       // Vents (enhanced with shadow and depth)
@@ -4634,10 +4909,11 @@
       ctx.beginPath(); ctx.arc(ebx, eby, EMERGENCY_BTN.radius, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = '#111'; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.arc(ebx, eby, EMERGENCY_BTN.radius, 0, Math.PI * 2); ctx.stroke();
-      ctx.fillStyle = '#fff'; ctx.font = 'bold 8px Arial'; ctx.textAlign = 'center';
-      ctx.fillText('EMERGENCY', ebx, eby + 3);
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 7px Arial'; ctx.textAlign = 'center';
+      ctx.fillText('EMERGENCY', ebx, eby - 1);
+      ctx.fillText('MEETING', ebx, eby + 7);
 
-      // Tasks (enhanced with glow)
+      // Tasks (enhanced with glow, visual tasks shown in purple/pink)
       for (const t of taskLocations) {
         const tx = t.x - ox, ty = t.y - oy;
         if (t.done) {
@@ -4648,12 +4924,15 @@
           ctx.fillStyle = '#4ecdc4'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
           ctx.fillText('\u2713', tx, ty + 6);
         } else {
-          ctx.fillStyle = isImpostor ? 'rgba(255,255,0,0.05)' : 'rgba(255,255,0,0.12)';
+          const isVisual = t.visual;
+          const baseColor = isVisual ? 'rgba(200,100,255,' : (isImpostor ? 'rgba(255,255,0,' : 'rgba(255,255,0,');
+          ctx.fillStyle = isVisual ? 'rgba(200,100,255,0.08)' : (isImpostor ? 'rgba(255,255,0,0.05)' : 'rgba(255,255,0,0.12)');
           ctx.beginPath(); ctx.arc(tx, ty, 24, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = isImpostor ? 'rgba(255,255,0,0.08)' : 'rgba(255,255,0,0.25)';
+          ctx.fillStyle = isVisual ? 'rgba(200,100,255,0.2)' : (isImpostor ? 'rgba(255,255,0,0.08)' : 'rgba(255,255,0,0.25)');
           ctx.beginPath(); ctx.arc(tx, ty, 15, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#ffd700'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
-          ctx.fillText('!', tx, ty + 6);
+          ctx.fillStyle = isVisual ? '#cc66ff' : '#ffd700';
+          ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
+          ctx.fillText(isVisual ? '★' : '!', tx, ty + 6);
         }
       }
     }
@@ -5006,10 +5285,339 @@
       }
     }
 
+    // ===== DROPSHIP FUNCTIONS =====
+    function initDropship() {
+      dropshipPhase = true;
+      dropshipCountdown = -1;
+      dropshipCountdownFrames = 0;
+      dropshipWardrobeOpen = false;
+      dropshipHint = '';
+      const name = document.getElementById('nameInput').value.trim() || 'Player';
+      dropshipPlayer = { x: DS.spawnX, y: DS.spawnY, w: 32, h: 40, color: COLORS[selectedColor].hex, name, speed: 3 };
+      dropshipWalls = [
+        {x:120, y:120, w:265, h:16}, // top wall left of door
+        {x:515, y:120, w:265, h:16}, // top wall right of door
+        {x:385, y:0,   w:130, h:120}, // door blocker (prevent leaving)
+        {x:104, y:120, w:16,  h:500}, // left wall
+        {x:780, y:120, w:16,  h:500}, // right wall
+        {x:104, y:620, w:692, h:16},  // bottom wall
+        {x:DS.laptop.x,   y:DS.laptop.y,   w:DS.laptop.w,   h:DS.laptop.h},
+        {x:DS.wardrobe.x, y:DS.wardrobe.y, w:DS.wardrobe.w, h:DS.wardrobe.h},
+        {x:DS.crateL.x,   y:DS.crateL.y,   w:DS.crateL.w,   h:DS.crateL.h},
+        {x:DS.crateR.x,   y:DS.crateR.y,   w:DS.crateR.w,   h:DS.crateR.h},
+      ];
+    }
+
+    function updateDropship() {
+      const p = dropshipPlayer;
+      let dx = 0, dy = 0;
+      if (keys['arrowleft'] || keys['a']) dx -= p.speed;
+      if (keys['arrowright'] || keys['d']) dx += p.speed;
+      if (keys['arrowup']    || keys['w']) dy -= p.speed;
+      if (keys['arrowdown']  || keys['s']) dy += p.speed;
+      if (dx !== 0 && dy !== 0) { dx *= 0.707; dy *= 0.707; }
+
+      function isDropBlocked(nx, ny) {
+        if (nx < 0 || ny < 0 || nx + p.w > DS.W || ny + p.h > DS.H) return true;
+        for (const w of dropshipWalls) {
+          if (nx < w.x+w.w && nx+p.w > w.x && ny < w.y+w.h && ny+p.h > w.y) return true;
+        }
+        return false;
+      }
+      if (!isDropBlocked(p.x + dx, p.y)) p.x += dx;
+      if (!isDropBlocked(p.x, p.y + dy)) p.y += dy;
+
+      // Countdown tick
+      if (dropshipCountdown > 0) {
+        dropshipCountdownFrames--;
+        if (dropshipCountdownFrames <= 0) {
+          dropshipCountdown--;
+          dropshipCountdownFrames = 60;
+          if (dropshipCountdown === 0) { dropshipPhase = false; init(); return; }
+        }
+      }
+
+      // Interaction proximity
+      dropshipHint = '';
+      if (dropshipCountdown < 0 && !dropshipWardrobeOpen) {
+        const px = p.x + p.w / 2, py = p.y + p.h / 2;
+        if (Math.hypot(px - (DS.laptop.x   + DS.laptop.w/2),   py - (DS.laptop.y   + DS.laptop.h/2))   < 90) dropshipHint = 'laptop';
+        else if (Math.hypot(px - (DS.wardrobe.x + DS.wardrobe.w/2), py - (DS.wardrobe.y + DS.wardrobe.h/2)) < 90) dropshipHint = 'wardrobe';
+      }
+    }
+
+    function openDropshipWardrobe() {
+      dropshipWardrobeOpen = true;
+      const picker = document.getElementById('dropshipColorPicker');
+      picker.innerHTML = '';
+      COLORS.forEach((c, i) => {
+        const sw = document.createElement('div');
+        sw.className = 'color-swatch' + (i === selectedColor ? ' selected' : '');
+        sw.style.background = c.hex;
+        sw.onclick = () => {
+          document.querySelectorAll('#dropshipColorPicker .color-swatch').forEach(s => s.classList.remove('selected'));
+          sw.classList.add('selected');
+          selectedColor = i;
+          if (dropshipPlayer) dropshipPlayer.color = c.hex;
+        };
+        picker.appendChild(sw);
+      });
+      document.getElementById('dropshipWardrobe').style.display = 'block';
+    }
+    function closeDropshipWardrobe() {
+      dropshipWardrobeOpen = false;
+      document.getElementById('dropshipWardrobe').style.display = 'none';
+    }
+
+    function buildSettingsUI() {
+      const content = document.getElementById('settingsContent');
+      content.innerHTML = '';
+
+      function addSection(label) {
+        const s = document.createElement('div');
+        s.className = 'sett-section';
+        s.textContent = label;
+        content.appendChild(s);
+      }
+
+      function addToggle(label, hint, key) {
+        const row = document.createElement('div');
+        row.className = 'sett-row';
+        row.innerHTML = `<div><div class="sett-label">${label}</div>${hint ? `<div class="sett-hint">${hint}</div>` : ''}</div>
+          <div class="sett-ctrl">
+            <button class="sett-opt${gameSettings[key] ? ' on' : ''}">ON</button>
+            <button class="sett-opt${!gameSettings[key] ? ' on' : ''}">OFF</button>
+          </div>`;
+        content.appendChild(row);
+        const [onBtn, offBtn] = row.querySelectorAll('.sett-opt');
+        onBtn.onclick  = () => { gameSettings[key] = true;  buildSettingsUI(); };
+        offBtn.onclick = () => { gameSettings[key] = false; buildSettingsUI(); };
+      }
+
+      function addStep(label, hint, key, steps, fmt) {
+        const idx = steps.indexOf(gameSettings[key]);
+        const display = fmt ? fmt(gameSettings[key]) : gameSettings[key];
+        const row = document.createElement('div');
+        row.className = 'sett-row';
+        row.innerHTML = `<div><div class="sett-label">${label}</div>${hint ? `<div class="sett-hint">${hint}</div>` : ''}</div>
+          <div class="sett-ctrl">
+            <button class="sett-adj">−</button>
+            <span class="sett-val">${display}</span>
+            <button class="sett-adj">+</button>
+          </div>`;
+        content.appendChild(row);
+        const btns = row.querySelectorAll('.sett-adj');
+        btns[0].onclick = () => { if (idx > 0) { gameSettings[key] = steps[idx - 1]; buildSettingsUI(); } };
+        btns[1].onclick = () => { if (idx < steps.length - 1) { gameSettings[key] = steps[idx + 1]; buildSettingsUI(); } };
+      }
+
+      function addOptions(label, hint, key, options) {
+        const row = document.createElement('div');
+        row.className = 'sett-row';
+        const optsHtml = options.map(o => `<button class="sett-opt${gameSettings[key] === o ? ' on' : ''}">${o}</button>`).join('');
+        row.innerHTML = `<div><div class="sett-label">${label}</div>${hint ? `<div class="sett-hint">${hint}</div>` : ''}</div>
+          <div class="sett-ctrl">${optsHtml}</div>`;
+        content.appendChild(row);
+        row.querySelectorAll('.sett-opt').forEach((btn, i) => {
+          btn.onclick = () => { gameSettings[key] = options[i]; buildSettingsUI(); };
+        });
+      }
+
+      addSection('Roles');
+      addStep('Impostors', '1–3 impostors per game', 'impostors', [1, 2, 3]);
+
+      addSection('Player');
+      addStep('Player Speed', 'Movement speed multiplier', 'playerSpeed',
+        [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 2.5, 3.0], v => v + 'x');
+      addStep('Crewmate Vision', 'Field of view radius', 'crewVision',
+        [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0], v => v + 'x');
+      addStep('Impostor Vision', 'Impostor field of view', 'impVision',
+        [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 2.5, 3.0], v => v + 'x');
+
+      addSection('Kill');
+      addStep('Kill Cooldown', 'Seconds between kills', 'killCooldown',
+        [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60], v => v + 's');
+      addOptions('Kill Distance', 'Range required to kill', 'killDistance', ['Short', 'Medium', 'Long']);
+
+      addSection('Tasks');
+      addStep('Task Count', 'Number of tasks for crewmates', 'tasks', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+      addSection('Meetings');
+      addStep('Emergency Meetings', 'Calls per player per game', 'emergencyMeetings', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      addStep('Emergency Cooldown', 'Seconds between emergency calls', 'emergencyCooldown',
+        [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60], v => v + 's');
+
+      addSection('Voting');
+      addToggle('Confirm Ejects', 'Reveal role of ejected player', 'confirmEjects');
+      addToggle('Anonymous Votes', 'Hide who voted for whom', 'anonymousVotes');
+    }
+
+    function openSettings() {
+      buildSettingsUI();
+      document.getElementById('settingsPanel').style.display = 'flex';
+    }
+
+    function closeSettings() {
+      document.getElementById('settingsPanel').style.display = 'none';
+    }
+
+    function startFromSettings() {
+      closeSettings();
+      dropshipCountdown = 3;
+      dropshipCountdownFrames = 60;
+    }
+
+    function drawDSCrate(x, y, w, h, type) {
+      ctx.fillStyle = '#3d6b5a';
+      ctx.fillRect(x, y, w, h);
+      ctx.fillStyle = '#4e8a72'; ctx.fillRect(x, y, w, 5); ctx.fillRect(x, y, 5, h);
+      ctx.fillStyle = '#294a3c'; ctx.fillRect(x, y+h-5, w, 5); ctx.fillRect(x+w-5, y, 5, h);
+      ctx.strokeStyle = '#5aaa88'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x+w/2, y+8); ctx.lineTo(x+w/2, y+h-8); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x+8, y+h/2); ctx.lineTo(x+w-8, y+h/2); ctx.stroke();
+      ctx.textAlign = 'center';
+      if (type === 'laptop') {
+        ctx.fillStyle = '#1a2828'; ctx.fillRect(x+w/2-16, y+8, 32, 22);
+        ctx.fillStyle = '#2ae4d0'; ctx.fillRect(x+w/2-14, y+10, 28, 18);
+        ctx.fillStyle = '#263535'; ctx.fillRect(x+w/2-18, y+30, 36, 9);
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 7px Arial'; ctx.fillText('LAPTOP', x+w/2, y+h-7);
+      } else if (type === 'wardrobe') {
+        ctx.strokeStyle = '#ccc'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(x+w/2, y+16, 7, Math.PI, 0);
+        ctx.lineTo(x+w/2+20, y+38); ctx.moveTo(x+w/2-20, y+38); ctx.lineTo(x+w/2+20, y+38); ctx.stroke();
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 7px Arial'; ctx.fillText('WARDROBE', x+w/2, y+h-7);
+      }
+    }
+
+    function renderDropship() {
+      const cw = canvas.width, ch = canvas.height;
+      const p = dropshipPlayer;
+      let ox = cw >= DS.W ? (DS.W - cw) / 2 : Math.max(0, Math.min(p.x - cw/2, DS.W - cw));
+      let oy = ch >= DS.H ? (DS.H - ch) / 2 : Math.max(0, Math.min(p.y - ch/2, DS.H - ch));
+
+      ctx.clearRect(0, 0, cw, ch);
+      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cw, ch);
+      ctx.save();
+      ctx.translate(-ox, -oy);
+
+      // Hull exterior polygon
+      ctx.beginPath();
+      ctx.moveTo(260,70); ctx.lineTo(380,50); ctx.lineTo(520,50); ctx.lineTo(640,70);
+      ctx.lineTo(790,135); ctx.lineTo(855,225); ctx.lineTo(875,360);
+      ctx.lineTo(855,490); ctx.lineTo(790,570);
+      ctx.lineTo(660,650); ctx.lineTo(240,650);
+      ctx.lineTo(110,570); ctx.lineTo(45,490); ctx.lineTo(25,360);
+      ctx.lineTo(45,225); ctx.lineTo(110,135); ctx.closePath();
+      ctx.fillStyle = '#252830'; ctx.fill();
+      ctx.strokeStyle = '#40434e'; ctx.lineWidth = 3; ctx.stroke();
+
+      // Panel lines
+      ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1;
+      [[260,70,120,136],[640,70,780,136],[110,570,120,620],[790,570,780,620]].forEach(([x1,y1,x2,y2]) => {
+        ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+      });
+
+      // Engine pod glows
+      const mkGlow = (cx, cy) => { const g = ctx.createRadialGradient(cx,cy,5,cx,cy,85); g.addColorStop(0,'rgba(110,190,255,0.5)'); g.addColorStop(1,'rgba(80,150,255,0)'); return g; };
+      ctx.fillStyle = mkGlow(30,360);  ctx.fillRect(0,280,90,160);
+      ctx.fillStyle = mkGlow(870,360); ctx.fillRect(810,280,90,160);
+
+      // Interior floor
+      ctx.fillStyle = '#363c3c'; ctx.fillRect(120,136,660,484);
+      ctx.strokeStyle = 'rgba(255,255,255,0.035)'; ctx.lineWidth = 1;
+      for (let gx = 120; gx <= 780; gx += 60) { ctx.beginPath(); ctx.moveTo(gx,136); ctx.lineTo(gx,620); ctx.stroke(); }
+      for (let gy = 136; gy <= 620; gy += 60) { ctx.beginPath(); ctx.moveTo(120,gy); ctx.lineTo(780,gy); ctx.stroke(); }
+      ctx.strokeStyle = '#50535e'; ctx.lineWidth = 2; ctx.strokeRect(120,136,660,484);
+
+      // Seat zone backgrounds
+      ctx.fillStyle = '#2e3535';
+      ctx.fillRect(120,136,80,255); ctx.fillRect(700,136,80,255);
+      ctx.strokeStyle = '#40504e'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(200,136); ctx.lineTo(200,391); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(700,136); ctx.lineTo(700,391); ctx.stroke();
+
+      // Seats left (back on left, pad extends right)
+      DS.seatsLeft.forEach(({x: sx, y: sy}) => {
+        ctx.fillStyle = '#232c2c'; ctx.fillRect(sx, sy, 14, DS.seatH);
+        ctx.fillStyle = '#5a5a70'; ctx.fillRect(sx+14, sy+3, 32, DS.seatH-3);
+        ctx.fillStyle = 'rgba(255,255,255,0.07)'; ctx.fillRect(sx+15, sy+4, 30, 8);
+        ctx.fillStyle = '#3a3a4a'; ctx.fillRect(sx+14, sy, 32, 3); ctx.fillRect(sx+14, sy+DS.seatH-3, 32, 3);
+      });
+      // Seats right (pad extends left, back on right)
+      DS.seatsRight.forEach(({x: sx, y: sy}) => {
+        ctx.fillStyle = '#5a5a70'; ctx.fillRect(sx, sy+3, 32, DS.seatH-3);
+        ctx.fillStyle = '#232c2c'; ctx.fillRect(sx+32, sy, 14, DS.seatH);
+        ctx.fillStyle = 'rgba(255,255,255,0.07)'; ctx.fillRect(sx+1, sy+4, 30, 8);
+        ctx.fillStyle = '#3a3a4a'; ctx.fillRect(sx, sy, 32, 3); ctx.fillRect(sx, sy+DS.seatH-3, 32, 3);
+      });
+
+      // Crates
+      drawDSCrate(DS.laptop.x,   DS.laptop.y,   DS.laptop.w,   DS.laptop.h,   'laptop');
+      drawDSCrate(DS.wardrobe.x, DS.wardrobe.y, DS.wardrobe.w, DS.wardrobe.h, 'wardrobe');
+      drawDSCrate(DS.crateL.x,   DS.crateL.y,   DS.crateL.w,   DS.crateL.h,   'big');
+      drawDSCrate(DS.crateR.x,   DS.crateR.y,   DS.crateR.w,   DS.crateR.h,   'big');
+
+      // Door at top (dark panel above gap)
+      ctx.fillStyle = '#181c1c'; ctx.fillRect(385,56,130,64);
+      ctx.strokeStyle = '#3a8aa8'; ctx.lineWidth = 2; ctx.strokeRect(386,57,128,62);
+      ctx.strokeStyle = '#2a6880'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(450,57); ctx.lineTo(450,119); ctx.stroke();
+      const dg = ctx.createLinearGradient(385,118,515,136);
+      dg.addColorStop(0,'rgba(60,160,200,0)'); dg.addColorStop(0.5,'rgba(60,160,200,0.35)'); dg.addColorStop(1,'rgba(60,160,200,0)');
+      ctx.fillStyle = dg; ctx.fillRect(385,118,130,18);
+
+      // Wall trim (drawn over floor edges)
+      ctx.fillStyle = '#2a2d35';
+      ctx.fillRect(104,120,16,500); ctx.fillRect(780,120,16,500);
+      ctx.fillRect(120,120,265,16); ctx.fillRect(515,120,265,16);
+      ctx.fillRect(104,620,692,16);
+
+      // Interact highlight
+      const highlightRect = dropshipHint === 'laptop' ? DS.laptop : dropshipHint === 'wardrobe' ? DS.wardrobe : null;
+      if (highlightRect) {
+        ctx.strokeStyle = 'rgba(255,215,0,0.75)'; ctx.lineWidth = 2;
+        ctx.strokeRect(highlightRect.x-3, highlightRect.y-3, highlightRect.w+6, highlightRect.h+6);
+      }
+
+      // Player
+      drawCrewmate(ctx, p.x-ox, p.y-oy, p.w, p.h, p.color, p.name, true, null);
+      ctx.restore();
+
+      // HUD
+      ctx.fillStyle = 'rgba(0,0,0,0.65)'; ctx.fillRect(0,0,cw,52);
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 22px Arial'; ctx.textAlign = 'center';
+      ctx.fillText('DROPSHIP LOBBY', cw/2, 30);
+      ctx.fillStyle = '#888'; ctx.font = '13px Arial';
+      ctx.fillText('WASD to move  \u2022  E to interact', cw/2, 48);
+
+      // Interaction hint bar
+      if (!dropshipWardrobeOpen && dropshipCountdown < 0 && dropshipHint) {
+        const label = dropshipHint === 'laptop' ? 'Press E \u2014 Game Settings' : 'Press E \u2014 Change Appearance';
+        ctx.fillStyle = 'rgba(0,0,0,0.8)'; ctx.fillRect(cw/2-155, ch-90, 310, 36);
+        ctx.fillStyle = '#ffd700'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
+        ctx.fillText(label, cw/2, ch-65);
+      }
+
+      // Countdown overlay
+      if (dropshipCountdown > 0) {
+        ctx.fillStyle = 'rgba(0,0,0,0.82)'; ctx.fillRect(0,0,cw,ch);
+        ctx.fillStyle = '#4ecdc4'; ctx.font = 'bold 30px Arial'; ctx.textAlign = 'center';
+        ctx.fillText('LAUNCHING\u2026', cw/2, ch/2-55);
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 110px Arial';
+        ctx.fillText(dropshipCountdown, cw/2, ch/2+45);
+      }
+    }
+
     let frameCount = 0;
     function gameLoop() {
       if (!gameStarted || gameOver) return;
       frameCount++;
+      if (dropshipPhase) {
+        updateDropship();
+        if (dropshipPhase) renderDropship();
+        requestAnimationFrame(gameLoop);
+        return;
+      }
       if (selectedMap === 'polus') updateSnow();
       updatePlayer();
       updateNPCs();
@@ -5032,6 +5640,18 @@
     document.addEventListener('keydown', (e) => {
       keys[e.key.toLowerCase()] = true;
       if (!gameStarted || gameOver) return;
+      if (dropshipPhase) {
+        if (e.key.toLowerCase() === 'e') {
+          if (dropshipWardrobeOpen) { closeDropshipWardrobe(); }
+          else if (dropshipHint === 'laptop' && dropshipCountdown < 0) { openSettings(); }
+          else if (dropshipHint === 'wardrobe') { openDropshipWardrobe(); }
+        }
+        if (e.key === 'Escape') {
+          if (dropshipWardrobeOpen) closeDropshipWardrobe();
+          else closeSettings();
+        }
+        return;
+      }
       if (e.key.toLowerCase() === 'e') {
         if (inVent) { ventTravel(); } else { doTask(); }
       }
@@ -5061,14 +5681,14 @@
     document.getElementById('startBtn').addEventListener('click', () => {
       document.getElementById('startScreen').style.display = 'none';
       gameStarted = true;
-      init();
+      initDropship();
       requestAnimationFrame(gameLoop);
     });
 
     document.getElementById('restartBtn').addEventListener('click', () => {
       document.getElementById('gameOverScreen').style.display = 'none';
-      init();
       gameOver = false;
+      initDropship();
       requestAnimationFrame(gameLoop);
     });
   </script>
