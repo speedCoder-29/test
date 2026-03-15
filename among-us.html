@@ -1997,6 +1997,7 @@
     let killFlash = 0;
 
     let emergencyCooldown = 0;
+    let inMeeting = false;
 
     // Special roles state
     let playerRole = 'crewmate';
@@ -2206,6 +2207,7 @@
       emergencyCooldown = gameSettings.emergencyCooldown * 60;
       sabotage = { active: false, type: null, timer: 0, maxTime: 0, cooldown: 0, fixProgress: 0 };
       witnessedVisualTasks = new Set();
+      inMeeting = false;
       visionRadius = VISION_NORMAL * (isImpostor ? gameSettings.impVision : gameSettings.crewVision);
       doorCooldown = 0;
       for (const d of doors) { d.closed = false; d.timer = 0; }
@@ -2650,7 +2652,7 @@
 
       // Check for dead bodies nearby
       for (const body of deadBodies) {
-        if (dist(npc, body) < 120 && !npc.sawBody) {
+        if (dist(npc, body) < 120 && !npc.sawBody && !body.reported) {
           npc.sawBody = true;
           npc.bodyLocation = { x: body.x, y: body.y };
           npc.state = AI_STATE.REPORTING;
@@ -3005,6 +3007,7 @@
     }
 
     function triggerNPCReport(reporter) {
+      deadBodies.forEach(b => b.reported = true);
       document.getElementById('reportScreen').style.display = 'flex';
       setTimeout(() => {
         document.getElementById('reportScreen').style.display = 'none';
@@ -3383,10 +3386,9 @@
 
     // --- Emergency Meeting ---
     function callEmergency() {
-      if (emergencyCooldown > 0 || gameOver || sabotage.active) return;
+      if (emergencyCooldown > 0 || gameOver) return;
       if (dist(player, EMERGENCY_BTN) < 60) {
         emergencyCooldown = 1800; // 30s cooldown
-        if (sabotage.active) endSabotage();
         document.getElementById('reportScreen').querySelector('h1').textContent = 'EMERGENCY MEETING';
         document.getElementById('reportScreen').style.display = 'flex';
         setTimeout(() => {
@@ -3617,7 +3619,9 @@
 
     function reportBody() {
       for (const body of deadBodies) {
-        if (dist(player, body) < 80) {
+        if (dist(player, body) < 80 && !body.reported) {
+          body.reported = true;
+          deadBodies.forEach(b => b.reported = true);
           document.getElementById('reportScreen').style.display = 'flex';
           setTimeout(() => {
             document.getElementById('reportScreen').style.display = 'none';
@@ -3636,11 +3640,10 @@
       const isImp = npc.isImpostor;
       const msgs = [];
 
-      if (npc.sawBody && npc.bodyLocation) {
-        msgs.push('I found the body! Something is very wrong.');
-        msgs.push('I\'m the one who reported — there\'s a body!');
-      }
+      // Use the room the NPC was in before being teleported to the table
+      const myRoom = npc.premeetingRoom || getEntityRoom(npc) || 'the hallway';
 
+      // Find top suspect
       let maxSusp = 0, topSuspect = null;
       for (const c of candidates) {
         if (c.entity === npc) continue;
@@ -3648,42 +3651,109 @@
         if (s > maxSusp) { maxSusp = s; topSuspect = c; }
       }
 
+      // Pick a random other living player to ask a question
+      const others = candidates.filter(c => c.entity !== npc);
+      const randomOther = others.length ? others[Math.floor(Math.random() * others.length)] : null;
+
+      // ---- Reporter opening statement ----
+      if (reporterNPC && reporterNPC.name === npc.name && npc.bodyLocation) {
+        const bodyRoom = getRoomAtPoint(npc.bodyLocation.x, npc.bodyLocation.y) || 'the corridor';
+        msgs.push(`I found a body in ${bodyRoom}! Everyone stay calm.`);
+        msgs.push(`There's a dead body in ${bodyRoom} — I reported it.`);
+        msgs.push(`Body in ${bodyRoom}. I was just passing through when I saw it.`);
+      }
+
+      // ---- Saw a body but someone else reported ----
+      if (npc.bodyLocation && (!reporterNPC || reporterNPC.name !== npc.name)) {
+        const bodyRoom = getRoomAtPoint(npc.bodyLocation.x, npc.bodyLocation.y) || 'that area';
+        msgs.push(`I also spotted someone dead near ${bodyRoom} earlier.`);
+      }
+
       if (isImp) {
+        // Impostor: lie about location, deflect suspicion
+        const fakeRooms = ['Cafeteria', 'Electrical', 'Reactor', 'MedBay', 'Admin', 'Navigation'];
+        const fakeRoom = fakeRooms[Math.floor(Math.random() * fakeRooms.length)];
+        msgs.push(`I was in ${fakeRoom} doing tasks, ask anyone.`);
+        msgs.push(`I've been in ${fakeRoom} the whole round, it wasn't me.`);
+        msgs.push(`I was with someone in ${fakeRoom} — I can't be the one.`);
         if (topSuspect) {
-          msgs.push('Honestly ' + topSuspect.name + ' has been acting really weird.');
-          msgs.push('Did anyone else notice ' + topSuspect.name + ' wasn\'t near any tasks?');
+          msgs.push(`${topSuspect.name} was acting really weird earlier, not gonna lie.`);
+          msgs.push(`I saw ${topSuspect.name} near the body location. Just saying.`);
+          msgs.push(`Why was ${topSuspect.name} alone for so long? That's suspicious.`);
         }
-        const room = getEntityRoom(npc) || 'my area';
-        msgs.push('I was in ' + room + ' the whole time.');
-        msgs.push('I\'ve been doing tasks non-stop, it\'s not me!');
-        msgs.push('Can we just focus? Someone is trying to distract us.');
+        if (randomOther) {
+          msgs.push(`${randomOther.name}, where exactly were YOU when this happened?`);
+        }
+        msgs.push(`Someone is trying to pin this on me. Think logically.`);
+        msgs.push(`I've been doing tasks non-stop, check the task bar.`);
       } else {
+        // Crewmate: honest report, ask questions
+        msgs.push(`I was in ${myRoom} when the meeting was called.`);
+        msgs.push(`I was doing tasks in ${myRoom}, happy to confirm.`);
         if (topSuspect && maxSusp > 15) {
-          msgs.push('I think ' + topSuspect.name + ' might be the impostor.');
-          msgs.push('I saw ' + topSuspect.name + ' near where the body was found.');
-          msgs.push(topSuspect.name + ' has been acting really suspicious...');
+          msgs.push(`${topSuspect.name} was near the body area earlier — kind of sus.`);
+          msgs.push(`I'm voting ${topSuspect.name}. I saw them near the body.`);
+          msgs.push(`${topSuspect.name} wasn't doing any tasks the whole time I watched.`);
         }
-        const room = getEntityRoom(npc) || 'my room';
-        msgs.push('I was doing tasks in ' + room + ', I can vouch for my position.');
-        msgs.push('I haven\'t seen anything sus from my end. Who was near the body?');
-        msgs.push('Does anyone have an alibi?');
+        if (randomOther) {
+          msgs.push(`${randomOther.name}, where were you this round? Just checking.`);
+          msgs.push(`Can ${randomOther.name} account for their location?`);
+        }
+        if (reporterNPC) {
+          msgs.push(`Good catch ${reporterNPC.name}. Who was near that area?`);
+        } else {
+          msgs.push(`Emergency meeting — does anyone know who called it?`);
+        }
+        msgs.push(`I didn't see anything sus on my end. Who was alone?`);
+        msgs.push(`Someone in here is lying. Let's compare locations.`);
+        msgs.push(`Does anyone have an alibi for ${myRoom}?`);
       }
 
       return msgs.length ? msgs[Math.floor(Math.random() * msgs.length)] : null;
     }
 
+    // Returns the closest named room for a world-space point
+    function getRoomAtPoint(wx, wy) {
+      if (!mapTheme || !mapTheme.rooms) return null;
+      let best = null, bestD = Infinity;
+      for (const rm of mapTheme.rooms) {
+        const d = Math.hypot(rm.x - wx, rm.y - wy);
+        if (d < bestD) { bestD = d; best = rm.name; }
+      }
+      return best;
+    }
+
     function generateNpcFollowupMessage(npc, candidates) {
-      const pool = npc.isImpostor ? [
-        'Just vote someone, we\'re wasting time.',
-        'It\'s not me, I promise.',
-        'I think we should trust each other more.',
-      ] : [
-        'Can we trust everyone in this meeting?',
-        'I still don\'t know who to vote...',
-        'Someone in here is lying right now.',
-        'Let\'s think about who had time to kill.',
-      ];
-      return pool[Math.floor(Math.random() * pool.length)];
+      // Find top suspect for targeted follow-up
+      let maxSusp = 0, topSuspect = null;
+      for (const c of candidates) {
+        if (c.entity === npc) continue;
+        const s = npc.suspicion[c.name] || 0;
+        if (s > maxSusp) { maxSusp = s; topSuspect = c; }
+      }
+      const others = candidates.filter(c => c.entity !== npc);
+      const randomOther = others.length ? others[Math.floor(Math.random() * others.length)] : null;
+
+      if (npc.isImpostor) {
+        const pool = [
+          'Stop stalling — vote someone already.',
+          'I promise it wasn\'t me. Check the tasks.',
+          topSuspect ? `I\'m sticking with ${topSuspect.name}. Something\'s off.` : 'I still don\'t trust this group.',
+          randomOther ? `${randomOther.name} still hasn\'t explained where they were.` : 'Someone here is clearly lying.',
+          'If we get this wrong the impostor wins. Think carefully.',
+        ];
+        return pool[Math.floor(Math.random() * pool.length)];
+      } else {
+        const pool = [
+          topSuspect && maxSusp > 10 ? `I'm still sus of ${topSuspect.name}. Not changing my mind.` : 'I still don\'t know who to vote...',
+          'Someone in here is lying right now. Who has no alibi?',
+          'Let\'s think: who had time alone to make a kill?',
+          randomOther ? `${randomOther.name} hasn\'t said where they were yet.` : 'Can we get everyone to confirm their location?',
+          'If nobody can verify their location, skip and regroup.',
+          'I trust whoever was doing tasks near me. I\'ll vote based on that.',
+        ];
+        return pool[Math.floor(Math.random() * pool.length)];
+      }
     }
 
     function showVotingPhase(candidates, npcVotes) {
@@ -3717,6 +3787,38 @@
     }
 
     function startVoting(reporterNPC) {
+      // End any active sabotage (critical or not) when a meeting is called
+      if (sabotage.active) endSabotage();
+
+      // Freeze all movement
+      inMeeting = true;
+      cancelPlayerTask();
+      npcs.forEach(n => {
+        n.state = AI_STATE.IDLE;
+        n.navPath = null;
+        n.stuckTimer = 0;
+        n.fixingSabotage = false;
+      });
+
+      // Mark all bodies as reported so no further reports trigger
+      deadBodies.forEach(b => b.reported = true);
+
+      // Snapshot each NPC's location before teleporting (used in discussion)
+      npcs.forEach(n => {
+        n.premeetingRoom = getRoomAtPoint(n.x, n.y) || 'the hallway';
+      });
+      player.preeetingRoom = getRoomAtPoint(player.x, player.y) || 'the hallway';
+
+      // Teleport everyone to seats around the meeting table
+      const tableX = EMERGENCY_BTN.x, tableY = EMERGENCY_BTN.y;
+      const seatRadius = 100;
+      const allAlive = [player, ...npcs].filter(e => e.alive);
+      allAlive.forEach((entity, i) => {
+        const angle = (i / allAlive.length) * Math.PI * 2 - Math.PI / 2;
+        entity.x = tableX + Math.cos(angle) * seatRadius;
+        entity.y = tableY + Math.sin(angle) * seatRadius;
+      });
+
       const voteScreen = document.getElementById('voteScreen');
       const voteList = document.getElementById('voteList');
       const voteResult = document.getElementById('voteResult');
@@ -3913,6 +4015,7 @@
         setTimeout(() => {
           voteScreen.style.display = 'none';
           voteList.style.display = 'flex';
+          inMeeting = false;
           deadBodies = [];
           npcs.forEach(n => { n.sawBody = false; n.bodyLocation = null; n.completedVisualTasks = []; n.fixingSabotage = false; });
           witnessedVisualTasks = new Set();
@@ -3931,21 +4034,21 @@
       if (ejected.isPlayer) {
         player.alive = false;
         if (ejected.isImpostor) {
-          setTimeout(() => { voteScreen.style.display = 'none'; endGame(false); }, 3000);
+          setTimeout(() => { voteScreen.style.display = 'none'; inMeeting = false; endGame(false); }, 3000);
         } else {
-          setTimeout(() => { voteScreen.style.display = 'none'; endGame(true); }, 3000);
+          setTimeout(() => { voteScreen.style.display = 'none'; inMeeting = false; endGame(true); }, 3000);
         }
       } else {
         const npc = npcs.find(n => n.name === ejected.name);
         if (npc) npc.alive = false;
         if (ejected.isImpostor) {
-          setTimeout(() => { voteScreen.style.display = 'none'; endGame(false); }, 3000);
+          setTimeout(() => { voteScreen.style.display = 'none'; inMeeting = false; endGame(false); }, 3000);
         } else {
           setTimeout(() => {
             voteScreen.style.display = 'none';
             voteList.style.display = 'flex';
+            inMeeting = false;
             deadBodies = [];
-            // Reset suspicion and visual task alibis for next round
             npcs.forEach(n => { n.sawBody = false; n.bodyLocation = null; n.completedVisualTasks = []; n.fixingSabotage = false; });
             witnessedVisualTasks = new Set();
             const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length + (player.alive && !isImpostor ? 1 : 0);
@@ -6946,6 +7049,11 @@
       if (dropshipPhase) {
         updateDropship();
         if (dropshipPhase) renderDropship();
+        requestAnimationFrame(gameLoop);
+        return;
+      }
+      if (inMeeting) {
+        render();
         requestAnimationFrame(gameLoop);
         return;
       }
