@@ -106,6 +106,62 @@
       position: fixed; bottom: 45px; left: 50%; transform: translateX(-50%);
       color: #aaa; font-size: 13px; display: none; z-index: 10;
     }
+    #abilityHUD {
+      position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%);
+      color: #ffd700; font-size: 13px; font-weight: bold; display: none; z-index: 10;
+      background: rgba(0,0,0,0.65); padding: 5px 14px; border-radius: 8px; text-align: center;
+    }
+    #actionButtons {
+      position: fixed; bottom: 20px; right: 20px; display: none;
+      flex-wrap: wrap; gap: 8px; width: 168px; justify-content: flex-end;
+      z-index: 15; pointer-events: none;
+    }
+    .action-btn {
+      width: 76px; height: 66px; border-radius: 14px;
+      border: 2px solid rgba(255,255,255,0.25); background: rgba(15,15,30,0.9);
+      color: #fff; cursor: pointer; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 3px;
+      font-weight: bold; transition: background 0.1s, opacity 0.15s;
+      pointer-events: auto; user-select: none;
+    }
+    .action-btn:hover:not(:disabled) { background: rgba(60,60,90,0.95); border-color: rgba(255,255,255,0.55); }
+    .action-btn:active:not(:disabled) { transform: scale(0.93); }
+    .action-btn:disabled { opacity: 0.28; cursor: default; pointer-events: none; }
+    .btn-icon { font-size: 22px; line-height: 1; }
+    .btn-lbl { font-size: 10px; letter-spacing: 0.5px; }
+    .btn-cd { font-size: 9px; color: #ffd700; min-height: 11px; }
+    #btn-kill { border-color: #ff5555; background: rgba(50,0,0,0.9); }
+    #btn-kill:hover:not(:disabled) { background: rgba(80,10,10,0.95); }
+    #btn-report { border-color: #ffdd44; background: rgba(40,30,0,0.9); }
+    #btn-report:hover:not(:disabled) { background: rgba(70,55,0,0.95); }
+    #btn-sabotage { border-color: #ff7700; background: rgba(40,15,0,0.9); }
+    #btn-sabotage:hover:not(:disabled) { background: rgba(70,25,0,0.95); }
+    #btn-vent { border-color: #888; }
+    #sabSubMenu {
+      position: fixed; bottom: 112px; right: 20px; width: 160px;
+      display: none; flex-direction: column; gap: 6px; z-index: 16;
+    }
+    .sab-sub-btn {
+      padding: 9px 0; border-radius: 8px; border: 2px solid #ff7700;
+      background: rgba(50,20,0,0.95); color: #ffaa44; cursor: pointer;
+      font-size: 13px; font-weight: bold; pointer-events: auto; width: 100%;
+    }
+    .sab-sub-btn:hover { background: rgba(80,30,0,0.95); }
+    #vitalsPanel {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: rgba(5,10,30,0.96); border: 2px solid #44aaff; border-radius: 10px;
+      padding: 16px 24px; color: #fff; z-index: 30; display: none; min-width: 220px;
+    }
+    #vitalsPanel h3 { color: #44aaff; text-align: center; margin-bottom: 10px; font-size: 15px; letter-spacing: 2px; }
+    .vitals-row { display: flex; align-items: center; gap: 10px; padding: 3px 0; font-size: 13px; }
+    .vitals-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    .vitals-dead { color: #555; text-decoration: line-through; }
+    #noisemakerAlert {
+      position: fixed; top: 42%; left: 50%; transform: translate(-50%, -50%);
+      background: rgba(220,80,0,0.92); border: 2px solid #ffaa00; border-radius: 10px;
+      padding: 10px 22px; color: #fff; font-size: 17px; font-weight: bold; z-index: 40;
+      display: none; text-align: center; pointer-events: none;
+    }
     #reportScreen, #voteScreen, #gameOverScreen {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.9); display: none; flex-direction: column;
@@ -124,6 +180,17 @@
     .vote-dot { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; }
     .vote-count { margin-left: auto; color: #ffd700; font-weight: bold; }
     #voteResult { font-size: 22px; margin-top: 15px; }
+    #discussPhase { display:flex; flex-direction:column; align-items:center; gap:8px; width:580px; max-width:96vw; }
+    #discussInfo { color:#aaa; font-size:14px; }
+    #discussInfo span { color:#ffd700; font-weight:bold; }
+    .chat-area { width:100%; height:220px; overflow-y:auto; background:rgba(255,255,255,0.05); border:1px solid #444; border-radius:8px; padding:10px; display:flex; flex-direction:column; gap:5px; }
+    .chat-msg { font-size:13px; line-height:1.5; word-break:break-word; }
+    .chat-msg .msg-name { font-weight:bold; }
+    .chat-input-row { display:flex; gap:8px; width:100%; }
+    #chatInput { flex:1; padding:7px 12px; font-size:14px; background:rgba(255,255,255,0.1); border:1px solid #555; border-radius:6px; color:#fff; outline:none; }
+    #chatInput:focus { border-color:#ffd700; }
+    #chatSendBtn { padding:7px 16px; background:#ffd700; color:#000; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:14px; }
+    #chatSendBtn:hover { background:#ffe740; }
     #gameOverScreen h1 { font-size: 50px; margin-bottom: 15px; }
     #gameOverScreen p { font-size: 20px; color: #aaa; margin-bottom: 25px; }
     #restartBtn {
@@ -208,12 +275,62 @@
   </div>
   <div id="taskProgress"><div id="taskProgressFill"></div></div>
   <div id="ventHint"></div>
+  <div id="abilityHUD"></div>
+  <div id="vitalsPanel"><h3>VITALS</h3><div id="vitalsList"></div></div>
+  <div id="noisemakerAlert"></div>
+  <div id="actionButtons">
+    <button class="action-btn" id="btn-report" onclick="reportBody()">
+      <span class="btn-icon">🚨</span>
+      <span class="btn-lbl">REPORT</span>
+      <span class="btn-cd"></span>
+    </button>
+    <button class="action-btn" id="btn-use" onclick="btnUseAction()">
+      <span class="btn-icon" id="btn-use-icon">🔧</span>
+      <span class="btn-lbl" id="btn-use-lbl">USE</span>
+      <span class="btn-cd"></span>
+    </button>
+    <button class="action-btn" id="btn-kill" onclick="doKill()">
+      <span class="btn-icon">🔪</span>
+      <span class="btn-lbl">KILL</span>
+      <span class="btn-cd" id="btn-kill-cd"></span>
+    </button>
+    <button class="action-btn" id="btn-vent" onclick="btnVentAction()">
+      <span class="btn-icon" id="btn-vent-icon">⬇️</span>
+      <span class="btn-lbl" id="btn-vent-lbl">VENT</span>
+      <span class="btn-cd"></span>
+    </button>
+    <button class="action-btn" id="btn-sabotage" onclick="toggleSabSubMenu()">
+      <span class="btn-icon">⚡</span>
+      <span class="btn-lbl">SABOTAGE</span>
+      <span class="btn-cd" id="btn-sab-cd"></span>
+    </button>
+    <button class="action-btn" id="btn-ability" onclick="useAbility()">
+      <span class="btn-icon" id="btn-ability-icon">✨</span>
+      <span class="btn-lbl" id="btn-ability-lbl">ABILITY</span>
+      <span class="btn-cd" id="btn-ability-cd"></span>
+    </button>
+  </div>
+  <div id="sabSubMenu">
+    <button class="sab-sub-btn" onclick="startSabotage('lights');closeSabSubMenu()">💡 Lights</button>
+    <button class="sab-sub-btn" onclick="startSabotage('o2');closeSabSubMenu()">⚗️ Oxygen</button>
+    <button class="sab-sub-btn" onclick="startSabotage('reactor');closeSabSubMenu()">☢️ Reactor</button>
+    <button class="sab-sub-btn" onclick="startSabotage('comms');closeSabSubMenu()">📡 Comms</button>
+  </div>
+
   <canvas id="minimap"></canvas>
 
   <div id="reportScreen"><h1>DEAD BODY REPORTED</h1><p>Emergency meeting called...</p></div>
   <div id="voteScreen">
-    <h2>Who is the Impostor?</h2>
-    <div class="vote-list" id="voteList"></div>
+    <h2 id="meetingTitle">Emergency Meeting!</h2>
+    <div id="discussPhase">
+      <div id="discussInfo">Discussion — voting in <span id="discussTimer">30</span>s</div>
+      <div class="chat-area" id="chatArea"></div>
+      <div class="chat-input-row">
+        <input id="chatInput" type="text" placeholder="Say something..." maxlength="80">
+        <button id="chatSendBtn">Send</button>
+      </div>
+    </div>
+    <div class="vote-list" id="voteList" style="display:none"></div>
     <div id="voteResult"></div>
   </div>
   <div id="gameOverScreen">
@@ -381,19 +498,20 @@
           w.push({ x: 16, y: 394, w: 140, h: 16 });   // Reactor top wall left (x:16-156, west of UE)
           w.push({ x: 16, y: 1226, w: 140, h: 16 });  // Reactor bottom wall left (x:16-156, west of LE)
 
-          // --- Security (adjacent to UE-LE corridor, entry at x:380 gap y:700-780) ---
-          // Left wall = corridor right wall at x:380 (already has gap y:700-780) — no new wall needed
+          // --- Security (door into UE-LE corridor at x:380, gap y:700-780) ---
           // Top & bottom walls
           w.push({ x: 380, y: 560, w: 232, h: 16 });   // top wall (y:560-576)
           w.push({ x: 380, y: 844, w: 232, h: 16 });   // bottom wall
+          // Left wall (y:576-844, door gap y:700-780)
+          w.push({ x: 380, y: 576, w: 16, h: 124 });   // left top (y:576-700)
+          w.push({ x: 380, y: 780, w: 16, h: 64 });    // left bottom (y:780-844)
           // Right wall
           w.push({ x: 596, y: 560, w: 16, h: 300 });   // right wall (y:560-860)
 
           // --- MedBay (BELOW top corridor — top open to corridor at y:280) ---
           // Top wall: none — corridor at y:200-280 feeds directly into MedBay top
-          // Left wall (gap y:400-480 for left vertical corridor connector)
-          w.push({ x: 520, y: 280, w: 16, h: 120 });   // left top (y:280-400)
-          w.push({ x: 520, y: 480, w: 16, h: 136 });   // left bottom (y:480-616)
+          // Left wall: solid (no side connector)
+          w.push({ x: 520, y: 280, w: 16, h: 320 });   // left wall (y:280-600, solid)
           // Right wall: solid
           w.push({ x: 864, y: 280, w: 16, h: 320 });   // right (y:280-600)
           // Bottom wall
@@ -405,9 +523,9 @@
           w.push({ x: 970, y: 96,  w: 880, h: 16 });   // top wall
           w.push({ x: 1834, y: 96, w: 16, h: 104 });   // right top (y:96-200, gap y:200-280 for Cafeteria→Weapons)
           w.push({ x: 1834, y: 280, w: 16, h: 220 });  // right bottom (y:280-500)
-          // Bottom walls: one opening (south-left x:1234-1400) for Admin/hallway exit
-          w.push({ x: 970,  y: 572, w: 264, h: 16 }); // bottom-left (to south-left exit)
-          w.push({ x: 1400, y: 572, w: 450, h: 16 }); // bottom-right (solid, x:1400-1850 — only one south exit)
+          // Bottom walls: central corridor gap x:1264-1380
+          w.push({ x: 970,  y: 572, w: 294, h: 16 }); // bottom-left (x:970-1264)
+          w.push({ x: 1380, y: 572, w: 470, h: 16 }); // bottom-right (x:1380-1850)
 
           // --- Weapons ---
           w.push({ x: 2050, y: 96,  w: 16, h: 104 });  // left top (y:96-200, gap y:200-280 for Cafeteria→Weapons)
@@ -430,8 +548,8 @@
           w.push({ x: 2550, y: 550, w: 380, h: 16 }); // top
           w.push({ x: 2550, y: 934, w: 380, h: 16 }); // bottom
 
-          // --- Admin (left gap y:700-780 for horizontal corridor; right gap y:700-780 for Admin→O2) ---
-            // left top (y:660-700)
+          // --- Admin (left gap y:700-780 for south connector entry; right gap y:700-780 for Admin→O2) ---
+          w.push({ x: 1380, y: 660, w: 16, h: 40 });   // left top (y:660-700)
           w.push({ x: 1380, y: 780, w: 16, h: 210 });  // left bottom (y:780-990, gap y:700-780)
           w.push({ x: 1380, y: 660, w: 420, h: 16 });  // top
           w.push({ x: 1784, y: 660, w: 16, h: 40 });   // right top (y:660-700)
@@ -439,10 +557,9 @@
           w.push({ x: 1380, y: 974, w: 420, h: 16 });  // bottom
 
           // --- Electrical (ABOVE LE-Storage corridor — bottom at y:1290 opens to corridor below) ---
-          w.push({ x: 520, y: 924, w: 16, h: 66 });    // left top (door gap y:990-1070)
-          w.push({ x: 520, y: 1070, w: 16, h: 220 });  // left bottom (y:1070-1290)
-          w.push({ x: 520, y: 924, w:  60, h: 16 });   // top left (x:520-580, gap x:580-740 for corridors)
-          w.push({ x: 740, y: 924, w: 180, h: 16 });   // top right (x:740-920)
+          w.push({ x: 520, y: 924, w: 16, h: 366 });   // left wall (y:924-1290, solid — entry from south only)
+          w.push({ x: 520, y: 924, w: 384, h: 16 });   // top wall (x:520-904, full span, no gap)
+          // (top gap x:580-740 closed — no corridor connects above Electrical)
           w.push({ x: 904, y: 924, w: 16, h: 366 });   // right (y:924-1290)
           w.push({ x: 520, y: 1290, w: 130, h: 16 });  // bottom left (x:520-650)
           w.push({ x: 730, y: 1290, w: 190, h: 16 });  // bottom right (x:730-920)
@@ -456,8 +573,8 @@
           // --- Storage ---
           w.push({ x: 1020, y: 1100, w: 16, h: 180 }); // left top (door gap y:1280-1370)
           w.push({ x: 1020, y: 1370, w: 16, h: 260 }); // left bottom
-          w.push({ x: 1020, y: 1100, w: 200, h: 16 }); // top left (gap for Admin→Storage)
-          w.push({ x: 1340, y: 1100, w: 200, h: 16 }); // top right (gap for Storage→Comms)
+          w.push({ x: 1020, y: 1100, w: 244, h: 16 }); // top left (x:1020-1264, gap x:1264-1380 for central corridor)
+          w.push({ x: 1380, y: 1100, w: 160, h: 16 }); // top right (x:1380-1540)
           w.push({ x: 1524, y: 1100, w: 16, h: 180 }); // right top (door gap y:1280-1370)
           w.push({ x: 1524, y: 1370, w: 16, h: 260 }); // right bottom
           w.push({ x: 1020, y: 1614, w: 520, h: 16 }); // bottom
@@ -493,9 +610,8 @@
 
           // --- Left corridor → LE (x:414-494, y:844-1210) --- REMOVED (replaced by UE-LE vertical corridor)
 
-          // --- Corridor → LE (x:414-520, y:1210-1374) connects left-lower corridor to LE east + Electrical west ---
-          w.push({ x: 414, y: 1194, w: 106, h: 16 }); // top
-          w.push({ x: 414, y: 1374, w: 106, h: 16 }); // bottom (below LE east door y:1310-1374)
+          // LE east door connects directly to LE→Storage corridor at y:1310-1374
+          // (no separate connector section needed)
 
           // --- MedBay south (x:580-660, y:424-560) --- REMOVED (replaced by new corridor connector)
 
@@ -510,17 +626,18 @@
           w.push({ x: 1784, y: 684, w: 136, h: 16 }); // top
           w.push({ x: 1784, y: 780, w: 136, h: 16 }); // bottom (shares with Admin right bottom)
 
-          // --- Cafeteria south-left exit (x:1234-1400, y:484-700) ---
-          w.push({ x: 1234, y: 572, w: 16, h: 128 }); // left (extends to y:700)
-          w.push({ x: 1400, y: 572, w: 16, h: 128 }); // right (extends to y:700)
+          // --- Central corridor (x:1264-1380, y:572-1116 — Cafeteria south → beside Admin → Storage top) ---
+          w.push({ x: 1248, y: 572, w: 16, h: 528 }); // left wall (y:572-1100, full corridor span)
+          w.push({ x: 1380, y: 572, w: 16, h: 88  }); // right wall above Admin (y:572-660)
+          w.push({ x: 1380, y: 990, w: 16, h: 110 }); // right wall below Admin (y:990-1100)
 
           // --- O2 → Navigation (x:2284-2550, y:700-780, aligned with Nav door and O2 right door) ---
           w.push({ x: 2284, y: 684, w: 266, h: 16 }); // top
           w.push({ x: 2284, y: 780, w: 144, h: 16 }); // bottom left (x:2284-2428)
           w.push({ x: 2524, y: 780, w: 26,  h: 16 }); // bottom right (x:2524-2550)
-          // East vertical corridor walls (x:2428-2524, y:796-1116 — connects O2/Nav corridor to Shields)
-          w.push({ x: 2412, y: 796, w: 16, h: 320 }); // east corridor left wall
-          w.push({ x: 2524, y: 796, w: 16, h: 304 }); // east corridor right wall
+          // East vertical corridor walls (x:2428-2524, y:780-1116 — connects O2/Nav corridor bottom to Shields)
+          w.push({ x: 2412, y: 780, w: 16, h: 336 }); // east corridor left wall (y:780-1116)
+          w.push({ x: 2524, y: 780, w: 16, h: 320 }); // east corridor right wall (y:780-1100)
 
           // --- Weapons → O2 vertical (x:2230-2310, y:454-580) ---
           w.push({ x: 2214, y: 454, w: 16, h: 126 }); // left
@@ -530,9 +647,7 @@
           w.push({ x: 2454, y: 454, w: 16, h: 96 }); // left
           w.push({ x: 2550, y: 454, w: 16, h: 96 }); // right
 
-          // --- Admin → Storage vertical (x:1280-1360, y:796-1100, junction from horizontal corridor) ---
-          w.push({ x: 1264, y: 796, w: 16, h: 304 }); // left
-          w.push({ x: 1360, y: 796, w: 16, h: 304 }); // right
+          // (Admin→Storage vertical replaced by central corridor — see above)
 
           // --- Storage → Shields corridor (x:1524-2180, y:1280-1370) — Comms hangs below ---
           w.push({ x: 1524, y: 1264, w: 656, h: 16 }); // top (full span to Shields left)
@@ -640,15 +755,14 @@
           { x: 414, y: 200, w: 572, h: 80 },     // Top horizontal corridor UE→Caf (above MedBay)
           { x: 1524, y: 1280, w: 656, h: 90 },    // Storage→Shields corridor (covers Comms top + Shields left)
           { x: 1834, y: 200, w: 216, h: 80 },    // Cafeteria -> Weapons
-          { x: 260, y: 394, w: 120, h: 816 },    // UE-LE main vertical corridor (Reactor left, Security right)
-          // horizontal entrance branch and left corridor -> Admin removed
-          { x: 1250, y: 572, w: 150, h: 128 },   // Cafeteria south -> horizontal corridor (y:572-700)
+          { x: 260, y: 394, w: 120, h: 832 },    // UE-LE main vertical corridor (Reactor left, Security right)
+          // Central corridor: Cafeteria south → beside Admin → Storage top
+          { x: 1264, y: 572, w: 116, h: 544 },   // Central corridor (x:1264-1380, y:572-1116)
           { x: 1680, y: 700, w: 240, h: 80 },    // Admin/O2 hallway (x:1680-1920, connects Admin right to O2 left)
           { x: 2284, y: 700, w: 266, h: 80 },    // O2 -> Navigation (aligned with Nav door y:700-780 and O2 right door)
           { x: 2230, y: 454, w: 80, h: 126 },    // Weapons -> O2 connector
           { x: 2470, y: 454, w: 80, h: 96 },     // Weapons -> Nav upper connector
-          { x: 1280, y: 796, w: 80, h: 304 },    // Storage vertical (from horizontal corridor junction y:796 to Storage top y:1100)
-          { x: 2428, y: 796, w: 96, h: 320 },     // East vertical corridor (O2/Nav → Shields north)
+          { x: 2428, y: 780, w: 96, h: 336 },     // East vertical corridor (O2/Nav → Shields north, y:780-1116)
           { x: 414, y: 1290, w: 622, h: 90  },   // LE→Storage bottom corridor (x:414-1036, passes below Electrical)
         ],
         tasks: [
@@ -740,26 +854,24 @@
           // Cafeteria: 3 doors (left exit to MedBay hall, right exit to Weapons hall, south to Admin)
           { x: 970, y: 200, w: 16, h: 80, room: 'Cafeteria', dir: 'v' },      // left exit (matches gap y:200-280)
           { x: 1834, y: 200, w: 16, h: 80, room: 'Cafeteria', dir: 'v' },     // right exit (matches gap y:200-280)
-          { x: 1250, y: 572, w: 150, h: 16, room: 'Cafeteria', dir: 'h' },    // south to Admin hall
+          { x: 1264, y: 572, w: 116, h: 16, room: 'Cafeteria', dir: 'h' },    // south to central corridor
           // Upper Engine: 2 doors (east to MedBay hall, south to reactor corridor)
           { x: 414, y: 240, w: 16, h: 80, room: 'Upper Engine', dir: 'v' },    // east exit (matches wall gap y:240-320)
           { x: 260, y: 394, w: 70, h: 16, room: 'Upper Engine', dir: 'h' },    // south exit
           // Lower Engine: 2 doors (east to Electrical hall, north to reactor corridor)
           { x: 414, y: 1310, w: 16, h: 64, room: 'Lower Engine', dir: 'v' },   // east exit (wall gap y:1310-1374)
           { x: 260, y: 1210, w: 70, h: 16, room: 'Lower Engine', dir: 'h' },   // north exit
-          // MedBay: 1 door (south exit to corridor)
-          { x: 520, y: 400, w: 16, h: 80, room: 'MedBay', dir: 'v' },          // south/east exit
+          // MedBay: accessible from top corridor only (left wall is now solid)
           // Reactor: east exit to UE-LE corridor
           { x: 244, y: 700, w: 16, h: 80, room: 'Reactor', dir: 'v' },   // east exit to UE-LE corridor
           // Security: 1 door (east exit to corridor)
           { x: 380, y: 700, w: 16, h: 80, room: 'Security', dir: 'v' },        // west entry (left wall at x:380)
-          // Electrical: 1 door (north exit to corridor)
-          { x: 520, y: 990, w: 16, h: 80, room: 'Electrical', dir: 'v' },      // north exit
+          // Electrical: 1 door (south exit to LE-Storage corridor — left wall is now solid)
           { x: 650, y: 1290, w: 80, h: 16, room: 'Electrical', dir: 'h' },   // south exit to LE-Storage corridor
           // Storage: 3 doors (left to Electrical hall, right to Comms hall, top to Admin hall)
           { x: 1020, y: 1280, w: 16, h: 90, room: 'Storage', dir: 'v' },       // left exit
           { x: 1524, y: 1280, w: 16, h: 90, room: 'Storage', dir: 'v' },       // right exit
-          { x: 1220, y: 1100, w: 120, h: 16, room: 'Storage', dir: 'h' },      // top exit
+          { x: 1264, y: 1100, w: 116, h: 16, room: 'Storage', dir: 'h' },      // top exit to central corridor
           // O2: 2 doors (left/west from Admin corridor, right/east to Navigation corridor)
           { x: 1920, y: 700, w: 16, h: 80, room: 'O2', dir: 'v' },             // west exit (matches O2 left wall gap)
           { x: 2284, y: 700, w: 16, h: 80, room: 'O2', dir: 'v' },             // east exit (matches O2 right wall gap)
@@ -1789,6 +1901,10 @@
     let waypoints = [];
     let waypointEdges = [];
     let waypointAdj = []; // adjacency list for pathfinding
+    // Grid-based pathfinding
+    const GRID_SIZE = 32;
+    let walkGrid = null;
+    let gridW = 0, gridH = 0;
 
     // Door system constants
     const DOOR_CLOSE_DURATION = 600; // 10 seconds closed
@@ -1822,6 +1938,33 @@
       doorCooldown = 0;
       // Update minimap aspect ratio
       minimapCanvas.height = Math.round(180 * (MAP_H / MAP_W));
+      // Build walkable grid for pathfinding
+      buildWalkableGrid();
+    }
+
+    function buildWalkableGrid() {
+      gridW = Math.ceil(MAP_W / GRID_SIZE);
+      gridH = Math.ceil(MAP_H / GRID_SIZE);
+      walkGrid = new Uint8Array(gridW * gridH);
+      const flrs = mapTheme.floors;
+      if (!flrs) return;
+      for (let gy = 0; gy < gridH; gy++) {
+        for (let gx = 0; gx < gridW; gx++) {
+          const cx = (gx + 0.5) * GRID_SIZE;
+          const cy = (gy + 0.5) * GRID_SIZE;
+          let onFloor = false;
+          for (const f of flrs) {
+            if (cx >= f.x && cx < f.x + f.w && cy >= f.y && cy < f.y + f.h) {
+              onFloor = true; break;
+            }
+          }
+          if (!onFloor) continue;
+          // Mark walkable if an NPC body (32×40) fits centered on this cell
+          if (!isBlockedAt(cx - 16, cy - 20, 32, 40)) {
+            walkGrid[gy * gridW + gx] = 1;
+          }
+        }
+      }
     }
 
     // Build map selector UI
@@ -1855,6 +1998,26 @@
     let killFlash = 0;
 
     let emergencyCooldown = 0;
+
+    // Special roles state
+    let playerRole = 'crewmate';
+    let abilityCooldown = 0;
+    let abilityTimer = 0;
+    let abilityActive = false;
+    let shiftTarget = null;        // shapeshifter: { color, name }
+    let poisonTraps = [];          // viper: [{ x, y, triggered }]
+    let noisemakerAlertTimer = 0;
+    let detectiveScanActive = false;
+    let vitalsOpen = false;
+
+    const ROLE_COLORS = {
+      impostor: '#ff4444', shapeshifter: '#ff6b6b', phantom: '#bb44ff', viper: '#44dd44',
+      crewmate: '#4ecdc4', engineer: '#ffa500', scientist: '#44aaff', detective: '#ffd700', noisemaker: '#ff88ff'
+    };
+    const ROLE_LABELS = {
+      impostor: 'IMPOSTOR', shapeshifter: 'SHAPESHIFTER', phantom: 'PHANTOM', viper: 'VIPER',
+      crewmate: 'CREWMATE', engineer: 'ENGINEER', scientist: 'SCIENTIST', detective: 'DETECTIVE', noisemaker: 'NOISEMAKER'
+    };
 
     // NPC AI States
     const AI_STATE = {
@@ -1907,6 +2070,16 @@
       emergencyCooldown: 15,
       confirmEjects: true,
       anonymousVotes: false,
+      discussionTime: 30,
+      // Special roles (impostor)
+      roleShapeshifter: true,
+      rolePhantom: true,
+      roleViper: true,
+      // Special roles (crewmate)
+      roleEngineer: true,
+      roleScientist: true,
+      roleDetective: true,
+      roleNoisemaker: true,
     };
 
     function createNPC(x, y, color, name, isImp) {
@@ -1946,7 +2119,23 @@
       const m = MAPS[selectedMap];
       const name = document.getElementById('nameInput').value.trim() || 'Player';
       const baseSpeed = 3 * gameSettings.playerSpeed;
-      player = { x: m.spawnX, y: m.spawnY, w: 32, h: 40, color: COLORS[selectedColor].hex, name, speed: baseSpeed, alive: true, isImpostor: false, visible: true };
+      // Generate 10 spawn positions in a ring around the table
+      const spawnPositions = [];
+      const spawnRadius = 90;
+      for (let i = 0; i < 10; i++) {
+        const angle = (i / 10) * Math.PI * 2 - Math.PI / 2;
+        spawnPositions.push({
+          x: Math.round(m.spawnX + Math.cos(angle) * spawnRadius),
+          y: Math.round(m.spawnY + Math.sin(angle) * spawnRadius)
+        });
+      }
+      // Shuffle so assignment is random
+      for (let i = spawnPositions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [spawnPositions[i], spawnPositions[j]] = [spawnPositions[j], spawnPositions[i]];
+      }
+
+      player = { x: spawnPositions[0].x, y: spawnPositions[0].y, w: 32, h: 40, color: COLORS[selectedColor].hex, name, speed: baseSpeed, alive: true, isImpostor: false, visible: true };
 
       isImpostor = Math.random() < (gameSettings.impostors / 10);
       player.isImpostor = isImpostor;
@@ -1958,9 +2147,7 @@
         do { ci = Math.floor(Math.random() * COLORS.length); } while (usedColors.includes(ci));
         usedColors.push(ci);
 
-        const spawnX = 300 + Math.random() * (MAP_W - 600);
-        const spawnY = 300 + Math.random() * (MAP_H - 600);
-        const npc = createNPC(spawnX, spawnY, COLORS[ci].hex, COLORS[ci].name, false);
+        const npc = createNPC(spawnPositions[i + 1].x, spawnPositions[i + 1].y, COLORS[ci].hex, COLORS[ci].name, false);
 
         // Assign 3-4 random tasks to each crewmate
         const taskCount = 3 + Math.floor(Math.random() * 2);
@@ -1978,6 +2165,24 @@
         shuffledForImp[i].isImpostor = true;
         shuffledForImp[i].speed = 2.5 * gameSettings.playerSpeed;
       }
+
+      // Assign special roles
+      const enabledImpRoles = ['shapeshifter','phantom','viper'].filter(r => gameSettings['role' + r[0].toUpperCase() + r.slice(1)]);
+      const enabledCrewRoles = ['engineer','scientist','detective','noisemaker'].filter(r => gameSettings['role' + r[0].toUpperCase() + r.slice(1)]);
+      function pickRole(imp) {
+        const pool = imp ? enabledImpRoles : enabledCrewRoles;
+        return pool.length ? pool[Math.floor(Math.random() * pool.length)] : (imp ? 'impostor' : 'crewmate');
+      }
+      playerRole = pickRole(isImpostor);
+      player.role = playerRole;
+      for (const npc of npcs) npc.role = pickRole(npc.isImpostor);
+
+      // Reset ability state
+      abilityCooldown = 0; abilityTimer = 0; abilityActive = false;
+      shiftTarget = null; poisonTraps = []; noisemakerAlertTimer = 0;
+      detectiveScanActive = false; vitalsOpen = false;
+      document.getElementById('vitalsPanel').style.display = 'none';
+      document.getElementById('noisemakerAlert').style.display = 'none';
 
       // Calculate total NPC tasks for the task bar
       npcTasksTotal = 0;
@@ -2009,15 +2214,9 @@
 
       // Show role
       const roleTag = document.getElementById('roleTag');
-      if (isImpostor) {
-        roleTag.textContent = 'IMPOSTOR';
-        roleTag.style.color = '#ff4444';
-        roleTag.style.background = 'rgba(255,0,0,0.2)';
-      } else {
-        roleTag.textContent = 'CREWMATE';
-        roleTag.style.color = '#4ecdc4';
-        roleTag.style.background = 'rgba(78,205,196,0.2)';
-      }
+      roleTag.textContent = ROLE_LABELS[playerRole] || playerRole.toUpperCase();
+      roleTag.style.color = ROLE_COLORS[playerRole] || '#4ecdc4';
+      roleTag.style.background = isImpostor ? 'rgba(255,0,0,0.2)' : 'rgba(78,205,196,0.2)';
       roleTag.style.animation = 'none';
       roleTag.offsetHeight;
       roleTag.style.animation = 'fadeRole 3s forwards';
@@ -2029,6 +2228,231 @@
       document.getElementById('ventHint').style.display = 'none';
 
       updateTaskBar();
+    }
+
+    // ============ SPECIAL ROLE ABILITIES ============
+
+    function useAbility() {
+      if (!player.alive || inVent || gameOver) return;
+      switch (playerRole) {
+        case 'shapeshifter': doShapeshift(); break;
+        case 'phantom':      doPhantom();     break;
+        case 'viper':        doViper();        break;
+        case 'scientist':    doToggleVitals(); break;
+        case 'detective':    doDetectiveScan(); break;
+        case 'engineer':     doEngineerVent(); break;
+      }
+    }
+
+    function doShapeshift() {
+      if (abilityCooldown > 0 || abilityActive) return;
+      let nearest = null, nearDist = 250;
+      for (const npc of npcs) {
+        if (!npc.alive) continue;
+        const d = dist(player, npc);
+        if (d < nearDist) { nearDist = d; nearest = npc; }
+      }
+      if (!nearest) return;
+      shiftTarget = { color: nearest.color, name: nearest.name };
+      abilityActive = true;
+      abilityTimer = 900;   // 15s
+      abilityCooldown = 900 + 1800; // resets after shift ends
+    }
+
+    function doPhantom() {
+      if (abilityCooldown > 0 || abilityActive) return;
+      abilityActive = true;
+      abilityTimer = 600;   // 10s
+      abilityCooldown = 600 + 1500;
+    }
+
+    function doViper() {
+      if (abilityCooldown > 0) return;
+      poisonTraps.push({ x: player.x + player.w / 2, y: player.y + player.h / 2, triggered: false });
+      abilityCooldown = 1200; // 20s
+    }
+
+    function doToggleVitals() {
+      vitalsOpen = !vitalsOpen;
+      const panel = document.getElementById('vitalsPanel');
+      if (vitalsOpen) { refreshVitals(); panel.style.display = 'block'; }
+      else panel.style.display = 'none';
+    }
+
+    function refreshVitals() {
+      const list = document.getElementById('vitalsList');
+      list.innerHTML = '';
+      const all = [{ name: player.name, color: player.color, alive: player.alive },
+                   ...npcs.map(n => ({ name: n.name, color: n.color, alive: n.alive }))];
+      for (const p of all) {
+        const row = document.createElement('div');
+        row.className = 'vitals-row' + (p.alive ? '' : ' vitals-dead');
+        row.innerHTML = `<div class="vitals-dot" style="background:${p.color}"></div><span>${p.name} ${p.alive ? '♥' : '✕'}</span>`;
+        list.appendChild(row);
+      }
+    }
+
+    function doDetectiveScan() {
+      if (abilityCooldown > 0 || detectiveScanActive) return;
+      detectiveScanActive = true;
+      abilityTimer = 300;   // 5s
+      abilityCooldown = 300 + 1200;
+    }
+
+    function doEngineerVent() {
+      if (inVent) exitVent(); else enterVent();
+    }
+
+    function triggerNoisemakerAlert(npc) {
+      const el = document.getElementById('noisemakerAlert');
+      el.innerHTML = `🔔 NOISE DETECTED<br><span style="font-size:13px;font-weight:normal">${npc.name} was killed near (${Math.round(npc.x / 100) * 100}, ${Math.round(npc.y / 100) * 100})</span>`;
+      el.style.display = 'block';
+      noisemakerAlertTimer = 300; // 5s
+    }
+
+    function btnUseAction() {
+      if (inVent) ventTravel(); else doTask();
+    }
+
+    function btnVentAction() {
+      if (inVent) exitVent(); else enterVent();
+    }
+
+    function toggleSabSubMenu() {
+      const menu = document.getElementById('sabSubMenu');
+      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function closeSabSubMenu() {
+      document.getElementById('sabSubMenu').style.display = 'none';
+    }
+
+    function updateActionButtons() {
+      const panel = document.getElementById('actionButtons');
+      const voteVisible = document.getElementById('voteScreen').style.display !== 'none';
+      const reportVisible = document.getElementById('reportScreen').style.display !== 'none';
+      if (!gameStarted || gameOver || playerDoingTask || !player || !player.alive || voteVisible || reportVisible) {
+        panel.style.display = 'none';
+        closeSabSubMenu();
+        return;
+      }
+      panel.style.display = 'flex';
+
+      // USE
+      const btnUse = document.getElementById('btn-use');
+      const useIcon = document.getElementById('btn-use-icon');
+      const useLbl = document.getElementById('btn-use-lbl');
+      let canUse = false;
+      if (inVent) {
+        canUse = !!getNearbyVent();
+        useIcon.textContent = '🔀'; useLbl.textContent = 'TRAVEL';
+      } else {
+        useIcon.textContent = '🔧'; useLbl.textContent = 'USE';
+        for (const task of taskLocations) {
+          if (!task.done && dist(player, task) < 60) { canUse = true; break; }
+        }
+        if (!canUse && selectedMap === 'skeld' && dist(player, SECURITY_MONITOR) < 70) canUse = true;
+        if (!canUse && dist(player, EMERGENCY_BTN) < 60 && emergencyCooldown <= 0 && !sabotage.active) canUse = true;
+        if (!canUse && !isImpostor && sabotage.active) {
+          const fixLoc = mapTheme.sabFix ? mapTheme.sabFix[sabotage.type] : null;
+          if (fixLoc && dist(player, fixLoc) < 80) canUse = true;
+        }
+      }
+      btnUse.disabled = !canUse;
+
+      // REPORT — always shown, dim when no nearby body
+      const btnReport = document.getElementById('btn-report');
+      btnReport.disabled = !deadBodies.some(b => dist(player, b) < 80);
+
+      // KILL — impostor only
+      const btnKill = document.getElementById('btn-kill');
+      const killCdEl = document.getElementById('btn-kill-cd');
+      if (isImpostor) {
+        btnKill.style.display = '';
+        const kDist = gameSettings.killDistance === 'Short' ? 40 : gameSettings.killDistance === 'Long' ? 80 : 60;
+        const hasTarget = !inVent && npcs.some(n => n.alive && !n.isImpostor && dist(player, n) < kDist);
+        btnKill.disabled = killCooldown > 0 || !hasTarget;
+        killCdEl.textContent = killCooldown > 0 ? Math.ceil(killCooldown / 60) + 's' : (hasTarget ? 'READY' : '');
+      } else {
+        btnKill.style.display = 'none';
+      }
+
+      // VENT — impostor or engineer
+      const btnVent = document.getElementById('btn-vent');
+      const ventIcon = document.getElementById('btn-vent-icon');
+      const ventLbl = document.getElementById('btn-vent-lbl');
+      if (isImpostor || playerRole === 'engineer') {
+        btnVent.style.display = '';
+        if (inVent) {
+          ventIcon.textContent = '⬆️'; ventLbl.textContent = 'EXIT'; btnVent.disabled = false;
+        } else {
+          ventIcon.textContent = '⬇️'; ventLbl.textContent = 'VENT'; btnVent.disabled = !getNearbyVent();
+        }
+      } else {
+        btnVent.style.display = 'none';
+      }
+
+      // SABOTAGE — impostor only
+      const btnSab = document.getElementById('btn-sabotage');
+      const sabCdEl = document.getElementById('btn-sab-cd');
+      if (isImpostor) {
+        btnSab.style.display = '';
+        btnSab.disabled = sabotage.active || sabotage.cooldown > 0;
+        sabCdEl.textContent = sabotage.active ? 'ACTIVE' : sabotage.cooldown > 0 ? Math.ceil(sabotage.cooldown / 60) + 's' : '';
+        if (sabotage.active || sabotage.cooldown > 0) closeSabSubMenu();
+      } else {
+        btnSab.style.display = 'none';
+        closeSabSubMenu();
+      }
+
+      // ABILITY — special roles
+      const btnAbility = document.getElementById('btn-ability');
+      const abilityIconEl = document.getElementById('btn-ability-icon');
+      const abilityLblEl = document.getElementById('btn-ability-lbl');
+      const abilityCdEl = document.getElementById('btn-ability-cd');
+      const specialRoles = ['shapeshifter', 'phantom', 'viper', 'scientist', 'detective', 'noisemaker'];
+      if (specialRoles.includes(playerRole)) {
+        btnAbility.style.display = '';
+        const icons = { shapeshifter: '🎭', phantom: '👻', viper: '☠️', scientist: '📋', detective: '🔎', noisemaker: '🔔' };
+        abilityIconEl.textContent = icons[playerRole] || '✨';
+        btnAbility.style.borderColor = ROLE_COLORS[playerRole] || '#44aaff';
+        if (playerRole === 'noisemaker') {
+          abilityLblEl.textContent = 'PASSIVE'; abilityCdEl.textContent = ''; btnAbility.disabled = true;
+        } else if (playerRole === 'scientist') {
+          abilityLblEl.textContent = vitalsOpen ? 'CLOSE' : 'VITALS'; abilityCdEl.textContent = ''; btnAbility.disabled = false;
+        } else if (abilityActive) {
+          abilityLblEl.textContent = 'ACTIVE'; abilityCdEl.textContent = Math.ceil(abilityTimer / 60) + 's'; btnAbility.disabled = true;
+        } else if (abilityCooldown > 0) {
+          abilityLblEl.textContent = ROLE_LABELS[playerRole] || 'ABILITY'; abilityCdEl.textContent = Math.ceil(abilityCooldown / 60) + 's'; btnAbility.disabled = true;
+        } else {
+          abilityLblEl.textContent = ROLE_LABELS[playerRole] || 'ABILITY'; abilityCdEl.textContent = 'READY'; btnAbility.disabled = false;
+        }
+      } else {
+        btnAbility.style.display = 'none';
+      }
+    }
+
+    function updateAbilityHUD() {
+      const el = document.getElementById('abilityHUD');
+      if (playerRole === 'crewmate' || playerRole === 'impostor') { el.style.display = 'none'; return; }
+      let text = '';
+      const roleColor = ROLE_COLORS[playerRole];
+      if (playerRole === 'scientist') {
+        text = `[F] Vitals ${vitalsOpen ? '(OPEN)' : ''}`;
+      } else if (playerRole === 'engineer') {
+        text = `[F/V] Use Vent`;
+      } else if (playerRole === 'noisemaker') {
+        text = `NOISEMAKER — alerts on death`;
+      } else if (abilityCooldown > 0 && !abilityActive) {
+        text = `[F] ${ROLE_LABELS[playerRole]} — cooldown ${Math.ceil(abilityCooldown / 60)}s`;
+      } else if (abilityActive) {
+        text = `[F] ${ROLE_LABELS[playerRole]} ACTIVE — ${Math.ceil(abilityTimer / 60)}s left`;
+      } else {
+        text = `[F] ${ROLE_LABELS[playerRole]} — READY`;
+      }
+      el.style.color = roleColor;
+      el.textContent = text;
+      el.style.display = 'block';
     }
 
     function updateTaskBar() {
@@ -2096,27 +2520,41 @@
       return dist(a, b) < 300;
     }
 
+    function hasLineOfSight(x1, y1, x2, y2, ew, eh) {
+      const ddx = x2 - x1, ddy = y2 - y1;
+      const steps = Math.ceil(Math.sqrt(ddx * ddx + ddy * ddy) / 12);
+      if (steps === 0) return true;
+      for (let i = 1; i <= steps; i++) {
+        const t = i / steps;
+        if (isBlockedAt(x1 + ddx * t, y1 + ddy * t, ew, eh)) return false;
+      }
+      return true;
+    }
+
     function moveTowardDirect(npc, tx, ty) {
       const dx = tx - npc.x;
       const dy = ty - npc.y;
       const d = Math.sqrt(dx * dx + dy * dy);
       if (d < 8) return true;
 
-      let mx = (dx / d) * npc.speed;
-      let my = (dy / d) * npc.speed;
+      const mx = (dx / d) * npc.speed;
+      const my = (dy / d) * npc.speed;
 
       const moved = tryMove(npc, mx, my);
 
-      // Stuck detection - try to go around
+      // Stuck detection
       if (!moved || (Math.abs(npc.x - npc.lastX) < 0.5 && Math.abs(npc.y - npc.lastY) < 0.5)) {
         npc.stuckTimer++;
-        if (npc.stuckTimer > 30) {
-          const perpX = -my;
-          const perpY = mx;
-          tryMove(npc, perpX * 1.5, perpY * 1.5);
-          if (npc.stuckTimer > 90) {
+        if (npc.stuckTimer > 20) {
+          // Try both perpendicular directions, pick whichever isn't blocked
+          const sign = (Math.floor(npc.stuckTimer / 20) % 2 === 0) ? 1 : -1;
+          const perpX = -my * sign;
+          const perpY = mx * sign;
+          if (!tryMove(npc, perpX * 1.5, perpY * 1.5)) {
+            tryMove(npc, -perpX * 1.5, -perpY * 1.5);
+          }
+          if (npc.stuckTimer > 60) {
             npc.stuckTimer = 0;
-            // Clear path to force recalculation
             npc.navPath = null;
             npc.navIndex = 0;
           }
@@ -2135,25 +2573,34 @@
       const d = Math.sqrt(dx * dx + dy * dy);
       if (d < 8) { npc.navPath = null; return true; }
 
-      // If close enough, just walk directly
-      if (d < 200 && !isBlockedAt(npc.x + (dx/d)*npc.speed, npc.y + (dy/d)*npc.speed, npc.w, npc.h)) {
+      // If close enough and unobstructed, walk directly
+      if (d < 200 && hasLineOfSight(npc.x, npc.y, tx, ty, npc.w, npc.h)) {
         return moveTowardDirect(npc, tx, ty);
       }
 
-      // Use waypoint navigation
+      // Recalculate path when missing or NPC was stuck (navPath cleared by stuckTimer)
+      // Also refresh every 300 frames as a safety net
       if (!npc.navPath || npc.navRecalc-- <= 0) {
         npc.navPath = findPath(npc.x, npc.y, tx, ty);
         npc.navIndex = 0;
-        npc.navRecalc = 120; // recalculate every 2 seconds
+        npc.navRecalc = 300;
       }
 
       if (npc.navPath && npc.navIndex < npc.navPath.length) {
         const wp = npc.navPath[npc.navIndex];
         if (moveTowardDirect(npc, wp.x, wp.y)) {
           npc.navIndex++;
+          // LOS-based waypoint skipping: skip ahead while we have clear sight
+          while (npc.navIndex + 1 < npc.navPath.length) {
+            const skip = npc.navPath[npc.navIndex + 1];
+            if (hasLineOfSight(npc.x, npc.y, skip.x, skip.y, npc.w, npc.h)) {
+              npc.navIndex++;
+            } else {
+              break;
+            }
+          }
           if (npc.navIndex >= npc.navPath.length) {
             npc.navPath = null;
-            // Now walk directly to final target
             return moveTowardDirect(npc, tx, ty);
           }
         }
@@ -2338,7 +2785,8 @@
       npc.killCooldown = Math.max(0, npc.killCooldown - 1);
 
       const nearby = getNearbyEntities(npc, 250);
-      const nearbyCrewmates = nearby.filter(e => !e.isImpostor && e.alive);
+      // Phantom players are invisible — can't be targeted
+      const nearbyCrewmates = nearby.filter(e => !e.isImpostor && e.alive && !(e === player && playerRole === 'phantom' && abilityActive));
       const nearbyWitnesses = nearby.length;
 
       switch (npc.state) {
@@ -2495,6 +2943,7 @@
       if (victim === player) {
         player.alive = false;
         deadBodies.push({ x: player.x, y: player.y, color: player.color, name: player.name });
+        if (playerRole === 'noisemaker') triggerNoisemakerAlert(player);
         killFlash = 20;
         endGame(true);
         return;
@@ -2503,6 +2952,7 @@
       if (npcVictim) {
         npcVictim.alive = false;
         deadBodies.push({ x: npcVictim.x, y: npcVictim.y, color: npcVictim.color, name: npcVictim.name });
+        if (npcVictim.role === 'noisemaker') triggerNoisemakerAlert(npcVictim);
         impostor.killCooldown = 600;
 
         const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length + (player.alive && !isImpostor ? 1 : 0);
@@ -2617,46 +3067,83 @@
     }
 
     function findPath(fromX, fromY, toX, toY) {
-      if (waypoints.length === 0) return null;
-      const startWP = findNearestWaypoint(fromX, fromY);
-      const endWP = findNearestWaypoint(toX, toY);
-      if (startWP === endWP) return null; // direct walk
+      if (!walkGrid) return null;
 
-      // BFS
-      const visited = new Set();
-      const queue = [[startWP]];
-      visited.add(startWP);
-      while (queue.length > 0) {
-        const path = queue.shift();
-        const node = path[path.length - 1];
-        if (node === endWP) {
-          // Convert to coordinate path
-          return path.map(i => ({ x: waypoints[i].x, y: waypoints[i].y }));
-        }
-        for (const neighbor of waypointAdj[node]) {
-          if (!visited.has(neighbor)) {
-            // Check if door blocks this edge
-            let doorBlocked = false;
-            const wp1 = waypoints[node], wp2 = waypoints[neighbor];
-            for (const d of doors) {
-              if (d.closed) {
-                // Check if door is between these two waypoints
-                const midX = (wp1.x + wp2.x) / 2, midY = (wp1.y + wp2.y) / 2;
-                const ddx = (d.x + d.w / 2) - midX, ddy = (d.y + d.h / 2) - midY;
-                if (Math.sqrt(ddx * ddx + ddy * ddy) < 150) {
-                  doorBlocked = true;
-                  break;
-                }
-              }
-            }
-            if (!doorBlocked) {
-              visited.add(neighbor);
-              queue.push([...path, neighbor]);
+      // Find nearest walkable grid cell to a world position
+      function nearestWalkable(wx, wy) {
+        let gx = Math.max(0, Math.min(gridW - 1, Math.floor(wx / GRID_SIZE)));
+        let gy = Math.max(0, Math.min(gridH - 1, Math.floor(wy / GRID_SIZE)));
+        if (walkGrid[gy * gridW + gx]) return gy * gridW + gx;
+        for (let r = 1; r < 8; r++) {
+          for (let dy = -r; dy <= r; dy++) {
+            for (let dx = -r; dx <= r; dx++) {
+              if (Math.abs(dx) !== r && Math.abs(dy) !== r) continue;
+              const nx = gx + dx, ny = gy + dy;
+              if (nx < 0 || nx >= gridW || ny < 0 || ny >= gridH) continue;
+              if (walkGrid[ny * gridW + nx]) return ny * gridW + nx;
             }
           }
         }
+        return gy * gridW + gx;
       }
-      return null; // no path found
+
+      const startIdx = nearestWalkable(fromX, fromY);
+      const endIdx   = nearestWalkable(toX, toY);
+      if (startIdx === endIdx) return null;
+
+      const total   = gridW * gridH;
+      const visited = new Uint8Array(total);
+      const parent  = new Int32Array(total).fill(-1);
+      const queue   = new Int32Array(total);
+      let qHead = 0, qTail = 0;
+
+      queue[qTail++] = startIdx;
+      visited[startIdx] = 1;
+
+      const DIRS = [[0,-1],[0,1],[-1,0],[1,0],[-1,-1],[1,-1],[-1,1],[1,1]];
+      let found = false;
+
+      outer: while (qHead < qTail) {
+        const cur = queue[qHead++];
+        const cy = Math.floor(cur / gridW);
+        const cx = cur % gridW;
+        for (const [ddx, ddy] of DIRS) {
+          const nx = cx + ddx, ny = cy + ddy;
+          if (nx < 0 || nx >= gridW || ny < 0 || ny >= gridH) continue;
+          const nIdx = ny * gridW + nx;
+          if (visited[nIdx] || !walkGrid[nIdx]) continue;
+          // No diagonal corner-cutting through walls
+          if (ddx !== 0 && ddy !== 0) {
+            if (!walkGrid[cy * gridW + (cx + ddx)] || !walkGrid[(cy + ddy) * gridW + cx]) continue;
+          }
+          visited[nIdx] = 1;
+          parent[nIdx] = cur;
+          queue[qTail++] = nIdx;
+          if (nIdx === endIdx) { found = true; break outer; }
+        }
+      }
+
+      if (!found) return null;
+
+      // Reconstruct path (cell centers, excluding start cell)
+      const raw = [];
+      let node = endIdx;
+      while (node !== startIdx && parent[node] >= 0) {
+        raw.push({ x: (node % gridW + 0.5) * GRID_SIZE, y: (Math.floor(node / gridW) + 0.5) * GRID_SIZE });
+        node = parent[node];
+      }
+      raw.reverse();
+      if (raw.length === 0) return null;
+
+      // Simplify: drop collinear middle points
+      const path = [raw[0]];
+      for (let i = 1; i < raw.length - 1; i++) {
+        const a = path[path.length - 1], b = raw[i], c = raw[i + 1];
+        const cross = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+        if (Math.abs(cross) > GRID_SIZE * GRID_SIZE * 0.5) path.push(b);
+      }
+      path.push(raw[raw.length - 1]);
+      return path;
     }
 
     // --- Sabotage System ---
@@ -2754,7 +3241,7 @@
     }
 
     function enterVent() {
-      if (!isImpostor || inVent || !player.alive) return;
+      if ((!isImpostor && playerRole !== 'engineer') || inVent || !player.alive) return;
       const vent = getNearbyVent();
       if (vent) {
         inVent = true;
@@ -2853,6 +3340,53 @@
       player.y = Math.max(25, Math.min(MAP_H - player.h - 25, player.y));
       if (killCooldown > 0) killCooldown--;
       if (emergencyCooldown > 0) emergencyCooldown--;
+
+      // Ability timers
+      if (abilityCooldown > 0) abilityCooldown--;
+      if (abilityActive) {
+        abilityTimer--;
+        if (abilityTimer <= 0) {
+          abilityActive = false;
+          if (playerRole === 'shapeshifter') shiftTarget = null;
+          if (playerRole === 'detective') detectiveScanActive = false;
+        }
+      }
+
+      // Viper: check traps
+      for (const trap of poisonTraps) {
+        if (trap.triggered) continue;
+        for (const npc of npcs) {
+          if (!npc.alive || npc.isImpostor) continue;
+          if (dist({ x: trap.x, y: trap.y }, npc) < 40) {
+            trap.triggered = true;
+            npc.poisoned = true;
+            npc.poisonTimer = 480; // 8s
+          }
+        }
+      }
+      for (const npc of npcs) {
+        if (!npc.poisoned || !npc.alive) continue;
+        npc.poisonTimer--;
+        if (npc.poisonTimer <= 0) {
+          npc.alive = false;
+          deadBodies.push({ x: npc.x, y: npc.y, color: npc.color, name: npc.name });
+          const ac = npcs.filter(n => n.alive && !n.isImpostor).length;
+          const ai = npcs.filter(n => n.alive && n.isImpostor).length + 1;
+          if (ai >= ac) endGame(true);
+        }
+      }
+
+      // Noisemaker alert countdown
+      if (noisemakerAlertTimer > 0) {
+        noisemakerAlertTimer--;
+        if (noisemakerAlertTimer <= 0)
+          document.getElementById('noisemakerAlert').style.display = 'none';
+      }
+
+      // Vitals auto-refresh
+      if (vitalsOpen) refreshVitals();
+
+      updateAbilityHUD();
     }
 
     function checkInteractions() {
@@ -2887,6 +3421,19 @@
             break;
           }
         }
+        // Engineer vent hint
+        if (playerRole === 'engineer') {
+          const nearVent = getNearbyVent();
+          if (nearVent && !inVent) { ventHint.textContent = 'Press V/F - Enter Vent (Engineer)'; ventHint.style.display = 'block'; }
+        }
+        // Detective scan hint
+        if (playerRole === 'detective' && abilityCooldown <= 0 && !detectiveScanActive)
+          ventHint.textContent = 'Press F - Detective Scan (5s)';
+        if (playerRole === 'detective') ventHint.style.display = 'block';
+        // Scientist hint
+        if (playerRole === 'scientist')
+          ventHint.textContent = 'Press F - ' + (vitalsOpen ? 'Close Vitals' : 'Open Vitals');
+        if (playerRole === 'scientist') ventHint.style.display = 'block';
       }
 
       // Security camera monitor
@@ -2907,13 +3454,7 @@
       }
 
       if (isImpostor) {
-        // Sabotage controls
-        const sabControls = document.getElementById('sabotageControls');
-        if (!sabotage.active && sabotage.cooldown <= 0) {
-          sabControls.style.display = 'flex';
-        } else {
-          sabControls.style.display = 'none';
-        }
+        document.getElementById('sabotageControls').style.display = 'none';
 
         // Door close hint
         const doorRoom = getNearbyDoorRoom();
@@ -2930,6 +3471,12 @@
         if (nearVent && !inVent) {
           ventHint.textContent = 'Press V - Enter Vent';
           ventHint.style.display = 'block';
+        }
+
+        // Shapeshifter hint
+        if (playerRole === 'shapeshifter' && !abilityActive && abilityCooldown <= 0) {
+          const nearNpc = npcs.find(n => n.alive && dist(player, n) < 250);
+          if (nearNpc) { ventHint.textContent = 'Press F - Shapeshift into ' + nearNpc.name; ventHint.style.display = 'block'; }
         }
 
         if (killCooldown > 0) {
@@ -2985,8 +3532,9 @@
         if (npc.alive && !npc.isImpostor && dist(player, npc) < kDist) {
           npc.alive = false;
           deadBodies.push({ x: npc.x, y: npc.y, color: npc.color, name: npc.name });
+          if (npc.role === 'noisemaker') triggerNoisemakerAlert(npc);
           killCooldown = gameSettings.killCooldown * 60;
-          killFlash = 15; // red flash effect
+          killFlash = 15;
           const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length;
           const aliveImpostors = npcs.filter(n => n.alive && n.isImpostor).length + 1;
           if (aliveImpostors >= aliveCrewmates) endGame(true);
@@ -3008,73 +3556,77 @@
       }
     }
 
-    function startVoting(reporterNPC) {
-      const voteScreen = document.getElementById('voteScreen');
+    function escapeHtml(t) {
+      return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function generateNpcChatMessage(npc, candidates, reporterNPC) {
+      const isImp = npc.isImpostor;
+      const msgs = [];
+
+      if (npc.sawBody && npc.bodyLocation) {
+        msgs.push('I found the body! Something is very wrong.');
+        msgs.push('I\'m the one who reported — there\'s a body!');
+      }
+
+      let maxSusp = 0, topSuspect = null;
+      for (const c of candidates) {
+        if (c.entity === npc) continue;
+        const s = npc.suspicion[c.name] || 0;
+        if (s > maxSusp) { maxSusp = s; topSuspect = c; }
+      }
+
+      if (isImp) {
+        if (topSuspect) {
+          msgs.push('Honestly ' + topSuspect.name + ' has been acting really weird.');
+          msgs.push('Did anyone else notice ' + topSuspect.name + ' wasn\'t near any tasks?');
+        }
+        const room = getEntityRoom(npc) || 'my area';
+        msgs.push('I was in ' + room + ' the whole time.');
+        msgs.push('I\'ve been doing tasks non-stop, it\'s not me!');
+        msgs.push('Can we just focus? Someone is trying to distract us.');
+      } else {
+        if (topSuspect && maxSusp > 15) {
+          msgs.push('I think ' + topSuspect.name + ' might be the impostor.');
+          msgs.push('I saw ' + topSuspect.name + ' near where the body was found.');
+          msgs.push(topSuspect.name + ' has been acting really suspicious...');
+        }
+        const room = getEntityRoom(npc) || 'my room';
+        msgs.push('I was doing tasks in ' + room + ', I can vouch for my position.');
+        msgs.push('I haven\'t seen anything sus from my end. Who was near the body?');
+        msgs.push('Does anyone have an alibi?');
+      }
+
+      return msgs.length ? msgs[Math.floor(Math.random() * msgs.length)] : null;
+    }
+
+    function generateNpcFollowupMessage(npc, candidates) {
+      const pool = npc.isImpostor ? [
+        'Just vote someone, we\'re wasting time.',
+        'It\'s not me, I promise.',
+        'I think we should trust each other more.',
+      ] : [
+        'Can we trust everyone in this meeting?',
+        'I still don\'t know who to vote...',
+        'Someone in here is lying right now.',
+        'Let\'s think about who had time to kill.',
+      ];
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    function showVotingPhase(candidates, npcVotes) {
       const voteList = document.getElementById('voteList');
-      const voteResult = document.getElementById('voteResult');
-      voteResult.textContent = '';
+      const meetingTitle = document.getElementById('meetingTitle');
+      meetingTitle.textContent = 'Who is the Impostor?';
       voteList.innerHTML = '';
+      voteList.style.display = 'flex';
 
-      const candidates = [];
-      if (player.alive) candidates.push({ name: player.name, color: player.color, isImpostor: player.isImpostor, isPlayer: true, entity: player });
-      for (const npc of npcs) {
-        if (npc.alive) candidates.push({ name: npc.name, color: npc.color, isImpostor: npc.isImpostor, isPlayer: false, entity: npc });
-      }
-
-      // NPC voting logic - each NPC votes
-      const npcVotes = {};
-      candidates.forEach(c => npcVotes[c.name] = 0);
-      npcVotes['skip'] = 0;
-
-      for (const npc of npcs) {
-        if (!npc.alive || npc.isImpostor) continue;
-
-        // Crewmate NPCs vote based on suspicion
-        let maxSuspicion = 0;
-        let suspect = null;
-        for (const c of candidates) {
-          if (c.entity === npc) continue;
-          const susp = npc.suspicion[c.name] || 0;
-          if (susp > maxSuspicion) {
-            maxSuspicion = susp;
-            suspect = c.name;
-          }
-        }
-
-        if (suspect && maxSuspicion > 10) {
-          npcVotes[suspect]++;
-        } else {
-          // Random vote or skip
-          if (Math.random() < 0.4) {
-            npcVotes['skip']++;
-          } else {
-            const others = candidates.filter(c => c.entity !== npc);
-            if (others.length > 0) {
-              const pick = others[Math.floor(Math.random() * others.length)];
-              npcVotes[pick.name]++;
-            }
-          }
-        }
-      }
-
-      // Impostor NPC votes for a random crewmate
-      for (const npc of npcs) {
-        if (!npc.alive || !npc.isImpostor) continue;
-        const crewCandidates = candidates.filter(c => !c.isImpostor && c.entity !== npc);
-        if (crewCandidates.length > 0) {
-          const pick = crewCandidates[Math.floor(Math.random() * crewCandidates.length)];
-          npcVotes[pick.name]++;
-        }
-      }
-
-      // Show vote buttons for player
       candidates.forEach(c => {
         const btn = document.createElement('button');
         btn.className = 'vote-btn';
         btn.innerHTML = '<div class="vote-dot" style="background:' + c.color + '"></div>' + c.name +
           '<span class="vote-count">' + (npcVotes[c.name] || 0) + ' votes</span>';
         btn.onclick = () => {
-          // Add player vote
           npcVotes[c.name] = (npcVotes[c.name] || 0) + 1;
           resolveVote(candidates, npcVotes);
         };
@@ -3090,6 +3642,132 @@
         resolveVote(candidates, npcVotes);
       };
       voteList.appendChild(skipBtn);
+    }
+
+    function startVoting(reporterNPC) {
+      const voteScreen = document.getElementById('voteScreen');
+      const voteList = document.getElementById('voteList');
+      const voteResult = document.getElementById('voteResult');
+      const discussPhase = document.getElementById('discussPhase');
+      const chatArea = document.getElementById('chatArea');
+      const chatInput = document.getElementById('chatInput');
+      const chatSendBtn = document.getElementById('chatSendBtn');
+      const meetingTitle = document.getElementById('meetingTitle');
+      const discussTimerEl = document.getElementById('discussTimer');
+
+      voteResult.textContent = '';
+      voteList.innerHTML = '';
+      voteList.style.display = 'none';
+      chatArea.innerHTML = '';
+      discussPhase.style.display = 'flex';
+      meetingTitle.textContent = reporterNPC
+        ? reporterNPC.name + ' reported a body!'
+        : 'Emergency Meeting!';
+
+      const candidates = [];
+      if (player.alive) candidates.push({ name: player.name, color: player.color, isImpostor: player.isImpostor, isPlayer: true, entity: player });
+      for (const npc of npcs) {
+        if (npc.alive) candidates.push({ name: npc.name, color: npc.color, isImpostor: npc.isImpostor, isPlayer: false, entity: npc });
+      }
+
+      // Pre-compute NPC votes (applied when player votes)
+      const npcVotes = {};
+      candidates.forEach(c => npcVotes[c.name] = 0);
+      npcVotes['skip'] = 0;
+
+      for (const npc of npcs) {
+        if (!npc.alive || npc.isImpostor) continue;
+        let maxSuspicion = 0, suspect = null;
+        for (const c of candidates) {
+          if (c.entity === npc) continue;
+          const susp = npc.suspicion[c.name] || 0;
+          if (susp > maxSuspicion) { maxSuspicion = susp; suspect = c.name; }
+        }
+        if (suspect && maxSuspicion > 10) {
+          npcVotes[suspect]++;
+        } else {
+          if (Math.random() < 0.4) {
+            npcVotes['skip']++;
+          } else {
+            const others = candidates.filter(c => c.entity !== npc);
+            if (others.length > 0) npcVotes[others[Math.floor(Math.random() * others.length)].name]++;
+          }
+        }
+      }
+      for (const npc of npcs) {
+        if (!npc.alive || !npc.isImpostor) continue;
+        const crewCandidates = candidates.filter(c => !c.isImpostor && c.entity !== npc);
+        if (crewCandidates.length > 0) npcVotes[crewCandidates[Math.floor(Math.random() * crewCandidates.length)].name]++;
+      }
+
+      // Chat helpers
+      function addChatMessage(name, color, text) {
+        const msg = document.createElement('div');
+        msg.className = 'chat-msg';
+        msg.innerHTML = '<span class="msg-name" style="color:' + color + '">' + escapeHtml(name) + ':</span> ' + escapeHtml(text);
+        chatArea.appendChild(msg);
+        chatArea.scrollTop = chatArea.scrollHeight;
+      }
+
+      function sendPlayerMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+        addChatMessage(player.name, player.color, text);
+        chatInput.value = '';
+      }
+
+      chatSendBtn.onclick = sendPlayerMessage;
+      chatInput.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); sendPlayerMessage(); } };
+
+      // If discussion time is 0, skip straight to voting
+      const discussionSecs = gameSettings.discussionTime || 0;
+      if (discussionSecs === 0) {
+        discussPhase.style.display = 'none';
+        showVotingPhase(candidates, npcVotes);
+        voteScreen.style.display = 'flex';
+        return;
+      }
+      // Schedule NPC messages during discussion
+      const liveMsgTimers = [];
+      const npcPool = [...npcs.filter(n => n.alive)];
+      for (let i = npcPool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [npcPool[i], npcPool[j]] = [npcPool[j], npcPool[i]];
+      }
+      const npcCount = Math.min(npcPool.length, 8);
+      for (let i = 0; i < npcCount; i++) {
+        const npc = npcPool[i];
+        const t1 = Math.round((i + 0.8) / npcCount * discussionSecs * 0.65 * 1000);
+        liveMsgTimers.push(setTimeout(() => {
+          const msg = generateNpcChatMessage(npc, candidates, reporterNPC);
+          if (msg) addChatMessage(npc.name, npc.color, msg);
+        }, t1));
+        if (Math.random() < 0.5) {
+          const t2 = t1 + 3000 + Math.floor(Math.random() * 5000);
+          if (t2 < discussionSecs * 900) {
+            liveMsgTimers.push(setTimeout(() => {
+              const msg2 = generateNpcFollowupMessage(npc, candidates);
+              if (msg2) addChatMessage(npc.name, npc.color, msg2);
+            }, t2));
+          }
+        }
+      }
+
+      // Countdown
+      let timeLeft = discussionSecs;
+      discussTimerEl.textContent = timeLeft;
+      const countdownId = setInterval(() => {
+        timeLeft--;
+        discussTimerEl.textContent = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(countdownId);
+          liveMsgTimers.forEach(clearTimeout);
+          chatSendBtn.onclick = null;
+          chatInput.onkeydown = null;
+          discussPhase.style.display = 'none';
+          showVotingPhase(candidates, npcVotes);
+        }
+      }, 1000);
 
       voteScreen.style.display = 'flex';
     }
@@ -3160,21 +3838,24 @@
       gameOver = true;
       const title = document.getElementById('winTitle');
       const desc = document.getElementById('winDesc');
+      const roleLabel = ROLE_LABELS[playerRole] || 'CREWMATE';
       if (impostorWins) {
         title.textContent = 'IMPOSTOR WINS';
         title.style.color = '#ff4444';
-        desc.textContent = isImpostor ? 'You eliminated the crew!' : 'The impostor got away...';
+        desc.textContent = isImpostor ? `You eliminated the crew as ${roleLabel}!` : `The impostor got away... You were ${roleLabel}.`;
       } else {
         title.textContent = 'CREWMATES WIN';
         title.style.color = '#4ecdc4';
-        desc.textContent = isImpostor ? 'You were caught!' : 'The ship is safe!';
+        desc.textContent = isImpostor ? `You were caught! (${roleLabel})` : `The ship is safe! You played as ${roleLabel}.`;
       }
       document.getElementById('gameOverScreen').style.display = 'flex';
     }
 
     // Drawing
-    function drawCrewmate(ctx, x, y, w, h, color, name, alive, state) {
+    function drawCrewmate(ctx, x, y, w, h, color, name, alive, state, alpha, role) {
       if (!alive) return;
+      const a = (alpha !== undefined) ? alpha : 1;
+      if (a < 1) ctx.globalAlpha = a;
       // Shadow
       ctx.fillStyle = 'rgba(0,0,0,0.2)';
       ctx.beginPath();
@@ -3212,6 +3893,13 @@
         ctx.font = 'bold 14px Arial';
         ctx.fillText('...', x + w / 2, y - 22);
       }
+      // Role badge
+      if (role && ROLE_COLORS[role]) {
+        ctx.fillStyle = ROLE_COLORS[role];
+        ctx.font = 'bold 9px Arial';
+        ctx.fillText(role.toUpperCase().slice(0,3), x + w / 2, y - 20);
+      }
+      if (a < 1) ctx.globalAlpha = 1;
     }
 
     function drawDeadBody(ctx, x, y, color) {
@@ -3229,20 +3917,20 @@
     // ====== TEXTURE & DECORATION SYSTEM ======
     const roomFloorColors = {
       // Color-coded per official Skeld map image:
-      'Cafeteria':'#524840',    // warm beige/tan
-      'Weapons':'#282438',      // dark blue-purple
+      'Cafeteria':'#b4ad9e',    // light gray-beige checkered tile
+      'Weapons':'#6a5e4a',      // tan/beige command room
       'Navigation':'#1c2232',   // dark navy cockpit
-      'O2':'#1c2e20',           // dark green life support
-      'Admin':'#3c201e',        // dark reddish-brown command room
-      'Shields':'#1c2048',      // dark blue-purple energy
-      'Communications':'#1c2c32', // dark teal radio room
-      'Storage':'#282a22',      // dark gray-green cargo
+      'O2':'#263a2c',           // dark green life support
+      'Admin':'#3a2020',        // dark reddish command room
+      'Shields':'#1e1e3c',      // deep dark-blue energy room
+      'Communications':'#1e2c30', // dark teal radio room
+      'Storage':'#6a4820',      // orange-brown cargo hold
       'Electrical':'#28261a',   // dark industrial (yellow tint)
-      'Lower Engine':'#1c2028', // dark teal-gray
-      'Reactor':'#261430',      // deep purple reactor
-      'Security':'#1c2030',     // dark blue-purple monitoring
-      'Upper Engine':'#1c2028', // dark teal-gray
-      'MedBay':'#1c2836',      // sterile dark blue medical
+      'Lower Engine':'#202830', // dark teal-gray engine
+      'Reactor':'#26163a',      // deep purple reactor
+      'Security':'#1c2028',     // dark monitoring room
+      'Upper Engine':'#202830', // dark teal-gray engine
+      'MedBay':'#1e3038',       // sterile dark blue-teal medical
       'Launchpad':'#282830','Office':'#2a2a38','Greenhouse':'#1e3520',
       'Locker Room':'#2a2a2a','Laboratory':'#2a2a40','Balcony':'#252a35',
       'Decontamination':'#cc1111','Dropship':'#cc1111',
@@ -5011,14 +5699,44 @@
         drawDeadBody(ctx, body.x - ox, body.y - oy, body.color);
       }
 
+      // Poison traps (viper)
+      for (const trap of poisonTraps) {
+        if (trap.triggered) continue;
+        ctx.save();
+        ctx.globalAlpha = 0.6;
+        ctx.fillStyle = '#33ff55';
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const angle = (i / 6) * Math.PI * 2 - Math.PI / 2;
+          const tx = trap.x - ox + Math.cos(angle) * 10;
+          const ty = trap.y - oy + Math.sin(angle) * 10;
+          i === 0 ? ctx.moveTo(tx, ty) : ctx.lineTo(tx, ty);
+        }
+        ctx.closePath(); ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.restore();
+      }
+
       for (const npc of npcs) {
         if (!inVent || dist(player, npc) < 100) {
-          drawCrewmate(ctx, npc.x - ox, npc.y - oy, npc.w, npc.h, npc.color, npc.name, npc.alive, npc.state);
+          // Detective scan: show "!" over impostors within range
+          const showSuspect = detectiveScanActive && npc.isImpostor && dist(player, npc) < 400;
+          drawCrewmate(ctx, npc.x - ox, npc.y - oy, npc.w, npc.h, npc.color, npc.name, npc.alive, npc.state, 1, showSuspect ? 'impostor' : null);
+          if (showSuspect) {
+            ctx.fillStyle = '#ff4444';
+            ctx.font = 'bold 18px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('!', npc.x - ox + npc.w / 2, npc.y - oy - 30);
+          }
         }
       }
 
       if (player.alive && !inVent) {
-        drawCrewmate(ctx, player.x - ox, player.y - oy, player.w, player.h, player.color, player.name, true, playerDoingTask ? AI_STATE.DOING_TASK : null);
+        const drawColor = (playerRole === 'shapeshifter' && abilityActive && shiftTarget) ? shiftTarget.color : player.color;
+        const drawName  = (playerRole === 'shapeshifter' && abilityActive && shiftTarget) ? shiftTarget.name  : player.name;
+        const drawAlpha = (playerRole === 'phantom' && abilityActive) ? 0.2 : 1;
+        drawCrewmate(ctx, player.x - ox, player.y - oy, player.w, player.h, drawColor, drawName, true,
+          playerDoingTask ? AI_STATE.DOING_TASK : null, drawAlpha, playerRole);
       }
 
       // Vision fog of war
@@ -5432,8 +6150,21 @@
         [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60], v => v + 's');
 
       addSection('Voting');
+      addStep('Discussion Time', 'Seconds for chat before voting', 'discussionTime',
+        [0, 15, 30, 45, 60, 90, 120], v => v + 's');
       addToggle('Confirm Ejects', 'Reveal role of ejected player', 'confirmEjects');
       addToggle('Anonymous Votes', 'Hide who voted for whom', 'anonymousVotes');
+
+      addSection('Impostor Roles  [F key]');
+      addToggle('Shapeshifter', 'Disguise as another player for 15s (30s cooldown)', 'roleShapeshifter');
+      addToggle('Phantom', 'Turn invisible for 10s — untargetable (25s cooldown)', 'rolePhantom');
+      addToggle('Viper', 'Place poison traps that kill crewmates after 8s (20s cooldown)', 'roleViper');
+
+      addSection('Crewmate Roles  [F key]');
+      addToggle('Engineer', 'Can use vents to travel the map', 'roleEngineer');
+      addToggle('Scientist', 'Toggle real-time vitals panel showing alive/dead status', 'roleScientist');
+      addToggle('Detective', 'Scan nearby area for 5s — highlights impostors in range (20s cooldown)', 'roleDetective');
+      addToggle('Noisemaker', 'Broadcasts location alert when killed', 'roleNoisemaker');
     }
 
     function openSettings() {
@@ -5616,6 +6347,7 @@
         }
       }
       checkInteractions();
+      updateActionButtons();
       if (frameCount % 60 === 0) updateActivityLog();
       render();
       requestAnimationFrame(gameLoop);
@@ -5641,9 +6373,10 @@
       }
       if (e.key === ' ' && isImpostor) { e.preventDefault(); doKill(); }
       if (e.key.toLowerCase() === 'r') reportBody();
-      if (e.key.toLowerCase() === 'v' && isImpostor) {
+      if (e.key.toLowerCase() === 'v' && (isImpostor || playerRole === 'engineer')) {
         if (inVent) { exitVent(); } else { enterVent(); }
       }
+      if (e.key.toLowerCase() === 'f') { useAbility(); }
       if (e.key.toLowerCase() === 'c' && isImpostor) {
         const doorRoom = getNearbyDoorRoom();
         if (doorRoom) closeDoor(doorRoom);

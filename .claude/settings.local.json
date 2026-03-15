@@ -3,7 +3,10 @@
     "allow": [
       "WebFetch(domain:earlygame.com)",
       "Bash(node -e:*)",
-      "WebFetch(domain:among-us.fandom.com)"
+      "WebFetch(domain:among-us.fandom.com)",
+      "WebSearch",
+      "WebFetch(domain:www.scribd.com)",
+      "WebFetch(domain:mobi.gg)"
     ]
   }
 }
