@@ -345,11 +345,11 @@
           w.push({ x: 244, y: 1522, w: 16, h: 86 });    // lower engine jog
           w.push({ x: 60, y: 1522, w: 200, h: 16 });    // bottom far left
           // Left hull - reactor bulge with engine exhausts
-          w.push({ x: 60, y: 194, w: 16, h: 200 });     // left upper wall
-          w.push({ x: 30, y: 378, w: 46, h: 16 });      // reactor top-left step
-          w.push({ x: 30, y: 378, w: 16, h: 850 });     // reactor left wall (full height)
-          w.push({ x: 30, y: 1212, w: 46, h: 16 });     // reactor bottom-left step
-          w.push({ x: 60, y: 1212, w: 16, h: 326 });    // left lower wall
+          w.push({ x: 0,  y: 194, w: 16, h: 200 });     // left upper wall
+          w.push({ x: -30, y: 378, w: 46, h: 16 });     // reactor top-left step
+          w.push({ x: -30, y: 378, w: 16, h: 850 });    // reactor left wall (full height)
+          w.push({ x: -30, y: 1212, w: 46, h: 16 });    // reactor bottom-left step
+          w.push({ x: 0,  y: 1212, w: 16, h: 326 });    // left lower wall
 
           // ============ INTERIOR ROOM WALLS ============
           // All walls are 16px thick. Gap positions match door objects exactly.
@@ -358,14 +358,13 @@
           w.push({ x: 140, y: 130, w: 16, h: 70 });    // left inner
           w.push({ x: 140, y: 130, w: 120, h: 16 });   // top inner
           w.push({ x: 414, y: 96,  w: 16, h: 104 });   // right top (to door gap y:200, full corridor overlap)
-          w.push({ x: 414, y: 320, w: 16, h: 90 });    // right bottom (below door)
-          w.push({ x: 414, y: 394, w: 16, h: 16 });    // right corner at bottom
+          w.push({ x: 414, y: 320, w: 16, h: 74 });    // right bottom (y:320-394, to UE floor bottom)
           w.push({ x: 140, y: 394, w: 120, h: 16 });   // bottom left
-          w.push({ x: 330, y: 394, w: 100, h: 16 });   // bottom right (gap for south corridor)
+          w.push({ x: 380, y: 394, w: 34,  h: 16 });   // bottom right (x:380-414, gap now spans x:260-380 matching corridor)
 
           // --- Lower Engine ---
           w.push({ x: 140, y: 1210, w: 120, h: 16 });  // top left
-          w.push({ x: 330, y: 1210, w: 100, h: 16 });  // top right (gap for corridor)
+          w.push({ x: 380, y: 1210, w: 34,  h: 16 });  // top right (x:380-414, gap now spans x:260-380 matching corridor)
           w.push({ x: 414, y: 1210, w: 16, h: 100 });  // right top (to door gap y:1310)
           w.push({ x: 414, y: 1374, w: 16, h: 150 });  // right bottom
           w.push({ x: 140, y: 1522, w: 16, h: 70 });   // left inner
@@ -373,20 +372,22 @@
 
           // --- Reactor (exits: UE south door gap top x:260-330, LE north door gap bottom x:260-330) ---
           w.push({ x: 60,  y: 378, w: 16, h: 60 });    // top-left step
-          w.push({ x: 76,  y: 420, w: 184, h: 16 });   // top left (x:76-260, gap x:260-330 for UE south)
-          w.push({ x: 330, y: 420, w:  66, h: 16 });   // top right (x:330-396)
-          // Right wall — solid, NO gap to Security
-          w.push({ x: 380, y: 420, w: 16, h: 584 });   // right wall full height
-          w.push({ x: 76,  y: 1004, w: 184, h: 16 });  // bottom left (x:76-260, gap x:260-330 for LE north)
-          w.push({ x: 330, y: 1004, w:  66, h: 16 });  // bottom right (x:330-396)
+          // Right wall — gap y:700-780 for corridor door
+          w.push({ x: 244, y: 394, w: 16, h: 306 });   // right wall top (y:394-700, gap y:700-780 for corridor door)
+          w.push({ x: 244, y: 780, w: 16, h: 446 });   // right wall bottom (y:780-1226)
+          // --- UE-LE vertical corridor walls ---
+          w.push({ x: 380, y: 394, w: 16, h: 166 });   // corridor right wall top (y:394-560, stops at Security top)
+          w.push({ x: 380, y: 860, w: 16, h: 350 });   // corridor right wall bottom (y:860-1210, starts after Security bottom wall)
+          w.push({ x: 16, y: 394, w: 140, h: 16 });   // Reactor top wall left (x:16-156, west of UE)
+          w.push({ x: 16, y: 1226, w: 140, h: 16 });  // Reactor bottom wall left (x:16-156, west of LE)
 
-          // --- Security (RIGHT of left vertical corridor, entry at x:740 gap y:700-780) ---
-          // Left wall = corridor right wall at x:740 (already has gap y:700-780) — no new wall needed
+          // --- Security (adjacent to UE-LE corridor, entry at x:380 gap y:700-780) ---
+          // Left wall = corridor right wall at x:380 (already has gap y:700-780) — no new wall needed
           // Top & bottom walls
-          w.push({ x: 660, y: 560, w: 232, h: 16 });   // top wall (y:560-576)
-          w.push({ x: 660, y: 844, w: 232, h: 16 });   // bottom wall
+          w.push({ x: 380, y: 560, w: 232, h: 16 });   // top wall (y:560-576)
+          w.push({ x: 380, y: 844, w: 232, h: 16 });   // bottom wall
           // Right wall
-          w.push({ x: 876, y: 560, w: 16, h: 300 });   // right wall (y:560-860)
+          w.push({ x: 596, y: 560, w: 16, h: 300 });   // right wall (y:560-860)
 
           // --- MedBay (BELOW top corridor — top open to corridor at y:280) ---
           // Top wall: none — corridor at y:200-280 feeds directly into MedBay top
@@ -443,7 +444,14 @@
           w.push({ x: 520, y: 924, w:  60, h: 16 });   // top left (x:520-580, gap x:580-740 for corridors)
           w.push({ x: 740, y: 924, w: 180, h: 16 });   // top right (x:740-920)
           w.push({ x: 904, y: 924, w: 16, h: 366 });   // right (y:924-1290)
-          w.push({ x: 520, y: 1290, w: 400, h: 16 });  // bottom
+          w.push({ x: 520, y: 1290, w: 130, h: 16 });  // bottom left (x:520-650)
+          w.push({ x: 730, y: 1290, w: 190, h: 16 });  // bottom right (x:730-920)
+          // gap x:650-730 = Electrical south door into LE→Storage corridor
+
+          // --- LE→Storage bottom corridor (below Electrical, y:1290-1380) ---
+          w.push({ x: 414, y: 1274, w: 106, h: 16 }); // top wall left (x:414-520, left of Electrical)
+          w.push({ x: 904, y: 1274, w: 132, h: 16 }); // top wall right (x:904-1036, right of Electrical)
+          w.push({ x: 414, y: 1380, w: 622, h: 16 }); // bottom wall (x:414-1036, full span)
 
           // --- Storage ---
           w.push({ x: 1020, y: 1100, w: 16, h: 180 }); // left top (door gap y:1280-1370)
@@ -483,38 +491,20 @@
 
           // --- UE south corridor removed (UE south goes directly into Reactor via top-wall gap) ---
 
-          // --- Left corridor → LE (x:414-494, y:844-1210) ---
-          w.push({ x: 398, y: 844, w: 16, h: 366 }); // left
-          w.push({ x: 494, y: 844, w: 16, h: 366 }); // right
+          // --- Left corridor → LE (x:414-494, y:844-1210) --- REMOVED (replaced by UE-LE vertical corridor)
 
           // --- Corridor → LE (x:414-520, y:1210-1374) connects left-lower corridor to LE east + Electrical west ---
           w.push({ x: 414, y: 1194, w: 106, h: 16 }); // top
           w.push({ x: 414, y: 1374, w: 106, h: 16 }); // bottom (below LE east door y:1310-1374)
 
-          // --- MedBay south (x:580-660, y:424-560) ---
-          w.push({ x: 564, y: 440, w: 16, h: 120 }); // left
-          w.push({ x: 660, y: 440, w: 16, h: 120 }); // right
+          // --- MedBay south (x:580-660, y:424-560) --- REMOVED (replaced by new corridor connector)
 
-          // --- Left lower → Electrical (x:580-660, y:844-1160) ---
-          w.push({ x: 564, y: 844, w: 16, h: 316 }); // left
-          w.push({ x: 660, y: 844, w: 16, h: 316 }); // right
+          // --- Left lower → Electrical (x:580-660, y:844-1160) --- REMOVED (replaced by Electrical connector)
 
-          // --- Main left vertical (x:660-740, y:560-1160) ---
-          // Left wall: continuous
-          w.push({ x: 644, y: 560, w: 16, h: 600 }); // left (full)
-          // Right wall: gap at y:700-780 for horizontal corridor junction
-          // right top wall removed — Security now extends left to x:660
-          w.push({ x: 740, y: 844, w: 16, h: 316 }); // right bottom (y:844-1160, below Security)
+          // --- Main left vertical (x:660-740, y:560-1160) --- REMOVED (replaced by UE-LE vertical corridor)
+          // --- Security → main corridor - connector --- REMOVED (Security now directly adjacent)
 
-          // --- Security → main corridor (x:580-660, y:700-780) - connector ---
-          // Top & bottom walls shared with extended horizontal below
-
-          // --- Horizontal corridor y:700-780 (Security at x:740-956 is open — no walls through it) ---
-          w.push({ x: 580, y: 684, w: 80,  h: 16 }); // top left (x:580-660, leaves main corridor x:660-740 open)
-          w.push({ x: 956, y: 684, w: 278, h: 16 }); // top right (x:956-1234, ends before Cafeteria south connector)
-          w.push({ x: 580, y: 780, w: 80,  h: 16 }); // bottom left (x:580-660)
-          w.push({ x: 956, y: 780, w: 324, h: 16 }); // bottom right (x:956-1280)
-          w.push({ x: 1360, y: 780, w:  20, h: 16 }); // bottom far right (gap x:1280-1360 for Admin→Storage)
+          // --- Horizontal corridor y:700-780 removed (Security now directly adjacent to UE-LE corridor) ---
 
           // --- Admin → O2 corridor (x:1784-1920, y:700-780) ---
           w.push({ x: 1784, y: 684, w: 136, h: 16 }); // top
@@ -549,9 +539,6 @@
           w.push({ x: 1524, y: 1370, w: 216, h: 16 }); // bottom left (x:1524-1740, left of Comms entry)
           w.push({ x: 2084, y: 1370, w: 96, h: 16 });  // bottom right (x:2084-2180, right of Comms entry)
 
-          // --- Electrical → Storage horizontal (x:904-1020, y:1300-1380) ---
-          w.push({ x: 904, y: 1284, w: 116, h: 16 }); // top
-          w.push({ x: 904, y: 1380, w: 116, h: 16 }); // bottom
 
           // ============ ROOM OBSTACLES (furniture/equipment) ============
 
@@ -567,9 +554,9 @@
           w.push({ x: 180, y: 660, w: 80, h: 80 });     // reactor core center
           // Reactor support pillars
           w.push({ x: 140, y: 500, w: 24, h: 24 });     // upper support
-          w.push({ x: 280, y: 500, w: 24, h: 24 });     // upper support right
+          w.push({ x: 200, y: 500, w: 24, h: 24 });     // upper support right
           w.push({ x: 140, y: 880, w: 24, h: 24 });     // lower support
-          w.push({ x: 280, y: 880, w: 24, h: 24 });     // lower support right
+          w.push({ x: 200, y: 880, w: 24, h: 24 });     // lower support right
 
           // --- Admin: Map/admin table ---
           w.push({ x: 1510, y: 770, w: 110, h: 60 });   // admin map table
@@ -600,7 +587,7 @@
           w.push({ x: 2820, y: 730, w: 40, h: 50 });    // steering wheel console
 
           // --- Security: Camera monitor desk (moved right of corridor) ---
-          w.push({ x: 720, y: 660, w: 70, h: 50 });     // monitor desk
+          w.push({ x: 440, y: 660, w: 70, h: 50 });     // monitor desk
 
           // --- O2: Plant shelves and filter equipment ---
           w.push({ x: 2000, y: 650, w: 50, h: 50 });    // filter unit
@@ -626,7 +613,7 @@
           { name: 'Admin', x: 1480, y: 770 }, { name: 'Shields', x: 2380, y: 1290 },
           { name: 'Communications', x: 1912, y: 1560 }, { name: 'Storage', x: 1270, y: 1360 },
           { name: 'Electrical', x: 720, y: 1115 }, { name: 'Lower Engine', x: 280, y: 1360 },
-          { name: 'Reactor', x: 220, y: 710 }, { name: 'Security', x: 768, y: 710 },
+          { name: 'Reactor', x: 220, y: 710 }, { name: 'Security', x: 488, y: 710 },
           { name: 'Upper Engine', x: 280, y: 250 }, { name: 'MedBay', x: 700, y: 410 },
         ],
         extraLabels: [
@@ -645,32 +632,24 @@
           { x: 1036, y: 1116, w: 488, h: 498 },  // 7: Storage (LARGE)
           { x: 536, y: 940, w: 368, h: 350 },    // 8: Electrical (ABOVE corridor)
           { x: 156, y: 1226, w: 258, h: 282 },   // 9: Lower Engine
-          { x: 76, y: 436, w: 304, h: 568 },     // 10: Reactor (tall)
-          { x: 660, y: 576, w: 216, h: 268 },    // 11: Security (moved left, entry from main corridor)
+          { x: 16, y: 394, w: 228, h: 832 },     // 10: Reactor (tall, x:16-244, y:394-1226)
+          { x: 380, y: 576, w: 216, h: 268 },    // 11: Security (adjacent to UE-LE corridor)
           { x: 156, y: 146, w: 258, h: 248 },    // 12: Upper Engine
           { x: 536, y: 280, w: 328, h: 320 },    // 13: MedBay (BELOW top corridor)
           // Hallways connecting rooms
           { x: 414, y: 200, w: 572, h: 80 },     // Top horizontal corridor UE→Caf (above MedBay)
           { x: 1524, y: 1280, w: 656, h: 90 },    // Storage→Shields corridor (covers Comms top + Shields left)
           { x: 1834, y: 200, w: 216, h: 80 },    // Cafeteria -> Weapons
-          { x: 244, y: 410, w: 86, h: 26 },      // UE south → Reactor connector (x:244-330, y:410-436)
-          { x: 244, y: 1004, w: 86, h: 206 },    // Reactor → LE north corridor (x:244-330, y:1004-1210)
-          { x: 414, y: 844, w: 80, h: 366 },     // left corridor -> Lower Engine area
-          { x: 414, y: 1210, w: 106, h: 164 },   // corridor -> LE east (y:1210-1374, covers LE east door y:1310-1374 and Electrical west door y:1230-1310)
-          { x: 580, y: 440, w: 80, h: 136 },     // MedBay -> left corridor
-          { x: 580, y: 844, w: 80, h: 316 },     // left corridor lower -> Electrical
-          { x: 660, y: 560, w: 80, h: 600 },     // main left vertical corridor
-          { x: 740, y: 700, w: 540, h: 80 },     // left corridor -> Admin (horizontal)
+          { x: 260, y: 394, w: 120, h: 816 },    // UE-LE main vertical corridor (Reactor left, Security right)
+          // horizontal entrance branch and left corridor -> Admin removed
           { x: 1250, y: 572, w: 150, h: 128 },   // Cafeteria south -> horizontal corridor (y:572-700)
           { x: 1680, y: 700, w: 240, h: 80 },    // Admin/O2 hallway (x:1680-1920, connects Admin right to O2 left)
           { x: 2284, y: 700, w: 266, h: 80 },    // O2 -> Navigation (aligned with Nav door y:700-780 and O2 right door)
           { x: 2230, y: 454, w: 80, h: 126 },    // Weapons -> O2 connector
           { x: 2470, y: 454, w: 80, h: 96 },     // Weapons -> Nav upper connector
           { x: 1280, y: 796, w: 80, h: 304 },    // Storage vertical (from horizontal corridor junction y:796 to Storage top y:1100)
-          { x: 580, y: 700, w: 80,  h: 80 },      // left corridor → Security entry (x:580-660)
           { x: 2428, y: 796, w: 96, h: 320 },     // East vertical corridor (O2/Nav → Shields north)
-          { x: 904, y: 1300, w: 116, h: 80 },    // Electrical -> Storage area
-          { x: 580, y: 280, w: 80, h: 160 },      // left corridor below top corridor (y:280-440)
+          { x: 414, y: 1290, w: 622, h: 90  },   // LE→Storage bottom corridor (x:414-1036, passes below Electrical)
         ],
         tasks: [
           // Official Skeld task list per room
@@ -719,7 +698,7 @@
           { x: 220, y: 650, name: 'Start Reactor', room: 'Reactor' },
           { x: 220, y: 800, name: 'Unlock Manifolds', room: 'Reactor' },
           // Security
-          { x: 768, y: 710, name: 'Accept Diverted Power', room: 'Security' },
+          { x: 488, y: 710, name: 'Accept Diverted Power', room: 'Security' },
           // Upper Engine
           { x: 280, y: 280, name: 'Align Engine Output', room: 'Upper Engine' },
           { x: 330, y: 200, name: 'Fuel Engines (Part 2)', room: 'Upper Engine' },
@@ -744,7 +723,7 @@
           // Electrical(4) <-> MedBay(5) <-> Security(6) (3-way)
           { x: 650, y: 1110, partner: 5 },  // 4: Electrical
           { x: 750, y: 460, partner: 6 },   // 5: MedBay
-          { x: 720, y: 720, partner: 4 },   // 6: Security
+          { x: 440, y: 720, partner: 4 },   // 6: Security
           // Admin(7) <-> Cafeteria(8) <-> Hallway(9) (3-way)
           { x: 1500, y: 900, partner: 8 },  // 7: Admin
           { x: 1350, y: 200, partner: 9 },  // 8: Cafeteria
@@ -770,10 +749,13 @@
           { x: 260, y: 1210, w: 70, h: 16, room: 'Lower Engine', dir: 'h' },   // north exit
           // MedBay: 1 door (south exit to corridor)
           { x: 520, y: 400, w: 16, h: 80, room: 'MedBay', dir: 'v' },          // south/east exit
+          // Reactor: east exit to UE-LE corridor
+          { x: 244, y: 700, w: 16, h: 80, room: 'Reactor', dir: 'v' },   // east exit to UE-LE corridor
           // Security: 1 door (east exit to corridor)
-          { x: 660, y: 700, w: 16, h: 80, room: 'Security', dir: 'v' },        // west entry (left wall at x:660)
+          { x: 380, y: 700, w: 16, h: 80, room: 'Security', dir: 'v' },        // west entry (left wall at x:380)
           // Electrical: 1 door (north exit to corridor)
           { x: 520, y: 990, w: 16, h: 80, room: 'Electrical', dir: 'v' },      // north exit
+          { x: 650, y: 1290, w: 80, h: 16, room: 'Electrical', dir: 'h' },   // south exit to LE-Storage corridor
           // Storage: 3 doors (left to Electrical hall, right to Comms hall, top to Admin hall)
           { x: 1020, y: 1280, w: 16, h: 90, room: 'Storage', dir: 'v' },       // left exit
           { x: 1524, y: 1280, w: 16, h: 90, room: 'Storage', dir: 'v' },       // right exit
@@ -789,7 +771,7 @@
         waypoints: [
           { x: 280, y: 250, room: 'Upper Engine' },  // 0
           { x: 220, y: 710, room: 'Reactor' },       // 1
-          { x: 768, y: 710, room: 'Security' },       // 2
+          { x: 488, y: 710, room: 'Security' },       // 2
           { x: 700, y: 410, room: 'MedBay' },         // 3
           { x: 700, y: 700, room: 'Hallway' },        // 4
           { x: 700, y: 810, room: 'Hallway' },        // 5
@@ -809,18 +791,20 @@
           { x: 2400, y: 550, room: 'Hallway' },       // 19
           { x: 1400, y: 1050, room: 'Hallway' },      // 20
           { x: 2480, y: 950,  room: 'Hallway' },      // 21: East corridor (O2/Nav→Shields junction)
+          { x: 320, y: 710, room: 'Hallway' },        // 22: UE-LE corridor mid (junction with horizontal entrance)
         ],
         waypointEdges: [
           [0,3],[0,1],[1,2],[2,4],[3,4],[3,9],[4,16],[4,5],[5,6],[5,7],[6,8],
           [9,17],[9,12],[17,10],[10,16],[10,18],[10,20],[18,11],[11,12],[11,13],
           [11,19],[12,19],[13,19],[20,8],[14,15],[14,20],[8,14],
           [11,21],[21,15],[7,20],
+          [0,22],[1,22],[2,22],[7,22],[6,22],
         ],
         // Official 4 CCTV camera locations matching the real Skeld map
         cameras: [
           { x: 730, y: 470, name: 'Camera 3' },    // Upper corridor near MedBay/Security hallway
-          { x: 310, y: 710, name: 'Camera 4' },    // Inside Reactor room
-          { x: 790, y: 640, name: 'Camera 2' },    // Central corridor (Security→Admin hallway)
+          { x: 160, y: 710, name: 'Camera 4' },    // Inside Reactor room
+          { x: 510, y: 640, name: 'Camera 2' },    // Central corridor (Security→Admin hallway)
           { x: 2195, y: 455, name: 'Camera 1' },   // East hallway (Weapons→O2 corridor)
         ],
         // Exterior ship features for visual rendering
