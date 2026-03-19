@@ -6,7 +6,8 @@
       "WebFetch(domain:among-us.fandom.com)",
       "WebSearch",
       "WebFetch(domain:www.scribd.com)",
-      "WebFetch(domain:mobi.gg)"
+      "WebFetch(domain:mobi.gg)",
+      "Bash(python3:*)"
     ]
   }
 }

@@ -949,277 +949,239 @@
         },
       },
       // ========== MIRA HQ ==========
-      // Real layout: Y-shaped sky HQ, Launchpad far-left, long hallway to Y-junction
-      // Upper-left branch: Comms, upper-right: Cafeteria->Admin->Greenhouse->Balcony
-      // Lower branch: Office->Locker Room->Decon->Reactor/Laboratory
-      // MedBay accessible from hallway between Comms and Office
+      // Layout: Launchpad far-left → corridor → Locker Room → Y-junction (Decon hallway)
+      //   Y upper-left arm → Reactor | Y upper-right arm → Laboratory → Office → Admin → Greenhouse
+      //   Bottom row: Locker Room → Communications → Storage → Cafeteria → MedBay
       mira: {
         name: 'MIRA HQ', icon: '\u{1F3E2}', desc: 'Sky headquarters',
         width: 2800, height: 2000,
         bgColor: '#162030', wallColor: '#305060', floorColor: 'rgba(100,200,255,0.04)', gridColor: 'rgba(100,200,255,0.03)',
-        spawnX: 310, spawnY: 1290,
-        emergencyBtn: { x: 2150, y: 1700, radius: 22 },
-        sabotageFixLocations: { lights: { x: 420, y: 530 }, o2: { x: 1460, y: 170 } },
+        spawnX: 300, spawnY: 1130,
+        emergencyBtn: { x: 2290, y: 1590, radius: 22 },
+        sabotageFixLocations: { lights: { x: 320, y: 440 }, o2: { x: 2290, y: 340 } },
         walls: (function() {
           const w = [];
           w.push(...borderWalls(2800, 2000));
-          // Reference image layout:
-          //  Launchpad (far-left large) --long corridor--> Y-junction
-          //  Y left arm: Reactor (upper-left)
-          //  Y right arm: Laboratory (center)
-          //  Below Y: Decon (narrow) → Locker Room
-          //  LP corridor meets LR at its left wall
-          //  LR right → Comms → Storage → Cafeteria (large, right side)
-          //  Below Comms → MedBay → Balcony
-          //  Above Lab: GH (top-center) ↔ Admin (top-right)
-          //  Lab right → Office (right-center, below Admin)
+          // Layout (matches reference image):
+          //  Upper section: Reactor(left) ←Y-horiz→ Lab → Office → Admin → Greenhouse(far-right)
+          //  Decontamination = the Y-shaped hallway connecting Reactor, Lab, and Locker Room
+          //  Bottom row: Launchpad(far-left) → LR → Comms → Storage → Cafeteria → MedBay
 
-          // === Launchpad x:60-560, y:860-1720 (Balcony x:60-560, y:1720-1820 below) ===
-          w.push({ x: 60,  y: 860,  w: 16,  h: 860 }); // left (Launchpad; Balcony left continues)
-          w.push({ x: 60,  y: 860,  w: 500, h: 16  }); // top
-          w.push({ x: 544, y: 860,  w: 16,  h: 300 }); // right-top   (gap y:1160-1240 for LP→LR)
-          w.push({ x: 544, y: 1240, w: 16,  h: 480 }); // right-bottom
-          w.push({ x: 60,  y: 1704, w: 500, h: 16  }); // bottom
+          // === Launchpad x:60-540, y:700-1560 ===
+          w.push({ x: 60,  y: 700,  w: 16,  h: 860 }); // left
+          w.push({ x: 60,  y: 700,  w: 480, h: 16  }); // top
+          w.push({ x: 524, y: 700,  w: 16,  h: 520 }); // right-top   (gap y:1220-1340 for LP→LR)
+          w.push({ x: 524, y: 1340, w: 16,  h: 220 }); // right-bottom
+          w.push({ x: 60,  y: 1544, w: 480, h: 16  }); // bottom
 
-          // === Reactor x:200-640, y:320-740 ===
-          w.push({ x: 200,  y: 320, w: 16,  h: 420 }); // left
-          w.push({ x: 200,  y: 320, w: 440, h: 16  }); // top
-          w.push({ x: 624,  y: 320, w: 16,  h: 220 }); // right-top   (gap y:540-620 for Y-junc horiz)
-          w.push({ x: 624,  y: 620, w: 16,  h: 104 }); // right-bottom (y:620-724)
-          w.push({ x: 200,  y: 724, w: 440, h: 16  }); // bottom
+          // === Reactor x:60-600, y:200-660 ===
+          w.push({ x: 60,  y: 200,  w: 16,  h: 460 }); // left
+          w.push({ x: 60,  y: 200,  w: 540, h: 16  }); // top
+          w.push({ x: 584, y: 200,  w: 16,  h: 220 }); // right-top   (gap y:420-500 for Y-horiz)
+          w.push({ x: 584, y: 500,  w: 16,  h: 160 }); // right-bottom
+          w.push({ x: 60,  y: 644,  w: 540, h: 16  }); // bottom
 
-          // === Laboratory x:1200-1680, y:320-740 ===
-          w.push({ x: 1200, y: 320, w: 16,  h: 220 }); // left-top    (gap y:540-620 for Y-junc horiz)
-          w.push({ x: 1200, y: 620, w: 16,  h: 120 }); // left-bottom
-          w.push({ x: 1200, y: 320, w: 120, h: 16  }); // top-left    (gap x:1320-1400 for GH→Lab)
-          w.push({ x: 1400, y: 320, w: 280, h: 16  }); // top-right
-          w.push({ x: 1664, y: 320, w: 16,  h: 200 }); // right-top   (gap y:520-600 for Lab→Office)
-          w.push({ x: 1664, y: 600, w: 16,  h: 140 }); // right-bottom
-          w.push({ x: 1200, y: 724, w: 480, h: 16  }); // bottom
+          // === Laboratory x:760-1280, y:200-660 ===
+          w.push({ x: 760, y: 200,  w: 16,  h: 220 }); // left-top    (gap y:420-500 for Y-horiz)
+          w.push({ x: 760, y: 500,  w: 16,  h: 160 }); // left-bottom
+          w.push({ x: 760, y: 200,  w: 520, h: 16  }); // top
+          w.push({ x: 1264,y: 200,  w: 16,  h: 240 }); // right-top   (gap y:440-520 for Lab→Office)
+          w.push({ x: 1264,y: 520,  w: 16,  h: 140 }); // right-bottom
+          w.push({ x: 760, y: 644,  w: 520, h: 16  }); // bottom
 
-          // === Greenhouse x:1200-1720, y:60-280 ===
-          w.push({ x: 1200, y: 60,  w: 16,  h: 220 }); // left
-          w.push({ x: 1200, y: 60,  w: 520, h: 16  }); // top
-          w.push({ x: 1704, y: 60,  w: 16,  h: 20  }); // right-top   (gap y:80-160 for GH→Admin)
-          w.push({ x: 1704, y: 160, w: 16,  h: 120 }); // right-bottom
-          w.push({ x: 1200, y: 264, w: 120, h: 16  }); // bottom-left  (gap x:1320-1400 for GH→Lab)
-          w.push({ x: 1400, y: 264, w: 320, h: 16  }); // bottom-right
+          // === Office x:1340-1820, y:360-720 ===
+          w.push({ x: 1340,y: 360,  w: 16,  h: 80  }); // left-top    (gap y:440-520 for Lab→Office)
+          w.push({ x: 1340,y: 520,  w: 16,  h: 200 }); // left-bottom
+          w.push({ x: 1340,y: 360,  w: 220, h: 16  }); // top-left    (gap x:1560-1640 for Admin→Office)
+          w.push({ x: 1640,y: 360,  w: 180, h: 16  }); // top-right
+          w.push({ x: 1804,y: 360,  w: 16,  h: 360 }); // right
+          w.push({ x: 1340,y: 704,  w: 480, h: 16  }); // bottom
 
-          // === Admin x:1780-2180, y:60-320 ===
-          w.push({ x: 1780, y: 60,  w: 16,  h: 20  }); // left-top    (gap y:80-160 for GH→Admin)
-          w.push({ x: 1780, y: 160, w: 16,  h: 160 }); // left-bottom
-          w.push({ x: 1780, y: 60,  w: 400, h: 16  }); // top
-          w.push({ x: 2164, y: 60,  w: 16,  h: 260 }); // right
-          w.push({ x: 1780, y: 304, w: 140, h: 16  }); // bottom-left  (gap x:1920-2000 for Admin→Office)
-          w.push({ x: 2000, y: 304, w: 180, h: 16  }); // bottom-right
+          // === Admin x:1460-1940, y:60-360 ===
+          w.push({ x: 1460,y: 60,   w: 16,  h: 300 }); // left
+          w.push({ x: 1460,y: 60,   w: 480, h: 16  }); // top
+          w.push({ x: 1924,y: 60,   w: 16,  h: 120 }); // right-top   (gap y:180-260 for Admin→GH)
+          w.push({ x: 1924,y: 260,  w: 16,  h: 100 }); // right-bottom
+          w.push({ x: 1460,y: 344,  w: 100, h: 16  }); // bottom-left (gap x:1560-1640 for Admin→Office)
+          w.push({ x: 1640,y: 344,  w: 300, h: 16  }); // bottom-right
 
-          // === Office x:1740-2120, y:360-720 ===
-          w.push({ x: 1740, y: 360, w: 16,  h: 160 }); // left-top    (gap y:520-600 for Lab→Office)
-          w.push({ x: 1740, y: 600, w: 16,  h: 120 }); // left-bottom
-          w.push({ x: 1740, y: 360, w: 180, h: 16  }); // top-left    (gap x:1920-2000 for Admin→Office)
-          w.push({ x: 2000, y: 360, w: 120, h: 16  }); // top-right
-          w.push({ x: 2104, y: 360, w: 16,  h: 360 }); // right
-          w.push({ x: 1740, y: 704, w: 380, h: 16  }); // bottom
+          // === Greenhouse x:1980-2740, y:60-600 ===
+          w.push({ x: 1980,y: 60,   w: 16,  h: 120 }); // left-top    (gap y:180-260 for Admin→GH)
+          w.push({ x: 1980,y: 260,  w: 16,  h: 340 }); // left-bottom
+          w.push({ x: 1980,y: 60,   w: 760, h: 16  }); // top
+          w.push({ x: 2724,y: 60,   w: 16,  h: 1280}); // right wall extends to Cafe top (y:60-1340)
+          w.push({ x: 1980,y: 584,  w: 640, h: 16  }); // bottom (gap x:2620-2724 for GH→Cafe)
+          // GH→Cafe vertical corridor: x:2620-2724, right wall = extended GH right wall
+          w.push({ x: 2620,y: 600,  w: 16,  h: 740 }); // corridor left wall
 
-          // === Decontamination x:820-1060, y:800-1000 ===
-          w.push({ x: 820,  y: 800, w: 16,  h: 200 }); // left
-          w.push({ x: 820,  y: 800, w: 60,  h: 16  }); // top-left    (gap x:880-960 for Y-junc down)
-          w.push({ x: 960,  y: 800, w: 100, h: 16  }); // top-right
-          w.push({ x: 1044, y: 800, w: 16,  h: 200 }); // right
-          w.push({ x: 820,  y: 984, w: 60,  h: 16  }); // bottom-left  (gap x:880-960 for Decon→LR)
-          w.push({ x: 960,  y: 984, w: 100, h: 16  }); // bottom-right
+          // === Locker Room x:580-1120, y:1080-1480 ===
+          w.push({ x: 580, y: 1080, w: 16,  h: 140 }); // left-top    (gap y:1220-1340 for LP→LR)
+          w.push({ x: 580, y: 1340, w: 16,  h: 140 }); // left-bottom
+          w.push({ x: 580, y: 1080, w: 300, h: 16  }); // top-left    (gap x:880-960 for Decon→LR)
+          w.push({ x: 960, y: 1080, w: 160, h: 16  }); // top-right
+          w.push({ x: 1104,y: 1080, w: 16,  h: 400 }); // right
+          w.push({ x: 580, y: 1464, w: 540, h: 16  }); // bottom
 
-          // === Locker Room x:600-1140, y:1040-1400 ===
-          w.push({ x: 600,  y: 1040, w: 16,  h: 120 }); // left-top   (gap y:1160-1240 for LP→LR)
-          w.push({ x: 600,  y: 1240, w: 16,  h: 160 }); // left-bottom
-          w.push({ x: 600,  y: 1040, w: 280, h: 16  }); // top-left   (gap x:880-960 for Decon→LR)
-          w.push({ x: 960,  y: 1040, w: 180, h: 16  }); // top-right
-          w.push({ x: 1124, y: 1040, w: 16,  h: 140 }); // right-top  (gap y:1180-1260 for LR→Comms)
-          w.push({ x: 1124, y: 1260, w: 16,  h: 140 }); // right-bottom
-          w.push({ x: 600,  y: 1384, w: 540, h: 16  }); // bottom
+          // === Communications x:820-1360, y:1500-1880 ===
+          w.push({ x: 820, y: 1500, w: 16,  h: 380 }); // left
+          w.push({ x: 820, y: 1500, w: 60,  h: 16  }); // top-left    (gap x:880-960 for LR→Comms)
+          w.push({ x: 960, y: 1500, w: 400, h: 16  }); // top-right
+          w.push({ x: 1344,y: 1500, w: 16,  h: 160 }); // right-top   (gap y:1660-1760 for Comms→Storage)
+          w.push({ x: 1344,y: 1760, w: 16,  h: 120 }); // right-bottom
+          w.push({ x: 820, y: 1864, w: 540, h: 16  }); // bottom
 
-          // === Communications x:1440-1820, y:1040-1400 ===
-          w.push({ x: 1440, y: 1040, w: 16,  h: 140 }); // left-top   (gap y:1180-1260 for LR→Comms)
-          w.push({ x: 1440, y: 1260, w: 16,  h: 140 }); // left-bottom
-          w.push({ x: 1440, y: 1040, w: 380, h: 16  }); // top
-          w.push({ x: 1804, y: 1040, w: 16,  h: 100 }); // right-top  (gap y:1140-1220 for Comms→Storage)
-          w.push({ x: 1804, y: 1220, w: 16,  h: 180 }); // right-bottom
-          w.push({ x: 1440, y: 1384, w: 140, h: 16  }); // bottom-left (gap x:1580-1660 for Comms→MedBay)
-          w.push({ x: 1660, y: 1384, w: 160, h: 16  }); // bottom-right
+          // === Storage x:1380-1860, y:1500-1880 ===
+          w.push({ x: 1380,y: 1500, w: 16,  h: 160 }); // left-top    (gap y:1660-1760 for Comms→Storage)
+          w.push({ x: 1380,y: 1760, w: 16,  h: 120 }); // left-bottom
+          w.push({ x: 1380,y: 1500, w: 480, h: 16  }); // top
+          w.push({ x: 1844,y: 1500, w: 16,  h: 120 }); // right-top   (gap y:1620-1720 for Storage→Cafe)
+          w.push({ x: 1844,y: 1720, w: 16,  h: 160 }); // right-bottom
+          w.push({ x: 1380,y: 1864, w: 480, h: 16  }); // bottom
 
-          // === Storage x:1880-2240, y:1040-1400 ===
-          w.push({ x: 1880, y: 1040, w: 16,  h: 100 }); // left-top   (gap y:1140-1220 for Comms→Storage)
-          w.push({ x: 1880, y: 1220, w: 16,  h: 180 }); // left-bottom
-          w.push({ x: 1880, y: 1040, w: 360, h: 16  }); // top
-          w.push({ x: 2224, y: 1040, w: 16,  h: 360 }); // right
-          w.push({ x: 1880, y: 1384, w: 80,  h: 16  }); // bottom-left (gap x:1960-2040 for Storage→Cafe)
-          w.push({ x: 2040, y: 1384, w: 200, h: 16  }); // bottom-right
+          // === Cafeteria x:1860-2740, y:1340-1840 ===
+          w.push({ x: 1860,y: 1340, w: 16,  h: 280 }); // left-top    (gap y:1620-1720 for Storage→Cafe)
+          w.push({ x: 1860,y: 1720, w: 16,  h: 120 }); // left-bottom
+          w.push({ x: 1860,y: 1340, w: 760, h: 16  }); // top (gap x:2620-2724 for GH→Cafe — covered by GH right wall)
+          w.push({ x: 2724,y: 1340, w: 16,  h: 500 }); // right
+          w.push({ x: 1860,y: 1824, w: 120, h: 16  }); // bottom-left (gap x:1980-2080 for Cafe→MedBay)
+          w.push({ x: 2080,y: 1824, w: 660, h: 16  }); // bottom-right
 
-          // === Cafeteria x:1840-2460, y:1460-1940 ===
-          w.push({ x: 1840, y: 1460, w: 16,  h: 160 }); // left-top   (gap y:1620-1700 for MedBay→Cafe)
-          w.push({ x: 1840, y: 1700, w: 16,  h: 240 }); // left-bottom
-          w.push({ x: 1840, y: 1460, w: 120, h: 16  }); // top-left   (gap x:1960-2040 for Storage→Cafe)
-          w.push({ x: 2040, y: 1460, w: 420, h: 16  }); // top-right
-          w.push({ x: 2444, y: 1460, w: 16,  h: 480 }); // right
-          w.push({ x: 1840, y: 1924, w: 620, h: 16  }); // bottom
-
-          // === MedBay x:1480-1820, y:1460-1800 ===
-          w.push({ x: 1480, y: 1460, w: 16,  h: 340 }); // left
-          w.push({ x: 1480, y: 1460, w: 100, h: 16  }); // top-left   (gap x:1580-1660 for Comms→MedBay)
-          w.push({ x: 1660, y: 1460, w: 160, h: 16  }); // top-right
-          w.push({ x: 1804, y: 1460, w: 16,  h: 160 }); // right-top  (gap y:1620-1700 for MedBay→Cafe)
-          w.push({ x: 1804, y: 1700, w: 16,  h: 100 }); // right-bottom
-          w.push({ x: 1480, y: 1784, w: 220, h: 16  }); // bottom-left  (gap x:1700-1780 for Balcony)
-          w.push({ x: 1780, y: 1784, w: 40,  h: 16  }); // bottom-right
-
-          // === Balcony x:1620-2020, y:1860-1960 (below MedBay) ===
-          w.push({ x: 1620, y: 1860, w: 16,  h: 100 }); // left
-          w.push({ x: 1620, y: 1860, w: 80,  h: 16  }); // top-left  (gap x:1700-1780 for MedBay→Balcony)
-          w.push({ x: 1780, y: 1860, w: 240, h: 16  }); // top-right
-          w.push({ x: 2004, y: 1860, w: 16,  h: 100 }); // right
-          w.push({ x: 1620, y: 1944, w: 400, h: 16  }); // bottom
+          // === MedBay x:1860-2360, y:1840-1980 ===
+          w.push({ x: 1860,y: 1840, w: 16,  h: 140 }); // left
+          w.push({ x: 1860,y: 1840, w: 120, h: 16  }); // top-left    (gap x:1980-2080 for Cafe→MedBay)
+          w.push({ x: 2080,y: 1840, w: 280, h: 16  }); // top-right
+          w.push({ x: 2344,y: 1840, w: 16,  h: 140 }); // right
+          w.push({ x: 1860,y: 1964, w: 500, h: 16  }); // bottom
 
           return w;
         })(),
         rooms: [
-          { name: 'Launchpad',        x: 310,  y: 1290 },
-          { name: 'Reactor',          x: 420,  y: 530  },
-          { name: 'Laboratory',       x: 1440, y: 530  },
-          { name: 'Greenhouse',       x: 1460, y: 170  },
-          { name: 'Admin',            x: 1980, y: 190  },
-          { name: 'Office',           x: 1930, y: 540  },
-          { name: 'Decontamination',  x: 940,  y: 900  },
-          { name: 'Locker Room',      x: 870,  y: 1220 },
-          { name: 'Communications',   x: 1630, y: 1220 },
-          { name: 'Storage',          x: 2060, y: 1220 },
-          { name: 'Cafeteria',        x: 2150, y: 1700 },
-          { name: 'MedBay',           x: 1650, y: 1630 },
-          { name: 'Balcony',          x: 1820, y: 1910 },
+          { name: 'Launchpad',       x: 300,  y: 1130 },
+          { name: 'Reactor',         x: 320,  y: 440  },
+          { name: 'Laboratory',      x: 1020, y: 440  },
+          { name: 'Office',          x: 1580, y: 540  },
+          { name: 'Admin',           x: 1700, y: 210  },
+          { name: 'Greenhouse',      x: 2290, y: 340  },
+          { name: 'Decontamination', x: 680,  y: 800  }, // label in Y-junction hallway
+          { name: 'Locker Room',     x: 850,  y: 1280 },
+          { name: 'Communications',  x: 1090, y: 1690 },
+          { name: 'Storage',         x: 1620, y: 1690 },
+          { name: 'Cafeteria',       x: 2290, y: 1590 },
+          { name: 'MedBay',          x: 2100, y: 1910 },
         ],
         floors: [
-          { x: 76,   y: 876,  w: 468, h: 828 }, // Launchpad
-          { x: 216,  y: 336,  w: 408, h: 388 }, // Reactor
-          { x: 1216, y: 336,  w: 448, h: 388 }, // Laboratory
-          { x: 1216, y: 76,   w: 488, h: 188 }, // Greenhouse
-          { x: 1756, y: 376,  w: 348, h: 328 }, // Office
-          { x: 1796, y: 76,   w: 368, h: 228 }, // Admin
-          { x: 836,  y: 816,  w: 208, h: 168 }, // Decontamination
-          { x: 616,  y: 1056, w: 508, h: 328 }, // Locker Room
-          { x: 1456, y: 1056, w: 348, h: 328 }, // Communications
-          { x: 1896, y: 1056, w: 328, h: 328 }, // Storage
-          { x: 1856, y: 1476, w: 588, h: 448 }, // Cafeteria
-          { x: 1496, y: 1476, w: 308, h: 308 }, // MedBay
-          { x: 1636, y: 1876, w: 368, h: 68  }, // Balcony (below MedBay)
-          // Corridors (each tile spans from one room floor edge to the other, touching both)
-          { x: 624,  y: 540,  w: 592, h: 80  }, // Y-junction horiz (Reactor↔Lab): x:624-1216
-          { x: 880,  y: 620,  w: 80,  h: 196 }, // Y-junction down arm: y:620-816
-          { x: 1320, y: 264,  w: 80,  h: 72  }, // Greenhouse↔Lab gap: y:264-336
-          { x: 1704, y: 80,   w: 92,  h: 80  }, // Greenhouse→Admin corridor: x:1704-1796
-          { x: 1920, y: 304,  w: 80,  h: 72  }, // Admin→Office corridor: y:304-376
-          { x: 1664, y: 520,  w: 92,  h: 80  }, // Lab→Office corridor: x:1664-1756
-          { x: 880,  y: 984,  w: 80,  h: 72  }, // Decon→Locker Room: y:984-1056
-          { x: 544,  y: 1160, w: 72,  h: 80  }, // Launchpad→Locker Room: x:544-616
-          { x: 1124, y: 1180, w: 332, h: 80  }, // Locker Room→Communications: x:1124-1456
-          { x: 1804, y: 1140, w: 92,  h: 80  }, // Communications→Storage: x:1804-1896
-          { x: 1580, y: 1384, w: 80,  h: 92  }, // Communications→MedBay: y:1384-1476
-          { x: 1960, y: 1384, w: 80,  h: 92  }, // Storage→Cafeteria: y:1384-1476
-          { x: 1804, y: 1620, w: 52,  h: 80  }, // MedBay→Cafeteria: x:1804-1856
-          { x: 1700, y: 1784, w: 80,  h: 92  }, // MedBay→Balcony: y:1784-1876
+          { x: 76,   y: 716,  w: 448, h: 828 }, // Launchpad
+          { x: 76,   y: 216,  w: 508, h: 428 }, // Reactor
+          { x: 776,  y: 216,  w: 488, h: 428 }, // Laboratory
+          { x: 1356, y: 376,  w: 448, h: 328 }, // Office
+          { x: 1476, y: 76,   w: 448, h: 268 }, // Admin
+          { x: 1996, y: 76,   w: 728, h: 508 }, // Greenhouse
+          { x: 596,  y: 1096, w: 508, h: 368 }, // Locker Room
+          { x: 836,  y: 1516, w: 508, h: 348 }, // Communications
+          { x: 1396, y: 1516, w: 448, h: 348 }, // Storage
+          { x: 1876, y: 1356, w: 848, h: 468 }, // Cafeteria
+          { x: 1876, y: 1856, w: 468, h: 108 }, // MedBay
+          // Corridors
+          { x: 600,  y: 420,  w: 160, h: 80  }, // Y-horiz: Reactor↔Lab (x:600-760)
+          { x: 640,  y: 500,  w: 80,  h: 580 }, // Y-vert Decon hallway: y:500-1080
+          { x: 540,  y: 1220, w: 40,  h: 120 }, // Launchpad→Locker Room
+          { x: 1280, y: 440,  w: 60,  h: 80  }, // Lab→Office corridor
+          { x: 1560, y: 344,  w: 80,  h: 32  }, // Admin→Office corridor
+          { x: 1940, y: 180,  w: 40,  h: 80  }, // Admin→Greenhouse corridor
+          { x: 880,  y: 1480, w: 80,  h: 20  }, // Locker Room→Communications
+          { x: 1360, y: 1660, w: 20,  h: 100 }, // Communications→Storage
+          { x: 1844, y: 1620, w: 32,  h: 100 }, // Storage→Cafeteria
+          { x: 1980, y: 1824, w: 100, h: 32  }, // Cafeteria→MedBay
+          { x: 2620, y: 600,  w: 104, h: 740 }, // GH→Cafeteria right corridor
         ],
         tasks: [
-          { x: 310,  y: 1290, name: 'Run Diagnostics',  room: 'Launchpad'      },
-          { x: 420,  y: 530,  name: 'Start Reactor',    room: 'Reactor'        },
-          { x: 1440, y: 530,  name: 'Assemble Artifact',room: 'Laboratory'     },
-          { x: 1460, y: 170,  name: 'Water Plants',     room: 'Greenhouse'     },
-          { x: 1930, y: 540,  name: 'Process Data',     room: 'Office'         },
-          { x: 1980, y: 190,  name: 'Swipe Card',       room: 'Admin'          },
-          { x: 940,  y: 900,  name: 'Clean Filter',     room: 'Decontamination'},
-          { x: 870,  y: 1220, name: 'Empty Garbage',    room: 'Locker Room'    },
-          { x: 1630, y: 1220, name: 'Fix Wiring',       room: 'Communications' },
-          { x: 2060, y: 1220, name: 'Sort Samples',     room: 'Storage'        },
-          { x: 2150, y: 1700, name: 'Buy Beverage',     room: 'Cafeteria'      },
-          { x: 1650, y: 1630, name: 'Submit Scan',      room: 'MedBay'         },
+          { x: 300,  y: 1130, name: 'Run Diagnostics',  room: 'Launchpad'      },
+          { x: 320,  y: 440,  name: 'Start Reactor',    room: 'Reactor'        },
+          { x: 1020, y: 440,  name: 'Assemble Artifact',room: 'Laboratory'     },
+          { x: 2290, y: 340,  name: 'Water Plants',     room: 'Greenhouse'     },
+          { x: 1700, y: 210,  name: 'Swipe Card',       room: 'Admin'          },
+          { x: 1580, y: 540,  name: 'Process Data',     room: 'Office'         },
+          { x: 680,  y: 760,  name: 'Clean Filter',     room: 'Decontamination'},
+          { x: 850,  y: 1280, name: 'Empty Garbage',    room: 'Locker Room'    },
+          { x: 1090, y: 1690, name: 'Fix Wiring',       room: 'Communications' },
+          { x: 1620, y: 1690, name: 'Sort Samples',     room: 'Storage'        },
+          { x: 2290, y: 1590, name: 'Buy Beverage',     room: 'Cafeteria'      },
+          { x: 2100, y: 1910, name: 'Submit Scan',      room: 'MedBay'         },
         ],
         vents: [
-          { x: 310,  y: 1320, partner: 1  }, // 0  Launchpad
-          { x: 420,  y: 570,  partner: 2  }, // 1  Reactor
-          { x: 1440, y: 570,  partner: 3  }, // 2  Laboratory
-          { x: 1460, y: 200,  partner: 4  }, // 3  Greenhouse
-          { x: 1930, y: 570,  partner: 5  }, // 4  Office
-          { x: 1980, y: 220,  partner: 6  }, // 5  Admin
-          { x: 940,  y: 940,  partner: 7  }, // 6  Decontamination
-          { x: 870,  y: 1260, partner: 8  }, // 7  Locker Room
-          { x: 1630, y: 1260, partner: 9  }, // 8  Communications
-          { x: 2060, y: 1260, partner: 10 }, // 9  Storage
-          { x: 2150, y: 1740, partner: 11 }, // 10 Cafeteria
-          { x: 1650, y: 1670, partner: 0  }, // 11 MedBay
+          { x: 300,  y: 1170, partner: 1  }, // 0  Launchpad
+          { x: 320,  y: 480,  partner: 2  }, // 1  Reactor
+          { x: 1020, y: 480,  partner: 3  }, // 2  Laboratory
+          { x: 2290, y: 380,  partner: 4  }, // 3  Greenhouse
+          { x: 1700, y: 250,  partner: 5  }, // 4  Admin
+          { x: 1580, y: 580,  partner: 6  }, // 5  Office
+          { x: 680,  y: 800,  partner: 7  }, // 6  Decontamination hallway
+          { x: 850,  y: 1320, partner: 8  }, // 7  Locker Room
+          { x: 1090, y: 1730, partner: 9  }, // 8  Communications
+          { x: 1620, y: 1730, partner: 10 }, // 9  Storage
+          { x: 2290, y: 1630, partner: 11 }, // 10 Cafeteria
+          { x: 2100, y: 1950, partner: 0  }, // 11 MedBay
         ],
         doors: [
-          { x: 544,  y: 1160, w: 16, h: 80,  room: 'Launchpad',       dir: 'v' },
-          { x: 624,  y: 540,  w: 16, h: 80,  room: 'Reactor',         dir: 'v' },
-          { x: 1200, y: 540,  w: 16, h: 80,  room: 'Laboratory',      dir: 'v' },
-          { x: 1320, y: 264,  w: 80, h: 16,  room: 'Greenhouse',      dir: 'h' },
-          { x: 1704, y: 80,   w: 16, h: 80,  room: 'Greenhouse',      dir: 'v' },
-          { x: 1780, y: 80,   w: 16, h: 80,  room: 'Admin',           dir: 'v' },
-          { x: 1920, y: 304,  w: 80, h: 16,  room: 'Admin',           dir: 'h' },
-          { x: 1740, y: 520,  w: 16, h: 80,  room: 'Office',          dir: 'v' },
-          { x: 880,  y: 984,  w: 80, h: 16,  room: 'Decontamination', dir: 'h' },
-          { x: 880,  y: 1040, w: 80, h: 16,  room: 'Locker Room',     dir: 'h' },
-          { x: 600,  y: 1160, w: 16, h: 80,  room: 'Locker Room',     dir: 'v' },
-          { x: 1124, y: 1180, w: 16, h: 80,  room: 'Locker Room',     dir: 'v' },
-          { x: 1440, y: 1180, w: 16, h: 80,  room: 'Communications',  dir: 'v' },
-          { x: 1804, y: 1140, w: 16, h: 80,  room: 'Communications',  dir: 'v' },
-          { x: 1580, y: 1384, w: 80, h: 16,  room: 'Communications',  dir: 'h' },
-          { x: 1880, y: 1140, w: 16, h: 80,  room: 'Storage',         dir: 'v' },
-          { x: 1960, y: 1384, w: 80, h: 16,  room: 'Storage',         dir: 'h' },
-          { x: 1840, y: 1620, w: 16, h: 80,  room: 'Cafeteria',       dir: 'v' },
-          { x: 1580, y: 1460, w: 80, h: 16,  room: 'MedBay',          dir: 'h' },
-          { x: 1804, y: 1620, w: 16, h: 80,  room: 'MedBay',          dir: 'v' },
-          { x: 1700, y: 1860, w: 80, h: 16,  room: 'Balcony',         dir: 'h' },
+          { x: 584,  y: 420,  w: 16, h: 80,  room: 'Reactor',         dir: 'v' },
+          { x: 760,  y: 420,  w: 16, h: 80,  room: 'Laboratory',      dir: 'v' }, // Y-horiz
+          { x: 880,  y: 1080, w: 80, h: 16,  room: 'Locker Room',     dir: 'h' }, // Decon→LR top
+          { x: 524,  y: 1220, w: 16, h: 120, room: 'Launchpad',       dir: 'v' },
+          { x: 580,  y: 1220, w: 16, h: 120, room: 'Locker Room',     dir: 'v' }, // LP→LR
+          { x: 1264, y: 440,  w: 16, h: 80,  room: 'Laboratory',      dir: 'v' },
+          { x: 1340, y: 440,  w: 16, h: 80,  room: 'Office',          dir: 'v' }, // Lab→Office
+          { x: 1560, y: 344,  w: 80, h: 16,  room: 'Admin',           dir: 'h' },
+          { x: 1560, y: 360,  w: 80, h: 16,  room: 'Office',          dir: 'h' }, // Admin→Office
+          { x: 1924, y: 180,  w: 16, h: 80,  room: 'Admin',           dir: 'v' },
+          { x: 1980, y: 180,  w: 16, h: 80,  room: 'Greenhouse',      dir: 'v' }, // Admin→GH
+          { x: 880,  y: 1464, w: 80, h: 16,  room: 'Locker Room',     dir: 'h' },
+          { x: 880,  y: 1500, w: 80, h: 16,  room: 'Communications',  dir: 'h' }, // LR→Comms
+          { x: 1344, y: 1660, w: 16, h: 100, room: 'Communications',  dir: 'v' },
+          { x: 1380, y: 1660, w: 16, h: 100, room: 'Storage',         dir: 'v' }, // Comms→Storage
+          { x: 1844, y: 1620, w: 16, h: 100, room: 'Storage',         dir: 'v' },
+          { x: 1860, y: 1620, w: 16, h: 100, room: 'Cafeteria',       dir: 'v' }, // Storage→Cafe
+          { x: 1980, y: 1824, w: 100,h: 16,  room: 'Cafeteria',       dir: 'h' },
+          { x: 1980, y: 1840, w: 100,h: 16,  room: 'MedBay',          dir: 'h' }, // Cafe→MedBay
+          { x: 2620, y: 584,  w: 104,h: 16,  room: 'Greenhouse',      dir: 'h' }, // GH→Cafe top
+          { x: 2620, y: 1340, w: 104,h: 16,  room: 'Cafeteria',       dir: 'h' }, // GH→Cafe bottom
         ],
         waypoints: [
-          { x: 310,  y: 1290, room: 'Launchpad'       }, // 0
-          { x: 420,  y: 530,  room: 'Reactor'         }, // 1
-          { x: 1440, y: 530,  room: 'Laboratory'      }, // 2
-          { x: 1460, y: 170,  room: 'Greenhouse'      }, // 3
-          { x: 1930, y: 540,  room: 'Office'          }, // 4
-          { x: 1980, y: 190,  room: 'Admin'           }, // 5
-          { x: 940,  y: 900,  room: 'Decontamination' }, // 6
-          { x: 870,  y: 1220, room: 'Locker Room'     }, // 7
-          { x: 1630, y: 1220, room: 'Communications'  }, // 8
-          { x: 2060, y: 1220, room: 'Storage'         }, // 9
-          { x: 2150, y: 1700, room: 'Cafeteria'       }, // 10
-          { x: 1650, y: 1630, room: 'MedBay'          }, // 11
-          { x: 1820, y: 1910, room: 'Balcony'         }, // 12
-          { x: 920,  y: 580,  room: 'Hallway'         }, // 13  Y-junction center
-          { x: 920,  y: 718,  room: 'Hallway'         }, // 14  Y-junc down arm mid
-          { x: 580,  y: 1200, room: 'Hallway'         }, // 15  LP→LR corridor mid
-          { x: 1360, y: 300,  room: 'Hallway'         }, // 16  GH↔Lab gap
-          { x: 1760, y: 120,  room: 'Hallway'         }, // 17  GH→Admin mid
-          { x: 1960, y: 340,  room: 'Hallway'         }, // 18  Admin→Office mid
-          { x: 1710, y: 560,  room: 'Hallway'         }, // 19  Lab→Office mid
-          { x: 1290, y: 1220, room: 'Hallway'         }, // 20  LR→Comms mid
-          { x: 1850, y: 1180, room: 'Hallway'         }, // 21  Comms→Storage mid
-          { x: 1620, y: 1430, room: 'Hallway'         }, // 22  Comms→MedBay mid
-          { x: 2000, y: 1430, room: 'Hallway'         }, // 23  Storage→Cafe mid
-          { x: 1830, y: 1660, room: 'Hallway'         }, // 24  MedBay→Cafe mid
-          { x: 1740, y: 1830, room: 'Hallway'         }, // 25  MedBay→Balcony mid
+          { x: 300,  y: 1130, room: 'Launchpad'       }, // 0
+          { x: 320,  y: 440,  room: 'Reactor'         }, // 1
+          { x: 1020, y: 440,  room: 'Laboratory'      }, // 2
+          { x: 2290, y: 340,  room: 'Greenhouse'      }, // 3
+          { x: 1700, y: 210,  room: 'Admin'           }, // 4
+          { x: 1580, y: 540,  room: 'Office'          }, // 5
+          { x: 850,  y: 1280, room: 'Locker Room'     }, // 6
+          { x: 1090, y: 1690, room: 'Communications'  }, // 7
+          { x: 1620, y: 1690, room: 'Storage'         }, // 8
+          { x: 2290, y: 1590, room: 'Cafeteria'       }, // 9
+          { x: 2100, y: 1910, room: 'MedBay'          }, // 10
+          { x: 680,  y: 460,  room: 'Hallway'         }, // 11  Y-horiz center (Decon)
+          { x: 680,  y: 790,  room: 'Hallway'         }, // 12  Y-vert mid (Decon hallway)
+          { x: 560,  y: 1280, room: 'Hallway'         }, // 13  LP→LR mid
+          { x: 1310, y: 480,  room: 'Hallway'         }, // 14  Lab→Office mid
+          { x: 1600, y: 352,  room: 'Hallway'         }, // 15  Admin→Office mid
+          { x: 1960, y: 220,  room: 'Hallway'         }, // 16  Admin→GH mid
+          { x: 880,  y: 1490, room: 'Hallway'         }, // 17  LR→Comms mid
+          { x: 1362, y: 1710, room: 'Hallway'         }, // 18  Comms→Storage mid
+          { x: 1852, y: 1670, room: 'Hallway'         }, // 19  Storage→Cafe mid
+          { x: 2030, y: 1832, room: 'Hallway'         }, // 20  Cafe→MedBay mid
+          { x: 2672, y: 970,  room: 'Hallway'         }, // 21  GH→Cafe corridor mid
+          { x: 2672, y: 520,  room: 'Greenhouse'      }, // 22  GH near corridor exit
         ],
         waypointEdges: [
-          [1,13],[13,2],              // Reactor ↔ Y-junction ↔ Lab
-          [13,14],[14,6],             // Y-junction down → Decon
-          [6,7],                      // Decon → Locker Room
-          [7,15],[15,0],              // LR → Launchpad
-          [7,20],[20,8],              // LR → Communications
-          [8,21],[21,9],              // Comms → Storage
-          [8,22],[22,11],             // Comms → MedBay
-          [9,23],[23,10],             // Storage → Cafeteria
-          [11,24],[24,10],            // MedBay → Cafeteria
-          [11,25],[25,12],            // MedBay → Balcony
-          [2,16],[16,3],              // Lab → Greenhouse (gap)
-          [3,17],[17,5],              // GH → Admin
-          [5,18],[18,4],              // Admin → Office
-          [2,19],[19,4],              // Lab → Office
+          [1,11],[11,2],     // Reactor ↔ Y-horiz ↔ Lab
+          [11,12],[12,6],    // Y-horiz ↔ Y-vert (Decon hallway) ↔ Locker Room
+          [6,13],[13,0],     // Locker Room ↔ Launchpad
+          [2,14],[14,5],     // Lab ↔ Office
+          [5,15],[15,4],     // Office ↔ Admin
+          [4,16],[16,3],     // Admin ↔ Greenhouse
+          [3,22],[22,21],[21,9], // Greenhouse ↔ GH corridor exit ↔ corridor mid ↔ Cafeteria
+          [6,17],[17,7],     // Locker Room ↔ Communications
+          [7,18],[18,8],     // Communications ↔ Storage
+          [8,19],[19,9],     // Storage ↔ Cafeteria
+          [9,20],[20,10],    // Cafeteria ↔ MedBay
         ],
       },
       // ========== POLUS ==========
@@ -5733,19 +5695,145 @@
           break;
         }
         case 'Greenhouse': {
-          ctx.fillStyle = '#1a3a15';
-          ctx.fillRect(x+w*0.1, y+h*0.2, w*0.3, h*0.2); ctx.fillRect(x+w*0.55, y+h*0.2, w*0.3, h*0.2);
-          ctx.fillRect(x+w*0.1, y+h*0.55, w*0.3, h*0.2); ctx.fillRect(x+w*0.55, y+h*0.55, w*0.3, h*0.2);
-          ctx.fillStyle = '#2a5a20';
-          for (const [px,py] of [[0.2,0.25],[0.3,0.3],[0.65,0.25],[0.2,0.6],[0.7,0.65]]) {
-            ctx.beginPath(); ctx.arc(x+w*px, y+h*py, 8, 0, Math.PI*2); ctx.fill();
+          // Green ambient grow-light glow
+          const ghAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.6);
+          ghAmb.addColorStop(0, 'rgba(40,160,40,0.12)');
+          ghAmb.addColorStop(1, 'rgba(10,60,10,0)');
+          ctx.fillStyle = ghAmb; ctx.fillRect(x, y, w, h);
+          // Soil planter beds — 3 rows of 2
+          const bedW = w*0.32, bedH = h*0.18;
+          const bedPositions = [[0.06,0.08],[0.62,0.08],[0.06,0.40],[0.62,0.40],[0.06,0.72],[0.62,0.72]];
+          for (const [bpx,bpy] of bedPositions) {
+            const bx2=x+w*bpx, by2=y+h*bpy;
+            // Soil bed
+            ctx.fillStyle = '#2a1a0a';
+            ctx.fillRect(bx2, by2, bedW, bedH);
+            ctx.strokeStyle = '#5a3a1a'; ctx.lineWidth = 1;
+            ctx.strokeRect(bx2, by2, bedW, bedH);
+            // Soil texture
+            ctx.fillStyle = '#3a2210';
+            for (let si = 0; si < 4; si++) ctx.fillRect(bx2+si*bedW*0.22+4, by2+3, bedW*0.18, bedH-6);
+            // Plants growing from soil
+            const plantColors = ['#1a8a1a','#2aaa2a','#3abb2a','#22992a'];
+            for (let pi = 0; pi < 5; pi++) {
+              const px2 = bx2+bedW*0.10+pi*bedW*0.18, py2 = by2+bedH*0.5;
+              const pc = plantColors[pi%4], ph = bedH*(0.5+Math.sin(pi*1.7)*0.2);
+              // Stem
+              ctx.strokeStyle = pc; ctx.lineWidth = 1.5;
+              ctx.beginPath(); ctx.moveTo(px2, py2); ctx.lineTo(px2, py2-ph); ctx.stroke();
+              // Leaves
+              ctx.fillStyle = pc;
+              ctx.beginPath(); ctx.ellipse(px2-5, py2-ph*0.6, 6, 3, -0.4, 0, Math.PI*2); ctx.fill();
+              ctx.beginPath(); ctx.ellipse(px2+5, py2-ph*0.75, 6, 3, 0.4, 0, Math.PI*2); ctx.fill();
+              // Flower/bud at top
+              ctx.fillStyle = pi%3===0 ? '#ffcc00' : pi%3===1 ? '#ff8844' : '#ff44aa';
+              ctx.beginPath(); ctx.arc(px2, py2-ph, 3, 0, Math.PI*2); ctx.fill();
+            }
           }
+          // Overhead grow-light strips between beds
+          ctx.fillStyle = 'rgba(180,255,160,0.08)';
+          ctx.fillRect(x+w*0.38, y, w*0.24, h);
+          ctx.strokeStyle = 'rgba(150,240,120,0.12)'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(x+w*0.38, y); ctx.lineTo(x+w*0.38, y+h); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x+w*0.62, y); ctx.lineTo(x+w*0.62, y+h); ctx.stroke();
+          // Light fixtures on ceiling strip
+          ctx.fillStyle = '#ccffaa';
+          for (let li = 0; li < 5; li++) {
+            ctx.beginPath(); ctx.arc(x+w*0.50, y+h*0.10+li*h*0.18, 4, 0, Math.PI*2);
+            ctx.fill();
+          }
+          // Water irrigation pipes along sides
+          ctx.strokeStyle = '#4488aa'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(x+5, y+h*0.18); ctx.lineTo(x+5, y+h*0.90); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x+w-5, y+h*0.18); ctx.lineTo(x+w-5, y+h*0.90); ctx.stroke();
+          for (let dr = 0; dr < 6; dr++) {
+            ctx.strokeStyle = 'rgba(68,136,170,0.4)'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(x+5, y+h*(0.18+dr*0.12)); ctx.lineTo(x+w*0.10, y+h*(0.18+dr*0.12)); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x+w-5, y+h*(0.18+dr*0.12)); ctx.lineTo(x+w*0.90, y+h*(0.18+dr*0.12)); ctx.stroke();
+          }
+          // Water Plants task terminal (right wall)
+          ctx.fillStyle = '#1a2a1a';
+          ctx.fillRect(x+w-28, cy-16, 22, 32);
+          ctx.strokeStyle = '#3a6a3a'; ctx.lineWidth = 1;
+          ctx.strokeRect(x+w-28, cy-16, 22, 32);
+          ctx.fillStyle = 'rgba(60,220,80,0.25)';
+          ctx.fillRect(x+w-26, cy-12, 18, 12);
+          ctx.fillStyle = '#44aa44';
+          ctx.beginPath(); ctx.arc(x+w-17, cy+10, 4, 0, Math.PI*2); ctx.fill();
           break;
         }
         case 'Laboratory': {
-          ctx.fillStyle = '#3a3a4a'; ctx.fillRect(cx-45, cy-10, 90, 20);
-          ctx.fillStyle = '#3355aa';
-          ctx.fillRect(cx-30, cy-22, 8, 14); ctx.fillRect(cx-10, cy-27, 8, 19); ctx.fillRect(cx+15, cy-20, 8, 12);
+          // Cool blue-white lab ambient
+          const labAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.5);
+          labAmb.addColorStop(0, 'rgba(60,120,200,0.08)');
+          labAmb.addColorStop(1, 'rgba(20,60,120,0)');
+          ctx.fillStyle = labAmb; ctx.fillRect(x, y, w, h);
+          // Lab benches along top and bottom walls
+          ctx.fillStyle = '#1e2a3a'; ctx.fillRect(x+10, y+8, w-20, h*0.22);
+          ctx.strokeStyle = '#2a4060'; ctx.lineWidth = 1; ctx.strokeRect(x+10, y+8, w-20, h*0.22);
+          ctx.fillStyle = '#1e2a3a'; ctx.fillRect(x+10, y+h-h*0.22-8, w-20, h*0.22);
+          ctx.strokeStyle = '#2a4060'; ctx.lineWidth = 1; ctx.strokeRect(x+10, y+h-h*0.22-8, w-20, h*0.22);
+          // Specimen jars on top bench (Assemble Artifact task)
+          const jarColors = ['#5588ff','#ff5588','#55ffaa','#ffaa55','#cc55ff'];
+          for (let ji = 0; ji < 6; ji++) {
+            const jx = x+18+ji*(w-36)*0.17, jy = y+10;
+            // Jar body
+            ctx.fillStyle = 'rgba(20,30,50,0.8)';
+            ctx.fillRect(jx, jy+2, 14, 20);
+            ctx.strokeStyle = '#4a6a8a'; ctx.lineWidth = 0.8;
+            ctx.strokeRect(jx, jy+2, 14, 20);
+            // Liquid fill
+            ctx.fillStyle = jarColors[ji%5].replace('ff','88')+'44';
+            ctx.fillRect(jx+1, jy+8, 12, 13);
+            // Glowing contents
+            ctx.fillStyle = jarColors[ji%5];
+            ctx.globalAlpha = 0.35;
+            ctx.beginPath(); ctx.arc(jx+7, jy+15, 4, 0, Math.PI*2); ctx.fill();
+            ctx.globalAlpha = 0.25;
+            // Jar cap
+            ctx.fillStyle = '#3a4a5a';
+            ctx.fillRect(jx+1, jy, 12, 4);
+          }
+          // Central artifact display pedestal
+          ctx.fillStyle = '#1a2a3a';
+          ctx.fillRect(cx-22, cy-18, 44, 36);
+          ctx.strokeStyle = '#3a6a8a'; ctx.lineWidth = 1.5;
+          ctx.strokeRect(cx-22, cy-18, 44, 36);
+          // Artifact glow
+          const artGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 20);
+          artGlow.addColorStop(0, 'rgba(100,180,255,0.3)');
+          artGlow.addColorStop(1, 'rgba(60,120,220,0)');
+          ctx.fillStyle = artGlow; ctx.globalAlpha = 0.25;
+          ctx.beginPath(); ctx.arc(cx, cy, 20, 0, Math.PI*2); ctx.fill();
+          ctx.globalAlpha = 0.25;
+          // Artifact shape (crystalline)
+          ctx.fillStyle = '#88ccff';
+          ctx.beginPath(); ctx.moveTo(cx, cy-12); ctx.lineTo(cx+8, cy); ctx.lineTo(cx, cy+12); ctx.lineTo(cx-8, cy); ctx.closePath(); ctx.fill();
+          ctx.strokeStyle = '#aaddff'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(cx, cy-12); ctx.lineTo(cx+8, cy); ctx.lineTo(cx, cy+12); ctx.lineTo(cx-8, cy); ctx.closePath(); ctx.stroke();
+          // Microscopes on bottom bench
+          for (let mi = 0; mi < 3; mi++) {
+            const mx2 = x+30+mi*(w-60)*0.4, my2 = y+h-h*0.22;
+            ctx.fillStyle = '#2a3a4a';
+            ctx.fillRect(mx2, my2+4, 10, 14); // base
+            ctx.fillRect(mx2+2, my2-2, 6, 8);  // arm
+            ctx.fillStyle = '#4a6a8a';
+            ctx.fillRect(mx2+3, my2-4, 4, 4); // eyepiece
+          }
+          // Computer terminal (right side)
+          ctx.fillStyle = '#1a2030';
+          ctx.fillRect(x+w-32, cy-20, 26, 40);
+          ctx.strokeStyle = '#3a5a7a'; ctx.lineWidth = 1;
+          ctx.strokeRect(x+w-32, cy-20, 26, 40);
+          ctx.fillStyle = '#050d1a';
+          ctx.fillRect(x+w-30, cy-16, 22, 20);
+          ctx.fillStyle = 'rgba(80,160,255,0.2)';
+          ctx.fillRect(x+w-29, cy-15, 20, 18);
+          // Scan lines on screen
+          ctx.strokeStyle = 'rgba(80,160,255,0.15)'; ctx.lineWidth = 0.5;
+          for (let sl = 0; sl < 4; sl++) {
+            ctx.beginPath(); ctx.moveTo(x+w-29, cy-13+sl*4); ctx.lineTo(x+w-9, cy-13+sl*4); ctx.stroke();
+          }
           break;
         }
         case 'Specimen Room': {
@@ -5848,8 +5936,58 @@
           break;
         }
         case 'Locker Room': {
-          ctx.fillStyle = '#3a3a4a';
-          for (let i = 0; i < 4; i++) ctx.fillRect(x+15+i*25, y+15, 20, h*0.35);
+          // Metal locker bank along top wall
+          const lrLockerH = h*0.38, lrLockerW = 22;
+          const lrCount = Math.floor((w-20) / (lrLockerW+3));
+          for (let li = 0; li < lrCount; li++) {
+            const lx = x+10+li*(lrLockerW+3), ly = y+8;
+            // Locker body
+            ctx.fillStyle = li%3===0 ? '#3a3a50' : li%3===1 ? '#353545' : '#404055';
+            ctx.fillRect(lx, ly, lrLockerW, lrLockerH);
+            ctx.strokeStyle = '#5a5a70'; ctx.lineWidth = 0.8;
+            ctx.strokeRect(lx, ly, lrLockerW, lrLockerH);
+            // Locker door seam
+            ctx.strokeStyle = '#2a2a3a'; ctx.lineWidth = 0.5;
+            ctx.beginPath(); ctx.moveTo(lx+1, ly+8); ctx.lineTo(lx+lrLockerW-1, ly+8); ctx.stroke();
+            // Handle
+            ctx.fillStyle = '#6a6a80';
+            ctx.fillRect(lx+lrLockerW*0.35, ly+lrLockerH*0.45, lrLockerW*0.3, lrLockerH*0.10);
+            // Ventilation slots
+            for (let vs = 0; vs < 3; vs++) {
+              ctx.fillStyle = '#1a1a2a';
+              ctx.fillRect(lx+4, ly+lrLockerH*0.15+vs*6, lrLockerW-8, 2);
+            }
+          }
+          // Central wooden bench
+          ctx.fillStyle = '#5a3a20';
+          ctx.fillRect(x+w*0.15, cy+4, w*0.70, h*0.14);
+          ctx.strokeStyle = '#7a5a3a'; ctx.lineWidth = 1;
+          ctx.strokeRect(x+w*0.15, cy+4, w*0.70, h*0.14);
+          // Bench plank lines
+          ctx.strokeStyle = '#4a2a10'; ctx.lineWidth = 0.5;
+          for (let bi = 1; bi < 4; bi++) {
+            ctx.beginPath(); ctx.moveTo(x+w*0.15+w*0.70*bi/4, cy+4); ctx.lineTo(x+w*0.15+w*0.70*bi/4, cy+4+h*0.14); ctx.stroke();
+          }
+          // Trash/waste bin (bottom-right corner)
+          ctx.fillStyle = '#2a4a2a';
+          ctx.fillRect(x+w-30, y+h-40, 24, 32);
+          ctx.strokeStyle = '#3a6a3a'; ctx.lineWidth = 0.8;
+          ctx.strokeRect(x+w-30, y+h-40, 24, 32);
+          // Trash lid
+          ctx.fillStyle = '#1a3a1a';
+          ctx.fillRect(x+w-32, y+h-42, 28, 6);
+          ctx.strokeStyle = '#2a5a2a'; ctx.lineWidth = 0.8;
+          ctx.strokeRect(x+w-32, y+h-42, 28, 6);
+          // Floor drain (center bottom)
+          ctx.fillStyle = '#1a1a2a';
+          ctx.beginPath(); ctx.arc(cx, y+h-16, 10, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#3a3a4a'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.arc(cx, y+h-16, 10, 0, Math.PI*2); ctx.stroke();
+          ctx.strokeStyle = '#2a2a3a'; ctx.lineWidth = 0.8;
+          for (let ds = 0; ds < 4; ds++) {
+            const ang = ds*Math.PI/4;
+            ctx.beginPath(); ctx.moveTo(cx, y+h-16); ctx.lineTo(cx+Math.cos(ang)*8, y+h-16+Math.sin(ang)*8); ctx.stroke();
+          }
           break;
         }
         case 'Boiler Room': {
@@ -5922,9 +6060,82 @@
           break;
         }
         case 'Launchpad': {
-          ctx.strokeStyle = '#666'; ctx.lineWidth = 2;
-          ctx.beginPath(); ctx.arc(cx, cy, Math.min(w,h)*0.25, 0, Math.PI*2); ctx.stroke();
-          ctx.beginPath(); ctx.moveTo(cx-20, cy); ctx.lineTo(cx+20, cy); ctx.moveTo(cx, cy-20); ctx.lineTo(cx, cy+20); ctx.stroke();
+          // Sky blue ambient (MIRA HQ is a sky station)
+          const lpAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.5);
+          lpAmb.addColorStop(0, 'rgba(60,120,200,0.08)');
+          lpAmb.addColorStop(1, 'rgba(20,60,140,0)');
+          ctx.fillStyle = lpAmb; ctx.fillRect(x, y, w, h);
+          // Launch circle markings on floor
+          const lpR = Math.min(w,h)*0.30;
+          ctx.strokeStyle = 'rgba(220,180,60,0.35)'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.arc(cx, cy, lpR, 0, Math.PI*2); ctx.stroke();
+          ctx.strokeStyle = 'rgba(220,180,60,0.20)'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(cx, cy, lpR*0.65, 0, Math.PI*2); ctx.stroke();
+          // Radial spokes
+          for (let sp = 0; sp < 8; sp++) {
+            const ang = sp*Math.PI/4;
+            ctx.strokeStyle = 'rgba(200,160,40,0.18)'; ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(cx+Math.cos(ang)*lpR*0.15, cy+Math.sin(ang)*lpR*0.15);
+            ctx.lineTo(cx+Math.cos(ang)*lpR, cy+Math.sin(ang)*lpR);
+            ctx.stroke();
+          }
+          // Landing direction arrows
+          ctx.fillStyle = 'rgba(220,180,60,0.22)';
+          for (let ar = 0; ar < 4; ar++) {
+            const ang = ar*Math.PI/2 - Math.PI/4;
+            const ax = cx+Math.cos(ang)*lpR*0.82, ay = cy+Math.sin(ang)*lpR*0.82;
+            ctx.save(); ctx.translate(ax,ay); ctx.rotate(ang+Math.PI/4);
+            ctx.beginPath(); ctx.moveTo(0,-6); ctx.lineTo(5,6); ctx.lineTo(-5,6); ctx.closePath(); ctx.fill();
+            ctx.restore();
+          }
+          // Dropship/shuttle silhouette in center
+          ctx.fillStyle = '#2a3a5a';
+          ctx.beginPath();
+          ctx.moveTo(cx, cy-lpR*0.38);
+          ctx.lineTo(cx+lpR*0.18, cy-lpR*0.10);
+          ctx.lineTo(cx+lpR*0.24, cy+lpR*0.22);
+          ctx.lineTo(cx-lpR*0.24, cy+lpR*0.22);
+          ctx.lineTo(cx-lpR*0.18, cy-lpR*0.10);
+          ctx.closePath(); ctx.fill();
+          ctx.strokeStyle = '#4a6a9a'; ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(cx, cy-lpR*0.38);
+          ctx.lineTo(cx+lpR*0.18, cy-lpR*0.10);
+          ctx.lineTo(cx+lpR*0.24, cy+lpR*0.22);
+          ctx.lineTo(cx-lpR*0.24, cy+lpR*0.22);
+          ctx.lineTo(cx-lpR*0.18, cy-lpR*0.10);
+          ctx.closePath(); ctx.stroke();
+          // Shuttle window
+          ctx.fillStyle = 'rgba(100,180,255,0.25)';
+          ctx.beginPath(); ctx.ellipse(cx, cy-lpR*0.10, lpR*0.10, lpR*0.07, 0, 0, Math.PI*2); ctx.fill();
+          // Thruster glow at bottom of shuttle
+          const thrGlow = ctx.createRadialGradient(cx, cy+lpR*0.22, 0, cx, cy+lpR*0.22, lpR*0.18);
+          thrGlow.addColorStop(0, 'rgba(100,180,255,0.30)');
+          thrGlow.addColorStop(1, 'rgba(60,120,220,0)');
+          ctx.fillStyle = thrGlow;
+          ctx.beginPath(); ctx.arc(cx, cy+lpR*0.22, lpR*0.18, 0, Math.PI*2); ctx.fill();
+          // Four landing legs
+          for (let leg = 0; leg < 4; leg++) {
+            const ang = leg*Math.PI/2 + Math.PI/4;
+            const lx2=cx+Math.cos(ang)*lpR*0.22, ly2=cy+lpR*0.22;
+            const lx3=cx+Math.cos(ang)*lpR*0.44, ly3=cy+lpR*0.40;
+            ctx.strokeStyle = '#4a5a7a'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(lx2, ly2); ctx.lineTo(lx3, ly3); ctx.stroke();
+            ctx.fillStyle = '#3a4a6a';
+            ctx.beginPath(); ctx.arc(lx3, ly3, 4, 0, Math.PI*2); ctx.fill();
+          }
+          // Control tower (left wall)
+          ctx.fillStyle = '#2a3050';
+          ctx.fillRect(x+8, y+h*0.15, 22, h*0.55);
+          ctx.strokeStyle = '#3a4070'; ctx.lineWidth = 1;
+          ctx.strokeRect(x+8, y+h*0.15, 22, h*0.55);
+          // Tower windows
+          ctx.fillStyle = 'rgba(100,180,255,0.20)';
+          for (let tw = 0; tw < 4; tw++) ctx.fillRect(x+12, y+h*0.20+tw*h*0.10, 14, 8);
+          // Blinking beacon on tower top
+          ctx.fillStyle = 'rgba(255,100,100,0.5)';
+          ctx.beginPath(); ctx.arc(x+19, y+h*0.12, 4, 0, Math.PI*2); ctx.fill();
           break;
         }
         case 'Dropship': {
@@ -5934,8 +6145,121 @@
           break;
         }
         case 'Decontamination': {
-          ctx.strokeStyle = '#4488aa'; ctx.lineWidth = 1;
-          for (let s = 0; s < 3; s++) { ctx.beginPath(); ctx.arc(cx, cy, 10+s*10, 0, Math.PI*2); ctx.stroke(); }
+          // UV decontamination hallway — blue-violet glow, sensor nodes, light strips
+          // Ambient UV glow fill
+          const dcGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.7);
+          dcGrad.addColorStop(0, 'rgba(80,120,255,0.18)');
+          dcGrad.addColorStop(1, 'rgba(40,0,120,0.04)');
+          ctx.fillStyle = dcGrad;
+          ctx.fillRect(x, y, w, h);
+          // UV light strips along walls — horizontal bars
+          const dcStrips = Math.max(2, Math.floor(h/55));
+          ctx.fillStyle = 'rgba(120,160,255,0.22)';
+          for (let i = 0; i < dcStrips; i++) {
+            const sy = y + 8 + i * (h / dcStrips);
+            ctx.fillRect(x+4, sy, w-8, 6);
+          }
+          // Sensor / emitter nodes — small circles along both walls
+          ctx.fillStyle = 'rgba(160,200,255,0.55)';
+          const dcNodes = Math.max(2, Math.floor(h/60));
+          for (let i = 0; i < dcNodes; i++) {
+            const ny = y + 20 + i * (h / dcNodes);
+            // Left node
+            ctx.beginPath(); ctx.arc(x+10, ny, 5, 0, Math.PI*2); ctx.fill();
+            // Right node
+            ctx.beginPath(); ctx.arc(x+w-10, ny, 5, 0, Math.PI*2); ctx.fill();
+          }
+          // Beam lines between left/right nodes
+          ctx.strokeStyle = 'rgba(100,160,255,0.12)'; ctx.lineWidth = 1;
+          for (let i = 0; i < dcNodes; i++) {
+            const ny = y + 20 + i * (h / dcNodes);
+            ctx.beginPath(); ctx.moveTo(x+15, ny); ctx.lineTo(x+w-15, ny); ctx.stroke();
+          }
+          // Central decon status panel
+          const dpW = Math.min(w-20, 48), dpH = 28;
+          ctx.fillStyle = 'rgba(20,40,80,0.7)';
+          ctx.fillRect(cx-dpW/2, cy-dpH/2, dpW, dpH);
+          ctx.strokeStyle = 'rgba(100,180,255,0.5)'; ctx.lineWidth = 1;
+          ctx.strokeRect(cx-dpW/2, cy-dpH/2, dpW, dpH);
+          // Status light — green = clear
+          ctx.fillStyle = 'rgba(0,255,100,0.8)';
+          ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI*2); ctx.fill();
+          break;
+        }
+        case 'Office': {
+          // Desks along top wall
+          const ofDeskH = 28, ofDeskW = Math.min(w*0.28, 90);
+          const ofDeskY = y + 14;
+          const ofDeskCount = Math.floor((w-20) / (ofDeskW+14));
+          for (let i = 0; i < ofDeskCount; i++) {
+            const dx = x + 10 + i*(ofDeskW+14);
+            // Desk surface
+            ctx.fillStyle = 'rgba(120,90,60,0.55)';
+            ctx.fillRect(dx, ofDeskY, ofDeskW, ofDeskH);
+            ctx.strokeStyle = 'rgba(180,140,90,0.4)'; ctx.lineWidth = 1;
+            ctx.strokeRect(dx, ofDeskY, ofDeskW, ofDeskH);
+            // Monitor
+            const mW = ofDeskW*0.42, mH = ofDeskH*0.75, mX = dx+ofDeskW*0.28, mY = ofDeskY-mH;
+            ctx.fillStyle = 'rgba(20,20,40,0.8)';
+            ctx.fillRect(mX, mY, mW, mH);
+            ctx.strokeStyle = 'rgba(60,120,200,0.5)'; ctx.lineWidth = 1;
+            ctx.strokeRect(mX, mY, mW, mH);
+            // Screen glow
+            ctx.fillStyle = 'rgba(40,100,200,0.25)';
+            ctx.fillRect(mX+2, mY+2, mW-4, mH-4);
+            // Screen scan lines
+            ctx.strokeStyle = 'rgba(80,160,255,0.15)'; ctx.lineWidth = 1;
+            for (let sl = 0; sl < 3; sl++) {
+              const sly = mY+4 + sl*((mH-6)/3);
+              ctx.beginPath(); ctx.moveTo(mX+2, sly); ctx.lineTo(mX+mW-2, sly); ctx.stroke();
+            }
+            // Monitor stand
+            ctx.fillStyle = 'rgba(80,80,100,0.5)';
+            ctx.fillRect(mX+mW*0.4, ofDeskY, mW*0.2, 4);
+          }
+          // Filing cabinets along bottom-right wall
+          const fcW = 30, fcH = Math.min(h*0.45, 55), fcY = y+h-fcH-6;
+          const fcCount = Math.min(3, Math.floor((w*0.45)/fcW+8));
+          for (let i = 0; i < fcCount; i++) {
+            const fcX = x+w-10-(fcCount-i)*(fcW+6);
+            ctx.fillStyle = 'rgba(100,110,130,0.5)';
+            ctx.fillRect(fcX, fcY, fcW, fcH);
+            ctx.strokeStyle = 'rgba(160,170,200,0.35)'; ctx.lineWidth = 1;
+            ctx.strokeRect(fcX, fcY, fcW, fcH);
+            // Drawer lines
+            const drawers = 3;
+            for (let d = 0; d < drawers; d++) {
+              const dy2 = fcY + d*(fcH/drawers);
+              ctx.strokeStyle = 'rgba(130,140,160,0.4)'; ctx.lineWidth = 1;
+              ctx.beginPath(); ctx.moveTo(fcX, dy2); ctx.lineTo(fcX+fcW, dy2); ctx.stroke();
+              // Handle
+              ctx.fillStyle = 'rgba(200,200,220,0.4)';
+              ctx.fillRect(fcX+fcW*0.3, dy2+fcH/drawers*0.4, fcW*0.4, 3);
+            }
+          }
+          // Process Data task terminal — left wall
+          const ptW = 38, ptH = 52, ptX = x+8, ptY = cy-ptH/2;
+          ctx.fillStyle = 'rgba(20,30,50,0.75)';
+          ctx.fillRect(ptX, ptY, ptW, ptH);
+          ctx.strokeStyle = 'rgba(80,160,255,0.5)'; ctx.lineWidth = 1;
+          ctx.strokeRect(ptX, ptY, ptW, ptH);
+          // Screen
+          ctx.fillStyle = 'rgba(0,200,100,0.2)';
+          ctx.fillRect(ptX+3, ptY+4, ptW-6, ptH*0.55);
+          // Blinking cursor dot
+          ctx.fillStyle = 'rgba(0,255,120,0.7)';
+          ctx.fillRect(ptX+5, ptY+6, 4, 4);
+          // Data bars
+          ctx.fillStyle = 'rgba(0,200,100,0.45)';
+          for (let b = 0; b < 3; b++) {
+            const bw = (ptW-10)*([0.8,0.5,0.9][b]);
+            ctx.fillRect(ptX+5, ptY+14+b*6, bw, 3);
+          }
+          // Keypad buttons below screen
+          ctx.fillStyle = 'rgba(60,80,120,0.5)';
+          for (let r = 0; r < 2; r++) for (let c = 0; c < 3; c++) {
+            ctx.fillRect(ptX+5+c*10, ptY+ptH*0.62+r*8, 8, 5);
+          }
           break;
         }
         case 'Lookout': {
