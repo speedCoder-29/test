@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mira HQ Map</title>
+  <style>
+    body { background: #000; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    canvas { border: 1px solid #fff; }
+  </style>
+</head>
+<body>
+  <canvas id="mapCanvas" width="2800" height="2000"></canvas>
+  <script>
+    const canvas = document.getElementById('mapCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Mira HQ data
+    const walls = [
+      // Border walls
+      { x: 0, y: 0, w: 2800, h: 16 },
+      { x: 0, y: 0, w: 16, h: 2000 },
+      { x: 2784, y: 0, w: 16, h: 2000 },
+      { x: 0, y: 1984, w: 2800, h: 16 },
+      // Launchpad
+      { x: 60, y: 500, w: 16, h: 420 },
+      { x: 60, y: 500, w: 360, h: 16 },
+      { x: 404, y: 500, w: 16, h: 160 },
+      { x: 404, y: 740, w: 16, h: 180 },
+      { x: 60, y: 904, w: 360, h: 16 },
+      // Communications
+      { x: 500, y: 200, w: 16, h: 150 },
+      { x: 500, y: 430, w: 16, h: 140 },
+      { x: 500, y: 200, w: 380, h: 16 },
+      { x: 864, y: 200, w: 16, h: 370 },
+      { x: 500, y: 554, w: 380, h: 16 },
+      // MedBay
+      { x: 500, y: 850, w: 16, h: 140 },
+      { x: 500, y: 1070, w: 16, h: 140 },
+      { x: 500, y: 850, w: 350, h: 16 },
+      { x: 834, y: 850, w: 16, h: 360 },
+      { x: 500, y: 1194, w: 350, h: 16 },
+      // Cafeteria
+      { x: 1100, y: 80, w: 16, h: 160 },
+      { x: 1100, y: 320, w: 16, h: 140 },
+      { x: 1100, y: 80, w: 650, h: 16 },
+      { x: 1734, y: 80, w: 16, h: 160 },
+      { x: 1734, y: 320, w: 16, h: 140 },
+      { x: 1100, y: 444, w: 260, h: 16 },
+      { x: 1470, y: 444, w: 280, h: 16 },
+      // Office
+      { x: 1100, y: 580, w: 16, h: 140 },
+      { x: 1100, y: 800, w: 16, h: 140 },
+      { x: 1100, y: 580, w: 420, h: 16 },
+      { x: 1504, y: 580, w: 16, h: 360 },
+      { x: 1100, y: 924, w: 420, h: 16 },
+      // Admin
+      { x: 1650, y: 450, w: 16, h: 140 },
+      { x: 1650, y: 670, w: 16, h: 140 },
+      { x: 1650, y: 450, w: 420, h: 16 },
+      { x: 2054, y: 450, w: 16, h: 360 },
+      { x: 1650, y: 794, w: 420, h: 16 },
+      // Greenhouse
+      { x: 2150, y: 220, w: 16, h: 160 },
+      { x: 2150, y: 460, w: 16, h: 180 },
+      { x: 2150, y: 220, w: 500, h: 16 },
+      { x: 2634, y: 220, w: 16, h: 420 },
+      { x: 2150, y: 624, w: 500, h: 16 },
+      // Balcony
+      { x: 2200, y: 60, w: 16, h: 60 },
+      { x: 2200, y: 60, w: 380, h: 16 },
+      { x: 2564, y: 60, w: 16, h: 120 },
+      { x: 2200, y: 164, w: 150, h: 16 },
+      { x: 2430, y: 164, w: 150, h: 16 },
+      // Locker Room
+      { x: 950, y: 1050, w: 16, h: 140 },
+      { x: 950, y: 1270, w: 16, h: 140 },
+      { x: 950, y: 1050, w: 380, h: 16 },
+      { x: 1314, y: 1050, w: 16, h: 360 },
+      { x: 950, y: 1394, w: 380, h: 16 },
+      // Decontamination
+      { x: 1050, y: 1480, w: 16, h: 200 },
+      { x: 1050, y: 1480, w: 260, h: 16 },
+      { x: 1294, y: 1480, w: 16, h: 200 },
+      { x: 1050, y: 1664, w: 260, h: 16 },
+      // Reactor
+      { x: 300, y: 1500, w: 16, h: 380 },
+      { x: 300, y: 1500, w: 400, h: 16 },
+      { x: 684, y: 1500, w: 16, h: 160 },
+      { x: 684, y: 1740, w: 16, h: 140 },
+      { x: 300, y: 1864, w: 400, h: 16 },
+      // Laboratory
+      { x: 1450, y: 1500, w: 16, h: 160 },
+      { x: 1450, y: 1740, w: 16, h: 160 },
+      { x: 1450, y: 1500, w: 600, h: 16 },
+      { x: 2034, y: 1500, w: 16, h: 400 },
+      { x: 1450, y: 1884, w: 600, h: 16 },
+    ];
+
+    const floors = [
+      { x: 76, y: 516, w: 328, h: 388 },
+      { x: 516, y: 216, w: 348, h: 338 },
+      { x: 516, y: 866, w: 318, h: 328 },
+      { x: 1116, y: 96, w: 618, h: 348 },
+      { x: 1116, y: 596, w: 388, h: 328 },
+      { x: 1666, y: 466, w: 388, h: 328 },
+      { x: 2166, y: 236, w: 468, h: 388 },
+      { x: 2216, y: 76, w: 348, h: 88 },
+      { x: 966, y: 1066, w: 348, h: 328 },
+      { x: 1066, y: 1496, w: 228, h: 168 },
+      { x: 316, y: 1516, w: 368, h: 348 },
+      { x: 1466, y: 1516, w: 568, h: 368 },
+      // Hallways
+      { x: 404, y: 660, w: 96, h: 80 },
+      { x: 500, y: 554, w: 80, h: 296 },
+      { x: 864, y: 370, w: 236, h: 80 },
+      { x: 864, y: 700, w: 236, h: 80 },
+      { x: 1504, y: 620, w: 146, h: 80 },
+      { x: 2054, y: 520, w: 96, h: 80 },
+      { x: 1734, y: 250, w: 416, h: 80 },
+      { x: 1100, y: 924, w: 80, h: 126 },
+      { x: 1100, y: 1394, w: 80, h: 86 },
+      { x: 700, y: 1194, w: 80, h: 306 },
+      { x: 684, y: 1660, w: 366, h: 80 },
+      { x: 1294, y: 1560, w: 156, h: 80 },
+      { x: 2350, y: 164, w: 80, h: 56 },
+      { x: 1360, y: 444, w: 110, h: 136 },
+    ];
+
+    // Draw background
+    ctx.fillStyle = '#162030';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw floors
+    ctx.fillStyle = 'rgba(100,200,255,0.04)';
+    floors.forEach(floor => {
+      ctx.fillRect(floor.x, floor.y, floor.w, floor.h);
+    });
+
+    // Draw walls
+    ctx.fillStyle = '#305060';
+    walls.forEach(wall => {
+      ctx.fillRect(wall.x, wall.y, wall.w, wall.h);
+    });
+
+    // Draw grid
+    ctx.strokeStyle = 'rgba(100,200,255,0.03)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x <= canvas.width; x += 50) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, canvas.height);
+      ctx.stroke();
+    }
+    for (let y = 0; y <= canvas.height; y += 50) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(canvas.width, y);
+      ctx.stroke();
+    }
+
+    // Label rooms
+    ctx.fillStyle = '#fff';
+    ctx.font = '20px Arial';
+    const rooms = [
+      { name: 'Launchpad', x: 230, y: 700 },
+      { name: 'Communications', x: 680, y: 370 },
+      { name: 'MedBay', x: 660, y: 1010 },
+      { name: 'Cafeteria', x: 1400, y: 250 },
+      { name: 'Office', x: 1300, y: 740 },
+      { name: 'Admin', x: 1850, y: 610 },
+      { name: 'Greenhouse', x: 2380, y: 410 },
+      { name: 'Balcony', x: 2380, y: 110 },
+      { name: 'Locker Room', x: 1130, y: 1210 },
+      { name: 'Decontamination', x: 1170, y: 1570 },
+      { name: 'Reactor', x: 490, y: 1680 },
+      { name: 'Laboratory', x: 1730, y: 1690 },
+    ];
+    rooms.forEach(room => {
+      ctx.fillText(room.name, room.x, room.y);
+    });
+  </script>
+</body>
+</html>

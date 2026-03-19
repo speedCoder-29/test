@@ -957,186 +957,269 @@
         name: 'MIRA HQ', icon: '\u{1F3E2}', desc: 'Sky headquarters',
         width: 2800, height: 2000,
         bgColor: '#162030', wallColor: '#305060', floorColor: 'rgba(100,200,255,0.04)', gridColor: 'rgba(100,200,255,0.03)',
-        spawnX: 200, spawnY: 700,
-        emergencyBtn: { x: 1400, y: 250, radius: 22 },
-        sabotageFixLocations: { lights: { x: 550, y: 1650 }, o2: { x: 2200, y: 500 } },
+        spawnX: 310, spawnY: 1290,
+        emergencyBtn: { x: 2150, y: 1700, radius: 22 },
+        sabotageFixLocations: { lights: { x: 420, y: 530 }, o2: { x: 1460, y: 170 } },
         walls: (function() {
           const w = [];
           w.push(...borderWalls(2800, 2000));
-          // === Launchpad (far left, large outdoor platform) ===
-          w.push({ x: 60, y: 500, w: 16, h: 420 }); // left
-          w.push({ x: 60, y: 500, w: 360, h: 16 }); // top
-          w.push({ x: 404, y: 500, w: 16, h: 160 }); // right-top
-          w.push({ x: 404, y: 740, w: 16, h: 180 }); // right-bottom
-          w.push({ x: 60, y: 904, w: 360, h: 16 }); // bottom
-          // === Communications (upper-left, medium) ===
-          w.push({ x: 500, y: 200, w: 16, h: 150 }); // left-top
-          w.push({ x: 500, y: 430, w: 16, h: 140 }); // left-bottom
-          w.push({ x: 500, y: 200, w: 380, h: 16 }); // top
-          w.push({ x: 864, y: 200, w: 16, h: 370 }); // right
-          w.push({ x: 500, y: 554, w: 380, h: 16 }); // bottom
-          // === MedBay (left-center, below hallway) ===
-          w.push({ x: 500, y: 850, w: 16, h: 140 }); // left-top
-          w.push({ x: 500, y: 1070, w: 16, h: 140 }); // left-bottom
-          w.push({ x: 500, y: 850, w: 350, h: 16 }); // top
-          w.push({ x: 834, y: 850, w: 16, h: 360 }); // right
-          w.push({ x: 500, y: 1194, w: 350, h: 16 }); // bottom
-          // === Cafeteria (top-center, LARGE, emergency button) ===
-          w.push({ x: 1100, y: 80, w: 16, h: 160 }); // left-top
-          w.push({ x: 1100, y: 320, w: 16, h: 140 }); // left-bottom
-          w.push({ x: 1100, y: 80, w: 650, h: 16 }); // top
-          w.push({ x: 1734, y: 80, w: 16, h: 160 }); // right-top
-          w.push({ x: 1734, y: 320, w: 16, h: 140 }); // right-bottom
-          w.push({ x: 1100, y: 444, w: 260, h: 16 }); // bottom-left
-          w.push({ x: 1470, y: 444, w: 280, h: 16 }); // bottom-right
-          // === Office (center, medium) ===
-          w.push({ x: 1100, y: 580, w: 16, h: 140 }); // left-top
-          w.push({ x: 1100, y: 800, w: 16, h: 140 }); // left-bottom
-          w.push({ x: 1100, y: 580, w: 420, h: 16 }); // top
-          w.push({ x: 1504, y: 580, w: 16, h: 360 }); // right
-          w.push({ x: 1100, y: 924, w: 420, h: 16 }); // bottom
-          // === Admin (right of office, medium) ===
-          w.push({ x: 1650, y: 450, w: 16, h: 140 }); // left-top
-          w.push({ x: 1650, y: 670, w: 16, h: 140 }); // left-bottom
-          w.push({ x: 1650, y: 450, w: 420, h: 16 }); // top
-          w.push({ x: 2054, y: 450, w: 16, h: 360 }); // right
-          w.push({ x: 1650, y: 794, w: 420, h: 16 }); // bottom
-          // === Greenhouse (far right, large) ===
-          w.push({ x: 2150, y: 220, w: 16, h: 160 }); // left-top
-          w.push({ x: 2150, y: 460, w: 16, h: 180 }); // left-bottom
-          w.push({ x: 2150, y: 220, w: 500, h: 16 }); // top
-          w.push({ x: 2634, y: 220, w: 16, h: 420 }); // right
-          w.push({ x: 2150, y: 624, w: 500, h: 16 }); // bottom
-          // === Balcony (top-right, smaller overlook) ===
-          w.push({ x: 2200, y: 60, w: 16, h: 60 }); // left
-          w.push({ x: 2200, y: 60, w: 380, h: 16 }); // top
-          w.push({ x: 2564, y: 60, w: 16, h: 120 }); // right
-          w.push({ x: 2200, y: 164, w: 150, h: 16 }); // bottom-left
-          w.push({ x: 2430, y: 164, w: 150, h: 16 }); // bottom-right
-          // === Locker Room (center-bottom, medium) ===
-          w.push({ x: 950, y: 1050, w: 16, h: 140 }); // left-top
-          w.push({ x: 950, y: 1270, w: 16, h: 140 }); // left-bottom
-          w.push({ x: 950, y: 1050, w: 380, h: 16 }); // top
-          w.push({ x: 1314, y: 1050, w: 16, h: 360 }); // right
-          w.push({ x: 950, y: 1394, w: 380, h: 16 }); // bottom
-          // === Decontamination (narrow corridor) ===
-          w.push({ x: 1050, y: 1480, w: 16, h: 200 }); // left
-          w.push({ x: 1050, y: 1480, w: 260, h: 16 }); // top
-          w.push({ x: 1294, y: 1480, w: 16, h: 200 }); // right
-          w.push({ x: 1050, y: 1664, w: 260, h: 16 }); // bottom
-          // === Reactor (bottom-left, large) ===
-          w.push({ x: 300, y: 1500, w: 16, h: 380 }); // left
-          w.push({ x: 300, y: 1500, w: 400, h: 16 }); // top
-          w.push({ x: 684, y: 1500, w: 16, h: 160 }); // right-top
-          w.push({ x: 684, y: 1740, w: 16, h: 140 }); // right-bottom
-          w.push({ x: 300, y: 1864, w: 400, h: 16 }); // bottom
-          // === Laboratory (bottom-right, LARGE) ===
-          w.push({ x: 1450, y: 1500, w: 16, h: 160 }); // left-top
-          w.push({ x: 1450, y: 1740, w: 16, h: 160 }); // left-bottom
-          w.push({ x: 1450, y: 1500, w: 600, h: 16 }); // top
-          w.push({ x: 2034, y: 1500, w: 16, h: 400 }); // right
-          w.push({ x: 1450, y: 1884, w: 600, h: 16 }); // bottom
+          // Reference image layout:
+          //  Launchpad (far-left large) --long corridor--> Y-junction
+          //  Y left arm: Reactor (upper-left)
+          //  Y right arm: Laboratory (center)
+          //  Below Y: Decon (narrow) → Locker Room
+          //  LP corridor meets LR at its left wall
+          //  LR right → Comms → Storage → Cafeteria (large, right side)
+          //  Below Comms → MedBay → Balcony
+          //  Above Lab: GH (top-center) ↔ Admin (top-right)
+          //  Lab right → Office (right-center, below Admin)
+
+          // === Launchpad x:60-560, y:860-1720 (Balcony x:60-560, y:1720-1820 below) ===
+          w.push({ x: 60,  y: 860,  w: 16,  h: 860 }); // left (Launchpad; Balcony left continues)
+          w.push({ x: 60,  y: 860,  w: 500, h: 16  }); // top
+          w.push({ x: 544, y: 860,  w: 16,  h: 300 }); // right-top   (gap y:1160-1240 for LP→LR)
+          w.push({ x: 544, y: 1240, w: 16,  h: 480 }); // right-bottom
+          w.push({ x: 60,  y: 1704, w: 500, h: 16  }); // bottom
+
+          // === Reactor x:200-640, y:320-740 ===
+          w.push({ x: 200,  y: 320, w: 16,  h: 420 }); // left
+          w.push({ x: 200,  y: 320, w: 440, h: 16  }); // top
+          w.push({ x: 624,  y: 320, w: 16,  h: 220 }); // right-top   (gap y:540-620 for Y-junc horiz)
+          w.push({ x: 624,  y: 620, w: 16,  h: 104 }); // right-bottom (y:620-724)
+          w.push({ x: 200,  y: 724, w: 440, h: 16  }); // bottom
+
+          // === Laboratory x:1200-1680, y:320-740 ===
+          w.push({ x: 1200, y: 320, w: 16,  h: 220 }); // left-top    (gap y:540-620 for Y-junc horiz)
+          w.push({ x: 1200, y: 620, w: 16,  h: 120 }); // left-bottom
+          w.push({ x: 1200, y: 320, w: 120, h: 16  }); // top-left    (gap x:1320-1400 for GH→Lab)
+          w.push({ x: 1400, y: 320, w: 280, h: 16  }); // top-right
+          w.push({ x: 1664, y: 320, w: 16,  h: 200 }); // right-top   (gap y:520-600 for Lab→Office)
+          w.push({ x: 1664, y: 600, w: 16,  h: 140 }); // right-bottom
+          w.push({ x: 1200, y: 724, w: 480, h: 16  }); // bottom
+
+          // === Greenhouse x:1200-1720, y:60-280 ===
+          w.push({ x: 1200, y: 60,  w: 16,  h: 220 }); // left
+          w.push({ x: 1200, y: 60,  w: 520, h: 16  }); // top
+          w.push({ x: 1704, y: 60,  w: 16,  h: 20  }); // right-top   (gap y:80-160 for GH→Admin)
+          w.push({ x: 1704, y: 160, w: 16,  h: 120 }); // right-bottom
+          w.push({ x: 1200, y: 264, w: 120, h: 16  }); // bottom-left  (gap x:1320-1400 for GH→Lab)
+          w.push({ x: 1400, y: 264, w: 320, h: 16  }); // bottom-right
+
+          // === Admin x:1780-2180, y:60-320 ===
+          w.push({ x: 1780, y: 60,  w: 16,  h: 20  }); // left-top    (gap y:80-160 for GH→Admin)
+          w.push({ x: 1780, y: 160, w: 16,  h: 160 }); // left-bottom
+          w.push({ x: 1780, y: 60,  w: 400, h: 16  }); // top
+          w.push({ x: 2164, y: 60,  w: 16,  h: 260 }); // right
+          w.push({ x: 1780, y: 304, w: 140, h: 16  }); // bottom-left  (gap x:1920-2000 for Admin→Office)
+          w.push({ x: 2000, y: 304, w: 180, h: 16  }); // bottom-right
+
+          // === Office x:1740-2120, y:360-720 ===
+          w.push({ x: 1740, y: 360, w: 16,  h: 160 }); // left-top    (gap y:520-600 for Lab→Office)
+          w.push({ x: 1740, y: 600, w: 16,  h: 120 }); // left-bottom
+          w.push({ x: 1740, y: 360, w: 180, h: 16  }); // top-left    (gap x:1920-2000 for Admin→Office)
+          w.push({ x: 2000, y: 360, w: 120, h: 16  }); // top-right
+          w.push({ x: 2104, y: 360, w: 16,  h: 360 }); // right
+          w.push({ x: 1740, y: 704, w: 380, h: 16  }); // bottom
+
+          // === Decontamination x:820-1060, y:800-1000 ===
+          w.push({ x: 820,  y: 800, w: 16,  h: 200 }); // left
+          w.push({ x: 820,  y: 800, w: 60,  h: 16  }); // top-left    (gap x:880-960 for Y-junc down)
+          w.push({ x: 960,  y: 800, w: 100, h: 16  }); // top-right
+          w.push({ x: 1044, y: 800, w: 16,  h: 200 }); // right
+          w.push({ x: 820,  y: 984, w: 60,  h: 16  }); // bottom-left  (gap x:880-960 for Decon→LR)
+          w.push({ x: 960,  y: 984, w: 100, h: 16  }); // bottom-right
+
+          // === Locker Room x:600-1140, y:1040-1400 ===
+          w.push({ x: 600,  y: 1040, w: 16,  h: 120 }); // left-top   (gap y:1160-1240 for LP→LR)
+          w.push({ x: 600,  y: 1240, w: 16,  h: 160 }); // left-bottom
+          w.push({ x: 600,  y: 1040, w: 280, h: 16  }); // top-left   (gap x:880-960 for Decon→LR)
+          w.push({ x: 960,  y: 1040, w: 180, h: 16  }); // top-right
+          w.push({ x: 1124, y: 1040, w: 16,  h: 140 }); // right-top  (gap y:1180-1260 for LR→Comms)
+          w.push({ x: 1124, y: 1260, w: 16,  h: 140 }); // right-bottom
+          w.push({ x: 600,  y: 1384, w: 540, h: 16  }); // bottom
+
+          // === Communications x:1440-1820, y:1040-1400 ===
+          w.push({ x: 1440, y: 1040, w: 16,  h: 140 }); // left-top   (gap y:1180-1260 for LR→Comms)
+          w.push({ x: 1440, y: 1260, w: 16,  h: 140 }); // left-bottom
+          w.push({ x: 1440, y: 1040, w: 380, h: 16  }); // top
+          w.push({ x: 1804, y: 1040, w: 16,  h: 100 }); // right-top  (gap y:1140-1220 for Comms→Storage)
+          w.push({ x: 1804, y: 1220, w: 16,  h: 180 }); // right-bottom
+          w.push({ x: 1440, y: 1384, w: 140, h: 16  }); // bottom-left (gap x:1580-1660 for Comms→MedBay)
+          w.push({ x: 1660, y: 1384, w: 160, h: 16  }); // bottom-right
+
+          // === Storage x:1880-2240, y:1040-1400 ===
+          w.push({ x: 1880, y: 1040, w: 16,  h: 100 }); // left-top   (gap y:1140-1220 for Comms→Storage)
+          w.push({ x: 1880, y: 1220, w: 16,  h: 180 }); // left-bottom
+          w.push({ x: 1880, y: 1040, w: 360, h: 16  }); // top
+          w.push({ x: 2224, y: 1040, w: 16,  h: 360 }); // right
+          w.push({ x: 1880, y: 1384, w: 80,  h: 16  }); // bottom-left (gap x:1960-2040 for Storage→Cafe)
+          w.push({ x: 2040, y: 1384, w: 200, h: 16  }); // bottom-right
+
+          // === Cafeteria x:1840-2460, y:1460-1940 ===
+          w.push({ x: 1840, y: 1460, w: 16,  h: 160 }); // left-top   (gap y:1620-1700 for MedBay→Cafe)
+          w.push({ x: 1840, y: 1700, w: 16,  h: 240 }); // left-bottom
+          w.push({ x: 1840, y: 1460, w: 120, h: 16  }); // top-left   (gap x:1960-2040 for Storage→Cafe)
+          w.push({ x: 2040, y: 1460, w: 420, h: 16  }); // top-right
+          w.push({ x: 2444, y: 1460, w: 16,  h: 480 }); // right
+          w.push({ x: 1840, y: 1924, w: 620, h: 16  }); // bottom
+
+          // === MedBay x:1480-1820, y:1460-1800 ===
+          w.push({ x: 1480, y: 1460, w: 16,  h: 340 }); // left
+          w.push({ x: 1480, y: 1460, w: 100, h: 16  }); // top-left   (gap x:1580-1660 for Comms→MedBay)
+          w.push({ x: 1660, y: 1460, w: 160, h: 16  }); // top-right
+          w.push({ x: 1804, y: 1460, w: 16,  h: 160 }); // right-top  (gap y:1620-1700 for MedBay→Cafe)
+          w.push({ x: 1804, y: 1700, w: 16,  h: 100 }); // right-bottom
+          w.push({ x: 1480, y: 1784, w: 220, h: 16  }); // bottom-left  (gap x:1700-1780 for Balcony)
+          w.push({ x: 1780, y: 1784, w: 40,  h: 16  }); // bottom-right
+
+          // === Balcony x:1620-2020, y:1860-1960 (below MedBay) ===
+          w.push({ x: 1620, y: 1860, w: 16,  h: 100 }); // left
+          w.push({ x: 1620, y: 1860, w: 80,  h: 16  }); // top-left  (gap x:1700-1780 for MedBay→Balcony)
+          w.push({ x: 1780, y: 1860, w: 240, h: 16  }); // top-right
+          w.push({ x: 2004, y: 1860, w: 16,  h: 100 }); // right
+          w.push({ x: 1620, y: 1944, w: 400, h: 16  }); // bottom
+
           return w;
         })(),
         rooms: [
-          { name: 'Launchpad', x: 230, y: 700 }, { name: 'Communications', x: 680, y: 370 },
-          { name: 'MedBay', x: 660, y: 1010 }, { name: 'Cafeteria', x: 1400, y: 250 },
-          { name: 'Office', x: 1300, y: 740 }, { name: 'Admin', x: 1850, y: 610 },
-          { name: 'Greenhouse', x: 2380, y: 410 }, { name: 'Balcony', x: 2380, y: 110 },
-          { name: 'Locker Room', x: 1130, y: 1210 }, { name: 'Decontamination', x: 1170, y: 1570 },
-          { name: 'Reactor', x: 490, y: 1680 }, { name: 'Laboratory', x: 1730, y: 1690 },
+          { name: 'Launchpad',        x: 310,  y: 1290 },
+          { name: 'Reactor',          x: 420,  y: 530  },
+          { name: 'Laboratory',       x: 1440, y: 530  },
+          { name: 'Greenhouse',       x: 1460, y: 170  },
+          { name: 'Admin',            x: 1980, y: 190  },
+          { name: 'Office',           x: 1930, y: 540  },
+          { name: 'Decontamination',  x: 940,  y: 900  },
+          { name: 'Locker Room',      x: 870,  y: 1220 },
+          { name: 'Communications',   x: 1630, y: 1220 },
+          { name: 'Storage',          x: 2060, y: 1220 },
+          { name: 'Cafeteria',        x: 2150, y: 1700 },
+          { name: 'MedBay',           x: 1650, y: 1630 },
+          { name: 'Balcony',          x: 1820, y: 1910 },
         ],
         floors: [
-          { x: 76, y: 516, w: 328, h: 388 },     // Launchpad (larger)
-          { x: 516, y: 216, w: 348, h: 338 },     // Communications
-          { x: 516, y: 866, w: 318, h: 328 },     // MedBay
-          { x: 1116, y: 96, w: 618, h: 348 },     // Cafeteria (LARGE)
-          { x: 1116, y: 596, w: 388, h: 328 },    // Office
-          { x: 1666, y: 466, w: 388, h: 328 },    // Admin
-          { x: 2166, y: 236, w: 468, h: 388 },    // Greenhouse (larger)
-          { x: 2216, y: 76, w: 348, h: 88 },      // Balcony
-          { x: 966, y: 1066, w: 348, h: 328 },    // Locker Room
-          { x: 1066, y: 1496, w: 228, h: 168 },   // Decontamination
-          { x: 316, y: 1516, w: 368, h: 348 },    // Reactor (larger)
-          { x: 1466, y: 1516, w: 568, h: 368 },   // Laboratory (LARGE)
-          // Y-shaped hallway system
-          { x: 404, y: 660, w: 96, h: 80 },       // Launchpad->hallway
-          { x: 500, y: 554, w: 80, h: 296 },      // Comms<->MedBay vertical
-          { x: 864, y: 370, w: 236, h: 80 },      // Comms->Cafeteria
-          { x: 864, y: 700, w: 236, h: 80 },      // hallway->Office
-          { x: 1504, y: 620, w: 146, h: 80 },     // Office->Admin
-          { x: 2054, y: 520, w: 96, h: 80 },      // Admin->Greenhouse
-          { x: 1734, y: 250, w: 416, h: 80 },     // Cafeteria->Greenhouse
-          { x: 1100, y: 924, w: 80, h: 126 },     // Office->Locker Room
-          { x: 1100, y: 1394, w: 80, h: 86 },     // Locker->Decon
-          { x: 700, y: 1194, w: 80, h: 306 },     // MedBay->Reactor area
-          { x: 684, y: 1660, w: 366, h: 80 },     // Reactor corridor
-          { x: 1294, y: 1560, w: 156, h: 80 },    // Decon->Lab
-          { x: 2350, y: 164, w: 80, h: 56 },      // Balcony->Greenhouse
-          { x: 1360, y: 444, w: 110, h: 136 },    // Cafeteria->Office connector
+          { x: 76,   y: 876,  w: 468, h: 828 }, // Launchpad
+          { x: 216,  y: 336,  w: 408, h: 388 }, // Reactor
+          { x: 1216, y: 336,  w: 448, h: 388 }, // Laboratory
+          { x: 1216, y: 76,   w: 488, h: 188 }, // Greenhouse
+          { x: 1756, y: 376,  w: 348, h: 328 }, // Office
+          { x: 1796, y: 76,   w: 368, h: 228 }, // Admin
+          { x: 836,  y: 816,  w: 208, h: 168 }, // Decontamination
+          { x: 616,  y: 1056, w: 508, h: 328 }, // Locker Room
+          { x: 1456, y: 1056, w: 348, h: 328 }, // Communications
+          { x: 1896, y: 1056, w: 328, h: 328 }, // Storage
+          { x: 1856, y: 1476, w: 588, h: 448 }, // Cafeteria
+          { x: 1496, y: 1476, w: 308, h: 308 }, // MedBay
+          { x: 1636, y: 1876, w: 368, h: 68  }, // Balcony (below MedBay)
+          // Corridors (each tile spans from one room floor edge to the other, touching both)
+          { x: 624,  y: 540,  w: 592, h: 80  }, // Y-junction horiz (Reactor↔Lab): x:624-1216
+          { x: 880,  y: 620,  w: 80,  h: 196 }, // Y-junction down arm: y:620-816
+          { x: 1320, y: 264,  w: 80,  h: 72  }, // Greenhouse↔Lab gap: y:264-336
+          { x: 1704, y: 80,   w: 92,  h: 80  }, // Greenhouse→Admin corridor: x:1704-1796
+          { x: 1920, y: 304,  w: 80,  h: 72  }, // Admin→Office corridor: y:304-376
+          { x: 1664, y: 520,  w: 92,  h: 80  }, // Lab→Office corridor: x:1664-1756
+          { x: 880,  y: 984,  w: 80,  h: 72  }, // Decon→Locker Room: y:984-1056
+          { x: 544,  y: 1160, w: 72,  h: 80  }, // Launchpad→Locker Room: x:544-616
+          { x: 1124, y: 1180, w: 332, h: 80  }, // Locker Room→Communications: x:1124-1456
+          { x: 1804, y: 1140, w: 92,  h: 80  }, // Communications→Storage: x:1804-1896
+          { x: 1580, y: 1384, w: 80,  h: 92  }, // Communications→MedBay: y:1384-1476
+          { x: 1960, y: 1384, w: 80,  h: 92  }, // Storage→Cafeteria: y:1384-1476
+          { x: 1804, y: 1620, w: 52,  h: 80  }, // MedBay→Cafeteria: x:1804-1856
+          { x: 1700, y: 1784, w: 80,  h: 92  }, // MedBay→Balcony: y:1784-1876
         ],
         tasks: [
-          { x: 200, y: 720, name: 'Run Diagnostics', room: 'Launchpad' },
-          { x: 1400, y: 270, name: 'Buy Beverage', room: 'Cafeteria' },
-          { x: 660, y: 1030, name: 'Submit Scan', room: 'MedBay' },
-          { x: 680, y: 390, name: 'Fix Wiring', room: 'Communications' },
-          { x: 1300, y: 760, name: 'Process Data', room: 'Office' },
-          { x: 1850, y: 630, name: 'Swipe Card', room: 'Admin' },
-          { x: 2380, y: 430, name: 'Water Plants', room: 'Greenhouse' },
-          { x: 1130, y: 1230, name: 'Empty Garbage', room: 'Locker Room' },
-          { x: 490, y: 1700, name: 'Start Reactor', room: 'Reactor' },
-          { x: 1730, y: 1710, name: 'Assemble Artifact', room: 'Laboratory' },
+          { x: 310,  y: 1290, name: 'Run Diagnostics',  room: 'Launchpad'      },
+          { x: 420,  y: 530,  name: 'Start Reactor',    room: 'Reactor'        },
+          { x: 1440, y: 530,  name: 'Assemble Artifact',room: 'Laboratory'     },
+          { x: 1460, y: 170,  name: 'Water Plants',     room: 'Greenhouse'     },
+          { x: 1930, y: 540,  name: 'Process Data',     room: 'Office'         },
+          { x: 1980, y: 190,  name: 'Swipe Card',       room: 'Admin'          },
+          { x: 940,  y: 900,  name: 'Clean Filter',     room: 'Decontamination'},
+          { x: 870,  y: 1220, name: 'Empty Garbage',    room: 'Locker Room'    },
+          { x: 1630, y: 1220, name: 'Fix Wiring',       room: 'Communications' },
+          { x: 2060, y: 1220, name: 'Sort Samples',     room: 'Storage'        },
+          { x: 2150, y: 1700, name: 'Buy Beverage',     room: 'Cafeteria'      },
+          { x: 1650, y: 1630, name: 'Submit Scan',      room: 'MedBay'         },
         ],
         vents: [
-          // All vents connected in one network (MIRA unique feature)
-          { x: 660, y: 1100, partner: 1 },   // MedBay
-          { x: 1130, y: 1300, partner: 2 },   // Locker Room
-          { x: 200, y: 800, partner: 3 },     // Launchpad
-          { x: 1300, y: 830, partner: 4 },    // Office
-          { x: 1850, y: 700, partner: 5 },    // Admin
-          { x: 2380, y: 530, partner: 6 },    // Greenhouse
-          { x: 1730, y: 1780, partner: 7 },   // Laboratory
-          { x: 490, y: 1770, partner: 0 },    // Reactor
+          { x: 310,  y: 1320, partner: 1  }, // 0  Launchpad
+          { x: 420,  y: 570,  partner: 2  }, // 1  Reactor
+          { x: 1440, y: 570,  partner: 3  }, // 2  Laboratory
+          { x: 1460, y: 200,  partner: 4  }, // 3  Greenhouse
+          { x: 1930, y: 570,  partner: 5  }, // 4  Office
+          { x: 1980, y: 220,  partner: 6  }, // 5  Admin
+          { x: 940,  y: 940,  partner: 7  }, // 6  Decontamination
+          { x: 870,  y: 1260, partner: 8  }, // 7  Locker Room
+          { x: 1630, y: 1260, partner: 9  }, // 8  Communications
+          { x: 2060, y: 1260, partner: 10 }, // 9  Storage
+          { x: 2150, y: 1740, partner: 11 }, // 10 Cafeteria
+          { x: 1650, y: 1670, partner: 0  }, // 11 MedBay
         ],
         doors: [
-          { x: 404, y: 660, w: 16, h: 80, room: 'Launchpad', dir: 'v' },
-          { x: 500, y: 350, w: 16, h: 80, room: 'Communications', dir: 'v' },
-          { x: 500, y: 990, w: 16, h: 80, room: 'MedBay', dir: 'v' },
-          { x: 1100, y: 240, w: 16, h: 80, room: 'Cafeteria', dir: 'v' },
-          { x: 1734, y: 240, w: 16, h: 80, room: 'Cafeteria', dir: 'v' },
-          { x: 1360, y: 444, w: 110, h: 16, room: 'Cafeteria', dir: 'h' },
-          { x: 1100, y: 720, w: 16, h: 80, room: 'Office', dir: 'v' },
-          { x: 1650, y: 590, w: 16, h: 80, room: 'Admin', dir: 'v' },
-          { x: 2150, y: 380, w: 16, h: 80, room: 'Greenhouse', dir: 'v' },
-          { x: 950, y: 1190, w: 16, h: 80, room: 'Locker Room', dir: 'v' },
-          { x: 684, y: 1660, w: 16, h: 80, room: 'Reactor', dir: 'v' },
-          { x: 1450, y: 1660, w: 16, h: 80, room: 'Laboratory', dir: 'v' },
+          { x: 544,  y: 1160, w: 16, h: 80,  room: 'Launchpad',       dir: 'v' },
+          { x: 624,  y: 540,  w: 16, h: 80,  room: 'Reactor',         dir: 'v' },
+          { x: 1200, y: 540,  w: 16, h: 80,  room: 'Laboratory',      dir: 'v' },
+          { x: 1320, y: 264,  w: 80, h: 16,  room: 'Greenhouse',      dir: 'h' },
+          { x: 1704, y: 80,   w: 16, h: 80,  room: 'Greenhouse',      dir: 'v' },
+          { x: 1780, y: 80,   w: 16, h: 80,  room: 'Admin',           dir: 'v' },
+          { x: 1920, y: 304,  w: 80, h: 16,  room: 'Admin',           dir: 'h' },
+          { x: 1740, y: 520,  w: 16, h: 80,  room: 'Office',          dir: 'v' },
+          { x: 880,  y: 984,  w: 80, h: 16,  room: 'Decontamination', dir: 'h' },
+          { x: 880,  y: 1040, w: 80, h: 16,  room: 'Locker Room',     dir: 'h' },
+          { x: 600,  y: 1160, w: 16, h: 80,  room: 'Locker Room',     dir: 'v' },
+          { x: 1124, y: 1180, w: 16, h: 80,  room: 'Locker Room',     dir: 'v' },
+          { x: 1440, y: 1180, w: 16, h: 80,  room: 'Communications',  dir: 'v' },
+          { x: 1804, y: 1140, w: 16, h: 80,  room: 'Communications',  dir: 'v' },
+          { x: 1580, y: 1384, w: 80, h: 16,  room: 'Communications',  dir: 'h' },
+          { x: 1880, y: 1140, w: 16, h: 80,  room: 'Storage',         dir: 'v' },
+          { x: 1960, y: 1384, w: 80, h: 16,  room: 'Storage',         dir: 'h' },
+          { x: 1840, y: 1620, w: 16, h: 80,  room: 'Cafeteria',       dir: 'v' },
+          { x: 1580, y: 1460, w: 80, h: 16,  room: 'MedBay',          dir: 'h' },
+          { x: 1804, y: 1620, w: 16, h: 80,  room: 'MedBay',          dir: 'v' },
+          { x: 1700, y: 1860, w: 80, h: 16,  room: 'Balcony',         dir: 'h' },
         ],
         waypoints: [
-          { x: 200, y: 700, room: 'Launchpad' },      // 0
-          { x: 680, y: 370, room: 'Communications' },  // 1
-          { x: 660, y: 1010, room: 'MedBay' },         // 2
-          { x: 1400, y: 250, room: 'Cafeteria' },      // 3
-          { x: 1300, y: 740, room: 'Office' },          // 4
-          { x: 1850, y: 610, room: 'Admin' },           // 5
-          { x: 2380, y: 410, room: 'Greenhouse' },      // 6
-          { x: 2380, y: 110, room: 'Balcony' },         // 7
-          { x: 1130, y: 1210, room: 'Locker Room' },    // 8
-          { x: 1170, y: 1570, room: 'Decontamination' },// 9
-          { x: 490, y: 1680, room: 'Reactor' },         // 10
-          { x: 1730, y: 1690, room: 'Laboratory' },     // 11
-          { x: 460, y: 700, room: 'Hallway' },          // 12
-          { x: 980, y: 410, room: 'Hallway' },          // 13
-          { x: 980, y: 740, room: 'Hallway' },          // 14
-          { x: 1580, y: 340, room: 'Hallway' },         // 15
-          { x: 700, y: 1400, room: 'Hallway' },         // 16
-          { x: 2150, y: 300, room: 'Hallway' },         // 17
-          { x: 1400, y: 520, room: 'Hallway' },         // 18
+          { x: 310,  y: 1290, room: 'Launchpad'       }, // 0
+          { x: 420,  y: 530,  room: 'Reactor'         }, // 1
+          { x: 1440, y: 530,  room: 'Laboratory'      }, // 2
+          { x: 1460, y: 170,  room: 'Greenhouse'      }, // 3
+          { x: 1930, y: 540,  room: 'Office'          }, // 4
+          { x: 1980, y: 190,  room: 'Admin'           }, // 5
+          { x: 940,  y: 900,  room: 'Decontamination' }, // 6
+          { x: 870,  y: 1220, room: 'Locker Room'     }, // 7
+          { x: 1630, y: 1220, room: 'Communications'  }, // 8
+          { x: 2060, y: 1220, room: 'Storage'         }, // 9
+          { x: 2150, y: 1700, room: 'Cafeteria'       }, // 10
+          { x: 1650, y: 1630, room: 'MedBay'          }, // 11
+          { x: 1820, y: 1910, room: 'Balcony'         }, // 12
+          { x: 920,  y: 580,  room: 'Hallway'         }, // 13  Y-junction center
+          { x: 920,  y: 718,  room: 'Hallway'         }, // 14  Y-junc down arm mid
+          { x: 580,  y: 1200, room: 'Hallway'         }, // 15  LP→LR corridor mid
+          { x: 1360, y: 300,  room: 'Hallway'         }, // 16  GH↔Lab gap
+          { x: 1760, y: 120,  room: 'Hallway'         }, // 17  GH→Admin mid
+          { x: 1960, y: 340,  room: 'Hallway'         }, // 18  Admin→Office mid
+          { x: 1710, y: 560,  room: 'Hallway'         }, // 19  Lab→Office mid
+          { x: 1290, y: 1220, room: 'Hallway'         }, // 20  LR→Comms mid
+          { x: 1850, y: 1180, room: 'Hallway'         }, // 21  Comms→Storage mid
+          { x: 1620, y: 1430, room: 'Hallway'         }, // 22  Comms→MedBay mid
+          { x: 2000, y: 1430, room: 'Hallway'         }, // 23  Storage→Cafe mid
+          { x: 1830, y: 1660, room: 'Hallway'         }, // 24  MedBay→Cafe mid
+          { x: 1740, y: 1830, room: 'Hallway'         }, // 25  MedBay→Balcony mid
         ],
         waypointEdges: [
-          [0,12],[12,1],[1,13],[13,3],[3,15],[15,5],[5,6],[6,17],[17,7],
-          [1,2],[1,14],[14,4],[4,5],[4,8],[8,9],[9,11],[2,16],[16,10],[10,9],
-          [3,18],[18,4],
+          [1,13],[13,2],              // Reactor ↔ Y-junction ↔ Lab
+          [13,14],[14,6],             // Y-junction down → Decon
+          [6,7],                      // Decon → Locker Room
+          [7,15],[15,0],              // LR → Launchpad
+          [7,20],[20,8],              // LR → Communications
+          [8,21],[21,9],              // Comms → Storage
+          [8,22],[22,11],             // Comms → MedBay
+          [9,23],[23,10],             // Storage → Cafeteria
+          [11,24],[24,10],            // MedBay → Cafeteria
+          [11,25],[25,12],            // MedBay → Balcony
+          [2,16],[16,3],              // Lab → Greenhouse (gap)
+          [3,17],[17,5],              // GH → Admin
+          [5,18],[18,4],              // Admin → Office
+          [2,19],[19,4],              // Lab → Office
         ],
       },
       // ========== POLUS ==========
