@@ -955,7 +955,7 @@
       mira: {
         name: 'MIRA HQ', icon: '\u{1F3E2}', desc: 'Sky headquarters',
         width: 2800, height: 2000,
-        bgColor: '#162030', wallColor: '#305060', floorColor: 'rgba(100,200,255,0.04)', gridColor: 'rgba(100,200,255,0.03)',
+        bgColor: '#060c14', wallColor: '#2a5070', floorColor: 'rgba(80,160,255,0.06)', gridColor: 'rgba(80,160,255,0.04)',
         spawnX: 300, spawnY: 1130,
         emergencyBtn: { x: 2290, y: 1590, radius: 22 },
         sabotageFixLocations: { lights: { x: 320, y: 440 }, o2: { x: 2290, y: 340 } },
@@ -1056,18 +1056,19 @@
           return w;
         })(),
         rooms: [
-          { name: 'Launchpad',       x: 300,  y: 1130 },
-          { name: 'Reactor',         x: 320,  y: 440  },
-          { name: 'Laboratory',      x: 1020, y: 440  },
-          { name: 'Office',          x: 1580, y: 540  },
-          { name: 'Admin',           x: 1700, y: 210  },
-          { name: 'Greenhouse',      x: 2290, y: 340  },
-          { name: 'Decontamination', x: 680,  y: 800  }, // label in Y-junction hallway
-          { name: 'Locker Room',     x: 850,  y: 1280 },
-          { name: 'Communications',  x: 1090, y: 1690 },
-          { name: 'Storage',         x: 1620, y: 1690 },
-          { name: 'Cafeteria',       x: 2290, y: 1590 },
-          { name: 'MedBay',          x: 2100, y: 1910 },
+          // Order MUST match floors[] indices 0-10 (room tiles), then index 11 = Decon Y-horiz tile
+          { name: 'Launchpad',       x: 300,  y: 1130 }, // 0 → floors[0]
+          { name: 'Reactor',         x: 320,  y: 440  }, // 1 → floors[1]
+          { name: 'Laboratory',      x: 1020, y: 440  }, // 2 → floors[2]
+          { name: 'Office',          x: 1580, y: 540  }, // 3 → floors[3]
+          { name: 'Admin',           x: 1700, y: 210  }, // 4 → floors[4]
+          { name: 'Greenhouse',      x: 2290, y: 340  }, // 5 → floors[5]
+          { name: 'Locker Room',     x: 850,  y: 1280 }, // 6 → floors[6]
+          { name: 'Communications',  x: 1090, y: 1690 }, // 7 → floors[7]
+          { name: 'Storage',         x: 1620, y: 1690 }, // 8 → floors[8]
+          { name: 'Cafeteria',       x: 2290, y: 1590 }, // 9 → floors[9]
+          { name: 'MedBay',          x: 2100, y: 1910 }, // 10 → floors[10]
+          { name: 'Decontamination', x: 680,  y: 800  }, // 11 → floors[11] = Y-horiz corridor tile
         ],
         floors: [
           { x: 76,   y: 716,  w: 448, h: 828 }, // Launchpad
@@ -4187,7 +4188,7 @@
     // ====== TEXTURE & DECORATION SYSTEM ======
     const roomFloorColors = {
       // Color-coded per official Skeld map image:
-      'Cafeteria':'#b4ad9e',    // light gray-beige checkered tile
+      'Cafeteria':'#b4ad9e',    // light gray-beige checkered tile (Skeld) / overridden per map in drawRoomDecor
       'Weapons':'#6a5e4a',      // tan/beige command room
       'Navigation':'#1c2232',   // dark navy cockpit
       'O2':'#263a2c',           // dark green life support
@@ -4201,9 +4202,9 @@
       'Security':'#1c2028',     // dark monitoring room
       'Upper Engine':'#202830', // dark teal-gray engine
       'MedBay':'#1e3038',       // sterile dark blue-teal medical
-      'Launchpad':'#282830','Office':'#2a2a38','Greenhouse':'#1e3520',
-      'Locker Room':'#2a2a2a','Laboratory':'#2a2a40','Balcony':'#252a35',
-      'Decontamination':'#cc1111','Dropship':'#cc1111',
+      'Launchpad':'#1e2030','Office':'#1a2240','Greenhouse':'#0a3030',
+      'Locker Room':'#252530','Laboratory':'#141828','Balcony':'#252a35',
+      'Decontamination':'#0a1428','Dropship':'#cc1111',
       'Specimen Room':'#cc1111','Boiler Room':'#cc1111',
       'Cockpit':'#322818','Gap Room':'#302a22','Meeting Room':'#352c24',
       'Kitchen':'#352e22','Main Hall':'#352c24','Engine Room':'#282830',
@@ -4428,30 +4429,83 @@
           ctx.beginPath(); ctx.arc(px, py, 2, 0, Math.PI * 2); ctx.fill();
         }
       } else if (selectedMap === 'mira') {
-        // Glass floor effect - reflection lines
+        // MIRA HQ: sky station corridor — pipes, support ribs, emergency lighting
+        // Glass floor diagonal reflection lines
         ctx.strokeStyle = 'rgba(100,200,255,0.04)';
         ctx.lineWidth = 1;
         if (horiz) {
           for (let rx = 20; rx < w; rx += 40) {
-            ctx.beginPath();
-            ctx.moveTo(x + rx, y + 8);
-            ctx.lineTo(x + rx + 15, y + h - 8);
-            ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x+rx, y+8); ctx.lineTo(x+rx+15, y+h-8); ctx.stroke();
           }
         } else {
           for (let ry = 20; ry < h; ry += 40) {
-            ctx.beginPath();
-            ctx.moveTo(x + 8, y + ry);
-            ctx.lineTo(x + w - 8, y + ry + 15);
-            ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x+8, y+ry); ctx.lineTo(x+w-8, y+ry+15); ctx.stroke();
           }
         }
-        // Holographic edge accent
-        ctx.fillStyle = 'rgba(100,200,255,0.03)';
+        // Pipe conduits along wall edges
+        ctx.strokeStyle = 'rgba(60,140,200,0.13)'; ctx.lineWidth = 3;
         if (horiz) {
-          ctx.fillRect(x, y + h / 2 - 1, w, 2);
+          ctx.beginPath(); ctx.moveTo(x, y+5); ctx.lineTo(x+w, y+5); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x, y+h-5); ctx.lineTo(x+w, y+h-5); ctx.stroke();
+          // Pipe joint rings every 80px
+          ctx.strokeStyle = 'rgba(80,170,230,0.20)'; ctx.lineWidth = 5;
+          for (let px2 = 60; px2 < w; px2 += 80) {
+            ctx.beginPath(); ctx.moveTo(x+px2, y+3); ctx.lineTo(x+px2, y+7); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x+px2, y+h-7); ctx.lineTo(x+px2, y+h-3); ctx.stroke();
+          }
         } else {
-          ctx.fillRect(x + w / 2 - 1, y, 2, h);
+          ctx.beginPath(); ctx.moveTo(x+5, y); ctx.lineTo(x+5, y+h); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x+w-5, y); ctx.lineTo(x+w-5, y+h); ctx.stroke();
+          ctx.strokeStyle = 'rgba(80,170,230,0.20)'; ctx.lineWidth = 5;
+          for (let py2 = 60; py2 < h; py2 += 80) {
+            ctx.beginPath(); ctx.moveTo(x+3, y+py2); ctx.lineTo(x+7, y+py2); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x+w-7, y+py2); ctx.lineTo(x+w-3, y+py2); ctx.stroke();
+          }
+        }
+        // Support ribs/struts across hallway every 100px
+        ctx.strokeStyle = 'rgba(60,120,180,0.07)'; ctx.lineWidth = 2;
+        if (horiz) {
+          for (let rx2 = 80; rx2 < w; rx2 += 100) {
+            ctx.beginPath(); ctx.moveTo(x+rx2, y); ctx.lineTo(x+rx2, y+h); ctx.stroke();
+          }
+        } else {
+          for (let ry2 = 80; ry2 < h; ry2 += 100) {
+            ctx.beginPath(); ctx.moveTo(x, y+ry2); ctx.lineTo(x+w, y+ry2); ctx.stroke();
+          }
+        }
+        // Emergency lighting fixtures at intervals
+        ctx.fillStyle = 'rgba(120,210,255,0.22)';
+        const mirLightSpc = 120;
+        if (horiz) {
+          for (let lx2 = mirLightSpc*0.5; lx2 < w; lx2 += mirLightSpc) {
+            ctx.fillRect(x+lx2-7, y+1, 14, 3); // top strip
+            ctx.fillRect(x+lx2-7, y+h-4, 14, 3); // bottom strip
+          }
+        } else {
+          for (let ly2 = mirLightSpc*0.5; ly2 < h; ly2 += mirLightSpc) {
+            ctx.fillRect(x+1, y+ly2-7, 3, 14); // left strip
+            ctx.fillRect(x+w-4, y+ly2-7, 3, 14); // right strip
+          }
+        }
+        // Holographic center guide line (dashed)
+        ctx.strokeStyle = 'rgba(100,200,255,0.055)'; ctx.lineWidth = 1;
+        ctx.setLineDash([10, 14]);
+        ctx.beginPath();
+        if (horiz) { ctx.moveTo(x, y+h/2); ctx.lineTo(x+w, y+h/2); }
+        else { ctx.moveTo(x+w/2, y); ctx.lineTo(x+w/2, y+h); }
+        ctx.stroke(); ctx.setLineDash([]);
+        // Small hazard marker diamonds at rib intersections
+        ctx.fillStyle = 'rgba(255,200,60,0.07)';
+        if (horiz) {
+          for (let rx3 = 80; rx3 < w; rx3 += 100) {
+            ctx.save(); ctx.translate(x+rx3, y+h/2); ctx.rotate(Math.PI/4);
+            ctx.fillRect(-4, -4, 8, 8); ctx.restore();
+          }
+        } else {
+          for (let ry3 = 80; ry3 < h; ry3 += 100) {
+            ctx.save(); ctx.translate(x+w/2, y+ry3); ctx.rotate(Math.PI/4);
+            ctx.fillRect(-4, -4, 8, 8); ctx.restore();
+          }
         }
       } else if (selectedMap === 'airship') {
         // Wooden plank / carpet runner
@@ -4619,70 +4673,109 @@
 
     function drawRoomDecor(name, x, y, w, h) {
       ctx.save();
-      ctx.globalAlpha = 0.25;
+      ctx.globalAlpha = 0.5;
       const cx = x + w / 2, cy = y + h / 2;
+
+      // MIRA HQ: vivid room-specific floor color (overpaints the shared roomFloorColors base)
+      if (selectedMap === 'mira') {
+        const miraColors = {
+          'Launchpad':      '#1c2840',
+          'Reactor':        '#140c28',
+          'Laboratory':     '#141c38',
+          'Office':         '#141c34',
+          'Admin':          '#1c1828',
+          'Greenhouse':     '#0a4038',
+          'Locker Room':    '#181c2c',
+          'Communications': '#0e1828',
+          'Storage':        '#1c1610',
+          'Cafeteria':      '#221c14',
+          'MedBay':         '#0c1828',
+          'Decontamination':'#08091a',
+        };
+        const fc = miraColors[name];
+        if (fc) {
+          ctx.globalAlpha = 1.0;
+          ctx.fillStyle = fc;
+          ctx.fillRect(x, y, w, h);
+          // Room-tinted grid lines
+          const gridCol = name==='Greenhouse' ? 'rgba(40,200,160,0.10)' :
+                          name==='Reactor'    ? 'rgba(160,80,255,0.08)' :
+                          name==='Cafeteria'  ? 'rgba(200,140,60,0.10)' :
+                          name==='Launchpad'  ? 'rgba(80,200,120,0.09)' :
+                                               'rgba(80,180,255,0.08)';
+          ctx.strokeStyle = gridCol; ctx.lineWidth = 1;
+          for (let gx = 0; gx < w; gx += 36) { ctx.beginPath(); ctx.moveTo(x+gx, y); ctx.lineTo(x+gx, y+h); ctx.stroke(); }
+          for (let gy = 0; gy < h; gy += 36) { ctx.beginPath(); ctx.moveTo(x, y+gy); ctx.lineTo(x+w, y+gy); ctx.stroke(); }
+          ctx.globalAlpha = 0.5;
+        }
+      }
+
       switch (name) {
         case 'Cafeteria': {
-          // Octagonal room shape: cut corners with dark triangles (matching reference image)
-          const cutSz = Math.min(w, h) * 0.16;
+          // Octagonal room shape: cut corners (Skeld only)
+          if (selectedMap === 'skeld' || selectedMap === 'airship') {
+            const cutSz = Math.min(w, h) * 0.16;
+            ctx.globalAlpha = 1.0;
+            ctx.fillStyle = mapTheme.wall || '#3c3e42';
+            ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x+cutSz, y); ctx.lineTo(x, y+cutSz); ctx.closePath(); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(x+w, y); ctx.lineTo(x+w-cutSz, y); ctx.lineTo(x+w, y+cutSz); ctx.closePath(); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(x, y+h); ctx.lineTo(x+cutSz, y+h); ctx.lineTo(x, y+h-cutSz); ctx.closePath(); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(x+w, y+h); ctx.lineTo(x+w-cutSz, y+h); ctx.lineTo(x+w, y+h-cutSz); ctx.closePath(); ctx.fill();
+          }
+          // Checkered tile floor (warm tones matching reference)
           ctx.globalAlpha = 1.0;
-          ctx.fillStyle = mapTheme.wall || '#3c3e42';
-          // Top-left chamfer
-          ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x+cutSz, y); ctx.lineTo(x, y+cutSz); ctx.closePath(); ctx.fill();
-          // Top-right chamfer
-          ctx.beginPath(); ctx.moveTo(x+w, y); ctx.lineTo(x+w-cutSz, y); ctx.lineTo(x+w, y+cutSz); ctx.closePath(); ctx.fill();
-          // Bottom-left chamfer
-          ctx.beginPath(); ctx.moveTo(x, y+h); ctx.lineTo(x+cutSz, y+h); ctx.lineTo(x, y+h-cutSz); ctx.closePath(); ctx.fill();
-          // Bottom-right chamfer
-          ctx.beginPath(); ctx.moveTo(x+w, y+h); ctx.lineTo(x+w-cutSz, y+h); ctx.lineTo(x+w, y+h-cutSz); ctx.closePath(); ctx.fill();
-          // Checkered tile floor (light gray alternating, matching reference)
           const tileSize = 28;
           for (let ty = 0; ty < h; ty += tileSize) {
             for (let tx = 0; tx < w; tx += tileSize) {
               const even = ((Math.floor(tx/tileSize) + Math.floor(ty/tileSize)) % 2 === 0);
-              ctx.fillStyle = even ? 'rgba(190,185,175,0.18)' : 'rgba(160,155,145,0.10)';
+              ctx.fillStyle = even ? 'rgba(200,180,140,0.20)' : 'rgba(160,140,110,0.12)';
               ctx.fillRect(x+tx, y+ty, tileSize, tileSize);
             }
           }
-          ctx.globalAlpha = 0.25;
+          ctx.globalAlpha = 0.5;
           // Tile grid lines
-          ctx.strokeStyle = 'rgba(120,115,105,0.12)'; ctx.lineWidth = 0.5;
+          ctx.strokeStyle = 'rgba(160,140,100,0.18)'; ctx.lineWidth = 0.5;
           for (let tx = 0; tx <= w; tx += tileSize) {
             ctx.beginPath(); ctx.moveTo(x+tx, y); ctx.lineTo(x+tx, y+h); ctx.stroke();
           }
           for (let ty = 0; ty <= h; ty += tileSize) {
             ctx.beginPath(); ctx.moveTo(x, y+ty); ctx.lineTo(x+w, y+ty); ctx.stroke();
           }
-          // 5 round seating tables in pentagon pattern (matching reference image — center area clear for emergency button)
+          // 5 round seating tables in pentagon pattern (matching reference image — orange tables)
           const tbl = [[0.22,0.24],[0.63,0.24],[0.18,0.64],[0.69,0.64],[0.43,0.82]];
           for (const [tx,ty] of tbl) {
-            const tbx = x+w*tx, tby = y+h*ty, tr = Math.min(w,h)*0.075;
+            const tbx = x+w*tx, tby = y+h*ty, tr = Math.min(w,h)*0.085;
             // Table shadow
-            ctx.fillStyle = 'rgba(0,0,0,0.25)';
-            ctx.beginPath(); ctx.arc(tbx+3, tby+4, tr+2, 0, Math.PI*2); ctx.fill();
-            // Blue table surface (matching reference image)
-            const tblGrad = ctx.createRadialGradient(tbx-tr*0.2, tby-tr*0.2, 0, tbx, tby, tr);
-            tblGrad.addColorStop(0, '#4a7acc');
-            tblGrad.addColorStop(0.6, '#2a5aaa');
-            tblGrad.addColorStop(1, '#1a3a7a');
+            ctx.fillStyle = 'rgba(0,0,0,0.35)';
+            ctx.beginPath(); ctx.arc(tbx+4, tby+5, tr+3, 0, Math.PI*2); ctx.fill();
+            // Orange table surface (matching reference image)
+            const tblGrad = ctx.createRadialGradient(tbx-tr*0.25, tby-tr*0.25, 0, tbx, tby, tr);
+            tblGrad.addColorStop(0, '#e07830');
+            tblGrad.addColorStop(0.5, '#c05820');
+            tblGrad.addColorStop(1, '#803010');
+            ctx.globalAlpha = 0.85;
             ctx.fillStyle = tblGrad;
             ctx.beginPath(); ctx.arc(tbx, tby, tr, 0, Math.PI*2); ctx.fill();
-            ctx.strokeStyle = '#6a9adc'; ctx.lineWidth = 2.5;
+            ctx.globalAlpha = 0.5;
+            ctx.strokeStyle = '#f09040'; ctx.lineWidth = 2.5;
             ctx.beginPath(); ctx.arc(tbx, tby, tr, 0, Math.PI*2); ctx.stroke();
-            // Inner rim
-            ctx.strokeStyle = 'rgba(140,190,255,0.3)'; ctx.lineWidth = 1.5;
-            ctx.beginPath(); ctx.arc(tbx, tby, tr*0.7, 0, Math.PI*2); ctx.stroke();
-            // Center food/drink items on table
-            ctx.fillStyle = 'rgba(200,230,255,0.25)';
-            ctx.beginPath(); ctx.arc(tbx, tby, tr*0.22, 0, Math.PI*2); ctx.fill();
-            // 4 chairs around table (cardinal positions)
+            // Inner rim highlight
+            ctx.strokeStyle = 'rgba(255,180,100,0.4)'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.arc(tbx, tby, tr*0.65, 0, Math.PI*2); ctx.stroke();
+            // Center — food items
+            ctx.fillStyle = 'rgba(255,200,120,0.3)';
+            ctx.beginPath(); ctx.arc(tbx, tby, tr*0.20, 0, Math.PI*2); ctx.fill();
+            // 4 chairs around table (matching reference — dark square chairs)
             for (let a = 0; a < 4; a++) {
-              const ang = a*Math.PI/2, cr = tr + 13;
-              const chx = tbx+Math.cos(ang)*cr-5, chy = tby+Math.sin(ang)*cr-5;
-              ctx.fillStyle = '#3a4258';
-              ctx.fillRect(chx, chy, 10, 10);
-              ctx.strokeStyle = '#5a6278'; ctx.lineWidth = 0.8;
-              ctx.strokeRect(chx, chy, 10, 10);
+              const ang = a*Math.PI/2, cr = tr + 14;
+              const chx = tbx+Math.cos(ang)*cr-6, chy = tby+Math.sin(ang)*cr-6;
+              ctx.fillStyle = '#2a3040';
+              ctx.fillRect(chx, chy, 12, 12);
+              ctx.strokeStyle = '#4a5060'; ctx.lineWidth = 0.8;
+              ctx.strokeRect(chx, chy, 12, 12);
+              // Chair highlight
+              ctx.fillStyle = 'rgba(100,120,160,0.2)';
+              ctx.fillRect(chx+2, chy+2, 5, 4);
             }
           }
           // Download Data panel — top-right area of room
@@ -4724,6 +4817,27 @@
               ctx.beginPath(); ctx.arc(vx+7+b*8, vy+38, 2.5, 0, Math.PI*2); ctx.fill();
             }
           }
+          // Kitchen serving hatch (right wall, center)
+          ctx.fillStyle = '#2a2520'; ctx.fillRect(x+w-26, cy-18, 20, 36);
+          ctx.strokeStyle = '#4a4535'; ctx.lineWidth = 1; ctx.strokeRect(x+w-26, cy-18, 20, 36);
+          ctx.fillStyle = 'rgba(255,180,60,0.12)'; ctx.fillRect(x+w-24, cy-14, 16, 14); // window glow
+          ctx.strokeStyle = '#3a3025'; ctx.lineWidth = 0.7;
+          ctx.beginPath(); ctx.moveTo(x+w-26, cy-4); ctx.lineTo(x+w-6, cy-4); ctx.stroke(); // sill
+          // Overhead track lighting (3 light bars across ceiling)
+          for (let tl = 0; tl < 3; tl++) {
+            const tlx = x+w*0.18+tl*w*0.28;
+            ctx.fillStyle = 'rgba(255,240,200,0.10)';
+            ctx.fillRect(tlx, y+2, w*0.16, 5);
+            ctx.fillStyle = 'rgba(255,240,200,0.06)';
+            ctx.fillRect(tlx, y+7, w*0.16, h*0.06); // cone of light
+          }
+          // Emergency button console (prominent, top-right area)
+          ctx.fillStyle = '#3a1010'; ctx.fillRect(x+w*0.72, y+8, 30, 22);
+          ctx.strokeStyle = '#6a2020'; ctx.lineWidth = 1; ctx.strokeRect(x+w*0.72, y+8, 30, 22);
+          ctx.fillStyle = 'rgba(255,40,40,0.35)';
+          ctx.beginPath(); ctx.arc(x+w*0.72+15, y+22, 6, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = 'rgba(255,80,80,0.4)'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.arc(x+w*0.72+15, y+22, 8, 0, Math.PI*2); ctx.stroke();
           break;
         }
         case 'Electrical': {
@@ -4733,7 +4847,7 @@
             ctx.globalAlpha = 1.0;
             ctx.fillStyle = mapTheme.wall || '#3c3e42';
             ctx.beginPath(); ctx.moveTo(x,y+h); ctx.lineTo(x+cut,y+h); ctx.lineTo(x,y+h-cut); ctx.closePath(); ctx.fill();
-            ctx.globalAlpha = 0.25;
+            ctx.globalAlpha = 0.5;
           }
           // Dark industrial room - messy wiring everywhere
           // Yellow hazard cables running across the floor
@@ -4874,6 +4988,28 @@
           ctx.fillStyle = 'rgba(220,60,60,0.3)';
           ctx.fillRect(x+w*0.24-2, y+h-18, 5, 5);
           ctx.fillRect(x+w*0.24-4, y+h-16, 9, 1);
+          // Large biohazard floor symbol (center of floor)
+          ctx.strokeStyle = 'rgba(255,200,0,0.10)'; ctx.lineWidth = 2;
+          const bhR = Math.min(w,h)*0.12;
+          ctx.beginPath(); ctx.arc(cx, cy+h*0.28, bhR, 0, Math.PI*2); ctx.stroke();
+          for (let ba = 0; ba < 3; ba++) {
+            const bang = ba*Math.PI*2/3 - Math.PI/6;
+            ctx.beginPath(); ctx.arc(cx+Math.cos(bang)*bhR*0.58, cy+h*0.28+Math.sin(bang)*bhR*0.58, bhR*0.38, 0, Math.PI*2); ctx.stroke();
+          }
+          // Surgical overhead light (ring above scanner)
+          ctx.strokeStyle = 'rgba(220,240,255,0.18)'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.arc(cx, cy+h*0.10, 20, 0, Math.PI*2); ctx.stroke();
+          ctx.fillStyle = 'rgba(220,240,255,0.06)';
+          ctx.beginPath(); ctx.arc(cx, cy+h*0.10, 20, 0, Math.PI*2); ctx.fill();
+          // Emergency alarm box (top-right wall)
+          ctx.fillStyle = '#5a1010'; ctx.fillRect(x+w-22, y+8, 16, 22);
+          ctx.strokeStyle = '#aa2020'; ctx.lineWidth = 1; ctx.strokeRect(x+w-22, y+8, 16, 22);
+          ctx.fillStyle = 'rgba(255,60,60,0.30)'; ctx.fillRect(x+w-20, y+11, 12, 8);
+          // O2 monitor readout (right wall, lower)
+          ctx.fillStyle = '#0a2030'; ctx.fillRect(x+w-24, y+h*0.6, 18, 28);
+          ctx.strokeStyle = '#1a5060'; ctx.lineWidth = 0.8; ctx.strokeRect(x+w-24, y+h*0.6, 18, 28);
+          ctx.strokeStyle = 'rgba(60,220,180,0.35)'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(x+w-22, y+h*0.6+10); ctx.lineTo(x+w-16, y+h*0.6+8); ctx.lineTo(x+w-13, y+h*0.6+14); ctx.lineTo(x+w-9, y+h*0.6+10); ctx.stroke();
           break;
         }
         case 'Reactor': {
@@ -4883,37 +5019,56 @@
             ctx.globalAlpha = 1.0;
             ctx.fillStyle = mapTheme.wall || '#3c3e42';
             ctx.beginPath(); ctx.moveTo(x+w,y); ctx.lineTo(x+w-cut,y); ctx.lineTo(x+w,y+cut); ctx.closePath(); ctx.fill();
-            ctx.globalAlpha = 0.25;
+            ctx.globalAlpha = 0.5;
           }
-          const rr = Math.min(w,h)*0.16;
+          const rr = Math.min(w,h)*0.18;
+          // Dark spacecraft silhouette fill (matching reference — very dark interior)
+          ctx.globalAlpha = 1.0;
+          ctx.fillStyle = '#0a0810';
+          ctx.fillRect(x, y, w, h);
+          // Spacecraft body silhouette (dark gray mass)
+          ctx.fillStyle = '#181428';
+          ctx.beginPath();
+          ctx.ellipse(cx, cy, w*0.38, h*0.42, 0, 0, Math.PI*2);
+          ctx.fill();
+          ctx.globalAlpha = 0.5;
           // Purple ambient glow for the whole room
-          const purpleAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.5);
-          purpleAmb.addColorStop(0, 'rgba(120,40,180,0.12)');
-          purpleAmb.addColorStop(1, 'rgba(80,20,120,0)');
+          const purpleAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.55);
+          purpleAmb.addColorStop(0, 'rgba(140,60,220,0.20)');
+          purpleAmb.addColorStop(0.5, 'rgba(80,20,140,0.10)');
+          purpleAmb.addColorStop(1, 'rgba(40,0,80,0)');
           ctx.fillStyle = purpleAmb;
           ctx.fillRect(x, y, w, h);
-          // Large cylindrical reactor core - outer containment ring
-          ctx.strokeStyle = '#6a4aaa'; ctx.lineWidth = 4;
+          // Large cylindrical reactor core - outer containment ring (brighter)
+          ctx.strokeStyle = '#8a6acc'; ctx.lineWidth = 5;
           ctx.beginPath(); ctx.arc(cx, cy, rr, 0, Math.PI*2); ctx.stroke();
-          // Inner energy ring
-          ctx.strokeStyle = '#5ae0ff'; ctx.lineWidth = 2;
+          // Inner energy ring (brighter yellow)
+          ctx.strokeStyle = '#ffee44'; ctx.lineWidth = 3;
           ctx.beginPath(); ctx.arc(cx, cy, rr*0.55, 0, Math.PI*2); ctx.stroke();
-          // Core center - bright cyan/blue glow
-          const coreGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, rr*0.5);
-          coreGlow.addColorStop(0, 'rgba(90,224,255,0.4)');
-          coreGlow.addColorStop(0.5, 'rgba(90,180,255,0.15)');
-          coreGlow.addColorStop(1, 'rgba(80,40,180,0)');
+          ctx.strokeStyle = '#5ae0ff'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(cx, cy, rr*0.40, 0, Math.PI*2); ctx.stroke();
+          // Core center - vivid yellow glow (matching reference)
+          const coreGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, rr*0.55);
+          coreGlow.addColorStop(0, 'rgba(255,240,80,0.90)');
+          coreGlow.addColorStop(0.3, 'rgba(200,180,40,0.50)');
+          coreGlow.addColorStop(0.6, 'rgba(120,80,220,0.20)');
+          coreGlow.addColorStop(1, 'rgba(60,0,120,0)');
           ctx.fillStyle = coreGlow;
-          ctx.beginPath(); ctx.arc(cx, cy, rr*0.5, 0, Math.PI*2); ctx.fill();
-          // Bright core center dot
-          ctx.fillStyle = 'rgba(200,240,255,0.5)';
-          ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI*2); ctx.fill();
-          // Tall vertical plasma rods/energy tubes connecting to hull
-          ctx.strokeStyle = '#5ae0ff'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.arc(cx, cy, rr*0.55, 0, Math.PI*2); ctx.fill();
+          // Bright core center dot (white-yellow)
+          ctx.globalAlpha = 1.0;
+          ctx.fillStyle = '#ffffc0';
+          ctx.beginPath(); ctx.arc(cx, cy, 6, 0, Math.PI*2); ctx.fill();
+          ctx.globalAlpha = 0.5;
+          // Tall vertical plasma rods — bright yellow (matching reference)
+          ctx.strokeStyle = '#ffee22'; ctx.lineWidth = 4;
           ctx.beginPath(); ctx.moveTo(cx, cy-rr); ctx.lineTo(cx, y+8); ctx.stroke();
           ctx.beginPath(); ctx.moveTo(cx, cy+rr); ctx.lineTo(cx, y+h-8); ctx.stroke();
-          // Side plasma conduits
-          ctx.strokeStyle = 'rgba(90,180,255,0.3)'; ctx.lineWidth = 2;
+          ctx.strokeStyle = 'rgba(255,240,100,0.25)'; ctx.lineWidth = 8;
+          ctx.beginPath(); ctx.moveTo(cx, cy-rr); ctx.lineTo(cx, y+8); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx, cy+rr); ctx.lineTo(cx, y+h-8); ctx.stroke();
+          // Side plasma conduits (yellow)
+          ctx.strokeStyle = 'rgba(255,220,40,0.40)'; ctx.lineWidth = 3;
           ctx.beginPath(); ctx.moveTo(cx-rr, cy); ctx.lineTo(x+8, cy); ctx.stroke();
           ctx.beginPath(); ctx.moveTo(cx+rr, cy); ctx.lineTo(x+w-8, cy); ctx.stroke();
           // Metallic cables from core to corners
@@ -4971,6 +5126,35 @@
           ctx.beginPath(); ctx.arc(x+w-22, cy+rr*0.6, 10, 0, Math.PI*2); ctx.fill();
           ctx.strokeStyle = '#6a90aa'; ctx.lineWidth = 1;
           ctx.beginPath(); ctx.arc(x+w-22, cy+rr*0.6, 10, 0, Math.PI*2); ctx.stroke();
+          // Hazard warning stripes around the core perimeter
+          ctx.strokeStyle = 'rgba(255,200,0,0.08)'; ctx.lineWidth = 1;
+          ctx.setLineDash([8,8]);
+          ctx.beginPath(); ctx.arc(cx, cy, rr*1.15, 0, Math.PI*2); ctx.stroke();
+          ctx.setLineDash([]);
+          // Cooling coil arcs around the outer ring
+          for (let cc = 0; cc < 6; cc++) {
+            const cang = cc*Math.PI/3;
+            ctx.strokeStyle = 'rgba(60,180,220,0.15)'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(cx, cy, rr+8, cang, cang+Math.PI/4); ctx.stroke();
+          }
+          // Pressure gauge panels on top/bottom walls
+          for (let pg = 0; pg < 3; pg++) {
+            const pgx = x+w*0.22+pg*w*0.24;
+            ctx.fillStyle = '#1a1a28'; ctx.fillRect(pgx, y+8, 18, 16);
+            ctx.strokeStyle = '#4a4a68'; ctx.lineWidth = 0.8; ctx.strokeRect(pgx, y+8, 18, 16);
+            ctx.strokeStyle = pg===1 ? 'rgba(255,80,80,0.4)' : 'rgba(60,180,255,0.3)'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.arc(pgx+9, y+18, 5, Math.PI, 0); ctx.stroke();
+            // Needle
+            ctx.strokeStyle = pg===1 ? 'rgba(255,100,100,0.5)' : 'rgba(100,200,255,0.4)';
+            ctx.beginPath(); ctx.moveTo(pgx+9, y+18); ctx.lineTo(pgx+9+Math.cos(-Math.PI*0.2+pg*0.3)*4, y+18+Math.sin(-Math.PI*0.2+pg*0.3)*4); ctx.stroke();
+          }
+          // Radiation symbol on floor (faint)
+          ctx.strokeStyle = 'rgba(255,200,40,0.06)'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(cx, cy+rr*1.6, 12, 0, Math.PI*2); ctx.stroke();
+          for (let rads = 0; rads < 3; rads++) {
+            const rang = rads*Math.PI*2/3;
+            ctx.beginPath(); ctx.arc(cx+Math.cos(rang)*12, cy+rr*1.6+Math.sin(rang)*12, 5, rang+Math.PI*0.25, rang+Math.PI*0.75); ctx.stroke();
+          }
           break;
         }
         case 'Navigation': {
@@ -4981,7 +5165,7 @@
             ctx.fillStyle = mapTheme.wall || '#3c3e42';
             ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+cut,y); ctx.lineTo(x,y+cut); ctx.closePath(); ctx.fill();
             ctx.beginPath(); ctx.moveTo(x,y+h); ctx.lineTo(x+cut,y+h); ctx.lineTo(x,y+h-cut); ctx.closePath(); ctx.fill();
-            ctx.globalAlpha = 0.25;
+            ctx.globalAlpha = 0.5;
           }
           // Cockpit/helm area - large viewing window showing space
           ctx.fillStyle = '#050818';
@@ -5049,7 +5233,7 @@
             ctx.globalAlpha = 1.0;
             ctx.fillStyle = mapTheme.wall || '#3c3e42';
             ctx.beginPath(); ctx.moveTo(x,y+h); ctx.lineTo(x+cut,y+h); ctx.lineTo(x,y+h-cut); ctx.closePath(); ctx.fill();
-            ctx.globalAlpha = 0.25;
+            ctx.globalAlpha = 0.5;
           }
           // Deep space viewport (top half of room, cannon faces right into it)
           ctx.fillStyle = '#030610';
@@ -5220,6 +5404,22 @@
           // Upload progress bar
           ctx.fillStyle = 'rgba(100,200,255,0.3)';
           ctx.fillRect(x+w*0.58, y+18, 14, 3);
+          // Security camera in top-right corner
+          ctx.fillStyle = '#1a1010'; ctx.fillRect(x+w-18, y+6, 12, 9);
+          ctx.strokeStyle = '#3a1010'; ctx.lineWidth = 0.8; ctx.strokeRect(x+w-18, y+6, 12, 9);
+          ctx.fillStyle = 'rgba(255,60,60,0.30)'; ctx.beginPath(); ctx.arc(x+w-10, y+11, 3, 0, Math.PI*2); ctx.fill(); // lens
+          // Wall clock (top-center)
+          ctx.strokeStyle = '#5a3030'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(cx, y+10, 8, 0, Math.PI*2); ctx.stroke();
+          ctx.fillStyle = '#2a1010'; ctx.beginPath(); ctx.arc(cx, y+10, 7, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#cc6060'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(cx, y+10); ctx.lineTo(cx, y+4); ctx.stroke(); // hour hand
+          ctx.beginPath(); ctx.moveTo(cx, y+10); ctx.lineTo(cx+4, y+12); ctx.stroke(); // minute hand
+          // LED status strip along bottom wall
+          for (let led = 0; led < 6; led++) {
+            ctx.fillStyle = led%2===0 ? 'rgba(80,220,80,0.35)' : 'rgba(60,60,200,0.25)';
+            ctx.beginPath(); ctx.arc(x+w*0.1+led*w*0.14, y+h-8, 3, 0, Math.PI*2); ctx.fill();
+          }
           break;
         }
         case 'Security': {
@@ -5358,7 +5558,7 @@
             ctx.fillStyle = mapTheme.wall || '#3c3e42';
             ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+cut,y); ctx.lineTo(x,y+cut); ctx.closePath(); ctx.fill();
             ctx.beginPath(); ctx.moveTo(x+w,y); ctx.lineTo(x+w-cut,y); ctx.lineTo(x+w,y+cut); ctx.closePath(); ctx.fill();
-            ctx.globalAlpha = 0.25;
+            ctx.globalAlpha = 0.5;
           }
           // Orange/yellow hazard grid markings on floor (prominent, matching reference)
           ctx.strokeStyle = 'rgba(220,140,20,0.18)'; ctx.lineWidth = 1.5;
@@ -5436,6 +5636,28 @@
           // Garbage chute handle
           ctx.fillStyle = '#666';
           ctx.fillRect(x+w*0.47, y+h-18, w*0.06, 3);
+          // Wall shelving units (right wall)
+          ctx.fillStyle = '#3a3228'; ctx.fillRect(x+w-22, y+h*0.10, 16, h*0.65);
+          ctx.strokeStyle = '#5a5240'; ctx.lineWidth = 0.8; ctx.strokeRect(x+w-22, y+h*0.10, 16, h*0.65);
+          for (let sh = 0; sh < 4; sh++) {
+            const shy = y+h*0.14+sh*h*0.14;
+            ctx.fillStyle = '#4a4238'; ctx.fillRect(x+w-21, shy, 14, 3); // shelf plank
+            // Small items on shelf
+            ctx.fillStyle = sh%2===0 ? 'rgba(80,140,80,0.4)' : 'rgba(180,120,40,0.4)';
+            ctx.fillRect(x+w-20, shy-5, 5, 5);
+            ctx.fillRect(x+w-13, shy-6, 4, 6);
+          }
+          // Overhead light fixture (center ceiling)
+          ctx.fillStyle = 'rgba(255,240,180,0.12)';
+          ctx.fillRect(cx-20, y+2, 40, 5);
+          ctx.fillStyle = 'rgba(255,240,180,0.05)';
+          ctx.fillRect(cx-30, y+7, 60, h*0.3); // light cone
+          // Forklift / cargo dolly (center of room, bottom half)
+          ctx.fillStyle = '#3a3020'; ctx.fillRect(cx-20, y+h*0.65, 40, 20);
+          ctx.strokeStyle = '#5a5030'; ctx.lineWidth = 0.8; ctx.strokeRect(cx-20, y+h*0.65, 40, 20);
+          ctx.fillStyle = '#4a4228'; ctx.fillRect(cx-22, y+h*0.65+18, 8, 6); // left wheel
+          ctx.fillRect(cx+14, y+h*0.65+18, 8, 6); // right wheel
+          ctx.fillStyle = 'rgba(255,160,40,0.20)'; ctx.fillRect(cx-18, y+h*0.65+4, 14, 8); // cab window
           break;
         }
         case 'Communications': {
@@ -5494,17 +5716,32 @@
           ctx.beginPath(); ctx.arc(cx+22, cy+h*0.08+34, 8, 0, Math.PI*2); ctx.fill();
           ctx.strokeStyle = '#5a8898'; ctx.lineWidth = 1;
           ctx.beginPath(); ctx.arc(cx+22, cy+h*0.08+34, 8, 0, Math.PI*2); ctx.stroke();
-          // Dish antenna (visible on left side — prominent in reference)
-          const dshX = x+w*0.05, dshY = cy+h*0.02;
-          ctx.strokeStyle = '#4a7080'; ctx.lineWidth = 2;
-          // Dish arc
-          ctx.beginPath(); ctx.arc(dshX+18, dshY+18, 20, Math.PI, 0); ctx.stroke();
-          ctx.beginPath(); ctx.moveTo(dshX+18, dshY); ctx.lineTo(dshX+18, dshY+28); ctx.stroke();
+          // Dish antenna — large, prominent (matching reference)
+          const dshX = x+w*0.04, dshY = cy-h*0.08;
+          const dshR = Math.min(w, h)*0.22;
+          // Dish mount/pole
+          ctx.strokeStyle = '#5a8090'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.moveTo(dshX+dshR, dshY+dshR*0.8); ctx.lineTo(dshX+dshR, dshY+dshR*1.6); ctx.stroke();
+          // Dish bowl arc (filled)
+          ctx.fillStyle = 'rgba(60,120,140,0.35)';
+          ctx.beginPath();
+          ctx.arc(dshX+dshR, dshY+dshR*0.5, dshR, Math.PI*0.15, Math.PI*0.85);
+          ctx.lineTo(dshX+dshR, dshY+dshR*0.5);
+          ctx.closePath(); ctx.fill();
+          ctx.strokeStyle = '#5a9aaa'; ctx.lineWidth = 2.5;
+          ctx.beginPath(); ctx.arc(dshX+dshR, dshY+dshR*0.5, dshR, Math.PI*0.15, Math.PI*0.85); ctx.stroke();
+          // Dish struts
+          ctx.strokeStyle = '#4a8090'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(dshX+dshR*0.35, dshY+dshR*0.85); ctx.lineTo(dshX+dshR, dshY+dshR*0.3); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(dshX+dshR*1.65, dshY+dshR*0.85); ctx.lineTo(dshX+dshR, dshY+dshR*0.3); ctx.stroke();
+          // Focal point
+          ctx.fillStyle = 'rgba(60,220,200,0.60)';
+          ctx.beginPath(); ctx.arc(dshX+dshR, dshY+dshR*0.3, 4, 0, Math.PI*2); ctx.fill();
           // Signal lines from dish
-          ctx.strokeStyle = 'rgba(60,200,220,0.15)'; ctx.lineWidth = 1;
-          for (let si = 0; si < 3; si++) {
-            const sr = 22+si*8;
-            ctx.beginPath(); ctx.arc(dshX+18, dshY+18, sr, -Math.PI/3, Math.PI/3); ctx.stroke();
+          ctx.strokeStyle = 'rgba(60,200,220,0.18)'; ctx.lineWidth = 1.5;
+          for (let si = 0; si < 4; si++) {
+            const sr = dshR*0.6+si*dshR*0.3;
+            ctx.beginPath(); ctx.arc(dshX+dshR, dshY+dshR*0.5, sr, -Math.PI/4, Math.PI/4); ctx.stroke();
           }
           // Swivel chair
           ctx.fillStyle = '#1e2e38';
@@ -5529,6 +5766,25 @@
             ctx.fillStyle = i%2===0 ? 'rgba(60,200,180,0.3)' : 'rgba(60,100,200,0.2)';
             ctx.beginPath(); ctx.arc(x+w-14, y+h*0.18+i*h*0.12, 2, 0, Math.PI*2); ctx.fill();
           }
+          // Signal strength meter on wall (bottom-left)
+          ctx.fillStyle = '#0e1e28'; ctx.fillRect(x+8, y+h-30, 36, 22);
+          ctx.strokeStyle = '#1a3a4a'; ctx.lineWidth = 0.8; ctx.strokeRect(x+8, y+h-30, 36, 22);
+          // Bar graph
+          const sigBars = [0.4, 0.7, 0.9, 1.0, 0.6];
+          for (let sb = 0; sb < sigBars.length; sb++) {
+            const bh2 = sigBars[sb] * 14;
+            ctx.fillStyle = `rgba(${sb<2?60:sb<4?100:200},${sb<2?200:220},${sb<2?180:120},0.35)`;
+            ctx.fillRect(x+10+sb*6, y+h-14-bh2, 4, bh2);
+          }
+          // Cable runs across floor (diagonal)
+          ctx.strokeStyle = 'rgba(60,120,160,0.12)'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(x+w*0.08, y+h*0.5); ctx.lineTo(cx-35, cy+h*0.08+48); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x+w*0.08, y+h*0.5); ctx.lineTo(x+w-22, cy); ctx.stroke();
+          // Blinking satellite link indicator (top-right)
+          ctx.fillStyle = 'rgba(60,255,200,0.40)';
+          ctx.beginPath(); ctx.arc(x+w-8, y+8, 4, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = 'rgba(60,255,200,0.20)'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.arc(x+w-8, y+8, 7, 0, Math.PI*2); ctx.stroke();
           break;
         }
         case 'O2': {
@@ -5616,7 +5872,7 @@
             ctx.globalAlpha = 1.0;
             ctx.fillStyle = mapTheme.wall || '#3c3e42';
             ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+cut,y); ctx.lineTo(x,y+cut); ctx.closePath(); ctx.fill();
-            ctx.globalAlpha = 0.25;
+            ctx.globalAlpha = 0.5;
           }
           // Orange/heat ambient floor glow
           const engAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(w,h)*0.65);
@@ -5695,35 +5951,38 @@
           break;
         }
         case 'Greenhouse': {
-          // Green ambient grow-light glow
-          const ghAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.6);
-          ghAmb.addColorStop(0, 'rgba(40,160,40,0.12)');
-          ghAmb.addColorStop(1, 'rgba(10,60,10,0)');
+          // Vivid teal ambient glow (matching reference — bright teal-green)
+          ctx.globalAlpha = 1.0;
+          const ghAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.7);
+          ghAmb.addColorStop(0, 'rgba(20,160,120,0.22)');
+          ghAmb.addColorStop(0.5, 'rgba(10,100,80,0.12)');
+          ghAmb.addColorStop(1, 'rgba(0,50,40,0)');
           ctx.fillStyle = ghAmb; ctx.fillRect(x, y, w, h);
-          // Soil planter beds — 3 rows of 2
-          const bedW = w*0.32, bedH = h*0.18;
-          const bedPositions = [[0.06,0.08],[0.62,0.08],[0.06,0.40],[0.62,0.40],[0.06,0.72],[0.62,0.72]];
+          ctx.globalAlpha = 0.5;
+          // Soil planter beds — 3 rows of 2 (larger, more prominent)
+          const bedW = w*0.36, bedH = h*0.20;
+          const bedPositions = [[0.04,0.06],[0.60,0.06],[0.04,0.38],[0.60,0.38],[0.04,0.70],[0.60,0.70]];
           for (const [bpx,bpy] of bedPositions) {
             const bx2=x+w*bpx, by2=y+h*bpy;
-            // Soil bed
-            ctx.fillStyle = '#2a1a0a';
+            // Soil bed frame
+            ctx.fillStyle = '#3a2810';
             ctx.fillRect(bx2, by2, bedW, bedH);
-            ctx.strokeStyle = '#5a3a1a'; ctx.lineWidth = 1;
+            ctx.strokeStyle = '#7a5a28'; ctx.lineWidth = 2;
             ctx.strokeRect(bx2, by2, bedW, bedH);
-            // Soil texture
-            ctx.fillStyle = '#3a2210';
-            for (let si = 0; si < 4; si++) ctx.fillRect(bx2+si*bedW*0.22+4, by2+3, bedW*0.18, bedH-6);
-            // Plants growing from soil
-            const plantColors = ['#1a8a1a','#2aaa2a','#3abb2a','#22992a'];
+            // Soil texture (dark brown rows)
+            ctx.fillStyle = '#4a3018';
+            for (let si = 0; si < 4; si++) ctx.fillRect(bx2+si*bedW*0.22+4, by2+4, bedW*0.19, bedH-8);
+            // Plants growing from soil (bigger, more vivid)
+            const plantColors = ['#22aa22','#33cc33','#44cc22','#28bb28'];
             for (let pi = 0; pi < 5; pi++) {
-              const px2 = bx2+bedW*0.10+pi*bedW*0.18, py2 = by2+bedH*0.5;
-              const pc = plantColors[pi%4], ph = bedH*(0.5+Math.sin(pi*1.7)*0.2);
+              const px2 = bx2+bedW*0.10+pi*bedW*0.18, py2 = by2+bedH*0.55;
+              const pc = plantColors[pi%4], ph = bedH*(0.65+Math.sin(pi*1.7)*0.22);
               // Stem
-              ctx.strokeStyle = pc; ctx.lineWidth = 1.5;
+              ctx.strokeStyle = pc; ctx.lineWidth = 2;
               ctx.beginPath(); ctx.moveTo(px2, py2); ctx.lineTo(px2, py2-ph); ctx.stroke();
-              // Leaves
+              // Leaves — bigger ellipses
               ctx.fillStyle = pc;
-              ctx.beginPath(); ctx.ellipse(px2-5, py2-ph*0.6, 6, 3, -0.4, 0, Math.PI*2); ctx.fill();
+              ctx.beginPath(); ctx.ellipse(px2-7, py2-ph*0.6, 8, 4, -0.4, 0, Math.PI*2); ctx.fill();
               ctx.beginPath(); ctx.ellipse(px2+5, py2-ph*0.75, 6, 3, 0.4, 0, Math.PI*2); ctx.fill();
               // Flower/bud at top
               ctx.fillStyle = pi%3===0 ? '#ffcc00' : pi%3===1 ? '#ff8844' : '#ff44aa';
@@ -5760,6 +6019,39 @@
           ctx.fillRect(x+w-26, cy-12, 18, 12);
           ctx.fillStyle = '#44aa44';
           ctx.beginPath(); ctx.arc(x+w-17, cy+10, 4, 0, Math.PI*2); ctx.fill();
+          // Glass ceiling panels — skylights (alternating bright strips)
+          for (let sk = 0; sk < 3; sk++) {
+            const skx = x+w*0.12+sk*w*0.26;
+            ctx.fillStyle = 'rgba(200,255,180,0.06)';
+            ctx.fillRect(skx, y, w*0.14, h);
+            ctx.strokeStyle = 'rgba(160,220,140,0.10)'; ctx.lineWidth = 1;
+            ctx.strokeRect(skx, y, w*0.14, h);
+          }
+          // Hanging vine tendrils from ceiling center strip
+          ctx.strokeStyle = 'rgba(30,140,40,0.18)'; ctx.lineWidth = 1.5;
+          for (let vn = 0; vn < 6; vn++) {
+            const vx2 = x+w*0.40+vn*w*0.04;
+            const vLen = h*(0.15+Math.sin(vn*1.3)*0.08);
+            ctx.beginPath(); ctx.moveTo(vx2, y);
+            ctx.bezierCurveTo(vx2+4, y+vLen*0.4, vx2-4, y+vLen*0.7, vx2+2, y+vLen); ctx.stroke();
+            // Small leaf at tip
+            ctx.fillStyle = 'rgba(40,160,50,0.22)';
+            ctx.beginPath(); ctx.ellipse(vx2+2, y+vLen, 4, 2, 0.4, 0, Math.PI*2); ctx.fill();
+          }
+          // Temperature / humidity gauge panel (top wall)
+          ctx.fillStyle = '#1a2a18'; ctx.fillRect(cx-22, y+8, 44, 18);
+          ctx.strokeStyle = '#3a6a30'; ctx.lineWidth = 0.8; ctx.strokeRect(cx-22, y+8, 44, 18);
+          ctx.fillStyle = 'rgba(80,220,80,0.2)'; ctx.fillRect(cx-20, y+10, 18, 10); // temp bar
+          ctx.fillStyle = 'rgba(80,160,255,0.2)'; ctx.fillRect(cx+2, y+10, 18, 10); // humidity bar
+          ctx.fillStyle = 'rgba(80,220,80,0.55)'; ctx.fillRect(cx-20, y+10, 12, 10); // temp fill
+          ctx.fillStyle = 'rgba(80,160,255,0.55)'; ctx.fillRect(cx+2, y+10, 14, 10); // humidity fill
+          // Sprinkler heads along top (small crosses)
+          ctx.strokeStyle = 'rgba(100,180,200,0.25)'; ctx.lineWidth = 1;
+          for (let sp2 = 0; sp2 < 5; sp2++) {
+            const spx2 = x+w*0.10+sp2*w*0.20;
+            ctx.beginPath(); ctx.moveTo(spx2-4, y+16); ctx.lineTo(spx2+4, y+16); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(spx2, y+12); ctx.lineTo(spx2, y+20); ctx.stroke();
+          }
           break;
         }
         case 'Laboratory': {
@@ -5789,7 +6081,7 @@
             ctx.fillStyle = jarColors[ji%5];
             ctx.globalAlpha = 0.35;
             ctx.beginPath(); ctx.arc(jx+7, jy+15, 4, 0, Math.PI*2); ctx.fill();
-            ctx.globalAlpha = 0.25;
+            ctx.globalAlpha = 0.5;
             // Jar cap
             ctx.fillStyle = '#3a4a5a';
             ctx.fillRect(jx+1, jy, 12, 4);
@@ -5803,9 +6095,9 @@
           const artGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 20);
           artGlow.addColorStop(0, 'rgba(100,180,255,0.3)');
           artGlow.addColorStop(1, 'rgba(60,120,220,0)');
-          ctx.fillStyle = artGlow; ctx.globalAlpha = 0.25;
+          ctx.fillStyle = artGlow; ctx.globalAlpha = 0.5;
           ctx.beginPath(); ctx.arc(cx, cy, 20, 0, Math.PI*2); ctx.fill();
-          ctx.globalAlpha = 0.25;
+          ctx.globalAlpha = 0.5;
           // Artifact shape (crystalline)
           ctx.fillStyle = '#88ccff';
           ctx.beginPath(); ctx.moveTo(cx, cy-12); ctx.lineTo(cx+8, cy); ctx.lineTo(cx, cy+12); ctx.lineTo(cx-8, cy); ctx.closePath(); ctx.fill();
@@ -5834,6 +6126,33 @@
           for (let sl = 0; sl < 4; sl++) {
             ctx.beginPath(); ctx.moveTo(x+w-29, cy-13+sl*4); ctx.lineTo(x+w-9, cy-13+sl*4); ctx.stroke();
           }
+          // Whiteboard / formula display on left wall
+          ctx.fillStyle = '#e8e8f0'; ctx.fillRect(x+6, y+h*0.12, 20, h*0.5);
+          ctx.strokeStyle = '#aaaacc'; ctx.lineWidth = 0.8; ctx.strokeRect(x+6, y+h*0.12, 20, h*0.5);
+          // Formulas drawn on board (stylized lines)
+          ctx.strokeStyle = 'rgba(20,20,120,0.25)'; ctx.lineWidth = 0.8;
+          for (let fl = 0; fl < 5; fl++) {
+            const fy2 = y+h*0.16+fl*h*0.08;
+            ctx.beginPath(); ctx.moveTo(x+8, fy2); ctx.lineTo(x+8+(fl%3===0?12:8), fy2); ctx.stroke();
+          }
+          // Centrifuge machine (bottom-left bench area)
+          const cfX = x+20, cfY = y+h-h*0.22+4;
+          ctx.fillStyle = '#2a3848'; ctx.fillRect(cfX, cfY, 28, 20);
+          ctx.strokeStyle = '#4a6880'; ctx.lineWidth = 1; ctx.strokeRect(cfX, cfY, 28, 20);
+          // Spinning rotor (circle)
+          ctx.strokeStyle = 'rgba(100,180,255,0.35)'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(cfX+14, cfY+10, 7, 0, Math.PI*2); ctx.stroke();
+          // Rotor spokes
+          for (let rs = 0; rs < 4; rs++) {
+            const rang2 = rs*Math.PI/2;
+            ctx.beginPath(); ctx.moveTo(cfX+14, cfY+10); ctx.lineTo(cfX+14+Math.cos(rang2)*6, cfY+10+Math.sin(rang2)*6); ctx.stroke();
+          }
+          // Fume hood (top bench, left side)
+          ctx.fillStyle = '#283040'; ctx.fillRect(x+12, y+10, 28, h*0.18);
+          ctx.strokeStyle = '#405070'; ctx.lineWidth = 0.8; ctx.strokeRect(x+12, y+10, 28, h*0.18);
+          ctx.fillStyle = 'rgba(160,200,255,0.10)'; ctx.fillRect(x+13, y+11, 26, h*0.12); // glass sash
+          ctx.strokeStyle = '#3a5a80'; ctx.lineWidth = 0.5;
+          ctx.beginPath(); ctx.moveTo(x+12, y+10+h*0.12); ctx.lineTo(x+40, y+10+h*0.12); ctx.stroke(); // sash line
           break;
         }
         case 'Specimen Room': {
@@ -5854,7 +6173,7 @@
           ctx.fillStyle = '#ff6620'; ctx.globalAlpha = 0.4;
           ctx.beginPath(); ctx.arc(cx, cy, 12, 0, Math.PI*2); ctx.fill();
           ctx.fillStyle = '#ffaa30'; ctx.beginPath(); ctx.arc(cx, cy-4, 6, 0, Math.PI*2); ctx.fill();
-          ctx.globalAlpha = 0.25; ctx.fillStyle = '#3a2a15';
+          ctx.globalAlpha = 0.5; ctx.fillStyle = '#3a2a15';
           ctx.fillRect(cx-35, cy-8, 14, 6); ctx.fillRect(cx+22, cy-8, 14, 6);
           ctx.fillRect(cx-6, cy+26, 14, 6); ctx.fillRect(cx-6, cy-32, 14, 6);
           break;
@@ -5931,7 +6250,7 @@
           ctx.fillStyle = '#fff'; ctx.globalAlpha = 0.4;
           for (const [sx,sy] of [[0.08,0.25],[0.15,0.5],[0.25,0.35],[0.1,0.65],[0.2,0.2]])
             ctx.fillRect(x+w*sx, y+h*sy, 2, 2);
-          ctx.globalAlpha = 0.25; ctx.strokeStyle = '#666'; ctx.lineWidth = 2;
+          ctx.globalAlpha = 0.5; ctx.strokeStyle = '#666'; ctx.lineWidth = 2;
           ctx.beginPath(); ctx.arc(x+w*0.7, cy, 20, 0, Math.PI*2); ctx.stroke();
           break;
         }
@@ -5987,6 +6306,35 @@
           for (let ds = 0; ds < 4; ds++) {
             const ang = ds*Math.PI/4;
             ctx.beginPath(); ctx.moveTo(cx, y+h-16); ctx.lineTo(cx+Math.cos(ang)*8, y+h-16+Math.sin(ang)*8); ctx.stroke();
+          }
+          // Shoes/boots on floor near lockers (a few pairs)
+          for (let sh2 = 0; sh2 < 3; sh2++) {
+            const shx = x+20+sh2*Math.floor(w*0.28);
+            ctx.fillStyle = sh2%2===0 ? 'rgba(40,40,80,0.45)' : 'rgba(80,40,20,0.45)';
+            ctx.fillRect(shx, y+h*0.42, 10, 6); // left shoe
+            ctx.fillRect(shx+12, y+h*0.42, 10, 6); // right shoe
+          }
+          // Green floor sport stripes (locker room floor markings matching reference)
+          ctx.strokeStyle = 'rgba(40,180,80,0.25)'; ctx.lineWidth = 4;
+          for (let gs = 0; gs < 3; gs++) {
+            const gsy = y + h*0.52 + gs*14;
+            ctx.beginPath(); ctx.moveTo(x+8, gsy); ctx.lineTo(x+w-8, gsy); ctx.stroke();
+          }
+          ctx.strokeStyle = 'rgba(40,160,60,0.15)'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(x+8, y+h*0.62+3*14); ctx.lineTo(x+w-8, y+h*0.62+3*14); ctx.stroke();
+          // Hand sanitizer dispenser (right wall, mid)
+          ctx.fillStyle = '#f0f0f8'; ctx.fillRect(x+w-14, cy-20, 8, 18);
+          ctx.strokeStyle = '#c0c0d0'; ctx.lineWidth = 0.8; ctx.strokeRect(x+w-14, cy-20, 8, 18);
+          ctx.fillStyle = 'rgba(100,200,140,0.35)'; ctx.fillRect(x+w-13, cy-16, 6, 10);
+          ctx.fillStyle = '#8888cc'; ctx.fillRect(x+w-12, cy, 6, 4); // pump nozzle
+          // Notice board on right wall (above dispenser)
+          ctx.fillStyle = '#8a6a30'; ctx.fillRect(x+w-18, y+8, 14, 28);
+          ctx.strokeStyle = '#aa8a50'; ctx.lineWidth = 0.8; ctx.strokeRect(x+w-18, y+8, 14, 28);
+          ctx.fillStyle = '#f0e8c0'; ctx.fillRect(x+w-17, y+9, 12, 26); // cork board
+          // Paper notes on board
+          for (let np = 0; np < 3; np++) {
+            ctx.fillStyle = np%2===0 ? 'rgba(255,255,200,0.6)' : 'rgba(200,230,255,0.6)';
+            ctx.fillRect(x+w-16, y+11+np*7, 8, 5);
           }
           break;
         }
@@ -6060,33 +6408,47 @@
           break;
         }
         case 'Launchpad': {
-          // Sky blue ambient (MIRA HQ is a sky station)
-          const lpAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.5);
-          lpAmb.addColorStop(0, 'rgba(60,120,200,0.08)');
-          lpAmb.addColorStop(1, 'rgba(20,60,140,0)');
-          ctx.fillStyle = lpAmb; ctx.fillRect(x, y, w, h);
-          // Launch circle markings on floor
+          // Green diagonal hazard stripes across floor (matching reference image prominently)
+          ctx.globalAlpha = 1.0;
+          ctx.save();
+          ctx.rect(x, y, w, h);
+          ctx.clip();
+          const stripeW = 28;
+          for (let si = -h; si < w+h; si += stripeW*2) {
+            ctx.fillStyle = 'rgba(40,160,60,0.18)';
+            ctx.beginPath();
+            ctx.moveTo(x+si, y);
+            ctx.lineTo(x+si+stripeW, y);
+            ctx.lineTo(x+si+stripeW+h, y+h);
+            ctx.lineTo(x+si+h, y+h);
+            ctx.closePath(); ctx.fill();
+          }
+          ctx.restore();
+          ctx.globalAlpha = 0.5;
+          // Launch pad circle markings
           const lpR = Math.min(w,h)*0.30;
-          ctx.strokeStyle = 'rgba(220,180,60,0.35)'; ctx.lineWidth = 3;
+          ctx.strokeStyle = 'rgba(220,180,60,0.55)'; ctx.lineWidth = 4;
           ctx.beginPath(); ctx.arc(cx, cy, lpR, 0, Math.PI*2); ctx.stroke();
-          ctx.strokeStyle = 'rgba(220,180,60,0.20)'; ctx.lineWidth = 1.5;
+          ctx.strokeStyle = 'rgba(220,180,60,0.35)'; ctx.lineWidth = 2;
           ctx.beginPath(); ctx.arc(cx, cy, lpR*0.65, 0, Math.PI*2); ctx.stroke();
+          ctx.strokeStyle = 'rgba(220,180,60,0.20)'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.arc(cx, cy, lpR*0.35, 0, Math.PI*2); ctx.stroke();
           // Radial spokes
           for (let sp = 0; sp < 8; sp++) {
             const ang = sp*Math.PI/4;
-            ctx.strokeStyle = 'rgba(200,160,40,0.18)'; ctx.lineWidth = 1;
+            ctx.strokeStyle = 'rgba(200,160,40,0.30)'; ctx.lineWidth = 1.5;
             ctx.beginPath();
-            ctx.moveTo(cx+Math.cos(ang)*lpR*0.15, cy+Math.sin(ang)*lpR*0.15);
+            ctx.moveTo(cx+Math.cos(ang)*lpR*0.10, cy+Math.sin(ang)*lpR*0.10);
             ctx.lineTo(cx+Math.cos(ang)*lpR, cy+Math.sin(ang)*lpR);
             ctx.stroke();
           }
           // Landing direction arrows
-          ctx.fillStyle = 'rgba(220,180,60,0.22)';
+          ctx.fillStyle = 'rgba(220,180,60,0.40)';
           for (let ar = 0; ar < 4; ar++) {
             const ang = ar*Math.PI/2 - Math.PI/4;
             const ax = cx+Math.cos(ang)*lpR*0.82, ay = cy+Math.sin(ang)*lpR*0.82;
             ctx.save(); ctx.translate(ax,ay); ctx.rotate(ang+Math.PI/4);
-            ctx.beginPath(); ctx.moveTo(0,-6); ctx.lineTo(5,6); ctx.lineTo(-5,6); ctx.closePath(); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(0,-7); ctx.lineTo(6,7); ctx.lineTo(-6,7); ctx.closePath(); ctx.fill();
             ctx.restore();
           }
           // Dropship/shuttle silhouette in center
@@ -6136,6 +6498,34 @@
           // Blinking beacon on tower top
           ctx.fillStyle = 'rgba(255,100,100,0.5)';
           ctx.beginPath(); ctx.arc(x+19, y+h*0.12, 4, 0, Math.PI*2); ctx.fill();
+          // Runway edge lights along left and right walls
+          for (let rl = 0; rl < 8; rl++) {
+            const rly = y+h*0.12+rl*(h*0.85)/8;
+            ctx.fillStyle = rl%2===0 ? 'rgba(255,200,60,0.40)' : 'rgba(60,180,255,0.35)';
+            ctx.beginPath(); ctx.arc(x+36, rly, 3, 0, Math.PI*2); ctx.fill(); // left edge
+            ctx.beginPath(); ctx.arc(x+w-16, rly, 3, 0, Math.PI*2); ctx.fill(); // right edge
+          }
+          // Wind sock (right wall, upper)
+          ctx.strokeStyle = '#8a6a3a'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(x+w-20, y+h*0.18); ctx.lineTo(x+w-20, y+h*0.28); ctx.stroke(); // pole
+          ctx.strokeStyle = 'rgba(255,80,40,0.35)'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.moveTo(x+w-20, y+h*0.19); ctx.quadraticCurveTo(x+w-10, y+h*0.21, x+w-12, y+h*0.26); ctx.stroke(); // sock shape
+          // Equipment/tool cart (bottom area)
+          ctx.fillStyle = '#3a3a50'; ctx.fillRect(cx-16, y+h*0.82, 32, 18);
+          ctx.strokeStyle = '#5a5a70'; ctx.lineWidth = 0.8; ctx.strokeRect(cx-16, y+h*0.82, 32, 18);
+          ctx.fillStyle = '#2a2a40'; ctx.fillRect(cx-14, y+h*0.82+3, 12, 10); // drawer 1
+          ctx.fillRect(cx+2, y+h*0.82+3, 12, 10); // drawer 2
+          // Cart wheels
+          ctx.fillStyle = '#1a1a28';
+          ctx.beginPath(); ctx.arc(cx-10, y+h*0.82+18, 4, 0, Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.arc(cx+10, y+h*0.82+18, 4, 0, Math.PI*2); ctx.fill();
+          // Hazard warning stripe along bottom wall
+          ctx.strokeStyle = 'rgba(255,180,0,0.15)'; ctx.lineWidth = 6;
+          ctx.beginPath(); ctx.moveTo(x+36, y+h-20); ctx.lineTo(x+w-16, y+h-20); ctx.stroke();
+          ctx.strokeStyle = 'rgba(0,0,0,0.08)'; ctx.lineWidth = 3;
+          for (let hs = 0; hs < Math.floor((w-52)/20); hs++) {
+            ctx.beginPath(); ctx.moveTo(x+46+hs*20, y+h-24); ctx.lineTo(x+36+hs*20, y+h-16); ctx.stroke();
+          }
           break;
         }
         case 'Dropship': {
@@ -6145,45 +6535,133 @@
           break;
         }
         case 'Decontamination': {
-          // UV decontamination hallway — blue-violet glow, sensor nodes, light strips
+          // UV decontamination hallway — bright yellow central column (matching reference)
+          // Bright yellow central pillar/column glow
+          ctx.globalAlpha = 1.0;
+          const isHoriz = w > h;
+          // Main column glow — prominent yellow beam
+          const colGrad = isHoriz
+            ? ctx.createLinearGradient(x, cy, x+w, cy)
+            : ctx.createLinearGradient(cx, y, cx, y+h);
+          colGrad.addColorStop(0, 'rgba(200,180,0,0)');
+          colGrad.addColorStop(0.3, 'rgba(240,220,20,0.35)');
+          colGrad.addColorStop(0.5, 'rgba(255,240,60,0.55)');
+          colGrad.addColorStop(0.7, 'rgba(240,220,20,0.35)');
+          colGrad.addColorStop(1, 'rgba(200,180,0,0)');
+          ctx.fillStyle = colGrad;
+          ctx.fillRect(x, y, w, h);
+          // Central bright column bar
+          if (isHoriz) {
+            ctx.fillStyle = 'rgba(255,240,60,0.70)';
+            ctx.fillRect(x, cy-4, w, 8);
+            ctx.fillStyle = 'rgba(255,255,120,0.90)';
+            ctx.fillRect(x, cy-2, w, 4);
+          } else {
+            ctx.fillStyle = 'rgba(255,240,60,0.70)';
+            ctx.fillRect(cx-4, y, 8, h);
+            ctx.fillStyle = 'rgba(255,255,120,0.90)';
+            ctx.fillRect(cx-2, y, 4, h);
+          }
+          ctx.globalAlpha = 0.5;
           // Ambient UV glow fill
           const dcGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.7);
-          dcGrad.addColorStop(0, 'rgba(80,120,255,0.18)');
-          dcGrad.addColorStop(1, 'rgba(40,0,120,0.04)');
+          dcGrad.addColorStop(0, 'rgba(200,200,40,0.12)');
+          dcGrad.addColorStop(1, 'rgba(80,80,0,0.02)');
           ctx.fillStyle = dcGrad;
           ctx.fillRect(x, y, w, h);
-          // UV light strips along walls — horizontal bars
-          const dcStrips = Math.max(2, Math.floor(h/55));
-          ctx.fillStyle = 'rgba(120,160,255,0.22)';
-          for (let i = 0; i < dcStrips; i++) {
-            const sy = y + 8 + i * (h / dcStrips);
-            ctx.fillRect(x+4, sy, w-8, 6);
+          // Yellow light strips along walls
+          const dcStrips = Math.max(2, Math.floor((isHoriz ? w : h)/55));
+          ctx.fillStyle = 'rgba(220,200,40,0.30)';
+          if (isHoriz) {
+            for (let i = 0; i < dcStrips; i++) {
+              const sx = x + 8 + i * (w / dcStrips);
+              ctx.fillRect(sx, y+4, 6, h-8);
+            }
+          } else {
+            for (let i = 0; i < dcStrips; i++) {
+              const sy = y + 8 + i * (h / dcStrips);
+              ctx.fillRect(x+4, sy, w-8, 6);
+            }
           }
-          // Sensor / emitter nodes — small circles along both walls
-          ctx.fillStyle = 'rgba(160,200,255,0.55)';
-          const dcNodes = Math.max(2, Math.floor(h/60));
-          for (let i = 0; i < dcNodes; i++) {
-            const ny = y + 20 + i * (h / dcNodes);
-            // Left node
-            ctx.beginPath(); ctx.arc(x+10, ny, 5, 0, Math.PI*2); ctx.fill();
-            // Right node
-            ctx.beginPath(); ctx.arc(x+w-10, ny, 5, 0, Math.PI*2); ctx.fill();
+          // Sensor / emitter nodes — yellow circles along walls
+          ctx.fillStyle = 'rgba(255,230,60,0.75)';
+          const dcNodes = Math.max(2, Math.floor((isHoriz ? w : h)/60));
+          if (isHoriz) {
+            for (let i = 0; i < dcNodes; i++) {
+              const nx = x + 20 + i * (w / dcNodes);
+              ctx.beginPath(); ctx.arc(nx, y+10, 5, 0, Math.PI*2); ctx.fill();
+              ctx.beginPath(); ctx.arc(nx, y+h-10, 5, 0, Math.PI*2); ctx.fill();
+            }
+          } else {
+            for (let i = 0; i < dcNodes; i++) {
+              const ny = y + 20 + i * (h / dcNodes);
+              ctx.beginPath(); ctx.arc(x+10, ny, 5, 0, Math.PI*2); ctx.fill();
+              ctx.beginPath(); ctx.arc(x+w-10, ny, 5, 0, Math.PI*2); ctx.fill();
+            }
           }
-          // Beam lines between left/right nodes
-          ctx.strokeStyle = 'rgba(100,160,255,0.12)'; ctx.lineWidth = 1;
-          for (let i = 0; i < dcNodes; i++) {
-            const ny = y + 20 + i * (h / dcNodes);
-            ctx.beginPath(); ctx.moveTo(x+15, ny); ctx.lineTo(x+w-15, ny); ctx.stroke();
+          // Beam lines between nodes
+          ctx.strokeStyle = 'rgba(255,220,40,0.20)'; ctx.lineWidth = 1;
+          if (isHoriz) {
+            for (let i = 0; i < dcNodes; i++) {
+              const nx = x + 20 + i * (w / dcNodes);
+              ctx.beginPath(); ctx.moveTo(nx, y+15); ctx.lineTo(nx, y+h-15); ctx.stroke();
+            }
+          } else {
+            for (let i = 0; i < dcNodes; i++) {
+              const ny = y + 20 + i * (h / dcNodes);
+              ctx.beginPath(); ctx.moveTo(x+15, ny); ctx.lineTo(x+w-15, ny); ctx.stroke();
+            }
           }
           // Central decon status panel
-          const dpW = Math.min(w-20, 48), dpH = 28;
-          ctx.fillStyle = 'rgba(20,40,80,0.7)';
+          const dpW = Math.min(Math.min(w,h)-8, 48), dpH = 28;
+          ctx.fillStyle = 'rgba(40,30,0,0.8)';
           ctx.fillRect(cx-dpW/2, cy-dpH/2, dpW, dpH);
-          ctx.strokeStyle = 'rgba(100,180,255,0.5)'; ctx.lineWidth = 1;
+          ctx.strokeStyle = 'rgba(255,220,40,0.7)'; ctx.lineWidth = 1.5;
           ctx.strokeRect(cx-dpW/2, cy-dpH/2, dpW, dpH);
-          // Status light — green = clear
-          ctx.fillStyle = 'rgba(0,255,100,0.8)';
-          ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI*2); ctx.fill();
+          // Status light — yellow = active decon
+          ctx.fillStyle = 'rgba(255,220,40,0.9)';
+          ctx.beginPath(); ctx.arc(cx, cy, 6, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = 'rgba(255,180,0,0.5)'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(cx, cy, 9, 0, Math.PI*2); ctx.stroke();
+          // Hazmat warning triangles on walls
+          for (let hw = 0; hw < 2; hw++) {
+            const hwx = isHoriz ? (hw===0 ? x+6 : x+w-22) : (hw===0 ? x+6 : x+w-22);
+            const hwy = isHoriz ? (hw===0 ? y+6 : y+6) : (hw===0 ? y+6 : y+h-38);
+            ctx.strokeStyle = 'rgba(255,200,0,0.55)'; ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(hwx+8, hwy);
+            ctx.lineTo(hwx+16, hwy+14);
+            ctx.lineTo(hwx, hwy+14);
+            ctx.closePath(); ctx.stroke();
+            ctx.fillStyle = 'rgba(255,180,0,0.25)';
+            ctx.beginPath();
+            ctx.moveTo(hwx+8, hwy);
+            ctx.lineTo(hwx+16, hwy+14);
+            ctx.lineTo(hwx, hwy+14);
+            ctx.closePath(); ctx.fill();
+            ctx.fillStyle = 'rgba(255,220,0,0.70)';
+            ctx.fillRect(hwx+7, hwy+4, 2, 5);
+            ctx.beginPath(); ctx.arc(hwx+8, hwy+12, 1.2, 0, Math.PI*2); ctx.fill();
+          }
+          // Footprint guide arrows on floor (yellow)
+          ctx.fillStyle = 'rgba(220,200,40,0.25)';
+          for (let fp = 0; fp < 3; fp++) {
+            const fy3 = isHoriz ? (y+h*0.25+fp*(h*0.5/3)) : (y+h*0.25+fp*(h*0.5/3));
+            const fx3 = isHoriz ? (x+w*0.25+fp*(w*0.25)) : cx;
+            ctx.beginPath();
+            ctx.moveTo(fx3-8, fy3); ctx.lineTo(fx3, fy3+8); ctx.lineTo(fx3+8, fy3);
+            ctx.lineTo(fx3+5, fy3); ctx.lineTo(fx3, fy3+5); ctx.lineTo(fx3-5, fy3);
+            ctx.closePath(); ctx.fill();
+          }
+          // Emergency shower station
+          ctx.strokeStyle = 'rgba(255,220,60,0.40)'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(cx, y+h-28); ctx.lineTo(cx, y+h-12); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx-10, y+h-28); ctx.lineTo(cx+10, y+h-28); ctx.stroke();
+          // Spray drops (yellow-tinted)
+          ctx.fillStyle = 'rgba(220,200,60,0.30)';
+          for (let wd = 0; wd < 5; wd++) {
+            ctx.beginPath(); ctx.arc(cx-8+wd*4, y+h-22, 1, 0, Math.PI*2); ctx.fill();
+          }
           break;
         }
         case 'Office': {
@@ -6260,6 +6738,37 @@
           for (let r = 0; r < 2; r++) for (let c = 0; c < 3; c++) {
             ctx.fillRect(ptX+5+c*10, ptY+ptH*0.62+r*8, 8, 5);
           }
+          // Whiteboard on right wall with diagrams
+          ctx.fillStyle = '#dce8f0'; ctx.fillRect(x+w-26, y+10, 20, h*0.45);
+          ctx.strokeStyle = '#aabbc8'; ctx.lineWidth = 1; ctx.strokeRect(x+w-26, y+10, 20, h*0.45);
+          // Diagram lines on board
+          ctx.strokeStyle = 'rgba(20,40,120,0.25)'; ctx.lineWidth = 0.8;
+          ctx.beginPath(); ctx.moveTo(x+w-24, y+20); ctx.lineTo(x+w-8, y+20); ctx.stroke();
+          ctx.beginPath(); ctx.arc(x+w-16, y+34, 6, 0, Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x+w-24, y+46); ctx.lineTo(x+w-8, y+52); ctx.stroke();
+          ctx.fillStyle = 'rgba(220,60,60,0.3)'; ctx.fillRect(x+w-20, y+58, 8, 3);
+          // Coffee station (bottom-left corner)
+          const coffX = x+8, coffY = y+h-34;
+          ctx.fillStyle = '#3a2010'; ctx.fillRect(coffX, coffY, 22, 26);
+          ctx.strokeStyle = '#5a3020'; ctx.lineWidth = 0.8; ctx.strokeRect(coffX, coffY, 22, 26);
+          // Coffee mug
+          ctx.fillStyle = '#c0a060'; ctx.fillRect(coffX+12, coffY+10, 8, 10);
+          ctx.strokeStyle = '#a08040'; ctx.lineWidth = 0.8; ctx.strokeRect(coffX+12, coffY+10, 8, 10);
+          ctx.strokeStyle = '#a08040';
+          ctx.beginPath(); ctx.arc(coffX+22, coffY+15, 3, -Math.PI/2, Math.PI/2); ctx.stroke(); // handle
+          // Steam wisps
+          ctx.strokeStyle = 'rgba(220,200,180,0.25)'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(coffX+15, coffY+10); ctx.bezierCurveTo(coffX+13, coffY+5, coffX+17, coffY+2, coffX+15, coffY-2); ctx.stroke();
+          // Machine body
+          ctx.fillStyle = '#2a2030'; ctx.fillRect(coffX, coffY, 10, 18);
+          ctx.fillStyle = 'rgba(255,80,40,0.25)'; ctx.beginPath(); ctx.arc(coffX+5, coffY+8, 3, 0, Math.PI*2); ctx.fill();
+          // Wall clock (top-center)
+          ctx.strokeStyle = '#4a4a60'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(cx, y+10, 8, 0, Math.PI*2); ctx.stroke();
+          ctx.fillStyle = '#2a2a38'; ctx.beginPath(); ctx.arc(cx, y+10, 7, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#8888aa'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(cx, y+10); ctx.lineTo(cx+2, y+5); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx, y+10); ctx.lineTo(cx+5, y+11); ctx.stroke();
           break;
         }
         case 'Lookout': {
@@ -6364,16 +6873,24 @@
             drawFloorTiles(fx, fy, f.w, f.h);
             // Room border glow
             ctx.strokeStyle = selectedMap === 'polus' ? 'rgba(255,255,255,0.15)' :
-                              selectedMap === 'skeld' ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.04)';
-            ctx.lineWidth = selectedMap === 'polus' ? 2 : selectedMap === 'skeld' ? 1.5 : 1;
+                              selectedMap === 'skeld' ? 'rgba(255,255,255,0.07)' :
+                              selectedMap === 'mira'  ? 'rgba(80,200,255,0.18)' :
+                                                        'rgba(255,255,255,0.04)';
+            ctx.lineWidth = selectedMap === 'polus' ? 2 : selectedMap === 'mira' ? 2 : selectedMap === 'skeld' ? 1.5 : 1;
             ctx.strokeRect(fx + 2, fy + 2, f.w - 4, f.h - 4);
+            // MIRA: second inner glow line for depth
+            if (selectedMap === 'mira') {
+              ctx.strokeStyle = 'rgba(60,160,220,0.08)';
+              ctx.lineWidth = 4;
+              ctx.strokeRect(fx + 6, fy + 6, f.w - 12, f.h - 12);
+            }
             // Room decorations
             drawRoomDecor(rooms[i].name, fx, fy, f.w, f.h);
           } else {
             // Hallway
             ctx.fillStyle = selectedMap === 'polus' ? '#f4b8bc' :
                             selectedMap === 'fungle' ? 'rgba(80,120,60,0.06)' :
-                            selectedMap === 'mira' ? 'rgba(100,180,255,0.04)' :
+                            selectedMap === 'mira' ? '#101e30' :
                             selectedMap === 'skeld' ? 'rgba(160,200,240,0.10)' :
                             'rgba(150,150,180,0.06)';
             ctx.fillRect(fx, fy, f.w, f.h);
