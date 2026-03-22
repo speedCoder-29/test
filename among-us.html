@@ -2990,6 +2990,7 @@
     let hsSeekTimer = 0;         // countdown for final seek phase
     let hsPingEffects = [];      // [{x,y,r,maxR,alpha}] visual ping ripples on canvas
     let playerHsVentUses = 0;    // player's remaining vent uses in H&S
+    let hsInitialFreezeTimer = 0; // 10-second freeze at game start before seeker can move
     let playerHsShieldUsed = false;
     let hsGhostTargetIdx = 0;
     let hsGhostPingCooldown = 0;
@@ -3343,7 +3344,7 @@
       trackerTarget = null; trackerTimer = 0;
       shifterEvidence = [];
       mushroomMixupTimer = 0;
-      hideSeekTimer = 10800; finalHide = false; hideSeekPingTimer = 0;
+      hideSeekTimer = 10800; finalHide = false; hideSeekPingTimer = 0; hsInitialFreezeTimer = 0;
       document.getElementById('ghostMsg').style.display = 'none';
       document.getElementById('hideSeekTimerHUD').style.display = 'none';
       document.getElementById('dangerMeter').style.display = 'none';
@@ -3396,8 +3397,12 @@
         hideSeekPingTimer = 0;
         hsPingEffects = [];
         hsHidePhase = true;
+        hsInitialFreezeTimer = 10 * 60; // 10-second freeze before seeker can move
+        // Freeze seeker immediately
+        for (const npc of npcs) { if (npc.hsSeeker || npc.isImpostor) npc.hsFreeze = true; }
+        if (isImpostor) player.hsFrozen = true;
         document.getElementById('hideSeekTimerHUD').style.display = 'block';
-        document.getElementById('hideSeekTimerHUD').textContent = '🫣 HIDE! ' + gameSettings.hideSeekHideTime + ':00';
+        document.getElementById('hideSeekTimerHUD').textContent = '🏃 RUN!  10';
         document.getElementById('hsTimerBar').style.display = 'block';
         document.getElementById('hsTimerBarFill').style.width = '100%';
         document.getElementById('hsTimerBarFill').style.background = '#4caf50';
@@ -3654,7 +3659,7 @@
           if (!task.done && dist(player, task) < 60) { canUse = true; break; }
         }
         if (!canUse && selectedMap === 'skeld' && dist(player, SECURITY_MONITOR) < 70) canUse = true;
-        if (!canUse && dist(player, EMERGENCY_BTN) < 60 && emergencyCooldown <= 0 && !sabotage.active) canUse = true;
+        if (!canUse && gameMode !== 'hideseek' && dist(player, EMERGENCY_BTN) < 60 && emergencyCooldown <= 0 && !sabotage.active) canUse = true;
         if (!canUse && !isImpostor && sabotage.active) {
           const fixLoc = mapTheme.sabFix ? mapTheme.sabFix[sabotage.type] : null;
           if (fixLoc && dist(player, fixLoc) < 80) canUse = true;
@@ -3662,9 +3667,14 @@
       }
       btnUse.disabled = !canUse;
 
-      // REPORT — always shown, dim when no nearby body
+      // REPORT — hidden in H&S, otherwise dim when no nearby body
       const btnReport = document.getElementById('btn-report');
-      btnReport.disabled = !deadBodies.some(b => dist(player, b) < 80);
+      if (gameMode === 'hideseek') {
+        btnReport.style.display = 'none';
+      } else {
+        btnReport.style.display = '';
+        btnReport.disabled = !deadBodies.some(b => dist(player, b) < 80);
+      }
 
       // KILL — impostor only
       const btnKill = document.getElementById('btn-kill');
@@ -4065,6 +4075,8 @@
           break;
 
         case AI_STATE.DOING_TASK:
+          // Block task progress during H&S final hide (hiders can't do tasks in final phase)
+          if (gameMode === 'hideseek' && finalHide && !npc.fixingSabotage) { npc.state = AI_STATE.IDLE; break; }
           npc.taskProgress += npc.fixingSabotage ? 1.8 : npc.personality.taskSpeed;
           npc.stateTimer++;
           if (npc.taskProgress >= 100) {
@@ -4579,6 +4591,7 @@
     }
 
     function triggerNPCReport(reporter) {
+      if (gameMode === 'hideseek') return;
       deadBodies.forEach(b => b.reported = true);
       document.getElementById('reportScreen').style.display = 'flex';
       setTimeout(() => {
@@ -4625,11 +4638,13 @@
         // Heavy suspicion toward killer
         npc.suspicion[killerName] = (npc.suspicion[killerName] || 0) + 80;
 
-        // Witness immediately reports — override current state
+        // Witness immediately reports — override current state (not in H&S)
         npc.sawBody = true;
         npc.bodyLocation = { x: killerX, y: killerY };
-        npc.state = AI_STATE.REPORTING;
-        npc.panicTimer = 90; // brief panic freeze before running to report
+        if (gameMode !== 'hideseek') {
+          npc.state = AI_STATE.REPORTING;
+          npc.panicTimer = 90; // brief panic freeze before running to report
+        }
       }
     }
 
@@ -5032,6 +5047,7 @@
     // --- Player Task Progress ---
     function startPlayerTask() {
       if (isImpostor || playerDoingTask) return;
+      if (gameMode === 'hideseek' && finalHide) return; // no tasks during final hide
       for (const task of taskLocations) {
         if (task.done) continue;
         if (dist(player, task) < 60) {
@@ -5060,8 +5076,13 @@
         currentPlayerTask.done = true;
         tasksCompleted++;
         updateTaskBar();
-        if (gameMode === 'hideseek' && gameSettings.hsTasksEnabled && hideSeekTimer > 0) {
-          hideSeekTimer = Math.max(0, hideSeekTimer - gameSettings.hsTaskReduction * 60);
+        if (gameMode === 'hideseek' && gameSettings.hsTasksEnabled) {
+          // Reduce time left — seek phase timer if active, otherwise hide phase timer
+          if (finalHide && hsSeekTimer > 0) {
+            hsSeekTimer = Math.max(0, hsSeekTimer - gameSettings.hsTaskReduction * 60);
+          } else if (hsHidePhase && hideSeekTimer > 0) {
+            hideSeekTimer = Math.max(0, hideSeekTimer - gameSettings.hsTaskReduction * 60);
+          }
         }
         cancelPlayerTask();
       }
@@ -10810,7 +10831,7 @@
         if (gameSettings.hsTasksEnabled) {
           addStep('Task Count', 'Number of tasks each hider must complete', 'hsTaskCount',
             [1, 2, 3, 4, 5, 6, 8, 10], v => v + ' tasks');
-          addStep('Timer Reduction', 'Seconds subtracted from hide timer per completed task', 'hsTaskReduction',
+          addStep('Timer Reduction', 'Seconds of time left removed per completed task', 'hsTaskReduction',
             [0, 5, 10, 15, 20, 30, 45, 60], v => v === 0 ? 'None' : v + 's');
           addOptions('Task Bar (Seeker)', 'Whether the seeker can see hider task progress', 'hsTaskBarVisible',
             ['Always', 'Never'], ['Visible', 'Hidden']);
@@ -11138,31 +11159,52 @@
       if (frameCount % 60 === 0) updateActivityLog();
 
       // Hide n Seek timer
-      // Hide n Seek timer
       if (gameMode === 'hideseek') {
         const hsMaxTime = gameSettings.hideSeekHideTime * 60;
-        if (hsHidePhase && hideSeekTimer > 0) {
+
+        // ── Phase 1: Initial 10-second freeze ──
+        if (hsInitialFreezeTimer > 0) {
+          hsInitialFreezeTimer--;
+          const secsLeft = Math.ceil(hsInitialFreezeTimer / 60);
+          document.getElementById('hideSeekTimerHUD').style.display = 'block';
+          document.getElementById('hideSeekTimerHUD').textContent = secsLeft > 0 ? '🏃 RUN!  ' + secsLeft : '👁 SEEKER RELEASED!';
+          document.getElementById('hsTimerBarFill').style.background = '#4caf50';
+          document.getElementById('hsTimerBarFill').style.width = '100%';
+          // Keep seeker frozen
+          for (const npc of npcs) { if (npc.hsSeeker || npc.isImpostor) npc.hsFreeze = true; }
+          if (isImpostor) player.hsFrozen = true;
+
+          if (hsInitialFreezeTimer === 0) {
+            // Release seeker at normal speed — hide phase now begins
+            for (const npc of npcs) {
+              if (npc.hsSeeker || npc.isImpostor) {
+                npc.hsFreeze = false;
+                npc.speed = (gameSettings.playerSpeed || 1.0) * 2.2; // normal NPC speed
+                npc.killCooldown = gameSettings.seekerKillCooldown * 60;
+              }
+            }
+            if (isImpostor) player.hsFrozen = false;
+            setTimeout(() => {
+              if (hsHidePhase) document.getElementById('hideSeekTimerHUD').textContent = '🫣 HIDE & TASK  ' + Math.floor(gameSettings.hideSeekHideTime/60) + ':' + String(gameSettings.hideSeekHideTime%60).padStart(2,'0');
+            }, 1200);
+          }
+        } else if (hsHidePhase && hideSeekTimer > 0) {
+          // ── Phase 2: Hide & Task (seeker can move, no pings, tasks allowed) ──
           hideSeekTimer--;
           const secs = Math.ceil(hideSeekTimer / 60);
           const m = Math.floor(secs / 60), s = secs % 60;
           document.getElementById('hideSeekTimerHUD').style.display = 'block';
-          document.getElementById('hideSeekTimerHUD').textContent = '🫣 HIDE! ' + m + ':' + String(s).padStart(2,'0');
-          // Update timer bar (green during hide phase)
+          document.getElementById('hideSeekTimerHUD').textContent = '🫣 HIDE & TASK  ' + m + ':' + String(s).padStart(2,'0');
           const pct = hideSeekTimer / hsMaxTime * 100;
           document.getElementById('hsTimerBarFill').style.width = pct + '%';
           document.getElementById('hsTimerBarFill').style.background = '#4caf50';
-          // Freeze all seekers during hide phase
-          for (const npc of npcs) {
-            if (npc.hsSeeker || npc.isImpostor) { npc.hsFreeze = true; }
-          }
-          if (isImpostor) {
-            // Player is seeker — freeze them during hide phase
-            player.hsFrozen = true;
-          }
         } else if (hsHidePhase && hideSeekTimer <= 0) {
-          // Hide phase ends → seek phase begins
+          // Hide phase ends → FINAL HIDE begins
           hsHidePhase = false;
           finalHide = true;
+          // Cancel any in-progress player task
+          if (playerDoingTask) cancelPlayerTask();
+          // Release and speed-boost seeker
           for (const npc of npcs) {
             if (npc.hsSeeker || npc.isImpostor) {
               npc.hsFreeze = false;
@@ -11171,7 +11213,10 @@
             }
           }
           if (isImpostor) player.hsFrozen = false;
-          document.getElementById('hideSeekTimerHUD').textContent = '🔴 SEEK!';
+          // Reset ping timer so first ping fires after hsPingInterval, not immediately
+          hideSeekPingTimer = gameSettings.hsPingInterval * 60;
+          document.getElementById('hideSeekTimerHUD').style.display = 'block';
+          document.getElementById('hideSeekTimerHUD').textContent = '🔴 FINAL HIDE!';
           document.getElementById('hsTimerBarFill').style.background = '#e53935';
           setTimeout(() => { document.getElementById('hideSeekTimerHUD').style.display = 'none'; }, 3000);
         }
@@ -11364,6 +11409,7 @@
 
     function openTaskMiniGame(task) {
       if (!task || taskModalOpen) return;
+      if (gameMode === 'hideseek' && finalHide) return;
       taskModalOpen = true;
       document.getElementById('taskModal').style.display = 'flex';
       document.getElementById('taskModalTitle').textContent = task.name || 'TASK';
@@ -11389,8 +11435,13 @@
         const task = taskLocations.find(t => t.name === doneTaskName && !t.done);
         if (task) { task.done = true; tasksCompleted++; statsTasksCompleted++; updateTaskBar(); }
         else { tasksCompleted = Math.min(tasksCompleted + 1, totalTasks); statsTasksCompleted++; updateTaskBar(); }
-        if (gameMode === 'hideseek' && gameSettings.hsTasksEnabled && hideSeekTimer > 0) {
-          hideSeekTimer = Math.max(0, hideSeekTimer - gameSettings.hsTaskReduction * 60);
+        if (gameMode === 'hideseek' && gameSettings.hsTasksEnabled) {
+          // Reduce time left — seek phase timer if active, otherwise hide phase timer
+          if (finalHide && hsSeekTimer > 0) {
+            hsSeekTimer = Math.max(0, hsSeekTimer - gameSettings.hsTaskReduction * 60);
+          } else if (hsHidePhase && hideSeekTimer > 0) {
+            hideSeekTimer = Math.max(0, hideSeekTimer - gameSettings.hsTaskReduction * 60);
+          }
         }
         closeTaskModal();
       }, 800);
