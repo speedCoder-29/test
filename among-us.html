@@ -2910,7 +2910,8 @@
     let gameMode = 'classic';
 
     // Hide n Seek
-    let hideSeekTimer = 10800; // 3 minutes * 60fps
+    let hideSeekTimer = 3600;
+    let hsHidePhase = false;
     let finalHide = false;
     let hideSeekPingTimer = 0;
 
@@ -3104,6 +3105,11 @@
       maxMeetings: 0,               // 0 = unlimited
       ghostVoting: false,           // ghosts can vote
       doorsSabotage: true,          // impostors can close doors
+      hideSeekHideTime: 60,      // seconds for hide phase
+      seekerSpeed: 2.0,
+      seekerVision: 2.0,
+      seekerKillCooldown: 10,
+      hsTasksEnabled: true,
       votingTime: 120,             // seconds to vote before auto-skip
       taskbarMode: 'Always',       // 'Always', 'Meetings', 'Never'
       soundEnabled: true,
@@ -3269,14 +3275,27 @@
 
       // Hide n Seek setup
       if (gameMode === 'hideseek') {
-        // First NPC becomes Seeker (impostor-role for kill ability)
-        for (const npc of npcs) { npc.isImpostor = false; npc.role = 'crewmate'; }
-        if (!isImpostor) {
-          // Make one NPC the seeker
-          npcs[0].isImpostor = true; npcs[0].role = 'impostor';
-          npcs[0].killCooldown = 60;
+        // Force player to be hider unless forced otherwise
+        if (gameSettings.forcedPlayerRole === 'random' || gameSettings.forcedPlayerRole === 'crewmate') {
+          isImpostor = false;
+          playerRole = 'crewmate';
+          player.isImpostor = false;
+          player.role = 'crewmate';
         }
+        // Reset all NPCs to hiders
+        for (const npc of npcs) { npc.isImpostor = false; npc.role = 'crewmate'; npc.hsSeeker = false; }
+        if (!isImpostor) {
+          // Pick one NPC as seeker
+          npcs[0].isImpostor = true; npcs[0].role = 'impostor'; npcs[0].hsSeeker = true;
+          npcs[0].killCooldown = gameSettings.seekerKillCooldown * 60;
+          npcs[0].speed = (gameSettings.playerSpeed || 1.0) * gameSettings.seekerSpeed * 2.0;
+        }
+        hideSeekTimer = gameSettings.hideSeekHideTime * 60;
+        finalHide = false;
+        hideSeekPingTimer = 0;
+        hsHidePhase = true;
         document.getElementById('hideSeekTimerHUD').style.display = 'block';
+        document.getElementById('hideSeekTimerHUD').textContent = '🫣 HIDE! ' + gameSettings.hideSeekHideTime + ':00';
       }
 
       // Calculate total NPC tasks for the task bar
@@ -3307,6 +3326,7 @@
       witnessedVisualTasks = new Set();
       inMeeting = false;
       visionRadius = VISION_NORMAL * (isImpostor ? gameSettings.impVision : gameSettings.crewVision);
+      if (gameMode === 'hideseek' && isImpostor) visionRadius = gameSettings.seekerVision * VISION_NORMAL;
       doorCooldown = 0;
       for (const d of doors) { d.closed = false; d.timer = 0; }
       if (selectedMap === 'polus') initSnow();
@@ -3639,7 +3659,7 @@
         taskBar.style.visibility = 'visible';
       }
 
-      if (totalPct >= 100 && !gameOver) endGame(false);
+      if (totalPct >= 100 && !gameOver) { if (gameMode === 'hideseek') endGameHS(false); else endGame(false); }
     }
 
     function dist(a, b) {
@@ -3996,6 +4016,7 @@
 
     // Impostor AI
     function updateImpostorAI(npc) {
+      if (npc.hsFreeze) return;
       npc.killCooldown = Math.max(0, npc.killCooldown - 1);
 
       const nearby = getNearbyEntities(npc, 250);
@@ -4358,7 +4379,7 @@
           // Check if impostor win condition met (ghost crewmates count as dead)
           const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length;
           const aliveImpostors = npcs.filter(n => n.alive && n.isImpostor).length + (isImpostor ? 1 : 0);
-          if (aliveImpostors >= aliveCrewmates) endGame(true);
+          if (gameMode !== 'hideseek' && aliveImpostors >= aliveCrewmates) endGame(true);
         } else {
           // Impostor player becomes ghost impostor
           isGhost = true;
@@ -4391,7 +4412,7 @@
 
         const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length + ((!isImpostor && (player.alive || isGhost)) ? 0 : 0) + (!isImpostor && player.alive ? 1 : 0);
         const aliveImpostors = npcs.filter(n => n.alive && n.isImpostor).length + (player.alive && isImpostor ? 1 : 0);
-        if (aliveImpostors >= aliveCrewmates) endGame(true);
+        if (gameMode !== 'hideseek' && aliveImpostors >= aliveCrewmates) endGame(true);
       }
       // Queue a post-kill sabotage after a short delay to create chaos/cover
       if (!sabotage.active && sabotage.cooldown === 0) {
@@ -4884,6 +4905,7 @@
 
     // --- Emergency Meeting ---
     function callEmergency() {
+      if (gameMode === 'hideseek') return;
       if (isGhost || emergencyCooldown > 0 || gameOver) return;
       if (gameSettings.maxMeetings > 0 && meetingCount >= gameSettings.maxMeetings) return;
       if (dist(player, EMERGENCY_BTN) < 60) {
@@ -5255,7 +5277,7 @@
               setTimeout(() => { msg.style.display = 'none'; }, 3500);
               const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length;
               const aliveImpostors = npcs.filter(n => n.alive && n.isImpostor).length;
-              if (aliveImpostors >= aliveCrewmates) endGame(true);
+              if (gameMode !== 'hideseek' && aliveImpostors >= aliveCrewmates) endGame(true);
             }
             break;
           }
@@ -5274,7 +5296,7 @@
             notifyWitnessesOfKill(player.name, player.x, player.y, npc.name);
             const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length;
             const aliveImpostors = npcs.filter(n => n.alive && n.isImpostor).length + 1;
-            if (aliveImpostors >= aliveCrewmates) endGame(true);
+            if (gameMode !== 'hideseek' && aliveImpostors >= aliveCrewmates) endGame(true);
             break;
           }
         }
@@ -5282,6 +5304,7 @@
     }
 
     function reportBody() {
+      if (gameMode === 'hideseek') return;
       if (isGhost) return; // ghosts cannot report
       if (gameSettings.maxMeetings > 0 && meetingCount >= gameSettings.maxMeetings) return;
       for (const body of deadBodies) {
@@ -5985,10 +6008,35 @@
             witnessedVisualTasks = new Set();
             const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length + (player.alive && !isImpostor ? 1 : 0);
             const aliveImpostors = npcs.filter(n => n.alive && n.isImpostor).length + (player.alive && isImpostor ? 1 : 0);
-            if (aliveImpostors >= aliveCrewmates) endGame(true);
+            if (gameMode !== 'hideseek' && aliveImpostors >= aliveCrewmates) endGame(true);
           }, 3000);
         }
       }
+    }
+
+    function endGameHS(seekerWins) {
+      gameOver = true;
+      document.getElementById('dangerMeter').style.display = 'none';
+      document.getElementById('hideSeekTimerHUD').style.display = 'none';
+      const title = document.getElementById('winTitle');
+      const desc = document.getElementById('winDesc');
+      if (seekerWins) {
+        playSfx('lose');
+        title.textContent = isImpostor ? '🎉 SEEKER WINS!' : '💀 CAUGHT!';
+        title.style.color = '#ff4444';
+        desc.textContent = isImpostor ? 'You hunted down all the hiders!' : 'The seeker caught everyone. Better luck next time!';
+      } else {
+        playSfx('win');
+        title.textContent = isImpostor ? '😔 HIDERS WIN' : '🎉 HIDERS WIN!';
+        title.style.color = '#4ecdc4';
+        desc.textContent = isImpostor ? 'The hiders completed all tasks before you caught them!' : 'You completed all tasks and survived!';
+      }
+      const statsEl = document.getElementById('gameStats');
+      if (statsEl) {
+        statsEl.innerHTML = 'Tasks: ' + statsTasksCompleted + '/' + totalTasks + ' completed<br>' +
+          'Hiders caught: ' + npcs.filter(n => !n.isImpostor && !n.alive).length;
+      }
+      document.getElementById('gameOverScreen').style.display = 'flex';
     }
 
     function endGame(impostorWins) {
@@ -10463,6 +10511,18 @@
       addToggle('Tracker', 'Track a player on minimap', 'roleTracker');
       addToggle('Sheriff', 'Can kill — dies if shoots crewmate', 'roleSheriff');
 
+  if (gameMode === 'hideseek') {
+    addSection('👁️ Hide n Seek');
+    addStep('Hide Time', 'Seconds hiders have to hide before seeker is released', 'hideSeekHideTime',
+      [15, 30, 45, 60, 90, 120, 180, 300], v => { const m = Math.floor(v/60), s = v%60; return s ? m+':'+String(s).padStart(2,'0') : m+'m'; });
+    addStep('Seeker Speed', 'Speed multiplier for the seeker', 'seekerSpeed',
+      [1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0], v => v + 'x');
+    addStep('Seeker Vision', 'Vision radius multiplier for the seeker', 'seekerVision',
+      [1.0, 1.5, 2.0, 2.5, 3.0], v => v + 'x');
+    addStep('Seeker Kill Cooldown', 'Seconds between kills for the seeker', 'seekerKillCooldown',
+      [5, 10, 15, 20, 30], v => v + 's');
+    addToggle('Hider Tasks', 'Hiders complete tasks to win', 'hsTasksEnabled');
+  }
       addSection('🔊 Audio');
       addToggle('Sound Effects', 'Synthesized in-game sounds', 'soundEnabled');
     }
@@ -10710,36 +10770,50 @@
 
       // Hide n Seek timer
       if (gameMode === 'hideseek') {
-        if (hideSeekTimer > 0) {
+        if (hsHidePhase && hideSeekTimer > 0) {
           hideSeekTimer--;
           const secs = Math.ceil(hideSeekTimer / 60);
           const m = Math.floor(secs / 60), s = secs % 60;
           document.getElementById('hideSeekTimerHUD').style.display = 'block';
-          document.getElementById('hideSeekTimerHUD').textContent = '⏱ ' + m + ':' + String(s).padStart(2,'0');
-          if (hideSeekTimer <= 0 && !finalHide) {
-            finalHide = true;
-            document.getElementById('hideSeekTimerHUD').textContent = '🔴 FINAL HIDE!';
+          document.getElementById('hideSeekTimerHUD').textContent = '🫣 HIDE! ' + m + ':' + String(s).padStart(2,'0');
+          // Freeze all seekers during hide phase
+          for (const npc of npcs) {
+            if (npc.hsSeeker || npc.isImpostor) { npc.hsFreeze = true; }
           }
-        }
-        // Final hide: ping seeker every 6s
-        if (finalHide) {
-          hideSeekPingTimer--;
-          if (hideSeekPingTimer <= 0) {
-            hideSeekPingTimer = 360; // 6s
-            // Boost seeker NPC speed
-            for (const npc of npcs) {
-              if (npc.isImpostor && npc.alive) npc.speed = 4.0;
+          if (isImpostor) {
+            // Player is seeker — freeze them during hide phase
+            player.hsFrozen = true;
+          }
+        } else if (hsHidePhase && hideSeekTimer <= 0) {
+          // Hide phase ends → seek phase begins
+          hsHidePhase = false;
+          finalHide = true;
+          for (const npc of npcs) {
+            if (npc.hsSeeker || npc.isImpostor) {
+              npc.hsFreeze = false;
+              npc.speed = (gameSettings.playerSpeed || 1.0) * gameSettings.seekerSpeed * 2.0;
+              npc.killCooldown = gameSettings.seekerKillCooldown * 60;
             }
           }
+          if (isImpostor) player.hsFrozen = false;
+          document.getElementById('hideSeekTimerHUD').textContent = '🔴 SEEK!';
+          setTimeout(() => { document.getElementById('hideSeekTimerHUD').style.display = 'none'; }, 3000);
         }
-        // Danger meter: if player is hider (not impostor), check seeker distance
+        // Check H&S win conditions
+        if (!hsHidePhase) {
+          const aliveHiders = npcs.filter(n => !n.isImpostor && n.alive).length + (!isImpostor && !isGhost ? 1 : 0);
+          if (aliveHiders === 0 && !gameOver) {
+            endGameHS(true); // seeker wins
+          }
+        }
+        // Danger meter: show distance to seeker if player is hider
         if (!isImpostor && !isGhost) {
           const seeker = npcs.find(n => n.isImpostor && n.alive);
           if (seeker) {
             const d = dist(player, seeker);
             const dmEl = document.getElementById('dangerMeter');
             const dmBar = document.getElementById('dangerMeterBar');
-            if (d < 300) {
+            if (d < 300 && !hsHidePhase) {
               dmEl.style.display = 'block';
               const pct = Math.round(((300 - d) / 300) * 100);
               dmBar.style.width = pct + '%';
