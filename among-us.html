@@ -18,7 +18,7 @@
     #startScreen .tagline { color: #aaa; margin-bottom: 14px; font-size: 16px; }
     .color-picker { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; justify-content: center; max-width: 320px; }
     .color-swatch {
-      width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+      width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
       border: 3px solid transparent; transition: transform 0.15s, border-color 0.15s;
     }
     .color-swatch:hover { transform: scale(1.15); }
@@ -329,29 +329,29 @@
     .ai-typing { color: #4ecdc4; font-style: italic; }
 
     /* Hat picker */
-    .hat-picker { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; max-width: 360px; }
+    .hat-picker { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; justify-content: center; max-width: 360px; }
     .hat-swatch {
-      width: 44px; height: 44px; border-radius: 8px; cursor: pointer; background: rgba(255,255,255,0.08);
+      width: 36px; height: 36px; border-radius: 7px; cursor: pointer; background: rgba(255,255,255,0.08);
       border: 2px solid transparent; transition: transform 0.15s, border-color 0.15s;
-      display: flex; align-items: center; justify-content: center; font-size: 20px;
+      display: flex; align-items: center; justify-content: center; font-size: 17px;
     }
     .hat-swatch:hover { transform: scale(1.15); }
     .hat-swatch.selected { border-color: #fff; transform: scale(1.2); }
 
     /* Pet picker */
-    .pet-picker { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; max-width: 360px; }
+    .pet-picker { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; justify-content: center; max-width: 360px; }
     .pet-swatch {
-      width: 44px; height: 44px; border-radius: 8px; cursor: pointer; background: rgba(255,255,255,0.08);
+      width: 36px; height: 36px; border-radius: 7px; cursor: pointer; background: rgba(255,255,255,0.08);
       border: 2px solid transparent; transition: transform 0.15s, border-color 0.15s;
-      display: flex; align-items: center; justify-content: center; font-size: 20px;
+      display: flex; align-items: center; justify-content: center; font-size: 17px;
     }
     .pet-swatch:hover { transform: scale(1.15); }
     .pet-swatch.selected { border-color: #fff; transform: scale(1.2); }
 
     /* Game mode selector */
-    .mode-select { display: flex; gap: 12px; margin-bottom: 20px; justify-content: center; }
+    .mode-select { display: flex; gap: 10px; margin-bottom: 12px; justify-content: center; }
     .mode-card {
-      width: 130px; padding: 10px 8px; border-radius: 10px; cursor: pointer;
+      width: 115px; padding: 8px 6px; border-radius: 10px; cursor: pointer;
       border: 3px solid transparent; text-align: center; transition: transform 0.15s, border-color 0.15s;
       background: rgba(255,255,255,0.06);
     }
@@ -441,30 +441,49 @@
   <div id="startScreen">
     <h1>AMONG US</h1>
     <p class="tagline">Complete tasks or find the impostor!</p>
-    <p style="color:#888; margin-bottom:8px; font-size:14px;">Choose game mode:</p>
-    <div class="mode-select" id="modeSelect">
-      <div class="mode-card selected" id="modeClassic" onclick="selectMode('classic')">
-        <div class="mode-icon">🚀</div>
-        <div class="mode-name">Classic</div>
-        <div class="mode-desc">Find the impostor</div>
+
+    <!-- Row 1: Mode + Map side by side -->
+    <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;justify-content:center;margin-bottom:12px;">
+      <div>
+        <p style="color:#888;margin-bottom:6px;font-size:13px;text-align:center;">Mode</p>
+        <div class="mode-select" id="modeSelect" style="margin-bottom:0;">
+          <div class="mode-card selected" id="modeClassic" onclick="selectMode('classic')">
+            <div class="mode-icon">🚀</div>
+            <div class="mode-name">Classic</div>
+            <div class="mode-desc">Find the impostor</div>
+          </div>
+          <div class="mode-card" id="modeHideSeek" onclick="selectMode('hideseek')">
+            <div class="mode-icon">👁️</div>
+            <div class="mode-name">Hide n Seek</div>
+            <div class="mode-desc">Run from the seeker</div>
+          </div>
+        </div>
       </div>
-      <div class="mode-card" id="modeHideSeek" onclick="selectMode('hideseek')">
-        <div class="mode-icon">👁️</div>
-        <div class="mode-name">Hide n Seek</div>
-        <div class="mode-desc">Run from the seeker</div>
+      <div>
+        <p style="color:#888;margin-bottom:6px;font-size:13px;text-align:center;">Map</p>
+        <div class="map-select" id="mapSelect" style="margin-bottom:0;"></div>
       </div>
     </div>
-    <p style="color:#888; margin-bottom:10px; font-size:14px;">Choose your color:</p>
-    <div class="color-picker" id="colorPicker"></div>
-    <p style="color:#888; margin-bottom:6px; font-size:14px;">Choose a hat:</p>
-    <div class="hat-picker" id="hatPicker"></div>
-    <p style="color:#888; margin-bottom:6px; font-size:14px;">Choose a pet:</p>
-    <div class="pet-picker" id="petPicker"></div>
-    <p style="color:#888; margin-bottom:6px; font-size:14px;">Choose a skin:</p>
-    <div class="pet-picker" id="skinPicker"></div>
-    <p style="color:#888; margin-bottom:8px; font-size:14px;">Choose a map:</p>
-    <div class="map-select" id="mapSelect"></div>
+
+    <!-- Row 2: Name input -->
     <input type="text" id="nameInput" placeholder="Enter your name" maxlength="12">
+
+    <!-- Row 3: Color picker -->
+    <p style="color:#888;margin-bottom:4px;font-size:13px;">Color:</p>
+    <div class="color-picker" id="colorPicker"></div>
+
+    <!-- Row 4: Cosmetics collapsible -->
+    <button onclick="document.getElementById('cosmeticsPanel').style.display=document.getElementById('cosmeticsPanel').style.display==='none'?'block':'none'" style="background:rgba(255,255,255,0.07);border:1px solid #444;border-radius:6px;color:#aaa;padding:5px 16px;cursor:pointer;font-size:12px;margin-bottom:6px;">🎨 Customize (hat / pet / skin)</button>
+    <div id="cosmeticsPanel" style="display:none;text-align:center;">
+      <p style="color:#888;margin-bottom:4px;font-size:13px;">Hat:</p>
+      <div class="hat-picker" id="hatPicker"></div>
+      <p style="color:#888;margin-bottom:4px;font-size:13px;">Pet:</p>
+      <div class="pet-picker" id="petPicker"></div>
+      <p style="color:#888;margin-bottom:4px;font-size:13px;">Skin:</p>
+      <div class="pet-picker" id="skinPicker"></div>
+    </div>
+
+    <!-- Row 5: AI config -->
     <div id="aiConfigSection">
       <button id="aiConfigToggle" onclick="toggleAIConfig()">🤖 AI Players — 0 configured</button>
       <div id="aiConfigPanel">
@@ -473,8 +492,9 @@
         <p class="ai-section-note">AI players use real LLM APIs to chat and vote during meetings. Up to 9 AI players. API keys are never sent anywhere except directly to the provider.</p>
       </div>
     </div>
+
     <button id="startBtn">PLAY</button>
-    <p class="controls-info">WASD to move | E to interact | R to report | Space to kill | V to vent | C to close doors | Q to sabotage (impostor)</p>
+    <p class="controls-info">WASD/arrows · E interact · R report · Space kill · V vent · Q sabotage</p>
   </div>
 
   <div id="taskBar"><div id="taskFill"></div><div id="taskText">Tasks: 0/8</div></div>
@@ -739,6 +759,14 @@
       };
       colorPicker.appendChild(swatch);
     });
+
+    // Hats & Pets (defined here so picker init below can reference them)
+    let selectedHat = 'none';
+    let selectedPet = 'none';
+    const HATS = ['none','tophat','propeller','hardhat','crown','santa','cowboy','party','headphones'];
+    const HAT_ICONS = { none:'🚫', tophat:'🎩', propeller:'🌀', hardhat:'🪖', crown:'👑', santa:'🎅', cowboy:'🤠', party:'🎉', headphones:'🎧' };
+    const PETS = ['none','mini_crewmate','hamster','dog','alien','robot'];
+    const PET_ICONS = { none:'🚫', mini_crewmate:'👶', hamster:'🐹', dog:'🐶', alien:'👽', robot:'🤖' };
 
     // Hat picker
     const hatPicker = document.getElementById('hatPicker');
@@ -2873,13 +2901,7 @@
     let trackerTarget = null;
     let trackerTimer = 0;
 
-    // Hats & Pets
-    let selectedHat = 'none';
-    let selectedPet = 'none';
-    const HATS = ['none','tophat','propeller','hardhat','crown','santa','cowboy','party','headphones'];
-    const HAT_ICONS = { none:'🚫', tophat:'🎩', propeller:'🌀', hardhat:'🪖', crown:'👑', santa:'🎅', cowboy:'🤠', party:'🎉', headphones:'🎧' };
-    const PETS = ['none','mini_crewmate','hamster','dog','alien','robot'];
-    const PET_ICONS = { none:'🚫', mini_crewmate:'👶', hamster:'🐹', dog:'🐶', alien:'👽', robot:'🤖' };
+    // Hats & Pets (defined earlier near picker init)
 
     // Shapeshifter evidence
     let shifterEvidence = [];
