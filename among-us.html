@@ -4142,6 +4142,36 @@
       if (npc.hsFreeze) return;
       npc.killCooldown = Math.max(0, npc.killCooldown - 1);
 
+      // H&S seeker: always chase and kill the nearest hider, no witness checks
+      if (npc.hsSeeker && gameMode === 'hideseek') {
+        // Find nearest alive hider (player or NPC)
+        let nearestTarget = null, nearestDist = Infinity;
+        for (const h of npcs) {
+          if (!h.isImpostor && h.alive) {
+            const d = dist(npc, h);
+            if (d < nearestDist) { nearestDist = d; nearestTarget = h; }
+          }
+        }
+        // Also check player if player is a hider and alive
+        if (!isImpostor && player.alive && !isGhost) {
+          const pd = dist(npc, player);
+          if (pd < nearestDist) { nearestDist = pd; nearestTarget = player; }
+        }
+        if (!nearestTarget) return;
+        // Always move toward nearest hider
+        moveToward(npc, nearestTarget.x, nearestTarget.y);
+        npc.state = AI_STATE.HUNTING;
+        npc.companionTarget = nearestTarget;
+        // Kill immediately when in range — no witness check
+        const killRange = 60;
+        if (nearestDist < killRange && npc.killCooldown <= 0) {
+          performNPCKill(npc, nearestTarget);
+          npc.killCooldown = gameSettings.seekerKillCooldown * 60;
+          // Don't flee — immediately start chasing the next target
+        }
+        return;
+      }
+
       const nearby = getNearbyEntities(npc, 250);
       // Phantom players are invisible — can't be targeted
       const nearbyCrewmates = nearby.filter(e => !e.isImpostor && e.alive && !(e === player && playerRole === 'phantom' && abilityActive));
@@ -10744,107 +10774,124 @@
       }
 
       // ═══════════════════════════════════════════
-      addSection('👥 Players');
-      addStep('Impostors', '1–3 impostors per game', 'impostors', [1, 2, 3]);
-      addStep('Player Count', 'Total players in game (including you)', 'playerCount', [4,5,6,7,8,9,10,11,12,13,14,15]);
-      addOptions('NPC Difficulty', 'How smart and aggressive NPCs behave', 'npcDifficulty', ['Easy','Normal','Hard']);
+      if (gameMode === 'hideseek') {
+        // ── Hide & Seek settings only ──
+        addSection('👥 Players');
+        addStep('Player Count', 'Total players in game (including you)', 'playerCount', [4,5,6,7,8,9,10,11,12,13,14,15]);
+        addOptions('NPC Difficulty', 'How smart the hider NPCs behave', 'npcDifficulty', ['Easy','Normal','Hard']);
 
-      addSection('🏃 Movement');
-      addStep('Player Speed', 'Movement speed multiplier', 'playerSpeed',
-        [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 2.5, 3.0], v => v + 'x');
-      addStep('Crewmate Vision', 'Crewmate sight radius', 'crewVision',
-        [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0], v => v + 'x');
-      addStep('Impostor Vision', 'Impostor sight radius', 'impVision',
-        [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 2.5, 3.0], v => v + 'x');
-      addStep('Ghost Vision', 'Ghost sight radius (0.5–3×)', 'ghostVision',
-        [0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 99], v => v >= 99 ? 'Full' : v + 'x');
+        addSection('🏃 Movement');
+        addStep('Player Speed', 'Movement speed multiplier for all players', 'playerSpeed',
+          [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 2.5, 3.0], v => v + 'x');
+        addStep('Ghost Vision', 'Vision for ghosts (dead hiders)', 'ghostVision',
+          [0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 99], v => v >= 99 ? 'Full' : v + 'x');
+        addToggle('Kill Flash', 'Brief red flash when the seeker kills nearby', 'killFlash');
 
-      addSection('🔪 Kill');
-      addStep('Kill Cooldown', 'Seconds between kills', 'killCooldown',
-        [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60], v => v + 's');
-      addStep('Initial Kill Cooldown', 'First kill grace period', 'initialKillCooldown',
-        [0, 5, 10, 15, 20, 30, 45, 60], v => v === 0 ? 'None' : v + 's');
-      addOptions('Kill Distance', 'Range required to kill', 'killDistance', ['Short', 'Medium', 'Long']);
-      addToggle('Kill Flash', 'Brief red flash when a kill happens near you', 'killFlash');
+        addSection('👁️ Hide n Seek');
+        addStep('Hide Time', 'How long hiders have to hide before seeker is released', 'hideSeekHideTime',
+          [15, 30, 45, 60, 90, 120, 180, 300], v => { const m = Math.floor(v/60), s = v%60; return s ? m+':'+String(s).padStart(2,'0') : m+'m'; });
+        addStep('Seek Phase Time', 'Time limit for seeker to catch all hiders — hiders win if they survive', 'finalHideTime',
+          [30, 45, 60, 90, 120, 180, 300], v => { const m = Math.floor(v/60), s = v%60; return s ? m+':'+String(s).padStart(2,'0') : m+'m'; });
+        addStep('Seeker Speed', 'Speed multiplier for the seeker during seek phase', 'seekerSpeed',
+          [1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0], v => v + 'x');
+        addStep('Seeker Vision', 'Vision radius multiplier for the seeker', 'seekerVision',
+          [1.0, 1.5, 2.0, 2.5, 3.0], v => v + 'x');
+        addStep('Seeker Kill Cooldown', 'Seconds between kills for the seeker', 'seekerKillCooldown',
+          [1, 5, 10, 15, 20, 30], v => v + 's');
+        addStep('Hider Vision', 'Vision radius multiplier for hiders', 'hiderVision',
+          [0.5, 0.75, 1.0, 1.5, 2.0], v => v + 'x');
+        addStep('Hider Vent Uses', 'How many times each hider can use vents to escape', 'hiderVentUses',
+          [0, 1, 2, 3, 5], v => v === 0 ? 'Off' : v + ' uses');
+        addStep('Ping Interval', 'How often the seeker gets location pings of all hiders (seek phase)', 'hsPingInterval',
+          [3, 5, 6, 8, 10, 15, 30], v => v + 's');
 
-      addSection('✅ Tasks');
-      addStep('Task Count', 'Number of tasks per crewmate', 'tasks', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-      addOptions('Task Bar Updates', 'When task bar is visible', 'taskbarMode', ['Always', 'Meetings', 'Never']);
-      addToggle('Visual Tasks', 'Some tasks show animations others can witness', 'visualTasks');
+        addSection('✅ Hider Tasks');
+        addToggle('Hider Tasks', 'Hiders completing tasks reduces the hide timer (all done = hiders win)', 'hsTasksEnabled');
+        if (gameSettings.hsTasksEnabled) {
+          addStep('Task Count', 'Number of tasks each hider must complete', 'hsTaskCount',
+            [1, 2, 3, 4, 5, 6, 8, 10], v => v + ' tasks');
+          addStep('Timer Reduction', 'Seconds subtracted from hide timer per completed task', 'hsTaskReduction',
+            [0, 5, 10, 15, 20, 30, 45, 60], v => v === 0 ? 'None' : v + 's');
+          addOptions('Task Bar (Seeker)', 'Whether the seeker can see hider task progress', 'hsTaskBarVisible',
+            ['Always', 'Never'], ['Visible', 'Hidden']);
+          addToggle('Visual Tasks', 'Some tasks show visible animations', 'visualTasks');
+        }
+      } else {
+        // ── Classic mode settings ──
+        addSection('👥 Players');
+        addStep('Impostors', '1–3 impostors per game', 'impostors', [1, 2, 3]);
+        addStep('Player Count', 'Total players in game (including you)', 'playerCount', [4,5,6,7,8,9,10,11,12,13,14,15]);
+        addOptions('NPC Difficulty', 'How smart and aggressive NPCs behave', 'npcDifficulty', ['Easy','Normal','Hard']);
 
-      addSection('📣 Meetings');
-      addStep('Emergency Meetings', 'Calls per player per game', 'emergencyMeetings', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
-      addStep('Emergency Cooldown', 'Seconds between emergency calls', 'emergencyCooldown',
-        [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60], v => v + 's');
-      addStep('Max Meetings', 'Total meetings allowed per game (0 = unlimited)', 'maxMeetings',
-        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], v => v === 0 ? '∞' : String(v));
+        addSection('🏃 Movement');
+        addStep('Player Speed', 'Movement speed multiplier', 'playerSpeed',
+          [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 2.5, 3.0], v => v + 'x');
+        addStep('Crewmate Vision', 'Crewmate sight radius', 'crewVision',
+          [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0], v => v + 'x');
+        addStep('Impostor Vision', 'Impostor sight radius', 'impVision',
+          [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 2.5, 3.0], v => v + 'x');
+        addStep('Ghost Vision', 'Ghost sight radius (0.5–3×)', 'ghostVision',
+          [0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 99], v => v >= 99 ? 'Full' : v + 'x');
 
-      addSection('🗳️ Voting');
-      addStep('Discussion Time', 'Seconds to chat before voting', 'discussionTime',
-        [0, 15, 30, 45, 60, 90, 120], v => v + 's');
-      addStep('Voting Time', 'Seconds to vote (auto-skip when 0)', 'votingTime',
-        [15, 30, 45, 60, 90, 120, 150, 180, 300], v => v + 's');
-      addToggle('Confirm Ejects', 'Reveal role of ejected player', 'confirmEjects');
-      addToggle('Anonymous Votes', 'Hide who voted for whom', 'anonymousVotes');
-      addToggle('Ghost Voting', 'Ghosts can vote (their vote counts)', 'ghostVoting');
+        addSection('🔪 Kill');
+        addStep('Kill Cooldown', 'Seconds between kills', 'killCooldown',
+          [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60], v => v + 's');
+        addStep('Initial Kill Cooldown', 'First kill grace period', 'initialKillCooldown',
+          [0, 5, 10, 15, 20, 30, 45, 60], v => v === 0 ? 'None' : v + 's');
+        addOptions('Kill Distance', 'Range required to kill', 'killDistance', ['Short', 'Medium', 'Long']);
+        addToggle('Kill Flash', 'Brief red flash when a kill happens near you', 'killFlash');
 
-      addSection('💥 Sabotage');
-      addStep('Sabotage Cooldown', 'Seconds between sabotages', 'sabotageCooldown',
-        [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60], v => v + 's');
-      addToggle('Doors Sabotage', 'Impostors can close doors (C key)', 'doorsSabotage');
+        addSection('✅ Tasks');
+        addStep('Task Count', 'Number of tasks per crewmate', 'tasks', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+        addOptions('Task Bar Updates', 'When task bar is visible', 'taskbarMode', ['Always', 'Meetings', 'Never']);
+        addToggle('Visual Tasks', 'Some tasks show animations others can witness', 'visualTasks');
 
-      addSection('🎭 Your Role');
-      addStep('Force Role', 'Choose your role instead of random', 'forcedPlayerRole',
-        ['random','crewmate','engineer','scientist','detective','noisemaker','guardian_angel','tracker','sheriff','jester','impostor','shapeshifter','phantom','viper'],
-        v => v === 'random' ? '🎲 Random' : (ROLE_LABELS[v] || v.toUpperCase()));
+        addSection('📣 Meetings');
+        addStep('Emergency Meetings', 'Calls per player per game', 'emergencyMeetings', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        addStep('Emergency Cooldown', 'Seconds between emergency calls', 'emergencyCooldown',
+          [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60], v => v + 's');
+        addStep('Max Meetings', 'Total meetings allowed per game (0 = unlimited)', 'maxMeetings',
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], v => v === 0 ? '∞' : String(v));
 
-      addSection('👹 Impostor Roles');
-      addToggle('Shapeshifter', 'Disguise as another player for 15s', 'roleShapeshifter');
-      addToggle('Phantom', 'Turn invisible for 10s — untargetable', 'rolePhantom');
-      addToggle('Viper', 'Place poison traps (8s kill delay)', 'roleViper');
-      addStep('Viper Body Dissolve', 'Seconds for viper kill body to fade (0 = never)', 'viperDissolveTime',
-        [0, 5, 10, 15, 20, 30, 45, 60], v => v === 0 ? 'Never' : v + 's');
+        addSection('🗳️ Voting');
+        addStep('Discussion Time', 'Seconds to chat before voting', 'discussionTime',
+          [0, 15, 30, 45, 60, 90, 120], v => v + 's');
+        addStep('Voting Time', 'Seconds to vote (auto-skip when 0)', 'votingTime',
+          [15, 30, 45, 60, 90, 120, 150, 180, 300], v => v + 's');
+        addToggle('Confirm Ejects', 'Reveal role of ejected player', 'confirmEjects');
+        addToggle('Anonymous Votes', 'Hide who voted for whom', 'anonymousVotes');
+        addToggle('Ghost Voting', 'Ghosts can vote (their vote counts)', 'ghostVoting');
 
-      addSection('🌿 Neutral Roles');
-      addToggle('Jester', 'Wins if voted out — acts suspicious', 'roleJester');
+        addSection('💥 Sabotage');
+        addStep('Sabotage Cooldown', 'Seconds between sabotages', 'sabotageCooldown',
+          [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60], v => v + 's');
+        addToggle('Doors Sabotage', 'Impostors can close doors (C key)', 'doorsSabotage');
 
-      addSection('👨‍🚀 Crewmate Roles');
-      addToggle('Engineer', 'Can use vents to travel', 'roleEngineer');
-      addToggle('Scientist', 'Toggle real-time vitals panel', 'roleScientist');
-      addToggle('Detective', 'Scan area for impostors (20s cooldown)', 'roleDetective');
-      addToggle('Noisemaker', 'Broadcasts alert when killed', 'roleNoisemaker');
-      addToggle('Guardian Angel', 'Protect a crewmate after death', 'roleGuardianAngel');
-      addToggle('Tracker', 'Track a player on minimap', 'roleTracker');
-      addToggle('Sheriff', 'Can kill — dies if shoots crewmate', 'roleSheriff');
+        addSection('🎭 Your Role');
+        addStep('Force Role', 'Choose your role instead of random', 'forcedPlayerRole',
+          ['random','crewmate','engineer','scientist','detective','noisemaker','guardian_angel','tracker','sheriff','jester','impostor','shapeshifter','phantom','viper'],
+          v => v === 'random' ? '🎲 Random' : (ROLE_LABELS[v] || v.toUpperCase()));
 
-  if (gameMode === 'hideseek') {
-    addSection('👁️ Hide n Seek');
-    addStep('Hide Time', 'How long hiders have to hide before seeker is released', 'hideSeekHideTime',
-      [15, 30, 45, 60, 90, 120, 180, 300], v => { const m = Math.floor(v/60), s = v%60; return s ? m+':'+String(s).padStart(2,'0') : m+'m'; });
-    addStep('Seek Phase Time', 'How long the seeker has to catch all hiders (hiders win if they survive)', 'finalHideTime',
-      [30, 45, 60, 90, 120, 180, 300], v => { const m = Math.floor(v/60), s = v%60; return s ? m+':'+String(s).padStart(2,'0') : m+'m'; });
-    addStep('Seeker Speed', 'Speed multiplier for the seeker during seek phase', 'seekerSpeed',
-      [1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0], v => v + 'x');
-    addStep('Seeker Vision', 'Vision radius multiplier for the seeker', 'seekerVision',
-      [1.0, 1.5, 2.0, 2.5, 3.0], v => v + 'x');
-    addStep('Seeker Kill Cooldown', 'Seconds between kills for the seeker', 'seekerKillCooldown',
-      [1, 5, 10, 15, 20, 30], v => v + 's');
-    addStep('Hider Vision', 'Vision radius multiplier for hiders', 'hiderVision',
-      [0.5, 0.75, 1.0, 1.5, 2.0], v => v + 'x');
-    addStep('Hider Vent Uses', 'How many times each hider can use vents to escape', 'hiderVentUses',
-      [0, 1, 2, 3, 5], v => v === 0 ? 'Off' : v + ' uses');
-    addStep('Ping Interval', 'How often the seeker gets location pings of all hiders (seek phase)', 'hsPingInterval',
-      [3, 5, 6, 8, 10, 15, 30], v => v + 's');
-    addToggle('Hider Tasks', 'Hiders completing tasks reduces the hide timer (all done = hiders win)', 'hsTasksEnabled');
-    if (gameSettings.hsTasksEnabled) {
-      addStep('Task Count', 'Number of tasks each hider must complete', 'hsTaskCount',
-        [1, 2, 3, 4, 5, 6, 8, 10], v => v + ' tasks');
-      addStep('Timer Reduction', 'Seconds subtracted from hide timer per completed task', 'hsTaskReduction',
-        [0, 5, 10, 15, 20, 30, 45, 60], v => v === 0 ? 'None' : v + 's');
-      addOptions('Task Bar (Seeker)', 'Whether the seeker can see task completion progress', 'hsTaskBarVisible',
-        ['Always', 'Never'], ['Visible', 'Hidden']);
-    }
-  }
+        addSection('👹 Impostor Roles');
+        addToggle('Shapeshifter', 'Disguise as another player for 15s', 'roleShapeshifter');
+        addToggle('Phantom', 'Turn invisible for 10s — untargetable', 'rolePhantom');
+        addToggle('Viper', 'Place poison traps (8s kill delay)', 'roleViper');
+        addStep('Viper Body Dissolve', 'Seconds for viper kill body to fade (0 = never)', 'viperDissolveTime',
+          [0, 5, 10, 15, 20, 30, 45, 60], v => v === 0 ? 'Never' : v + 's');
+
+        addSection('🌿 Neutral Roles');
+        addToggle('Jester', 'Wins if voted out — acts suspicious', 'roleJester');
+
+        addSection('👨‍🚀 Crewmate Roles');
+        addToggle('Engineer', 'Can use vents to travel', 'roleEngineer');
+        addToggle('Scientist', 'Toggle real-time vitals panel', 'roleScientist');
+        addToggle('Detective', 'Scan area for impostors (20s cooldown)', 'roleDetective');
+        addToggle('Noisemaker', 'Broadcasts alert when killed', 'roleNoisemaker');
+        addToggle('Guardian Angel', 'Protect a crewmate after death', 'roleGuardianAngel');
+        addToggle('Tracker', 'Track a player on minimap', 'roleTracker');
+        addToggle('Sheriff', 'Can kill — dies if shoots crewmate', 'roleSheriff');
+      }
+
       addSection('🔊 Audio');
       addToggle('Sound Effects', 'Synthesized in-game sounds', 'soundEnabled');
     }
