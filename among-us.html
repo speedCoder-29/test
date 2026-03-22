@@ -578,6 +578,30 @@
       transition: background 0.15s;
     }
     .pause-btn:hover { background: rgba(255,255,255,0.2); }
+
+    /* ===== MULTIPLAYER STYLES ===== */
+    #mpCodeInput:focus { border-color: #4ecdc4 !important; box-shadow: 0 0 8px rgba(78,205,196,0.3); }
+    #mpLobbyBar { backdrop-filter: blur(8px); }
+    .mp-player-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 4px 6px; border-radius: 6px; transition: background 0.1s;
+    }
+    .mp-player-row:hover { background: rgba(255,255,255,0.05); }
+    .mp-player-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+    .mp-player-name { color: #e0e0e0; font-size: 13px; flex: 1; }
+    .mp-player-host { color: #ffd700; font-size: 10px; letter-spacing: 1px; }
+    .mp-player-you  { color: #4ecdc4; font-size: 10px; letter-spacing: 1px; }
+    @keyframes mpToastFade {
+      0%   { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      15%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+      80%  { opacity: 1; }
+      100% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    }
+    .mp-toast-anim { animation: mpToastFade 3s ease forwards; }
+    .mp-status-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; }
+    .mp-status-dot.connected    { background:#4ecdc4; }
+    .mp-status-dot.disconnected { background:#888; }
+    .mp-status-dot.error        { background:#ff4444; }
   </style>
 </head>
 <body>
@@ -636,6 +660,53 @@
         <div id="aiPlayerRows"></div>
         <button id="addAIPlayerBtn" onclick="addAIPlayer()">+ Add AI Player</button>
         <p class="ai-section-note">AI players use real LLM APIs to chat and vote during meetings. Up to 9 AI players. API keys are never sent anywhere except directly to the provider.</p>
+      </div>
+    </div>
+
+    <!-- MULTIPLAYER PANEL (optional — collapsed by default) -->
+    <div id="mpSection" style="width:100%;max-width:420px;margin-bottom:12px;">
+      <button id="mpToggleBtn" onclick="toggleMPSection()"
+        style="background:rgba(78,205,196,0.12);border:2px solid #4ecdc4;border-radius:8px;
+               color:#4ecdc4;font-size:14px;padding:8px 20px;cursor:pointer;width:100%;
+               font-weight:bold;letter-spacing:1px;transition:background 0.15s;">
+        🌐 Multiplayer (optional)
+      </button>
+      <div id="mpPanel" style="display:none;background:rgba(0,0,0,0.6);border:1px solid #2a4a4a;
+           border-radius:0 0 10px 10px;padding:14px 16px;text-align:center;">
+        <div id="mpStatus" style="color:#888;font-size:12px;margin-bottom:10px;">
+          Not connected — Solo mode active
+        </div>
+        <button id="mpCreateBtn" onclick="mpCreateLobby()"
+          style="padding:9px 22px;background:linear-gradient(135deg,#117f2d,#0d6122);color:#fff;
+                 border:none;border-radius:8px;cursor:pointer;font-weight:bold;font-size:14px;
+                 margin-bottom:8px;width:100%;">Create Lobby</button>
+        <div style="display:flex;gap:8px;margin-bottom:8px;">
+          <input id="mpCodeInput" type="text" maxlength="6" placeholder="Enter 6-char code"
+            style="flex:1;padding:8px 12px;font-size:14px;background:rgba(255,255,255,0.1);
+                   border:1px solid #555;border-radius:6px;color:#fff;text-transform:uppercase;
+                   letter-spacing:2px;outline:none;" oninput="this.value=this.value.toUpperCase()">
+          <button onclick="mpJoinLobby()"
+            style="padding:8px 16px;background:rgba(78,205,196,0.15);border:2px solid #4ecdc4;
+                   border-radius:6px;color:#4ecdc4;font-weight:bold;cursor:pointer;font-size:14px;">
+            Join
+          </button>
+        </div>
+        <div id="mpLobbyInfo" style="display:none;">
+          <div style="background:rgba(78,205,196,0.08);border:1px solid #4ecdc4;border-radius:8px;
+                      padding:10px;margin-bottom:8px;">
+            <div style="color:#4ecdc4;font-size:11px;letter-spacing:1px;margin-bottom:4px;">LOBBY CODE</div>
+            <div id="mpLobbyCode" style="color:#fff;font-size:30px;font-weight:bold;letter-spacing:6px;font-family:monospace;"></div>
+            <button onclick="mpCopyLink()"
+              style="background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 10px;
+                     border-radius:4px;cursor:pointer;margin-top:4px;">📋 Copy invite link</button>
+          </div>
+          <div id="mpPlayerList" style="text-align:left;max-height:130px;overflow-y:auto;margin-bottom:8px;font-size:13px;"></div>
+          <button onclick="mpLeaveLobby()"
+            style="padding:6px 18px;background:rgba(197,17,17,0.2);border:1px solid #c51111;
+                   border-radius:6px;color:#ff7777;cursor:pointer;font-size:12px;width:100%;">
+            Leave Lobby
+          </button>
+        </div>
       </div>
     </div>
 
@@ -2882,7 +2953,10 @@
     const DOOR_COOLDOWN = 900; // 15 seconds between closings
     let doorCooldown = 0;
 
+    let loadedMapId = null; // track last loaded map to avoid re-building walkGrid unnecessarily
+
     function loadMap(mapId) {
+      if (loadedMapId === mapId) return; // already loaded, skip expensive rebuild
       const m = MAPS[mapId];
       MAP_W = m.width;
       MAP_H = m.height;
@@ -2911,6 +2985,7 @@
       minimapCanvas.height = Math.round(180 * (MAP_H / MAP_W));
       // Build walkable grid for pathfinding
       buildWalkableGrid();
+      loadedMapId = mapId;
     }
 
     function buildWalkableGrid() {
@@ -2949,6 +3024,7 @@
         document.querySelectorAll('.map-card').forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
         selectedMap = id;
+        loadedMapId = null; // invalidate cache so next initDropship preloads the new map
       };
       mapSelect.appendChild(card);
     });
@@ -3110,6 +3186,485 @@
     let dropshipCountdownFrames = 0;
     let dropshipWardrobeOpen = false;
     let dropshipHint = '';
+
+    // =====================================================
+    // ===== MULTIPLAYER MODULE (Firebase RTDB) =====
+    // =====================================================
+    //
+    // HOW TO ENABLE MULTIPLAYER:
+    //   1. Go to https://console.firebase.google.com/ and create a free project
+    //   2. Add a Web App, copy the firebaseConfig object
+    //   3. Enable Realtime Database (start in test mode or use the rules below)
+    //   4. Enable Anonymous Authentication (Authentication > Sign-in method)
+    //   5. Replace null below with your config object
+    //   6. Paste these Realtime Database security rules:
+    //      { "rules": { "lobbies": { "$c": { ".read": "auth != null", ".write": "auth != null" } } } }
+    //
+    const FIREBASE_CONFIG = null;
+    /* ---- Paste your config here to enable multiplayer, e.g.: ----
+    const FIREBASE_CONFIG = {
+      apiKey:            "AIza...",
+      authDomain:        "your-project.firebaseapp.com",
+      databaseURL:       "https://your-project-default-rtdb.firebaseio.com",
+      projectId:         "your-project",
+      storageBucket:     "your-project.appspot.com",
+      messagingSenderId: "...",
+      appId:             "..."
+    };
+    */
+
+    // --- MP runtime state ---
+    let mpApp = null, mpDb = null, mpAuth = null;
+    let mpUserId      = null;
+    let mpLobbyCode   = null;
+    let mpIsHost      = false;
+    let mpEnabled     = false;
+    let mpPlayers     = {};      // {[uid]: playerRecord} from Firebase
+    let mpLobbyMeta   = null;
+    let mpPosThrottle = 0;
+    let mpUnsubMeta   = null, mpUnsubPlayers = null;
+    let mpUnsubEvents = null, mpUnsubGame    = null;
+    let mpLastEventKey = null;
+
+    // --- Dynamic SDK loader ---
+    function mpBootstrap() {
+      if (!FIREBASE_CONFIG) {
+        mpShowToast('Set FIREBASE_CONFIG in the source to enable multiplayer.');
+        return;
+      }
+      if (mpApp) return;
+      const sdks = [
+        'https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js',
+        'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js',
+        'https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js',
+      ];
+      let loaded = 0;
+      sdks.forEach(src => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload = () => { if (++loaded === sdks.length) mpInitFirebase(); };
+        s.onerror = () => mpShowToast('Failed to load Firebase SDK. Check internet connection.');
+        document.head.appendChild(s);
+      });
+      mpUpdateStatus('Loading Firebase SDK…');
+    }
+
+    function mpInitFirebase() {
+      try {
+        mpApp  = firebase.initializeApp(FIREBASE_CONFIG);
+        mpDb   = firebase.database();
+        mpAuth = firebase.auth();
+        mpUpdateStatus('Signing in…');
+        mpAuth.signInAnonymously().then(cred => {
+          mpUserId  = cred.user.uid;
+          mpEnabled = true;
+          mpUpdateStatus('<span class="mp-status-dot connected"></span>Ready — create or join a lobby');
+          // Auto-join from URL ?lobby=CODE
+          const urlCode = new URLSearchParams(window.location.search).get('lobby');
+          if (urlCode && urlCode.length === 6) {
+            document.getElementById('mpPanel').style.display = 'block';
+            document.getElementById('mpCodeInput').value = urlCode.toUpperCase();
+            mpJoinLobby();
+          }
+        }).catch(e => mpShowToast('Auth failed: ' + e.message));
+      } catch(e) {
+        mpShowToast('Firebase init failed: ' + e.message);
+      }
+    }
+
+    // --- UI helpers ---
+    function toggleMPSection() {
+      const panel = document.getElementById('mpPanel');
+      const open  = panel.style.display !== 'none';
+      panel.style.display = open ? 'none' : 'block';
+      if (!open && !mpApp) mpBootstrap();
+    }
+
+    function mpUpdateStatus(html) {
+      const el = document.getElementById('mpStatus');
+      if (el) el.innerHTML = html;
+    }
+
+    function mpShowToast(msg) {
+      const t = document.getElementById('mpErrorToast');
+      if (!t) return;
+      t.textContent = msg;
+      t.style.display = 'block';
+      t.className = 'mp-toast-anim';
+      setTimeout(() => { t.style.display = 'none'; t.className = ''; }, 3500);
+    }
+
+    function mpShowConnecting(msg, sub) {
+      document.getElementById('mpConnectingMsg').textContent    = msg || 'Connecting…';
+      document.getElementById('mpConnectingSubMsg').textContent = sub || '';
+      document.getElementById('mpConnectingOverlay').style.display = 'flex';
+    }
+    function mpHideConnecting() {
+      document.getElementById('mpConnectingOverlay').style.display = 'none';
+    }
+
+    // --- Code generator (no ambiguous chars) ---
+    function mpGenCode() {
+      const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let code = '';
+      for (let i = 0; i < 6; i++) code += c[Math.floor(Math.random() * c.length)];
+      return code;
+    }
+
+    // --- Create lobby ---
+    async function mpCreateLobby() {
+      if (!mpEnabled) { mpBootstrap(); return; }
+      const name = document.getElementById('nameInput').value.trim() || 'Player';
+      const code = mpGenCode();
+      mpShowConnecting('Creating lobby…', 'Code: ' + code);
+      const meta = {
+        code, host: mpUserId, status: 'waiting',
+        map: selectedMap, mode: gameMode,
+        settings: JSON.parse(JSON.stringify(gameSettings)),
+        createdAt: Date.now(), countdownAt: null,
+      };
+      const me = mpBuildPlayerRecord(name, true);
+      try {
+        await mpDb.ref('lobbies/' + code).set({ meta, players: { [mpUserId]: me } });
+        mpLobbyCode = code;
+        mpIsHost    = true;
+        mpHideConnecting();
+        mpEnterLobby(code);
+        mpShowToast('Lobby created! Share code: ' + code);
+      } catch(e) {
+        mpHideConnecting();
+        mpShowToast('Could not create lobby: ' + e.message);
+      }
+    }
+
+    // --- Join lobby ---
+    async function mpJoinLobby() {
+      if (!mpEnabled) { mpBootstrap(); return; }
+      const code = (document.getElementById('mpCodeInput').value || '').trim().toUpperCase();
+      if (code.length !== 6) { mpShowToast('Enter a 6-character code.'); return; }
+      mpShowConnecting('Joining lobby…', 'Code: ' + code);
+      try {
+        const snap = await mpDb.ref('lobbies/' + code).once('value');
+        if (!snap.exists()) { mpHideConnecting(); mpShowToast('Lobby not found: ' + code); return; }
+        const d = snap.val();
+        if (d.meta.status !== 'waiting') { mpHideConnecting(); mpShowToast('That game has already started.'); return; }
+        if (Object.keys(d.players || {}).length >= 15) { mpHideConnecting(); mpShowToast('Lobby is full.'); return; }
+        // Sync host's map/mode/settings
+        selectedMap = d.meta.map;
+        gameMode    = d.meta.mode;
+        Object.assign(gameSettings, d.meta.settings || {});
+        const name = document.getElementById('nameInput').value.trim() || 'Player';
+        const me   = mpBuildPlayerRecord(name, false);
+        await mpDb.ref('lobbies/' + code + '/players/' + mpUserId).set(me);
+        mpLobbyCode = code;
+        mpIsHost    = false;
+        mpHideConnecting();
+        mpEnterLobby(code);
+        mpShowToast('Joined lobby ' + code + '!');
+      } catch(e) {
+        mpHideConnecting();
+        mpShowToast('Could not join: ' + e.message);
+      }
+    }
+
+    function mpBuildPlayerRecord(name, isHost) {
+      return {
+        id: mpUserId, name,
+        color: COLORS[selectedColor].hex, colorIndex: selectedColor,
+        hat: selectedHat, pet: selectedPet, skin: selectedSkin,
+        x: 450, y: 370, ready: false, isHost,
+        alive: true, isImpostor: false, role: 'crewmate',
+        lastSeen: Date.now(),
+      };
+    }
+
+    // --- Enter lobby (after create or join) ---
+    function mpEnterLobby(code) {
+      document.getElementById('mpLobbyInfo').style.display = 'block';
+      document.getElementById('mpCreateBtn').style.display = 'none';
+      const joinRow = document.getElementById('mpCodeInput').parentElement;
+      if (joinRow) joinRow.style.display = 'none';
+      document.getElementById('mpLobbyCode').textContent = code;
+
+      // Subscribe to player list
+      mpUnsubPlayers = mpDb.ref('lobbies/' + code + '/players');
+      mpUnsubPlayers.on('value', snap => {
+        mpPlayers = snap.val() || {};
+        mpRenderPlayerList();
+        mpUpdateLobbyBar();
+      });
+
+      // Subscribe to meta (status, settings changes from host)
+      mpUnsubMeta = mpDb.ref('lobbies/' + code + '/meta');
+      mpUnsubMeta.on('value', snap => {
+        const meta = snap.val();
+        if (!meta) return;
+        mpLobbyMeta = meta;
+        if (!mpIsHost) {
+          selectedMap = meta.map;
+          gameMode    = meta.mode;
+          Object.assign(gameSettings, meta.settings || {});
+        }
+        if (meta.status === 'countdown') mpHandleCountdown(meta);
+      });
+
+      // Presence: mark offline on disconnect
+      mpDb.ref('lobbies/' + code + '/players/' + mpUserId + '/lastSeen')
+        .onDisconnect().set(0);
+    }
+
+    // --- Render player list in start-screen panel ---
+    function mpRenderPlayerList() {
+      const el = document.getElementById('mpPlayerList');
+      if (!el) return;
+      el.innerHTML = '';
+      const entries = Object.values(mpPlayers);
+      entries.forEach(p => {
+        const row = document.createElement('div');
+        row.className = 'mp-player-row';
+        row.innerHTML =
+          `<div class="mp-player-dot" style="background:${p.color}"></div>
+           <span class="mp-player-name">${p.name || 'Player'}</span>
+           ${p.isHost ? '<span class="mp-player-host">HOST</span>' : ''}
+           ${p.id === mpUserId ? '<span class="mp-player-you">YOU</span>' : ''}`;
+        el.appendChild(row);
+      });
+      const count = entries.length;
+      mpUpdateStatus(`<span class="mp-status-dot connected"></span>Lobby <b>${mpLobbyCode}</b> · ${count} player${count !== 1 ? 's' : ''}`);
+    }
+
+    // --- Copy invite link ---
+    function mpCopyLink() {
+      const url = window.location.origin + window.location.pathname + '?lobby=' + mpLobbyCode;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => mpShowToast('Link copied! Share it with friends.'));
+      } else {
+        prompt('Copy this invite link:', url);
+      }
+    }
+
+    // --- Leave lobby ---
+    function mpLeaveLobby() {
+      if (!mpLobbyCode) return;
+      mpDb.ref('lobbies/' + mpLobbyCode + '/players/' + mpUserId).remove();
+      if (mpIsHost) mpDb.ref('lobbies/' + mpLobbyCode + '/meta/status').set('closed');
+      mpDetach();
+      mpLobbyCode = null; mpIsHost = false; mpPlayers = {}; mpLobbyMeta = null;
+      document.getElementById('mpLobbyInfo').style.display = 'none';
+      document.getElementById('mpCreateBtn').style.display = 'block';
+      const jr = document.getElementById('mpCodeInput').parentElement;
+      if (jr) jr.style.display = 'flex';
+      mpUpdateStatus('<span class="mp-status-dot disconnected"></span>Left lobby — solo mode active');
+      document.getElementById('mpLobbyBar').style.display = 'none';
+    }
+
+    function mpDetach() {
+      if (mpUnsubPlayers) { mpUnsubPlayers.off(); mpUnsubPlayers = null; }
+      if (mpUnsubMeta)    { mpUnsubMeta.off();    mpUnsubMeta    = null; }
+      if (mpUnsubEvents)  { mpUnsubEvents.off();  mpUnsubEvents  = null; }
+      if (mpUnsubGame)    { mpUnsubGame.off();     mpUnsubGame    = null; }
+    }
+
+    // --- Lobby bar shown in dropship ---
+    function mpUpdateLobbyBar() {
+      const bar = document.getElementById('mpLobbyBar');
+      if (!mpLobbyCode || !bar) return;
+      const count = Object.keys(mpPlayers).length;
+      bar.style.display = 'block';
+      document.getElementById('mpLobbyBarText').textContent =
+        'Lobby: ' + mpLobbyCode + '  ·  Players: ' + count +
+        (mpIsHost ? '  ·  You are HOST' : '');
+    }
+
+    // --- Host: push settings changes to Firebase ---
+    function mpPushSettings() {
+      if (!mpIsHost || !mpLobbyCode || !mpDb) return;
+      mpDb.ref('lobbies/' + mpLobbyCode + '/meta').update({
+        map: selectedMap, mode: gameMode,
+        settings: JSON.parse(JSON.stringify(gameSettings)),
+      });
+    }
+
+    // --- Host: trigger game start ---
+    async function mpHostStartGame() {
+      if (!mpIsHost || !mpLobbyCode) return;
+      const playerIds = Object.keys(mpPlayers);
+      const impCount  = Math.min(
+        gameMode === 'hideseek' ? 1 : gameSettings.impostors,
+        Math.floor(playerIds.length / 2)
+      );
+      const shuffled  = [...playerIds].sort(() => Math.random() - 0.5);
+      const updates   = {};
+      shuffled.forEach((id, idx) => {
+        const isImp = idx < impCount;
+        updates['lobbies/' + mpLobbyCode + '/players/' + id + '/isImpostor'] = isImp;
+        updates['lobbies/' + mpLobbyCode + '/players/' + id + '/role']       = isImp ? 'impostor' : 'crewmate';
+        updates['lobbies/' + mpLobbyCode + '/players/' + id + '/alive']      = true;
+      });
+      updates['lobbies/' + mpLobbyCode + '/meta/settings']    = JSON.parse(JSON.stringify(gameSettings));
+      updates['lobbies/' + mpLobbyCode + '/meta/map']         = selectedMap;
+      updates['lobbies/' + mpLobbyCode + '/meta/mode']        = gameMode;
+      updates['lobbies/' + mpLobbyCode + '/meta/countdownAt'] = Date.now();
+      updates['lobbies/' + mpLobbyCode + '/meta/status']      = 'countdown';
+      await mpDb.ref().update(updates);
+      // Host also starts locally (triggered by meta listener below)
+    }
+
+    // --- All clients: countdown triggered by Firebase meta status ---
+    function mpHandleCountdown(meta) {
+      if (!gameStarted) {
+        document.getElementById('startScreen').style.display = 'none';
+        gameStarted = true;
+        initDropship();
+        requestAnimationFrame(gameLoop);
+      }
+      if (!mpIsHost) {
+        selectedMap = meta.map;
+        gameMode    = meta.mode;
+        Object.assign(gameSettings, meta.settings || {});
+      }
+      dropshipCountdown       = 3;
+      dropshipCountdownFrames = 60;
+    }
+
+    // --- Called at end of init() to integrate MP with game state ---
+    function mpOnGameStart() {
+      if (!mpLobbyCode) return;
+      if (mpIsHost) mpDb.ref('lobbies/' + mpLobbyCode + '/meta/status').set('ingame');
+
+      // Apply role from Firebase
+      const me = mpPlayers[mpUserId];
+      if (me) {
+        isImpostor        = !!me.isImpostor;
+        playerRole        = me.role || (isImpostor ? 'impostor' : 'crewmate');
+        player.isImpostor = isImpostor;
+        player.role       = playerRole;
+      }
+
+      // Subscribe to events (only new ones after we connect)
+      mpLastEventKey = null;
+      const evRef = mpDb.ref('lobbies/' + mpLobbyCode + '/events').limitToLast(1);
+      evRef.once('value', snap => {
+        snap.forEach(child => { mpLastEventKey = child.key; });
+        mpUnsubEvents = mpDb.ref('lobbies/' + mpLobbyCode + '/events');
+        mpUnsubEvents.on('child_added', mpHandleEvent);
+      });
+
+      // Subscribe to remote positions
+      mpUnsubGame = mpDb.ref('lobbies/' + mpLobbyCode + '/gameState/players');
+      mpUnsubGame.on('value', snap => {
+        const states = snap.val() || {};
+        Object.entries(states).forEach(([id, st]) => {
+          if (id === mpUserId) return;
+          const npc = npcs.find(n => n.mpId === id);
+          if (!npc) return;
+          npc.x = st.x; npc.y = st.y;
+          if (st.alive === false && npc.alive) {
+            npc.alive = false;
+            deadBodies.push({ x: npc.x, y: npc.y, color: npc.color, name: npc.name });
+          }
+        });
+      });
+
+      mpPosThrottle = 0;
+    }
+
+    // --- Map remote players onto NPCs ---
+    function mpSyncNPCsFromPlayers() {
+      if (!mpLobbyCode) return;
+      const remotes = Object.values(mpPlayers).filter(p => p.id !== mpUserId);
+      remotes.forEach((remote, i) => {
+        if (i >= npcs.length) return;
+        npcs[i].mpId       = remote.id;
+        npcs[i].name       = remote.name;
+        npcs[i].color      = remote.color;
+        npcs[i].isImpostor = !!remote.isImpostor;
+        npcs[i].role       = remote.role || 'crewmate';
+        npcs[i].alive      = true;
+      });
+    }
+
+    // --- Position broadcast (throttled ~10fps) ---
+    function mpBroadcastPosition() {
+      if (!mpLobbyCode || !gameStarted || dropshipPhase || gameOver) return;
+      if (++mpPosThrottle < 6) return;
+      mpPosThrottle = 0;
+      mpDb.ref('lobbies/' + mpLobbyCode + '/gameState/players/' + mpUserId).update({
+        x: Math.round(player.x), y: Math.round(player.y), alive: player.alive, t: Date.now(),
+      });
+    }
+
+    // --- Dropship lobby position broadcast ---
+    function mpBroadcastDropshipPos() {
+      if (!mpLobbyCode || !dropshipPhase || !dropshipPlayer) return;
+      if (++mpPosThrottle < 6) return;
+      mpPosThrottle = 0;
+      mpDb.ref('lobbies/' + mpLobbyCode + '/players/' + mpUserId).update({
+        x: Math.round(dropshipPlayer.x), y: Math.round(dropshipPlayer.y), lastSeen: Date.now(),
+      });
+    }
+
+    // --- Get remote players for dropship rendering ---
+    function mpGetDropshipRemotes() {
+      if (!mpLobbyCode) return [];
+      return Object.values(mpPlayers).filter(p => p.id !== mpUserId);
+    }
+
+    // --- Broadcast a game event ---
+    function mpPublishEvent(type, targetId, data) {
+      if (!mpLobbyCode || !mpDb) return;
+      mpDb.ref('lobbies/' + mpLobbyCode + '/events').push({
+        type, actorId: mpUserId, targetId: targetId || null, data: data || null, ts: Date.now(),
+      });
+    }
+
+    // --- Handle incoming game event from Firebase ---
+    function mpHandleEvent(snap) {
+      if (!snap) return;
+      if (mpLastEventKey && snap.key <= mpLastEventKey) return;
+      mpLastEventKey = snap.key;
+      const ev = snap.val();
+      if (!ev || ev.actorId === mpUserId) return;
+      switch (ev.type) {
+        case 'kill': {
+          const npc = npcs.find(n => n.name === (ev.data && ev.data.targetName) && n.alive);
+          if (npc) { npc.alive = false; deadBodies.push({ x: npc.x, y: npc.y, color: npc.color, name: npc.name }); }
+          break;
+        }
+        case 'meeting': {
+          if (!inMeeting && !gameOver) {
+            playSfx('report');
+            const rs = document.getElementById('reportScreen');
+            rs.style.display = 'flex'; rs.classList.add('active');
+            setTimeout(() => { rs.style.display = 'none'; rs.classList.remove('active'); startVoting(null); }, 2000);
+          }
+          break;
+        }
+        case 'task': {
+          tasksCompleted = Math.min((ev.data && ev.data.total) || tasksCompleted + 1, totalTasks);
+          updateTaskBar();
+          break;
+        }
+        case 'gameover': {
+          const d = ev.data || {};
+          if      (d.mode === 'hs') endGameHS(d.seekerWins);
+          else if (d.mode === 'j')  endGameJester(false);
+          else                      endGame(!!d.impostorWins);
+          break;
+        }
+      }
+    }
+
+    // --- Host publishes game over ---
+    function mpPublishGameOver(mode, payload) {
+      if (!mpIsHost || !mpLobbyCode) return;
+      mpPublishEvent('gameover', null, { mode, ...payload });
+      mpDb.ref('lobbies/' + mpLobbyCode + '/meta/status').set('gameover');
+    }
+
+    // ===================================================
+    // ===== END MULTIPLAYER MODULE =====
+    // ===================================================
 
     // ===== AI PROVIDER CONFIGS =====
     const AI_PROVIDERS = {
@@ -3594,6 +4149,10 @@
 
       initTaskSystem();
       updateTaskBar();
+
+      // Multiplayer: sync remote players onto NPCs and subscribe to game events
+      mpSyncNPCsFromPlayers();
+      mpOnGameStart();
     }
 
     // ============ SPECIAL ROLE ABILITIES ============
@@ -5624,6 +6183,7 @@
             }
             if (npc.role === 'noisemaker') triggerNoisemakerAlert(npc);
             playSfx('kill');
+            mpPublishEvent('kill', npc.mpId || null, { victimName: npc.name, victimColor: npc.color });
             killCooldown = gameSettings.killCooldown * 60;
             killFlash = 15;
             notifyWitnessesOfKill(player.name, player.x, player.y, npc.name);
@@ -5646,6 +6206,7 @@
           statsBodiesReported++;
           deadBodies.forEach(b => b.reported = true);
           playSfx('report');
+          mpPublishEvent('meeting', null, { type: 'report', bodyColor: body.color });
           document.getElementById('reportScreen').style.display = 'flex';
           document.getElementById('reportScreen').classList.add('active');
           setTimeout(() => {
@@ -6471,6 +7032,7 @@
       }
       document.getElementById('gameOverScreen').style.display = 'flex';
       document.getElementById('gameOverScreen').classList.add('visible');
+      mpPublishGameOver('hideseek', { seekerWins });
     }
 
     function endGame(impostorWins) {
@@ -6499,6 +7061,7 @@
       }
       document.getElementById('gameOverScreen').style.display = 'flex';
       document.getElementById('gameOverScreen').classList.add('visible');
+      mpPublishGameOver('classic', { impostorWins });
     }
 
     function endGameJester(playerWasJester) {
@@ -6522,6 +7085,7 @@
       }
       document.getElementById('gameOverScreen').style.display = 'flex';
       document.getElementById('gameOverScreen').classList.add('visible');
+      mpPublishGameOver('jester', { playerWasJester });
     }
 
     // Drawing
@@ -10755,6 +11319,8 @@
 
     // ===== DROPSHIP FUNCTIONS =====
     function initDropship() {
+      loadedMapId = null; // force reload if map changed between games
+      loadMap(selectedMap); // preload map + build walkGrid NOW during lobby, not at countdown end
       dropshipPhase = true;
       dropshipCountdown = -1;
       dropshipCountdownFrames = 0;
@@ -10801,7 +11367,11 @@
         if (dropshipCountdownFrames <= 0) {
           dropshipCountdown--;
           dropshipCountdownFrames = 60;
-          if (dropshipCountdown === 0) { dropshipPhase = false; init(); return; }
+          if (dropshipCountdown === 0) {
+            dropshipPhase = false;
+            try { init(); } catch(e) { console.error('init() failed:', e); }
+            return;
+          }
         }
       }
 
@@ -11074,6 +11644,10 @@
 
     function startFromSettings() {
       closeSettings();
+      if (mpLobbyCode && mpIsHost) {
+        mpHostStartGame(); // async; countdown triggered by Firebase meta status change
+        return;
+      }
       dropshipCountdown = 3;
       dropshipCountdownFrames = 60;
     }
@@ -11227,6 +11801,11 @@
         ctx.strokeRect(highlightRect.x-3, highlightRect.y-3, highlightRect.w+6, highlightRect.h+6);
       }
 
+      // Remote multiplayer players
+      for (const rp of mpGetDropshipRemotes()) {
+        drawCrewmate(ctx, rp.x - ox, rp.y - oy, 32, 40, rp.color, rp.name, false, null);
+      }
+
       // Player
       drawCrewmate(ctx, p.x-ox, p.y-oy, p.w, p.h, p.color, p.name, true, null);
       ctx.restore();
@@ -11263,7 +11842,7 @@
       frameCount++;
       if (dropshipPhase) {
         updateDropship();
-        if (dropshipPhase) renderDropship();
+        if (dropshipPhase) { renderDropship(); mpBroadcastDropshipPos(); }
         requestAnimationFrame(gameLoop);
         return;
       }
@@ -11301,6 +11880,7 @@
         }
       }
       updatePlayer();
+      mpBroadcastPosition();
       updateNPCs();
       updateDoors();
       updateSabotage();
@@ -11575,8 +12155,8 @@
       const doneTaskName = activeMiniGame && activeMiniGame.taskName;
       setTimeout(() => {
         const task = taskLocations.find(t => t.name === doneTaskName && !t.done);
-        if (task) { task.done = true; tasksCompleted++; statsTasksCompleted++; updateTaskBar(); }
-        else { tasksCompleted = Math.min(tasksCompleted + 1, totalTasks); statsTasksCompleted++; updateTaskBar(); }
+        if (task) { task.done = true; tasksCompleted++; statsTasksCompleted++; updateTaskBar(); mpPublishEvent('task', null, { taskName: doneTaskName }); }
+        else { tasksCompleted = Math.min(tasksCompleted + 1, totalTasks); statsTasksCompleted++; updateTaskBar(); mpPublishEvent('task', null, { taskName: doneTaskName }); }
         if (gameMode === 'hideseek' && gameSettings.hsTasksEnabled && finalHide && hsSeekTimer > 0) {
           hsSeekTimer = Math.max(0, hsSeekTimer - gameSettings.hsTaskReduction * 60);
         }
@@ -12351,5 +12931,22 @@
     }
   </script>
 <div id="killFlashOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#ff0000;opacity:0;pointer-events:none;z-index:45;transition:opacity 0.3s;"></div>
+
+<!-- MULTIPLAYER OVERLAYS -->
+<div id="mpConnectingOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+     background:rgba(0,0,0,0.92);z-index:300;flex-direction:column;justify-content:center;
+     align-items:center;color:#fff;">
+  <div style="font-size:44px;margin-bottom:16px;">🌐</div>
+  <div id="mpConnectingMsg" style="font-size:22px;font-weight:bold;color:#4ecdc4;margin-bottom:8px;">Connecting...</div>
+  <div id="mpConnectingSubMsg" style="color:#666;font-size:14px;"></div>
+</div>
+<div id="mpLobbyBar" style="display:none;position:fixed;top:52px;left:50%;transform:translateX(-50%);
+     background:rgba(0,0,0,0.82);border:1px solid #4ecdc4;border-radius:8px;padding:6px 18px;
+     z-index:20;color:#fff;font-size:13px;text-align:center;pointer-events:none;">
+  <span id="mpLobbyBarText">Lobby — · Players: 0</span>
+</div>
+<div id="mpErrorToast" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+     background:rgba(20,80,60,0.95);border:1px solid #4ecdc4;border-radius:8px;padding:10px 22px;
+     color:#fff;font-size:14px;z-index:350;pointer-events:none;max-width:380px;text-align:center;"></div>
 </body>
 </html>
