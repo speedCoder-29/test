@@ -1025,10 +1025,10 @@
 
           // --- Cafeteria (octagonal: chamfered corners via angled wall pieces) ---
           w.push({ x: 970, y: 96,  w: 16, h: 104 });   // left top (y:96-200, gap y:200-280 for MedBay→Cafeteria)
-          w.push({ x: 970, y: 280, w: 16, h: 220 });   // left bottom (y:280-500)
+          w.push({ x: 970, y: 280, w: 16, h: 292 });   // left bottom (y:280-572, fills corner gap)
           w.push({ x: 970, y: 96,  w: 880, h: 16 });   // top wall
           w.push({ x: 1834, y: 96, w: 16, h: 104 });   // right top (y:96-200, gap y:200-280 for Cafeteria→Weapons)
-          w.push({ x: 1834, y: 280, w: 16, h: 220 });  // right bottom (y:280-500)
+          w.push({ x: 1834, y: 280, w: 16, h: 292 });  // right bottom (y:280-572, fills corner gap)
           // Bottom walls: central corridor gap x:1264-1380
           w.push({ x: 970,  y: 572, w: 294, h: 16 }); // bottom-left (x:970-1264)
           w.push({ x: 1380, y: 572, w: 470, h: 16 }); // bottom-right (x:1380-1850)
@@ -3874,20 +3874,26 @@
       // Stuck detection
       if (!moved || (Math.abs(npc.x - npc.lastX) < 0.5 && Math.abs(npc.y - npc.lastY) < 0.5)) {
         npc.stuckTimer++;
-        if (npc.stuckTimer > 20) {
-          // Try both perpendicular directions, pick whichever isn't blocked
-          const sign = (Math.floor(npc.stuckTimer / 20) % 2 === 0) ? 1 : -1;
+        if (npc.stuckTimer > 15) {
+          // Try both perpendicular directions
+          const sign = (Math.floor(npc.stuckTimer / 15) % 2 === 0) ? 1 : -1;
           const perpX = -my * sign;
           const perpY = mx * sign;
-          if (!tryMove(npc, perpX * 1.5, perpY * 1.5)) {
-            tryMove(npc, -perpX * 1.5, -perpY * 1.5);
+          if (!tryMove(npc, perpX * 2, perpY * 2)) {
+            tryMove(npc, -perpX * 2, -perpY * 2);
           }
         }
-        if (npc.stuckTimer > 40) {
-          // Force full repath rather than just nudging
-          npc.stuckTimer = 0;
+        if (npc.stuckTimer > 45) {
+          // Pick a completely new random target far from current position
+          const angle = Math.random() * Math.PI * 2;
+          const dist = 200 + Math.random() * 300;
+          npc.targetX = Math.max(80, Math.min(MAP_W - 80, npc.x + Math.cos(angle) * dist));
+          npc.targetY = Math.max(80, Math.min(MAP_H - 80, npc.y + Math.sin(angle) * dist));
           npc.navPath = null;
           npc.navIndex = 0;
+          npc.state = AI_STATE.WALKING_RANDOM;
+          npc.stateTimer = 80;
+          npc.stuckTimer = 0;
         }
       } else {
         npc.stuckTimer = 0;
