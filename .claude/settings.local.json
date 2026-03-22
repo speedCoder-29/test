@@ -7,7 +7,9 @@
       "WebSearch",
       "WebFetch(domain:www.scribd.com)",
       "WebFetch(domain:mobi.gg)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(find /c/Users/User/OneDrive/Documents/GitHub/test -type f -name *among* -o -name *wiki*)",
+      "WebFetch(domain:among-us.wiki.gg)"
     ]
   }
 }
