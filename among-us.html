@@ -3391,12 +3391,11 @@
         playerHsVentUses = isImpostor ? 0 : gameSettings.hiderVentUses;
         // Apply hider vision
         if (!isImpostor) visionRadius = gameSettings.hiderVision * VISION_NORMAL * gameSettings.crewVision;
-        hideSeekTimer = gameSettings.hideSeekHideTime * 60;
         hsSeekTimer = gameSettings.finalHideTime * 60;
         finalHide = false;
+        hsHidePhase = false;
         hideSeekPingTimer = 0;
         hsPingEffects = [];
-        hsHidePhase = true;
         hsInitialFreezeTimer = 10 * 60; // 10-second freeze before seeker can move
         // Freeze seeker immediately
         for (const npc of npcs) { if (npc.hsSeeker || npc.isImpostor) npc.hsFreeze = true; }
@@ -3405,7 +3404,7 @@
         document.getElementById('hideSeekTimerHUD').textContent = '🏃 RUN!  10';
         document.getElementById('hsTimerBar').style.display = 'block';
         document.getElementById('hsTimerBarFill').style.width = '100%';
-        document.getElementById('hsTimerBarFill').style.background = '#4caf50';
+        document.getElementById('hsTimerBarFill').style.background = '#e53935';
         if (!isImpostor && gameSettings.hiderVentUses > 0) {
           document.getElementById('hsVentHUD').style.display = 'block';
           document.getElementById('hsVentHUD').textContent = '🕳 VENTS: ' + playerHsVentUses;
@@ -3705,10 +3704,10 @@
         btnVent.style.display = 'none';
       }
 
-      // SABOTAGE — impostor only
+      // SABOTAGE — impostor only, never in H&S
       const btnSab = document.getElementById('btn-sabotage');
       const sabCdEl = document.getElementById('btn-sab-cd');
-      if (isImpostor) {
+      if (isImpostor && gameMode !== 'hideseek') {
         btnSab.style.display = '';
         btnSab.disabled = sabotage.active || sabotage.cooldown > 0;
         sabCdEl.textContent = sabotage.active ? 'ACTIVE' : sabotage.cooldown > 0 ? Math.ceil(sabotage.cooldown / 60) + 's' : '';
@@ -3944,6 +3943,29 @@
 
     // Crewmate AI
     function updateCrewmateAI(npc) {
+      // H&S: hiders flee from seeker when nearby
+      if (gameMode === 'hideseek' && finalHide) {
+        const seeker = npcs.find(n => n.isImpostor && n.alive);
+        const seekerDist = seeker ? dist(npc, seeker) : Infinity;
+        // Also check player if player is seeker
+        const playerSeekerDist = isImpostor && player.alive ? dist(npc, player) : Infinity;
+        const closestSeekerDist = Math.min(seekerDist, playerSeekerDist);
+        const closestSeeker = seekerDist <= playerSeekerDist ? seeker : player;
+
+        if (closestSeekerDist < 250 && closestSeeker) {
+          // Flee directly away from seeker
+          const fleeAngle = Math.atan2(npc.y - closestSeeker.y, npc.x - closestSeeker.x);
+          npc.targetX = npc.x + Math.cos(fleeAngle) * 300;
+          npc.targetY = npc.y + Math.sin(fleeAngle) * 300;
+          npc.targetX = Math.max(50, Math.min(MAP_W - 50, npc.targetX));
+          npc.targetY = Math.max(50, Math.min(MAP_H - 50, npc.targetY));
+          npc.state = AI_STATE.FLEEING;
+          npc.stateTimer = 40;
+          moveToward(npc, npc.targetX, npc.targetY);
+          return;
+        }
+      }
+
       // Awareness: track nearby players
       const nearby = getNearbyEntities(npc, 200);
       for (const e of nearby) {
@@ -4178,7 +4200,7 @@
         const killRange = 60;
         if (nearestDist < killRange && npc.killCooldown <= 0) {
           performNPCKill(npc, nearestTarget);
-          npc.killCooldown = gameSettings.seekerKillCooldown * 60;
+          npc.killCooldown = 60; // 1 second in H&S
           // Don't flee — immediately start chasing the next target
         }
         return;
@@ -4579,8 +4601,8 @@
         const aliveImpostors = npcs.filter(n => n.alive && n.isImpostor).length + (player.alive && isImpostor ? 1 : 0);
         if (gameMode !== 'hideseek' && aliveImpostors >= aliveCrewmates) endGame(true);
       }
-      // Queue a post-kill sabotage after a short delay to create chaos/cover
-      if (!sabotage.active && sabotage.cooldown === 0) {
+      // Queue a post-kill sabotage after a short delay to create chaos/cover (not in H&S)
+      if (gameMode !== 'hideseek' && !sabotage.active && sabotage.cooldown === 0) {
         const sabTypes = ['lights', 'comms', 'o2', 'reactor'];
         setTimeout(() => {
           if (!gameOver && !sabotage.active && sabotage.cooldown === 0) {
@@ -4832,6 +4854,7 @@
 
     // --- Sabotage System ---
     function npcTriggerSabotage(type) {
+      if (gameMode === 'hideseek') return;
       if (sabotage.active || sabotage.cooldown > 0 || gameOver) return;
       sabotage.active = true;
       sabotage.type = type;
@@ -5076,13 +5099,8 @@
         currentPlayerTask.done = true;
         tasksCompleted++;
         updateTaskBar();
-        if (gameMode === 'hideseek' && gameSettings.hsTasksEnabled) {
-          // Reduce time left — seek phase timer if active, otherwise hide phase timer
-          if (finalHide && hsSeekTimer > 0) {
-            hsSeekTimer = Math.max(0, hsSeekTimer - gameSettings.hsTaskReduction * 60);
-          } else if (hsHidePhase && hideSeekTimer > 0) {
-            hideSeekTimer = Math.max(0, hideSeekTimer - gameSettings.hsTaskReduction * 60);
-          }
+        if (gameMode === 'hideseek' && gameSettings.hsTasksEnabled && finalHide && hsSeekTimer > 0) {
+          hsSeekTimer = Math.max(0, hsSeekTimer - gameSettings.hsTaskReduction * 60);
         }
         cancelPlayerTask();
       }
@@ -10809,8 +10827,6 @@
         addToggle('Kill Flash', 'Brief red flash when the seeker kills nearby', 'killFlash');
 
         addSection('👁️ Hide n Seek');
-        addStep('Hide Time', 'How long hiders have to hide before seeker is released', 'hideSeekHideTime',
-          [15, 30, 45, 60, 90, 120, 180, 300], v => { const m = Math.floor(v/60), s = v%60; return s ? m+':'+String(s).padStart(2,'0') : m+'m'; });
         addStep('Seek Phase Time', 'Time limit for seeker to catch all hiders — hiders win if they survive', 'finalHideTime',
           [30, 45, 60, 90, 120, 180, 300], v => { const m = Math.floor(v/60), s = v%60; return s ? m+':'+String(s).padStart(2,'0') : m+'m'; });
         addStep('Seeker Speed', 'Speed multiplier for the seeker during seek phase', 'seekerSpeed',
@@ -10932,14 +10948,26 @@
       dropshipCountdownFrames = 60;
     }
 
+    function clearGameUI() {
+      const hide = id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; };
+      hide('sabotageHUD'); hide('sabotageBar'); hide('sabotageControls');
+      hide('hideSeekTimerHUD'); hide('hsTimerBar'); hide('hsVentHUD');
+      hide('hsHiderIcons'); hide('hsPingOverlay'); hide('hsGhostPanel'); hide('hsShieldBtn');
+      hide('dangerMeter'); hide('taskProgress'); hide('ventHint'); hide('abilityHUD');
+      hide('vitalsPanel'); hide('noisemakerAlert'); hide('ghostMsg'); hide('reportScreen');
+      hide('voteScreen'); hide('taskModal'); hide('adminMapOverlay'); hide('sabSubMenu');
+      hide('pauseMenu'); hide('gameOverScreen');
+      const role = document.getElementById('roleTag'); if (role) role.style.animation = 'none';
+      const ab = document.getElementById('actionButtons'); if (ab) ab.style.display = 'none';
+      hsPingEffects = [];
+    }
+
     function quitToMenu() {
       gamePaused = false;
       gameStarted = false;
       gameOver = false;
       inMeeting = false;
-      document.getElementById('pauseMenu').style.display = 'none';
-      document.getElementById('gameOverScreen').style.display = 'none';
-      document.getElementById('voteScreen').style.display = 'none';
+      clearGameUI();
       document.getElementById('startScreen').style.display = 'flex';
     }
 
@@ -11160,7 +11188,6 @@
 
       // Hide n Seek timer
       if (gameMode === 'hideseek') {
-        const hsMaxTime = gameSettings.hideSeekHideTime * 60;
 
         // ── Phase 1: Initial 10-second freeze ──
         if (hsInitialFreezeTimer > 0) {
@@ -11168,61 +11195,29 @@
           const secsLeft = Math.ceil(hsInitialFreezeTimer / 60);
           document.getElementById('hideSeekTimerHUD').style.display = 'block';
           document.getElementById('hideSeekTimerHUD').textContent = secsLeft > 0 ? '🏃 RUN!  ' + secsLeft : '👁 SEEKER RELEASED!';
-          document.getElementById('hsTimerBarFill').style.background = '#4caf50';
+          document.getElementById('hsTimerBarFill').style.background = '#e53935';
           document.getElementById('hsTimerBarFill').style.width = '100%';
-          // Keep seeker frozen
-          for (const npc of npcs) { if (npc.hsSeeker || npc.isImpostor) npc.hsFreeze = true; }
-          if (isImpostor) player.hsFrozen = true;
 
           if (hsInitialFreezeTimer === 0) {
-            // Release seeker at normal speed — hide phase now begins
+            // Freeze ends → directly start final hunt
+            hsHidePhase = false;
+            finalHide = true;
+            if (playerDoingTask) cancelPlayerTask();
             for (const npc of npcs) {
               if (npc.hsSeeker || npc.isImpostor) {
                 npc.hsFreeze = false;
-                npc.speed = (gameSettings.playerSpeed || 1.0) * 2.2; // normal NPC speed
-                npc.killCooldown = gameSettings.seekerKillCooldown * 60;
+                npc.speed = (gameSettings.playerSpeed || 1.0) * gameSettings.seekerSpeed * 2.0;
+                npc.killCooldown = 60; // 1 second initial cooldown in H&S
               }
             }
             if (isImpostor) player.hsFrozen = false;
-            setTimeout(() => {
-              if (hsHidePhase) document.getElementById('hideSeekTimerHUD').textContent = '🫣 HIDE & TASK  ' + Math.floor(gameSettings.hideSeekHideTime/60) + ':' + String(gameSettings.hideSeekHideTime%60).padStart(2,'0');
-            }, 1200);
+            hideSeekPingTimer = gameSettings.hsPingInterval * 60;
+            setTimeout(() => { document.getElementById('hideSeekTimerHUD').style.display = 'none'; }, 1500);
           }
-        } else if (hsHidePhase && hideSeekTimer > 0) {
-          // ── Phase 2: Hide & Task (seeker can move, no pings, tasks allowed) ──
-          hideSeekTimer--;
-          const secs = Math.ceil(hideSeekTimer / 60);
-          const m = Math.floor(secs / 60), s = secs % 60;
-          document.getElementById('hideSeekTimerHUD').style.display = 'block';
-          document.getElementById('hideSeekTimerHUD').textContent = '🫣 HIDE & TASK  ' + m + ':' + String(s).padStart(2,'0');
-          const pct = hideSeekTimer / hsMaxTime * 100;
-          document.getElementById('hsTimerBarFill').style.width = pct + '%';
-          document.getElementById('hsTimerBarFill').style.background = '#4caf50';
-        } else if (hsHidePhase && hideSeekTimer <= 0) {
-          // Hide phase ends → FINAL HIDE begins
-          hsHidePhase = false;
-          finalHide = true;
-          // Cancel any in-progress player task
-          if (playerDoingTask) cancelPlayerTask();
-          // Release and speed-boost seeker
-          for (const npc of npcs) {
-            if (npc.hsSeeker || npc.isImpostor) {
-              npc.hsFreeze = false;
-              npc.speed = (gameSettings.playerSpeed || 1.0) * gameSettings.seekerSpeed * 2.0;
-              npc.killCooldown = gameSettings.seekerKillCooldown * 60;
-            }
-          }
-          if (isImpostor) player.hsFrozen = false;
-          // Reset ping timer so first ping fires after hsPingInterval, not immediately
-          hideSeekPingTimer = gameSettings.hsPingInterval * 60;
-          document.getElementById('hideSeekTimerHUD').style.display = 'block';
-          document.getElementById('hideSeekTimerHUD').textContent = '🔴 FINAL HIDE!';
-          document.getElementById('hsTimerBarFill').style.background = '#e53935';
-          setTimeout(() => { document.getElementById('hideSeekTimerHUD').style.display = 'none'; }, 3000);
         }
 
-        // Final seek phase: countdown until hiders win
-        if (finalHide && !hsHidePhase && !gameOver) {
+        // ── Phase 2: Final Hunt (seeker active, pings, no tasks) ──
+        if (finalHide && !gameOver) {
           hsSeekTimer--;
           const pct = Math.max(0, hsSeekTimer / (gameSettings.finalHideTime * 60) * 100);
           document.getElementById('hsTimerBarFill').style.width = pct + '%';
@@ -11266,8 +11261,8 @@
           if (hsPingEffects[i].alpha <= 0) hsPingEffects.splice(i, 1);
         }
 
-        // Check H&S win conditions
-        if (!hsHidePhase) {
+        // Check H&S win conditions (only once hunt has started)
+        if (finalHide) {
           const aliveHiders = npcs.filter(n => !n.isImpostor && n.alive).length + (!isImpostor && !isGhost ? 1 : 0);
           if (aliveHiders === 0 && !gameOver) {
             updateHsHiderIcons();
@@ -11284,7 +11279,7 @@
             const d = dist(player, seeker);
             const dmEl = document.getElementById('dangerMeter');
             const dmBar = document.getElementById('dangerMeterBar');
-            if (d < 400 && !hsHidePhase) {
+            if (d < 400 && finalHide) {
               dmEl.style.display = 'block';
               const pct = Math.round(((400 - d) / 400) * 100);
               dmBar.style.width = pct + '%';
@@ -11390,7 +11385,7 @@
     });
 
     document.getElementById('restartBtn').addEventListener('click', () => {
-      document.getElementById('gameOverScreen').style.display = 'none';
+      clearGameUI();
       gameOver = false;
       initDropship();
       requestAnimationFrame(gameLoop);
@@ -11435,13 +11430,8 @@
         const task = taskLocations.find(t => t.name === doneTaskName && !t.done);
         if (task) { task.done = true; tasksCompleted++; statsTasksCompleted++; updateTaskBar(); }
         else { tasksCompleted = Math.min(tasksCompleted + 1, totalTasks); statsTasksCompleted++; updateTaskBar(); }
-        if (gameMode === 'hideseek' && gameSettings.hsTasksEnabled) {
-          // Reduce time left — seek phase timer if active, otherwise hide phase timer
-          if (finalHide && hsSeekTimer > 0) {
-            hsSeekTimer = Math.max(0, hsSeekTimer - gameSettings.hsTaskReduction * 60);
-          } else if (hsHidePhase && hideSeekTimer > 0) {
-            hideSeekTimer = Math.max(0, hideSeekTimer - gameSettings.hsTaskReduction * 60);
-          }
+        if (gameMode === 'hideseek' && gameSettings.hsTasksEnabled && finalHide && hsSeekTimer > 0) {
+          hsSeekTimer = Math.max(0, hsSeekTimer - gameSettings.hsTaskReduction * 60);
         }
         closeTaskModal();
       }, 800);
