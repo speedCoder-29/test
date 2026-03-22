@@ -5,7 +5,7 @@
   <title>Among Us</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #000; overflow: hidden; font-family: Arial, sans-serif; }
+    body { background: #000; overflow: hidden; font-family: 'Segoe UI', system-ui, Arial, sans-serif; }
     canvas { display: block; }
 
     #startScreen {
@@ -14,8 +14,35 @@
       justify-content: flex-start; align-items: center; color: #fff; z-index: 100;
       overflow-y: auto; padding: 20px 16px 30px;
     }
-    #startScreen h1 { font-size: 52px; color: #c51111; text-shadow: 3px 3px 0 #000; margin-bottom: 6px; }
-    #startScreen .tagline { color: #aaa; margin-bottom: 14px; font-size: 16px; }
+    @keyframes starDrift {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-60px); }
+    }
+    #startScreen::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 15%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 75% 45%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(2px 2px at 20% 85%, rgba(255,255,255,0.2) 0%, transparent 100%),
+        radial-gradient(2px 2px at 65% 70%, rgba(255,255,255,0.2) 0%, transparent 100%);
+      pointer-events: none; z-index: 0; animation: starDrift 8s ease-in-out infinite alternate;
+    }
+    #startScreen > * { position: relative; z-index: 1; }
+    @keyframes titlePop {
+      0%   { transform: scale(0.7) translateY(-20px); opacity: 0; }
+      60%  { transform: scale(1.05) translateY(4px); opacity: 1; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    #startScreen h1 { font-size: 52px; color: #c51111; text-shadow: 3px 3px 0 #000; margin-bottom: 6px; animation: titlePop 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    #startScreen .tagline { color: #aaa; margin-bottom: 14px; font-size: 16px; animation: fadeUp 0.5s 0.2s both; }
     .color-picker { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; justify-content: center; max-width: 320px; }
     .color-swatch {
       width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
@@ -28,12 +55,23 @@
       background: rgba(255,255,255,0.1); color: #fff; text-align: center; width: 250px;
       outline: none; margin-bottom: 12px;
     }
-    #nameInput:focus { border-color: #c51111; }
-    #startBtn {
-      padding: 15px 50px; font-size: 22px; background: #c51111; color: #fff;
-      border: none; border-radius: 8px; cursor: pointer; font-weight: bold;
+    #nameInput:focus {
+      border-color: #c51111;
+      box-shadow: 0 0 12px rgba(197,17,17,0.35);
     }
-    #startBtn:hover { background: #e01515; }
+    #startBtn {
+      padding: 15px 50px; font-size: 22px; background: linear-gradient(135deg, #c51111, #8b0000);
+      color: #fff; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;
+      box-shadow: 0 0 20px rgba(197,17,17,0.5), 0 4px 15px rgba(0,0,0,0.4);
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      animation: fadeUp 0.5s 0.4s both;
+    }
+    #startBtn:hover {
+      background: linear-gradient(135deg, #e01515, #aa0000);
+      box-shadow: 0 0 30px rgba(220,30,30,0.7), 0 6px 20px rgba(0,0,0,0.5);
+      transform: translateY(-2px) scale(1.03);
+    }
+    #startBtn:active { transform: scale(0.96); }
     .controls-info { color: #666; font-size: 14px; margin-top: 20px; }
     .map-select { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; justify-content: center; max-width: 600px; }
     .map-card {
@@ -51,7 +89,16 @@
       width: 300px; height: 22px; background: rgba(0,0,0,0.6); border: 2px solid #555;
       border-radius: 11px; overflow: hidden; z-index: 10;
     }
-    #taskFill { height: 100%; background: #4ecdc4; width: 0%; transition: width 0.3s; }
+    #taskFill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #2aa8a0, #4ecdc4, #6ef0e8);
+      transition: width 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+      box-shadow: 0 0 8px rgba(78,205,196,0.5);
+    }
+    @keyframes taskComplete {
+      0%,100% { box-shadow: 0 0 8px rgba(78,205,196,0.5); }
+      50%     { box-shadow: 0 0 24px rgba(78,205,196,1); }
+    }
     #taskText {
       position: absolute; top: 0; left: 0; width: 100%; text-align: center;
       color: #fff; font-size: 13px; line-height: 22px; font-weight: bold; text-shadow: 1px 1px 1px #000;
@@ -126,7 +173,15 @@
       pointer-events: auto; user-select: none;
     }
     .action-btn:hover:not(:disabled) { background: rgba(60,60,90,0.95); border-color: rgba(255,255,255,0.55); }
-    .action-btn:active:not(:disabled) { transform: scale(0.93); }
+    .action-btn:active:not(:disabled) {
+      transform: scale(0.88);
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+    }
+    @keyframes killReady {
+      0%, 100% { box-shadow: 0 0 8px rgba(255,60,60,0.4); }
+      50%       { box-shadow: 0 0 18px rgba(255,60,60,0.9); }
+    }
+    #btn-kill:not(:disabled) { animation: killReady 1.2s ease-in-out infinite; }
     .action-btn:disabled { opacity: 0.28; cursor: default; pointer-events: none; }
     .btn-icon { font-size: 22px; line-height: 1; }
     .btn-lbl { font-size: 10px; letter-spacing: 0.5px; }
@@ -168,6 +223,12 @@
       background: rgba(0,0,0,0.9); display: none; flex-direction: column;
       justify-content: center; align-items: center; color: #fff; z-index: 50;
     }
+    @keyframes reportFlash {
+      0%   { background: rgba(255,60,60,0.6); }
+      40%  { background: rgba(0,0,0,0.9); }
+      100% { background: rgba(0,0,0,0.92); }
+    }
+    #reportScreen.active { animation: reportFlash 0.5s ease-out forwards; }
     #reportScreen h1 { font-size: 50px; color: #ff4444; margin-bottom: 10px; }
     #reportScreen p { color: #aaa; font-size: 18px; }
     #voteScreen h2 { font-size: 28px; margin-bottom: 20px; color: #ffd700; }
@@ -192,15 +253,31 @@
     #chatInput:focus { border-color:#ffd700; }
     #chatSendBtn { padding:7px 16px; background:#ffd700; color:#000; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:14px; }
     #chatSendBtn:hover { background:#ffe740; }
-    #gameOverScreen h1 { font-size: 50px; margin-bottom: 15px; }
+    @keyframes gameOverIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    #gameOverScreen.visible { animation: gameOverIn 0.4s cubic-bezier(0.34,1.2,0.64,1) both; }
+    #gameOverScreen h1 { font-size: 50px; margin-bottom: 15px; text-shadow: 0 0 30px currentColor; }
     #gameOverScreen p { font-size: 20px; color: #aaa; margin-bottom: 25px; }
     #restartBtn {
-      padding: 12px 40px; font-size: 18px; background: #c51111; color: #fff;
-      border: none; border-radius: 8px; cursor: pointer; pointer-events: auto; font-weight: bold;
+      padding: 13px 44px; font-size: 18px;
+      background: linear-gradient(135deg, #c51111, #8b0000);
+      color: #fff; border: none; border-radius: 10px; cursor: pointer;
+      font-weight: bold; pointer-events: auto;
+      box-shadow: 0 0 20px rgba(197,17,17,0.4), 0 4px 15px rgba(0,0,0,0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
     }
+    #restartBtn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 0 30px rgba(220,30,30,0.6), 0 6px 20px rgba(0,0,0,0.5);
+    }
+    #restartBtn:active { transform: scale(0.95); }
     #minimap {
       position: fixed; bottom: 15px; right: 15px; width: 180px; height: 135px;
-      background: rgba(0,0,0,0.6); border: 2px solid #555; border-radius: 8px; z-index: 10;
+      background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px; z-index: 10;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
     }
     .home-link {
       position: fixed; top: 15px; left: 15px; color: rgba(255,255,255,0.5);
@@ -357,6 +434,11 @@
     }
     .mode-card:hover { transform: scale(1.08); }
     .mode-card.selected { border-color: #fff; transform: scale(1.1); }
+    @keyframes cardSelect {
+      0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.6); }
+      100% { box-shadow: 0 0 0 6px rgba(255,255,255,0); }
+    }
+    .mode-card.selected { animation: cardSelect 0.35s ease-out; }
     .mode-card .mode-icon { font-size: 28px; margin-bottom: 4px; }
     .mode-card .mode-name { font-size: 12px; font-weight: bold; color: #fff; }
     .mode-card .mode-desc { font-size: 10px; color: rgba(255,255,255,0.5); }
@@ -364,8 +446,11 @@
     /* Danger meter */
     #dangerMeter {
       position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-      width: 200px; background: rgba(0,0,0,0.7); border: 2px solid #555;
-      border-radius: 10px; padding: 6px 12px; z-index: 15; display: none; text-align: center;
+      width: 220px; background: rgba(0,0,0,0.8);
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      border-radius: 12px; padding: 7px 14px; z-index: 15; display: none; text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
     }
     #dangerMeter .danger-label { color: #fff; font-size: 12px; font-weight: bold; margin-bottom: 4px; }
     #dangerMeterBar { height: 10px; border-radius: 5px; background: #4ecdc4; transition: width 0.1s, background 0.1s; }
@@ -392,7 +477,11 @@
     #hideSeekTimerHUD {
       position: fixed; top: 50px; left: 50%; transform: translateX(-50%);
       color: #ffd700; font-size: 20px; font-weight: bold; display: none; z-index: 10;
-      background: rgba(0,0,0,0.65); padding: 5px 18px; border-radius: 8px;
+      background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
+      padding: 6px 20px; border-radius: 10px;
+      border: 1px solid rgba(255,215,0,0.3);
+      box-shadow: 0 0 20px rgba(255,215,0,0.15), 0 4px 16px rgba(0,0,0,0.5);
+      letter-spacing: 1px;
     }
     /* H&S Timer Bar */
     #hsTimerBar {
@@ -413,10 +502,12 @@
     /* H&S Vent uses HUD */
     #hsVentHUD {
       position: fixed; bottom: 80px; right: 20px;
-      background: rgba(0,0,0,0.7); border: 1px solid #4ecdc4;
-      border-radius: 8px; padding: 5px 12px;
+      background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+      border: 1px solid rgba(78,205,196,0.4);
+      border-radius: 10px; padding: 6px 14px;
       color: #4ecdc4; font-size: 13px; font-weight: bold;
       display: none; z-index: 10;
+      box-shadow: 0 0 12px rgba(78,205,196,0.2), 0 4px 12px rgba(0,0,0,0.5);
     }
     /* H&S hider status icons */
     #hsHiderIcons {
@@ -2991,7 +3082,9 @@
     let hsPingEffects = [];      // [{x,y,r,maxR,alpha}] visual ping ripples on canvas
     let playerHsVentUses = 0;    // player's remaining vent uses in H&S
     let hsInitialFreezeTimer = 0; // 10-second freeze at game start before seeker can move
+    let playerHsVentTimer = 0;   // frames remaining before hider is auto-ejected from vent
     let playerHsShieldUsed = false;
+    let taskSystemInitialized = false;
     let hsGhostTargetIdx = 0;
     let hsGhostPingCooldown = 0;
 
@@ -3193,7 +3286,8 @@
       hsTaskCount: 3,         // number of tasks each hider must complete
       hsTaskReduction: 15,    // seconds each completed task removes from the hide timer
       hsTaskBarVisible: 'Always', // 'Always' or 'Never' (seeker sees progress bar)
-      hiderVentUses: 3,       // 0 = no venting, 1-5 uses
+      hiderVentUses: 5,       // 0 = no venting, 1-5 uses
+      hiderVentDuration: 10,  // max seconds a hider can stay inside a vent before being ejected
       hsPingInterval: 6,      // seconds between seeker pings in final hide
       finalHideTime: 60,      // seconds for final seek phase (hiders win if seeker can't catch all)
       hiderVision: 1.0,       // vision multiplier for hiders
@@ -3397,6 +3491,7 @@
         hideSeekPingTimer = 0;
         hsPingEffects = [];
         hsInitialFreezeTimer = 10 * 60; // 10-second freeze before seeker can move
+        playerHsVentTimer = 0;
         // Freeze seeker immediately
         for (const npc of npcs) { if (npc.hsSeeker || npc.isImpostor) npc.hsFreeze = true; }
         if (isImpostor) player.hsFrozen = true;
@@ -3773,6 +3868,15 @@
       const totalPct = ((playerPct + npcPct) / 2) * 100;
       document.getElementById('taskFill').style.width = Math.min(totalPct, 100) + '%';
       document.getElementById('taskText').textContent = 'Tasks: ' + Math.round(totalPct) + '%';
+      const fillEl = document.getElementById('taskFill');
+      if (totalPct >= 100) {
+        fillEl.style.animation = 'none';
+        fillEl.style.background = 'linear-gradient(90deg,#4ecdc4,#6ef0e8,#4ecdc4)';
+      } else if (totalPct >= 95) {
+        fillEl.style.animation = 'taskComplete 0.8s ease-in-out infinite';
+      } else {
+        fillEl.style.animation = '';
+      }
 
       // Taskbar visibility based on mode
       const taskBar = document.getElementById('taskBar');
@@ -4622,8 +4726,10 @@
       if (gameMode === 'hideseek') return;
       deadBodies.forEach(b => b.reported = true);
       document.getElementById('reportScreen').style.display = 'flex';
+      document.getElementById('reportScreen').classList.add('active');
       setTimeout(() => {
         document.getElementById('reportScreen').style.display = 'none';
+        document.getElementById('reportScreen').classList.remove('active');
         startVoting(reporter);
       }, 2000);
     }
@@ -5031,7 +5137,7 @@
     }
 
     function enterVent() {
-      // In H&S: seeker cannot vent; hiders can vent (limited uses)
+      // In H&S: seeker cannot vent; hiders can vent (limited uses + duration)
       if (gameMode === 'hideseek') {
         if (isImpostor) return; // seeker can't vent
         if (playerHsVentUses <= 0) return; // no uses left
@@ -5041,7 +5147,8 @@
           inVent = true;
           player.visible = false;
           playerHsVentUses--;
-          document.getElementById('hsVentHUD').textContent = '🕳 VENTS: ' + playerHsVentUses;
+          playerHsVentTimer = gameSettings.hiderVentDuration * 60;
+          document.getElementById('hsVentHUD').textContent = '🕳 ' + playerHsVentUses + ' left  ⏱ ' + gameSettings.hiderVentDuration + 's';
           playSfx('vent');
         }
         return;
@@ -5059,6 +5166,12 @@
       if (!inVent) return;
       inVent = false;
       player.visible = true;
+      playerHsVentTimer = 0;
+      if (gameMode === 'hideseek' && !isImpostor) {
+        const remaining = playerHsVentUses;
+        document.getElementById('hsVentHUD').textContent = '🕳 VENTS: ' + remaining;
+        if (remaining <= 0) document.getElementById('hsVentHUD').style.display = 'none';
+      }
       playSfx('vent');
     }
 
@@ -5130,9 +5243,11 @@
         playSfx('button');
         document.getElementById('reportScreen').querySelector('h1').textContent = 'EMERGENCY MEETING';
         document.getElementById('reportScreen').style.display = 'flex';
+        document.getElementById('reportScreen').classList.add('active');
         setTimeout(() => {
           document.getElementById('reportScreen').querySelector('h1').textContent = 'DEAD BODY REPORTED';
           document.getElementById('reportScreen').style.display = 'none';
+          document.getElementById('reportScreen').classList.remove('active');
           startVoting(null);
         }, 2000);
       }
@@ -5140,6 +5255,7 @@
 
     function updatePlayer() {
       if (!player.alive && !isGhost) return;
+      if (gameMode === 'hideseek' && player.hsFrozen) return; // seeker frozen during countdown
       if (inVent) return; // can't move while in vent
       if (playerDoingTask && !isGhost) { updatePlayerTask(); return; }
       let dx = 0, dy = 0;
@@ -5531,8 +5647,10 @@
           deadBodies.forEach(b => b.reported = true);
           playSfx('report');
           document.getElementById('reportScreen').style.display = 'flex';
+          document.getElementById('reportScreen').classList.add('active');
           setTimeout(() => {
             document.getElementById('reportScreen').style.display = 'none';
+            document.getElementById('reportScreen').classList.remove('active');
             startVoting(null);
           }, 2000);
           break;
@@ -6352,6 +6470,7 @@
           'Hiders caught: ' + npcs.filter(n => !n.isImpostor && !n.alive).length;
       }
       document.getElementById('gameOverScreen').style.display = 'flex';
+      document.getElementById('gameOverScreen').classList.add('visible');
     }
 
     function endGame(impostorWins) {
@@ -6379,6 +6498,7 @@
           'Bodies reported: ' + statsBodiesReported;
       }
       document.getElementById('gameOverScreen').style.display = 'flex';
+      document.getElementById('gameOverScreen').classList.add('visible');
     }
 
     function endGameJester(playerWasJester) {
@@ -6401,6 +6521,7 @@
           'Bodies reported: ' + statsBodiesReported;
       }
       document.getElementById('gameOverScreen').style.display = 'flex';
+      document.getElementById('gameOverScreen').classList.add('visible');
     }
 
     // Drawing
@@ -9565,6 +9686,9 @@
             // Room floor with unique color (Polus uses dark red for all rooms)
             ctx.fillStyle = selectedMap === 'polus' ? '#cc1111' : (roomFloorColors[rooms[i].name] || '#222228');
             ctx.fillRect(fx, fy, f.w, f.h);
+            // Subtle floor highlight (top edge shimmer)
+            ctx.fillStyle = 'rgba(255,255,255,0.03)';
+            ctx.fillRect(fx + 1, fy + 1, f.w, 4);
             drawFloorTiles(fx, fy, f.w, f.h);
             // Room border glow
             ctx.strokeStyle = selectedMap === 'polus' ? 'rgba(255,255,255,0.15)' :
@@ -9654,26 +9778,24 @@
       }
 
       // Room labels
-      ctx.fillStyle = 'rgba(255,255,255,0.2)';
-      ctx.font = 'bold 14px Arial';
+      ctx.font = 'bold 11px Segoe UI, Arial';
       ctx.textAlign = 'center';
+      ctx.shadowColor = 'rgba(0,0,0,0.8)';
+      ctx.shadowBlur = 3;
       for (const r of rooms) {
-        // Text shadow
-        ctx.fillStyle = 'rgba(0,0,0,0.4)';
-        ctx.fillText(r.name, r.x - ox + 1, r.y - oy + 1);
-        ctx.fillStyle = 'rgba(255,255,255,0.22)';
+        ctx.fillStyle = 'rgba(255,255,255,0.55)';
         ctx.fillText(r.name, r.x - ox, r.y - oy);
       }
       // Extra labels (e.g. HALLWAY corridor labels)
       if (mapTheme.extraLabels) {
-        ctx.font = 'bold 13px Arial';
+        ctx.font = 'bold 11px Segoe UI, Arial';
         for (const r of mapTheme.extraLabels) {
-          ctx.fillStyle = 'rgba(0,0,0,0.4)';
-          ctx.fillText(r.name, r.x - ox + 1, r.y - oy + 1);
-          ctx.fillStyle = 'rgba(200,200,255,0.35)';
+          ctx.fillStyle = 'rgba(255,255,255,0.55)';
           ctx.fillText(r.name, r.x - ox, r.y - oy);
         }
       }
+      ctx.shadowBlur = 0;
+      ctx.shadowColor = 'transparent';
 
       // Vents (enhanced with shadow and depth)
       for (const v of vents) {
@@ -10844,7 +10966,9 @@
         addStep('Hider Vision', 'Vision radius multiplier for hiders', 'hiderVision',
           [0.5, 0.75, 1.0, 1.5, 2.0], v => v + 'x');
         addStep('Hider Vent Uses', 'How many times each hider can use vents to escape', 'hiderVentUses',
-          [0, 1, 2, 3, 5], v => v === 0 ? 'Off' : v + ' uses');
+          [0, 1, 2, 3, 4, 5], v => v === 0 ? 'Off' : v + ' uses');
+        addStep('Hide Duration', 'Max seconds a hider can stay inside a vent before being ejected', 'hiderVentDuration',
+          [3, 5, 8, 10, 15, 20, 30], v => v + 's');
         addStep('Ping Interval', 'How often the seeker gets location pings of all hiders (seek phase)', 'hsPingInterval',
           [3, 5, 6, 8, 10, 15, 30], v => v + 's');
 
@@ -11192,6 +11316,16 @@
       updateActionButtons();
       if (frameCount % 60 === 0) updateActivityLog();
 
+      // H&S: vent hide duration countdown
+      if (gameMode === 'hideseek' && inVent && !isImpostor && playerHsVentTimer > 0) {
+        playerHsVentTimer--;
+        const secsLeft = Math.ceil(playerHsVentTimer / 60);
+        document.getElementById('hsVentHUD').textContent = '🕳 ' + playerHsVentUses + ' left  ⏱ ' + secsLeft + 's';
+        if (playerHsVentTimer <= 0) {
+          exitVent(); // auto-eject when duration expires
+        }
+      }
+
       // Hide n Seek timer
       if (gameMode === 'hideseek') {
 
@@ -11201,6 +11335,11 @@
           const secsLeft = Math.ceil(hsInitialFreezeTimer / 60);
           document.getElementById('hideSeekTimerHUD').style.display = 'block';
           document.getElementById('hideSeekTimerHUD').textContent = secsLeft > 0 ? '🏃 RUN!  ' + secsLeft : '👁 SEEKER RELEASED!';
+          const hud = document.getElementById('hideSeekTimerHUD');
+          const urgency = 1 - (hsInitialFreezeTimer / (10 * 60));
+          const r = Math.round(78 + urgency * 177);
+          const g = Math.round(205 - urgency * 205);
+          hud.style.color = `rgb(${r},${g},50)`;
           document.getElementById('hsTimerBarFill').style.background = '#e53935';
           document.getElementById('hsTimerBarFill').style.width = '100%';
 
@@ -11401,11 +11540,13 @@
     const TASK_CANVAS_W = 380, TASK_CANVAS_H = 280;
 
     function initTaskSystem() {
+      if (taskSystemInitialized) return;
       const tc = document.getElementById('taskCanvas');
       if (!tc) return;
       tc.addEventListener('mousedown', taskMouseDown);
       tc.addEventListener('mousemove', taskMouseMove);
       tc.addEventListener('mouseup', taskMouseUp);
+      taskSystemInitialized = true;
     }
 
     function openTaskMiniGame(task) {
