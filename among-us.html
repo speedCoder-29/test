@@ -369,6 +369,16 @@
     }
     #dangerMeter .danger-label { color: #fff; font-size: 12px; font-weight: bold; margin-bottom: 4px; }
     #dangerMeterBar { height: 10px; border-radius: 5px; background: #4ecdc4; transition: width 0.1s, background 0.1s; }
+    @keyframes dangerShake {
+      0%, 100% { transform: translateX(-50%) translateX(0); }
+      20% { transform: translateX(-50%) translateX(-5px); }
+      40% { transform: translateX(-50%) translateX(5px); }
+      60% { transform: translateX(-50%) translateX(-3px); }
+      80% { transform: translateX(-50%) translateX(3px); }
+    }
+    .danger-shake {
+      animation: dangerShake 0.4s ease-in-out infinite;
+    }
 
     /* Ghost message */
     #ghostMsg {
@@ -395,6 +405,11 @@
       height: 100%; width: 100%; border-radius: 4px;
       background: #4caf50; transition: background 0.5s;
     }
+    @keyframes timerPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .hsTimerPulse { animation: timerPulse 0.5s ease-in-out infinite; }
     /* H&S Vent uses HUD */
     #hsVentHUD {
       position: fixed; bottom: 80px; right: 20px;
@@ -402,6 +417,21 @@
       border-radius: 8px; padding: 5px 12px;
       color: #4ecdc4; font-size: 13px; font-weight: bold;
       display: none; z-index: 10;
+    }
+    /* H&S hider status icons */
+    #hsHiderIcons {
+      position: fixed; top: 58px; left: 50%; transform: translateX(-50%);
+      display: none; flex-direction: row; gap: 6px; align-items: center;
+      z-index: 10; pointer-events: none;
+    }
+    .hs-hider-icon {
+      width: 20px; height: 26px; position: relative; display: inline-block;
+    }
+    .hs-hider-icon svg { width: 100%; height: 100%; }
+    .hs-hider-icon.dead { opacity: 0.25; filter: grayscale(1); }
+    .hs-hider-icon.dead::after {
+      content: '✕'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%); color: #ff4444; font-size: 14px; font-weight: bold;
     }
     /* H&S ping flash overlay */
     #hsPingOverlay {
@@ -545,7 +575,22 @@
   <div id="hideSeekTimerHUD">⏱ 3:00</div>
   <div id="hsTimerBar"><div id="hsTimerBarFill"></div></div>
   <div id="hsVentHUD">🕳 VENTS: 3</div>
+  <div id="hsHiderIcons"></div>
   <div id="hsPingOverlay"></div>
+  <div id="hsShieldBtn" style="display:none; position:fixed; bottom:120px; right:20px; z-index:15;">
+    <button onclick="useHsShield()" style="background:rgba(0,150,255,0.2); border:2px solid #4fc3f7; border-radius:10px; color:#fff; padding:8px 14px; font-size:13px; font-weight:bold; cursor:pointer;">
+      🛡 SHIELD<br><span id="hsShieldStatus" style="font-size:11px; color:#aaa;">1 use</span>
+    </button>
+  </div>
+  <div id="hsGhostPanel" style="display:none; position:fixed; bottom:20px; right:20px; z-index:15; background:rgba(0,0,0,0.8); border:2px solid #9c27b0; border-radius:12px; padding:12px; min-width:160px;">
+    <div style="color:#ce93d8; font-size:13px; font-weight:bold; margin-bottom:8px; text-align:center;">👻 GHOST</div>
+    <div style="color:#aaa; font-size:11px; margin-bottom:6px; text-align:center;" id="hsGhostTarget">No target</div>
+    <div style="display:flex; gap:6px; justify-content:center; margin-bottom:8px;">
+      <button onclick="hsGhostPrev()" style="background:rgba(156,39,176,0.3); border:1px solid #9c27b0; color:#fff; border-radius:6px; padding:4px 10px; cursor:pointer;">◀</button>
+      <button onclick="hsGhostNext()" style="background:rgba(156,39,176,0.3); border:1px solid #9c27b0; color:#fff; border-radius:6px; padding:4px 10px; cursor:pointer;">▶</button>
+    </div>
+    <button onclick="hsGhostHaunt()" style="width:100%; background:rgba(156,39,176,0.4); border:1px solid #9c27b0; color:#fff; border-radius:8px; padding:6px; font-size:12px; cursor:pointer; font-weight:bold;">👁 REVEAL LOCATION</button>
+  </div>
   <div id="actionButtons">
     <button class="action-btn" id="btn-report" onclick="reportBody()">
       <span class="btn-icon">🚨</span>
@@ -2945,6 +2990,9 @@
     let hsSeekTimer = 0;         // countdown for final seek phase
     let hsPingEffects = [];      // [{x,y,r,maxR,alpha}] visual ping ripples on canvas
     let playerHsVentUses = 0;    // player's remaining vent uses in H&S
+    let playerHsShieldUsed = false;
+    let hsGhostTargetIdx = 0;
+    let hsGhostPingCooldown = 0;
 
     // Mushroom Mixup
     let mushroomMixupTimer = 0;
@@ -3301,6 +3349,9 @@
       document.getElementById('dangerMeter').style.display = 'none';
       document.getElementById('hsTimerBar').style.display = 'none';
       document.getElementById('hsVentHUD').style.display = 'none';
+      document.getElementById('hsHiderIcons').style.display = 'none';
+      document.getElementById('hsShieldBtn').style.display = 'none';
+      document.getElementById('hsGhostPanel').style.display = 'none';
       hsPingEffects = [];
 
       // Assign NPC hats and pets randomly
@@ -3354,6 +3405,14 @@
           document.getElementById('hsVentHUD').style.display = 'block';
           document.getElementById('hsVentHUD').textContent = '🕳 VENTS: ' + playerHsVentUses;
         }
+        playerHsShieldUsed = false;
+        if (!isImpostor) {
+          document.getElementById('hsShieldBtn').style.display = 'block';
+          document.getElementById('hsShieldStatus').textContent = '1 use';
+          document.getElementById('hsShieldBtn').querySelector('button').style.opacity = '1';
+          document.getElementById('hsShieldBtn').querySelector('button').style.cursor = 'pointer';
+        }
+        updateHsHiderIcons();
       }
 
       // Calculate total NPC tasks for the task bar
@@ -6097,13 +6156,108 @@
       }
     }
 
+    function updateHsHiderIcons() {
+      const el = document.getElementById('hsHiderIcons');
+      if (!el) return;
+      if (gameMode !== 'hideseek') { el.style.display = 'none'; return; }
+      // Count all hiders (NPCs that are not seeker + player if not seeker)
+      const hiders = npcs.filter(n => !n.isImpostor);
+      el.style.display = 'flex';
+      el.innerHTML = '';
+      // Player icon (if hider)
+      if (!isImpostor) {
+        const div = document.createElement('div');
+        div.className = 'hs-hider-icon' + (!player.alive && !isGhost ? ' dead' : '');
+        div.title = player.name;
+        div.innerHTML = `<svg viewBox="0 0 20 26" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="10" cy="13" rx="8" ry="10" fill="${player.color || '#4ecdc4'}"/>
+          <ellipse cx="10" cy="9" rx="5" ry="4" fill="#99d6ff" opacity="0.85"/>
+        </svg>`;
+        el.appendChild(div);
+      }
+      // NPC hider icons
+      for (const npc of hiders) {
+        const div = document.createElement('div');
+        div.className = 'hs-hider-icon' + (!npc.alive ? ' dead' : '');
+        div.title = npc.name;
+        div.innerHTML = `<svg viewBox="0 0 20 26" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="10" cy="13" rx="8" ry="10" fill="${npc.color || '#aaaaaa'}"/>
+          <ellipse cx="10" cy="9" rx="5" ry="4" fill="#99d6ff" opacity="0.85"/>
+        </svg>`;
+        el.appendChild(div);
+      }
+    }
+
+    function useHsShield() {
+      if (playerHsShieldUsed || isImpostor || !player.alive || gameMode !== 'hideseek') return;
+      playerHsShieldUsed = true;
+      player.protectionTimer = 1800; // 30 seconds
+      document.getElementById('hsShieldStatus').textContent = 'Used';
+      document.getElementById('hsShieldBtn').querySelector('button').style.opacity = '0.4';
+      document.getElementById('hsShieldBtn').querySelector('button').style.cursor = 'default';
+      playSfx('ability');
+    }
+
+    function getHsGhostTargets() {
+      // All living players/NPCs visible to ghost
+      const targets = [];
+      for (const npc of npcs) {
+        if (npc.alive) targets.push({ name: npc.name, x: npc.x, y: npc.y, color: npc.color, isImpostor: npc.isImpostor });
+      }
+      return targets;
+    }
+
+    function updateHsGhostPanel() {
+      const panel = document.getElementById('hsGhostPanel');
+      if (!isGhost || gameMode !== 'hideseek') { if (panel) panel.style.display = 'none'; return; }
+      if (panel) panel.style.display = 'block';
+      const targets = getHsGhostTargets();
+      const targetEl = document.getElementById('hsGhostTarget');
+      if (targets.length === 0) {
+        if (targetEl) targetEl.textContent = 'No living players';
+        return;
+      }
+      hsGhostTargetIdx = Math.min(hsGhostTargetIdx, targets.length - 1);
+      const t = targets[hsGhostTargetIdx];
+      if (targetEl) targetEl.innerHTML = `<span style="color:${t.color}">●</span> ${t.name}<br><span style="color:#888; font-size:10px;">${t.isImpostor ? '👁 Seeker' : '🏃 Hider'}</span>`;
+    }
+
+    function hsGhostNext() {
+      const targets = getHsGhostTargets();
+      if (targets.length === 0) return;
+      hsGhostTargetIdx = (hsGhostTargetIdx + 1) % targets.length;
+      updateHsGhostPanel();
+    }
+
+    function hsGhostPrev() {
+      const targets = getHsGhostTargets();
+      if (targets.length === 0) return;
+      hsGhostTargetIdx = (hsGhostTargetIdx - 1 + targets.length) % targets.length;
+      updateHsGhostPanel();
+    }
+
+    function hsGhostHaunt() {
+      if (hsGhostPingCooldown > 0) return;
+      const targets = getHsGhostTargets();
+      if (targets.length === 0) return;
+      const t = targets[Math.min(hsGhostTargetIdx, targets.length - 1)];
+      // Add a ghostly ping effect at the target's location
+      hsPingEffects.push({ x: t.x + 16, y: t.y + 20, r: 0, maxR: 80, alpha: 0.8, color: '#ce93d8' });
+      hsPingEffects.push({ x: t.x + 16, y: t.y + 20, r: 10, maxR: 80, alpha: 0.5, color: '#ce93d8' });
+      hsGhostPingCooldown = 300; // 5 second cooldown
+      playSfx('ability');
+    }
+
     function endGameHS(seekerWins) {
       gameOver = true;
       document.getElementById('dangerMeter').style.display = 'none';
       document.getElementById('hideSeekTimerHUD').style.display = 'none';
       document.getElementById('hsTimerBar').style.display = 'none';
       document.getElementById('hsVentHUD').style.display = 'none';
+      document.getElementById('hsShieldBtn').style.display = 'none';
+      document.getElementById('hsGhostPanel').style.display = 'none';
       hsPingEffects = [];
+      updateHsHiderIcons();
       const title = document.getElementById('winTitle');
       const desc = document.getElementById('winDesc');
       if (seekerWins) {
@@ -6220,6 +6374,47 @@
       // Legs
       ctx.fillRect(x + 4, y + h * 0.85, 10, 8);
       ctx.fillRect(x + w - 14, y + h * 0.85, 10, 8);
+      // Seeker monster features (H&S mode)
+      if (gameMode === 'hideseek' && role === 'impostor') {
+        const a2 = (typeof alpha === 'number' ? alpha : 1);
+        ctx.save();
+        ctx.globalAlpha = a2;
+        // Open mouth (dark oval at bottom of body)
+        ctx.fillStyle = '#1a0000';
+        ctx.beginPath();
+        ctx.ellipse(x + w * 0.5, y + h * 0.72, w * 0.28, h * 0.14, 0, 0, Math.PI * 2);
+        ctx.fill();
+        // Teeth (white triangles across top of mouth)
+        ctx.fillStyle = '#ffffff';
+        const toothCount = 4;
+        const mouthLeft = x + w * 0.5 - w * 0.22;
+        const toothW = (w * 0.44) / toothCount;
+        for (let t = 0; t < toothCount; t++) {
+          ctx.beginPath();
+          ctx.moveTo(mouthLeft + t * toothW, y + h * 0.60);
+          ctx.lineTo(mouthLeft + t * toothW + toothW * 0.5, y + h * 0.70);
+          ctx.lineTo(mouthLeft + (t + 1) * toothW, y + h * 0.60);
+          ctx.closePath();
+          ctx.fill();
+        }
+        // Wiggling tongue (red)
+        const tongueWiggle = Math.sin(Date.now() / 150) * 3;
+        ctx.fillStyle = '#cc0000';
+        ctx.beginPath();
+        ctx.ellipse(x + w * 0.5 + tongueWiggle, y + h * 0.76, w * 0.1, h * 0.07, 0, 0, Math.PI * 2);
+        ctx.fill();
+        // Glowing red eyes
+        ctx.shadowColor = '#ff0000';
+        ctx.shadowBlur = 8;
+        ctx.fillStyle = '#ff2222';
+        ctx.beginPath();
+        ctx.ellipse(x + w * 0.38, y + h * 0.38, w * 0.09, h * 0.07, -0.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(x + w * 0.62, y + h * 0.38, w * 0.09, h * 0.07, 0.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
       // Name (hidden during mushroom mixup)
       if (mushroomMixupTimer <= 0) {
         ctx.fillStyle = isGhostDraw ? 'rgba(200,200,255,0.7)' : '#fff';
@@ -10044,7 +10239,7 @@
           const sy = ping.y - oy;
           ctx.save();
           ctx.globalAlpha = ping.alpha;
-          ctx.strokeStyle = '#ff4444';
+          ctx.strokeStyle = ping.color || '#ff4444';
           ctx.lineWidth = 3;
           ctx.beginPath();
           ctx.arc(sx, sy, ping.r, 0, Math.PI * 2);
@@ -10052,6 +10247,7 @@
           // Second ring
           if (ping.r > 15) {
             ctx.globalAlpha = ping.alpha * 0.5;
+            ctx.strokeStyle = ping.color || '#ff4444';
             ctx.beginPath();
             ctx.arc(sx, sy, ping.r - 15, 0, Math.PI * 2);
             ctx.stroke();
@@ -10939,7 +11135,12 @@
           const pct = Math.max(0, hsSeekTimer / (gameSettings.finalHideTime * 60) * 100);
           document.getElementById('hsTimerBarFill').style.width = pct + '%';
           // Pulsing red when time is low
-          if (hsSeekTimer < 600) document.getElementById('hsTimerBarFill').style.background = '#ff1744';
+          if (hsSeekTimer < 600) {
+            document.getElementById('hsTimerBarFill').style.background = '#ff1744';
+            document.getElementById('hsTimerBarFill').classList.add('hsTimerPulse');
+          } else {
+            document.getElementById('hsTimerBarFill').classList.remove('hsTimerPulse');
+          }
 
           // Periodic location pings (show seeker where hiders are)
           hideSeekPingTimer--;
@@ -10977,9 +11178,13 @@
         if (!hsHidePhase) {
           const aliveHiders = npcs.filter(n => !n.isImpostor && n.alive).length + (!isImpostor && !isGhost ? 1 : 0);
           if (aliveHiders === 0 && !gameOver) {
+            updateHsHiderIcons();
             endGameHS(true); // seeker wins — all hiders caught
           }
         }
+        if (frameCount % 30 === 0) updateHsHiderIcons();
+        if (frameCount % 30 === 0) updateHsGhostPanel();
+        if (hsGhostPingCooldown > 0) hsGhostPingCooldown--;
         // Danger meter: show distance to seeker if player is hider
         if (!isImpostor && !isGhost) {
           const seeker = npcs.find(n => n.isImpostor && n.alive);
@@ -10987,14 +11192,30 @@
             const d = dist(player, seeker);
             const dmEl = document.getElementById('dangerMeter');
             const dmBar = document.getElementById('dangerMeterBar');
-            if (d < 300 && !hsHidePhase) {
+            if (d < 400 && !hsHidePhase) {
               dmEl.style.display = 'block';
-              const pct = Math.round(((300 - d) / 300) * 100);
+              const pct = Math.round(((400 - d) / 400) * 100);
               dmBar.style.width = pct + '%';
-              const r = Math.round(pct * 2.55), g = Math.round((100 - pct) * 2.55);
-              dmBar.style.background = `rgb(${r},${g},0)`;
+              // 5-stage color system
+              let stage, color, label;
+              if (pct < 20)      { stage = 1; color = '#1e90ff'; label = '⚠ SEEKER NEARBY'; }
+              else if (pct < 40) { stage = 2; color = '#00bcd4'; label = '⚠ SEEKER CLOSE'; }
+              else if (pct < 60) { stage = 3; color = '#ffd700'; label = '⚠ DANGER!'; }
+              else if (pct < 80) { stage = 4; color = '#ff8c00'; label = '⚠ VERY CLOSE!'; }
+              else               { stage = 5; color = '#ff1744'; label = '🚨 RUN!!!'; }
+              dmBar.style.background = color;
+              dmBar.style.boxShadow = stage >= 4 ? `0 0 8px ${color}` : 'none';
+              const labelEl = dmEl.querySelector('.danger-label');
+              if (labelEl) labelEl.textContent = label;
+              // Shake the danger meter at stage 5
+              if (stage === 5) {
+                dmEl.classList.add('danger-shake');
+              } else {
+                dmEl.classList.remove('danger-shake');
+              }
             } else {
               dmEl.style.display = 'none';
+              dmEl.classList.remove('danger-shake');
             }
           }
         }
