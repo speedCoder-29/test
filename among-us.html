@@ -334,7 +334,7 @@
     }
     #restartBtn:active { transform: scale(0.95); }
     #minimap {
-      position: fixed; bottom: 15px; right: 15px; width: 180px; height: 135px;
+      position: fixed; bottom: 15px; left: 15px; width: 180px; height: 135px;
       background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.15);
       border-radius: 10px; z-index: 10;
       box-shadow: 0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
@@ -611,6 +611,127 @@
     .spawn-choice-btn .spawn-icon { font-size: 28px; display: block; margin-bottom: 6px; }
 
     /* Admin Map overlay */
+    /* ===== SABOTAGE MAP ===== */
+    #sabMapOverlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      display: none; align-items: center; justify-content: center; z-index: 60;
+    }
+    .sab-map-panel {
+      background: #0a0010; border: 2px solid #cc1111;
+      border-radius: 14px; padding: 16px 18px;
+      max-width: 720px; width: 96vw; box-shadow: 0 0 40px rgba(200,0,0,0.4);
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .sab-map-header {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .sab-map-title {
+      color: #ff3333; font-size: 18px; font-weight: 900;
+      letter-spacing: 4px; text-transform: uppercase;
+      text-shadow: 0 0 12px rgba(255,50,50,0.7);
+    }
+    .sab-map-close {
+      background: #cc1111; color: #fff; border: none; padding: 4px 12px;
+      border-radius: 6px; cursor: pointer; font-size: 17px; font-weight: bold;
+    }
+    .sab-map-close:hover { background: #ff2222; }
+    #sabMapCanvas {
+      width: 100%; border-radius: 8px; display: block;
+      cursor: crosshair; border: 1px solid rgba(200,30,30,0.4);
+    }
+    .sab-map-legend {
+      display: flex; gap: 16px; justify-content: center; font-size: 11px;
+      color: rgba(255,180,180,0.6);
+    }
+    .sml-door  { color: #44ff88; }
+    .sml-shut  { color: #ff3333; }
+    .sml-sab   { color: #ffaa33; }
+    .sml-vent  { color: #aaaacc; }
+    .sml-you   { color: #ffffff; }
+    .sab-type-row {
+      display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    }
+    .sab-type-btn {
+      padding: 7px 14px; font-size: 13px; border-radius: 8px; cursor: pointer;
+      font-weight: 800; border: 2px solid; transition: all 0.15s; letter-spacing: 1px;
+    }
+    .sab-type-btn.lights { color: #ffee44; border-color: #ffee44; background: rgba(255,238,68,0.10); }
+    .sab-type-btn.lights:hover { background: rgba(255,238,68,0.25); }
+    .sab-type-btn.o2     { color: #44ddff; border-color: #44ddff; background: rgba(68,221,255,0.10); }
+    .sab-type-btn.o2:hover { background: rgba(68,221,255,0.25); }
+    .sab-type-btn.reactor{ color: #ff8844; border-color: #ff8844; background: rgba(255,136,68,0.10); }
+    .sab-type-btn.reactor:hover { background: rgba(255,136,68,0.25); }
+    .sab-type-btn.comms  { color: #cc88ff; border-color: #cc88ff; background: rgba(204,136,255,0.10); }
+    .sab-type-btn.comms:hover { background: rgba(204,136,255,0.25); }
+    .sab-type-btn.mushroom{ color: #88ff88; border-color: #88ff88; background: rgba(136,255,136,0.10); }
+    .sab-type-btn.mushroom:hover { background: rgba(136,255,136,0.25); }
+    .sab-type-btn:disabled { opacity: 0.28; cursor: default; pointer-events: none; }
+    .sab-map-hint {
+      text-align: center; color: rgba(255,140,140,0.55); font-size: 11px; margin: 0;
+    }
+    #sabMapCooldownBar {
+      height: 4px; border-radius: 2px; background: rgba(255,0,0,0.15);
+      overflow: hidden; display: none;
+    }
+    #sabMapCooldownFill {
+      height: 100%; background: #cc1111; transition: width 0.3s; width: 100%;
+    }
+    /* ===== END SABOTAGE MAP ===== */
+
+    /* ===== TASK MAP ===== */
+    #taskMapOverlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.82);
+      display: none; align-items: center; justify-content: center; z-index: 58;
+    }
+    .task-map-panel {
+      background: #090914; border: 2px solid #4ecdc4; border-radius: 14px;
+      padding: 14px 16px; max-width: 740px; width: 96vw;
+      box-shadow: 0 0 40px rgba(78,205,196,0.25);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .task-map-header {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .task-map-title {
+      color: #4ecdc4; font-size: 17px; font-weight: 900;
+      letter-spacing: 3px; flex: 1;
+    }
+    .task-map-filters {
+      display: flex; gap: 5px;
+    }
+    .tmf-btn {
+      padding: 4px 10px; font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      border: 1.5px solid rgba(78,205,196,0.35); border-radius: 6px;
+      background: transparent; color: rgba(78,205,196,0.55); cursor: pointer;
+      transition: all 0.12s;
+    }
+    .tmf-btn:hover, .tmf-btn.active {
+      background: rgba(78,205,196,0.18); color: #4ecdc4;
+      border-color: #4ecdc4;
+    }
+    .task-map-close {
+      background: #cc1111; color: #fff; border: none;
+      padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold;
+    }
+    .task-map-close:hover { background: #ff2222; }
+    #taskMapCanvas {
+      width: 100%; border-radius: 8px; display: block;
+      border: 1px solid rgba(78,205,196,0.25);
+    }
+    .task-map-legend {
+      display: flex; gap: 14px; justify-content: center; font-size: 11px;
+      color: rgba(180,240,235,0.55); flex-wrap: wrap;
+    }
+    .tml-task    { color: #ffe140; }
+    .tml-done    { color: #3ddc84; }
+    .tml-sab     { color: #ff8844; }
+    .tml-you     { color: #fff; }
+    .task-map-hint { text-align: center; color: rgba(78,205,196,0.4); font-size: 11px; margin: 0; }
+    /* ===== END TASK MAP ===== */
+
+    /* ===== NAV ARROWS ===== */
+    /* (drawn on canvas, no extra HTML needed) */
+
     #adminMapOverlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.88); display: none; flex-direction: column;
@@ -840,6 +961,10 @@
       <span class="btn-lbl">SABOTAGE</span>
       <span class="btn-cd" id="btn-sab-cd"></span>
     </button>
+    <button class="action-btn" id="btn-sabmap" onclick="openSabotageMap()" style="border-color:rgba(255,60,60,0.6);display:none">
+      <span class="btn-icon">🗺</span>
+      <span class="btn-lbl">SAB MAP</span>
+    </button>
     <button class="action-btn" id="btn-ability" onclick="useAbility()">
       <span class="btn-icon" id="btn-ability-icon">✨</span>
       <span class="btn-lbl" id="btn-ability-lbl">ABILITY</span>
@@ -909,6 +1034,58 @@
       <button onclick="closeTaskModal()" style="position:absolute;top:10px;right:14px;background:none;border:none;color:#666;font-size:22px;cursor:pointer;line-height:1;">&#x2715;</button>
     </div>
   </div>
+
+  <!-- ===== SABOTAGE MAP OVERLAY ===== -->
+  <div id="sabMapOverlay">
+    <div class="sab-map-panel">
+      <div class="sab-map-header">
+        <span class="sab-map-title">☠ SABOTAGE MAP</span>
+        <button class="sab-map-close" onclick="closeSabotageMap()">✕ CLOSE</button>
+      </div>
+      <canvas id="sabMapCanvas"></canvas>
+      <div class="sab-map-legend">
+        <span class="sml-door">■ Door (open — click to close)</span>
+        <span class="sml-shut">■ Door (shut)</span>
+        <span class="sml-sab">● Fix point</span>
+        <span class="sml-vent">▼ Vent</span>
+        <span class="sml-you">● You</span>
+      </div>
+      <div id="sabMapCooldownBar"><div id="sabMapCooldownFill"></div></div>
+      <div class="sab-type-row">
+        <button class="sab-type-btn lights"   id="smb-lights"   onclick="sabMapTrigger('lights')">💡 LIGHTS</button>
+        <button class="sab-type-btn o2"       id="smb-o2"       onclick="sabMapTrigger('o2')">⚗ OXYGEN</button>
+        <button class="sab-type-btn reactor"  id="smb-reactor"  onclick="sabMapTrigger('reactor')">☢ REACTOR</button>
+        <button class="sab-type-btn comms"    id="smb-comms"    onclick="sabMapTrigger('comms')">📡 COMMS</button>
+        <button class="sab-type-btn mushroom" id="smb-mushroom" onclick="sabMapTrigger('mushroom_mixup')" style="display:none">🍄 MIXUP</button>
+      </div>
+      <p class="sab-map-hint">Click an open door on the map to close it &nbsp;|&nbsp; Press a button above to trigger a global sabotage</p>
+    </div>
+  </div>
+  <!-- ===== END SABOTAGE MAP OVERLAY ===== -->
+
+  <!-- ===== TASK MAP OVERLAY ===== -->
+  <div id="taskMapOverlay" style="display:none">
+    <div class="task-map-panel">
+      <div class="task-map-header">
+        <span class="task-map-title">📋 TASK MAP</span>
+        <div class="task-map-filters">
+          <button class="tmf-btn active" id="tmf-all"   onclick="setTaskMapFilter('all')">All</button>
+          <button class="tmf-btn"        id="tmf-todo"  onclick="setTaskMapFilter('todo')">To Do</button>
+          <button class="tmf-btn"        id="tmf-done"  onclick="setTaskMapFilter('done')">Done</button>
+        </div>
+        <button class="task-map-close" onclick="closeTaskMap()">✕</button>
+      </div>
+      <canvas id="taskMapCanvas"></canvas>
+      <div class="task-map-legend">
+        <span class="tml-task">● Task</span>
+        <span class="tml-done">● Done</span>
+        <span class="tml-sab">★ Sab Fix</span>
+        <span class="tml-you">● You</span>
+      </div>
+      <p class="task-map-hint">M or ESC to close</p>
+    </div>
+  </div>
+  <!-- ===== END TASK MAP OVERLAY ===== -->
 
   <div id="adminMapOverlay">
     <div class="admin-panel">
@@ -4510,6 +4687,362 @@
       document.getElementById('sabSubMenu').style.display = 'none';
     }
 
+    // ── Sabotage Map ────────────────────────────────────────────────────────
+    let sabMapOpen = false;
+    let _sabMapZones = []; // clickable zones: {type, data, cx, cy, r} in canvas px
+
+    function openSabotageMap() {
+      if (!isImpostor) return;
+      sabMapOpen = true;
+      closeSabSubMenu();
+      document.getElementById('sabMapOverlay').style.display = 'flex';
+      _drawSabotageMap();
+    }
+
+    function closeSabotageMap() {
+      sabMapOpen = false;
+      document.getElementById('sabMapOverlay').style.display = 'none';
+    }
+
+    function sabMapTrigger(type) {
+      if (!isImpostor || sabotage.active || sabotage.cooldown > 0) return;
+      startSabotage(type);
+      closeSabotageMap();
+    }
+
+    function _drawSabotageMap() {
+      const canvas = document.getElementById('sabMapCanvas');
+      if (!canvas || !MAP_W) return;
+
+      // Size canvas to panel width while preserving aspect ratio
+      const panelW = canvas.parentElement.clientWidth - 36;
+      canvas.width  = Math.min(panelW, 700);
+      canvas.height = Math.round(canvas.width * MAP_H / MAP_W);
+      const sc = canvas.width / MAP_W;
+      const c  = canvas.getContext('2d');
+      _sabMapZones = [];
+
+      // Background grid
+      c.fillStyle = '#08000e';
+      c.fillRect(0, 0, canvas.width, canvas.height);
+      c.strokeStyle = 'rgba(150,20,20,0.12)'; c.lineWidth = 0.5;
+      const gStep = 40 * sc;
+      for (let gx = 0; gx < canvas.width;  gx += gStep) { c.beginPath(); c.moveTo(gx,0); c.lineTo(gx,canvas.height); c.stroke(); }
+      for (let gy = 0; gy < canvas.height; gy += gStep) { c.beginPath(); c.moveTo(0,gy); c.lineTo(canvas.width,gy); c.stroke(); }
+
+      // Room floors
+      if (mapTheme.floors) {
+        const nRooms = rooms.length;
+        mapTheme.floors.forEach((f, i) => {
+          c.fillStyle = i < nRooms ? 'rgba(80,20,100,0.55)' : 'rgba(50,10,70,0.35)';
+          c.fillRect(f.x*sc, f.y*sc, f.w*sc, f.h*sc);
+          c.strokeStyle = 'rgba(180,40,40,0.25)'; c.lineWidth = 0.7;
+          c.strokeRect(f.x*sc, f.y*sc, f.w*sc, f.h*sc);
+        });
+      }
+
+      // Walls
+      c.fillStyle = 'rgba(200,40,40,0.75)';
+      for (const w of walls) {
+        c.fillRect(w.x*sc, w.y*sc, Math.max(w.w*sc, 1), Math.max(w.h*sc, 1));
+      }
+
+      // Vents (impostor only)
+      c.fillStyle = 'rgba(140,140,170,0.85)';
+      for (const v of vents) {
+        c.beginPath(); c.arc(v.x*sc, v.y*sc, Math.max(3, 4*sc), 0, Math.PI*2); c.fill();
+      }
+
+      // Doors — open = teal clickable, closed = red locked
+      for (const d of doors) {
+        const isOpen = !d.closed;
+        const dx = d.x*sc, dy = d.y*sc;
+        const dw = Math.max(d.w*sc, 5), dh = Math.max(d.h*sc, 5);
+        // Glow
+        c.save();
+        c.shadowColor  = isOpen ? '#00ff88' : '#ff2222';
+        c.shadowBlur   = 6;
+        c.fillStyle    = isOpen ? 'rgba(40,220,100,0.85)' : 'rgba(255,40,40,0.85)';
+        c.fillRect(dx, dy, dw, dh);
+        c.strokeStyle  = isOpen ? '#88ffcc' : '#ff8888'; c.lineWidth = 1;
+        c.strokeRect(dx, dy, dw, dh);
+        c.restore();
+
+        if (isOpen && doorCooldown <= 0 && gameSettings.doorsSabotage) {
+          // Register click zone with generous hit padding
+          const pad = 6;
+          _sabMapZones.push({ type:'door', data:d,
+            x:dx-pad, y:dy-pad, w:dw+pad*2, h:dh+pad*2 });
+          // Clickable indicator
+          c.fillStyle = 'rgba(255,255,255,0.18)';
+          c.fillRect(dx+1, dy+1, dw-2, dh-2);
+        }
+      }
+
+      // Sabotage fix-point markers (star bursts)
+      const SAB_STYLES = {
+        lights:  { col:'#ffee44', label:'LIGHTS' },
+        o2:      { col:'#44ddff', label:'O2'     },
+        reactor: { col:'#ff8844', label:'REACT'  },
+        comms:   { col:'#cc88ff', label:'COMMS'  },
+      };
+      const sabFix = mapTheme.sabFix;
+      if (sabFix) {
+        for (const [key, style] of Object.entries(SAB_STYLES)) {
+          const loc = sabFix[key];
+          if (!loc) continue;
+          const locs = Array.isArray(loc) ? loc : [loc];
+          locs.forEach((l, li) => {
+            const lx = l.x*sc, ly = l.y*sc, r = Math.max(6, 9*sc);
+            // Star
+            c.save();
+            c.shadowColor = style.col; c.shadowBlur = 10;
+            c.fillStyle = style.col + 'cc';
+            c.beginPath();
+            for (let pt = 0; pt < 8; pt++) {
+              const a = (pt/8)*Math.PI*2 - Math.PI/2;
+              const rr = pt%2===0 ? r : r*0.45;
+              pt===0 ? c.moveTo(lx+Math.cos(a)*rr, ly+Math.sin(a)*rr)
+                     : c.lineTo(lx+Math.cos(a)*rr, ly+Math.sin(a)*rr);
+            }
+            c.closePath(); c.fill();
+            c.restore();
+            // Label
+            c.fillStyle = '#fff'; c.font = `bold ${Math.max(7, Math.round(8*sc))}px Arial`;
+            c.textAlign = 'center';
+            c.fillText(locs.length > 1 ? style.label+' '+(li+1) : style.label, lx, ly + r + 8);
+          });
+        }
+      }
+
+      // Room labels
+      c.textAlign = 'center';
+      const lblSize = Math.max(8, Math.round(9*sc));
+      for (const r of rooms) {
+        const lx = r.x*sc, ly = r.y*sc;
+        c.font = `bold ${lblSize}px Arial`;
+        c.fillStyle = 'rgba(0,0,0,0.55)';
+        c.fillText(r.name, lx+1, ly+1);
+        c.fillStyle = 'rgba(255,200,200,0.85)';
+        c.fillText(r.name, lx, ly);
+      }
+
+      // NPC dots
+      for (const npc of npcs) {
+        if (!npc.alive) continue;
+        const nx = npc.x*sc, ny = npc.y*sc;
+        c.fillStyle = npc.color;
+        c.beginPath(); c.arc(nx, ny, Math.max(3, 3.5*sc), 0, Math.PI*2); c.fill();
+        c.strokeStyle = '#fff'; c.lineWidth = 0.7; c.stroke();
+      }
+
+      // Player dot
+      if (player) {
+        const px2 = player.x*sc, py2 = player.y*sc;
+        c.save();
+        c.shadowColor = '#fff'; c.shadowBlur = 8;
+        c.fillStyle = player.color;
+        c.beginPath(); c.arc(px2, py2, Math.max(4, 5*sc), 0, Math.PI*2); c.fill();
+        c.strokeStyle = '#ffffff'; c.lineWidth = 2; c.stroke();
+        c.restore();
+        c.fillStyle = '#fff'; c.font = `bold ${Math.max(8,Math.round(9*sc))}px Arial`;
+        c.textAlign = 'center';
+        c.fillText('YOU', px2, py2 - Math.max(7, 8*sc));
+      }
+
+      // Sabotage cooldown progress bar + button states
+      const canSab  = !sabotage.active && sabotage.cooldown <= 0;
+      const cdBar   = document.getElementById('sabMapCooldownBar');
+      const cdFill  = document.getElementById('sabMapCooldownFill');
+      if (sabotage.cooldown > 0) {
+        cdBar.style.display = 'block';
+        const pct = (sabotage.cooldown / (gameSettings.sabotageCooldown * 60)) * 100;
+        cdFill.style.width = pct + '%';
+      } else {
+        cdBar.style.display = 'none';
+      }
+      ['lights','o2','reactor','comms','mushroom'].forEach(t => {
+        const b = document.getElementById('smb-' + t);
+        if (b) b.disabled = !canSab || sabotage.active;
+      });
+      // Fungle-only mushroom mixup button
+      const mBtn = document.getElementById('smb-mushroom');
+      if (mBtn) mBtn.style.display = selectedMap === 'fungle' ? '' : 'none';
+    }
+
+    // Canvas click — close a door or select a zone
+    document.getElementById('sabMapCanvas').addEventListener('click', function(e) {
+      if (!sabMapOpen || !isImpostor) return;
+      const rect = this.getBoundingClientRect();
+      const mx = (e.clientX - rect.left) * (this.width  / rect.width);
+      const my = (e.clientY - rect.top)  * (this.height / rect.height);
+      for (const z of _sabMapZones) {
+        if (mx >= z.x && mx <= z.x+z.w && my >= z.y && my <= z.y+z.h) {
+          if (z.type === 'door') {
+            const ok = closeDoor(z.data.room);
+            if (ok) { _drawSabotageMap(); playSfx && playSfx('door_close'); }
+          }
+          break;
+        }
+      }
+    });
+    // ── End Sabotage Map ────────────────────────────────────────────────────
+
+    // ── Task Map ─────────────────────────────────────────────────────────────
+    let taskMapOpen = false;
+    let _taskMapFilter = 'all'; // 'all' | 'todo' | 'done'
+
+    function openTaskMap() {
+      taskMapOpen = true;
+      document.getElementById('taskMapOverlay').style.display = 'flex';
+      _drawTaskMap();
+    }
+
+    function closeTaskMap() {
+      taskMapOpen = false;
+      document.getElementById('taskMapOverlay').style.display = 'none';
+    }
+
+    function setTaskMapFilter(f) {
+      _taskMapFilter = f;
+      document.querySelectorAll('.tmf-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tmf-' + f).classList.add('active');
+      _drawTaskMap();
+    }
+
+    function _drawTaskMap() {
+      const cvs = document.getElementById('taskMapCanvas');
+      if (!cvs) return;
+      // Size the canvas to fit available panel width
+      const panel = cvs.parentElement;
+      const pw = panel ? panel.clientWidth - 32 : 540;
+      cvs.width  = Math.max(300, pw);
+      cvs.height = Math.round(cvs.width * 0.62);
+      const tc = cvs.getContext('2d');
+      const W = cvs.width, H = cvs.height;
+
+      // --- figure out world bounds from rooms + tasks ---
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (const r of rooms) {
+        minX = Math.min(minX, r.x); minY = Math.min(minY, r.y);
+        maxX = Math.max(maxX, r.x + r.w); maxY = Math.max(maxY, r.y + r.h);
+      }
+      const PAD = 30;
+      const scaleX = (W - PAD*2) / (maxX - minX || 1);
+      const scaleY = (H - PAD*2) / (maxY - minY || 1);
+      const sc = Math.min(scaleX, scaleY);
+      const offX = PAD + ((W - PAD*2) - (maxX - minX) * sc) / 2;
+      const offY = PAD + ((H - PAD*2) - (maxY - minY) * sc) / 2;
+      const wx = x => offX + (x - minX) * sc;
+      const wy = y => offY + (y - minY) * sc;
+
+      // Background
+      tc.fillStyle = '#070714';
+      tc.fillRect(0, 0, W, H);
+
+      // Rooms (floor fill + border)
+      for (const r of rooms) {
+        const rx = wx(r.x), ry = wy(r.y), rw = r.w * sc, rh = r.h * sc;
+        tc.fillStyle = 'rgba(40,60,90,0.55)';
+        tc.fillRect(rx, ry, rw, rh);
+        tc.strokeStyle = 'rgba(78,205,196,0.28)';
+        tc.lineWidth = 1;
+        tc.strokeRect(rx, ry, rw, rh);
+        // Room name
+        tc.fillStyle = 'rgba(255,255,255,0.45)';
+        tc.font = `${Math.max(8, Math.round(sc * 50))}px Arial`;
+        tc.textAlign = 'center';
+        tc.textBaseline = 'middle';
+        tc.fillText(r.name, rx + rw/2, ry + rh/2);
+      }
+
+      // Walls
+      tc.strokeStyle = 'rgba(100,130,170,0.35)';
+      tc.lineWidth = 1;
+      for (const w of walls) {
+        tc.strokeRect(wx(w.x), wy(w.y), w.w * sc, w.h * sc);
+      }
+
+      // Task markers
+      const showTodo = _taskMapFilter !== 'done';
+      const showDone = _taskMapFilter !== 'todo';
+      for (const t of taskLocations) {
+        if (t.done  && !showDone) continue;
+        if (!t.done && !showTodo) continue;
+        const tx = wx(t.x + 8), ty = wy(t.y + 17);
+        const r = Math.max(5, sc * 16);
+        tc.beginPath();
+        tc.arc(tx, ty, r, 0, Math.PI*2);
+        tc.fillStyle = t.done ? '#3ddc84' : '#ffe140';
+        tc.globalAlpha = t.done ? 0.6 : 0.9;
+        tc.fill();
+        tc.globalAlpha = 1;
+        tc.strokeStyle = t.done ? '#1a8c4a' : '#b8a010';
+        tc.lineWidth = 1;
+        tc.stroke();
+        // Task initial
+        tc.fillStyle = '#000';
+        tc.font = `bold ${Math.max(6, Math.round(r * 1.0))}px Arial`;
+        tc.textAlign = 'center';
+        tc.textBaseline = 'middle';
+        tc.fillText(t.done ? '✓' : '!', tx, ty);
+      }
+
+      // Sabotage fix-point markers (only when sabotage active)
+      if (sabotage && sabotage.active && mapTheme.sabFix) {
+        const fixType = sabotage.type;
+        const locs = mapTheme.sabFix[fixType];
+        if (locs) {
+          const arr = Array.isArray(locs) ? locs : [locs];
+          const pulse = (Date.now() % 800) / 800; // 0..1
+          for (const loc of arr) {
+            const sx = wx(loc.x), sy = wy(loc.y);
+            const sr = Math.max(6, sc * 18);
+            // Pulsing glow
+            tc.beginPath();
+            tc.arc(sx, sy, sr * (1 + pulse * 0.4), 0, Math.PI*2);
+            tc.fillStyle = `rgba(255,60,60,${0.15 - pulse * 0.1})`;
+            tc.fill();
+            // Star
+            tc.beginPath();
+            for (let p = 0; p < 8; p++) {
+              const ang = p * Math.PI / 4 - Math.PI/2;
+              const dist2 = p % 2 === 0 ? sr : sr * 0.45;
+              const lx2 = sx + Math.cos(ang) * dist2;
+              const ly2 = sy + Math.sin(ang) * dist2;
+              p === 0 ? tc.moveTo(lx2, ly2) : tc.lineTo(lx2, ly2);
+            }
+            tc.closePath();
+            tc.fillStyle = '#ff4040';
+            tc.fill();
+          }
+        }
+      }
+
+      // Player dot
+      if (player) {
+        const px2 = wx(player.x + player.w/2), py2 = wy(player.y + player.h/2);
+        const pr = Math.max(5, sc * 14);
+        tc.beginPath();
+        tc.arc(px2, py2, pr, 0, Math.PI*2);
+        tc.fillStyle = '#' + (player.color || 'cc1111').replace('#','');
+        tc.fill();
+        tc.strokeStyle = '#fff';
+        tc.lineWidth = 1.5;
+        tc.stroke();
+        // YOU label
+        tc.fillStyle = '#fff';
+        tc.font = `bold ${Math.max(8, Math.round(pr))}px Arial`;
+        tc.textAlign = 'center';
+        tc.textBaseline = 'bottom';
+        tc.fillText('YOU', px2, py2 - pr - 1);
+      }
+
+      tc.textAlign = 'left';
+      tc.textBaseline = 'alphabetic';
+    }
+    // ── End Task Map ─────────────────────────────────────────────────────────
+
     function updateActionButtons() {
       const panel = document.getElementById('actionButtons');
       const voteVisible = document.getElementById('voteScreen').style.display !== 'none';
@@ -4583,14 +5116,17 @@
 
       // SABOTAGE — impostor only, never in H&S
       const btnSab = document.getElementById('btn-sabotage');
+      const btnSabMap = document.getElementById('btn-sabmap');
       const sabCdEl = document.getElementById('btn-sab-cd');
       if (isImpostor && gameMode !== 'hideseek') {
         btnSab.style.display = '';
+        btnSabMap.style.display = '';
         btnSab.disabled = sabotage.active || sabotage.cooldown > 0;
         sabCdEl.textContent = sabotage.active ? 'ACTIVE' : sabotage.cooldown > 0 ? Math.ceil(sabotage.cooldown / 60) + 's' : '';
         if (sabotage.active || sabotage.cooldown > 0) closeSabSubMenu();
       } else {
         btnSab.style.display = 'none';
+        btnSabMap.style.display = 'none';
         closeSabSubMenu();
       }
 
@@ -4702,6 +5238,55 @@
       }
       return false;
     }
+
+    // ── Shadow / Line-of-sight helpers ──────────────────────────────────────
+    // Ray vs axis-aligned rectangle. Returns t of first hit from (px,py) along
+    // direction (dx,dy), or null if no hit.  t > 0 means in front of the ray.
+    function _rayRect(px, py, dx, dy, rx, ry, rw, rh) {
+      let tmin = 0, tmax = Infinity;
+      if (Math.abs(dx) > 1e-9) {
+        const inv = 1 / dx;
+        const t1 = (rx - px) * inv, t2 = (rx + rw - px) * inv;
+        tmin = Math.max(tmin, Math.min(t1, t2));
+        tmax = Math.min(tmax, Math.max(t1, t2));
+      } else if (px < rx || px > rx + rw) return null;
+      if (Math.abs(dy) > 1e-9) {
+        const inv = 1 / dy;
+        const t1 = (ry - py) * inv, t2 = (ry + rh - py) * inv;
+        tmin = Math.max(tmin, Math.min(t1, t2));
+        tmax = Math.min(tmax, Math.max(t1, t2));
+      } else if (py < ry || py > ry + rh) return null;
+      if (tmax < tmin) return null;
+      return tmin;
+    }
+
+    // Build a flat [x0,y0,x1,y1,...] visibility polygon in screen-space by
+    // casting N rays from world position (worldPX,worldPY) and stopping each
+    // ray at the first wall hit (or visionR if unobstructed).
+    function _buildShadowPolygon(worldPX, worldPY, visionR, ox, oy) {
+      const N = 360;
+      const pts = new Float32Array(N * 2);
+      for (let i = 0; i < N; i++) {
+        const ang = (i / N) * Math.PI * 2;
+        const dx = Math.cos(ang), dy = Math.sin(ang);
+        let t = visionR;
+        for (const w of walls) {
+          const hit = _rayRect(worldPX, worldPY, dx, dy, w.x, w.y, w.w, w.h);
+          if (hit !== null && hit > 3 && hit < t) t = hit;
+        }
+        // Also stop at closed doors
+        for (const d of doors) {
+          if (d.closed) {
+            const hit = _rayRect(worldPX, worldPY, dx, dy, d.x, d.y, d.w, d.h);
+            if (hit !== null && hit > 3 && hit < t) t = hit;
+          }
+        }
+        pts[i * 2]     = worldPX + dx * t - ox;
+        pts[i * 2 + 1] = worldPY + dy * t - oy;
+      }
+      return pts;
+    }
+    // ────────────────────────────────────────────────────────────────────────
 
     function tryMove(entity, dx, dy) {
       // Try full move
@@ -6425,7 +7010,7 @@
               playSfx('kill');
               killCooldown = gameSettings.killCooldown * 60;
               killFlash = 15;
-              notifyWitnessesOfKill(player.name, player.x, player.y, npc.name);
+              notifyWitnessesOfKill((abilityActive && shiftTarget) ? shiftTarget.name : player.name, player.x, player.y, npc.name);
               const aliveImps = npcs.filter(n => n.alive && n.isImpostor).length;
               if (aliveImps === 0 && !isImpostor) endGame(false);
             } else {
@@ -6457,7 +7042,7 @@
             mpPublishEvent('kill', npc.mpId || null, { victimName: npc.name, victimColor: npc.color });
             killCooldown = gameSettings.killCooldown * 60;
             killFlash = 15;
-            notifyWitnessesOfKill(player.name, player.x, player.y, npc.name);
+            notifyWitnessesOfKill((abilityActive && shiftTarget) ? shiftTarget.name : player.name, player.x, player.y, npc.name);
             const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length;
             const aliveImpostors = npcs.filter(n => n.alive && n.isImpostor).length + 1;
             if (gameMode !== 'hideseek' && aliveImpostors >= aliveCrewmates) endGame(true);
@@ -7899,41 +8484,65 @@
           ctx.beginPath(); ctx.arc(px, py, 2, 0, Math.PI * 2); ctx.fill();
         }
       } else if (selectedMap === 'mira') {
-        // MIRA HQ: sky station corridor — pipes, support ribs, emergency lighting
+        // MIRA HQ: sky station corridor — blue tile panels, cyan pipes, emergency lights
+        // Bright blue-slate tile floor (matching reference — distinct large tiles)
+        const mirTile = horiz ? h : w;
+        const mirTileLen = horiz ? w : h;
+        ctx.globalAlpha = 1.0;
+        const mTileStep = 28;
+        for (let mt = 0; mt < mirTileLen; mt += mTileStep) {
+          const mEven = Math.floor(mt/mTileStep) % 2 === 0;
+          if (horiz) {
+            ctx.fillStyle = mEven ? '#0e1e36' : '#0a1828';
+            ctx.fillRect(x+mt, y, mTileStep, h);
+          } else {
+            ctx.fillStyle = mEven ? '#0e1e36' : '#0a1828';
+            ctx.fillRect(x, y+mt, w, mTileStep);
+          }
+        }
+        // Tile divider lines
+        ctx.strokeStyle = 'rgba(80,160,255,0.22)'; ctx.lineWidth = 1;
+        for (let mt = 0; mt < mirTileLen; mt += mTileStep) {
+          if (horiz) {
+            ctx.beginPath(); ctx.moveTo(x+mt, y); ctx.lineTo(x+mt, y+h); ctx.stroke();
+          } else {
+            ctx.beginPath(); ctx.moveTo(x, y+mt); ctx.lineTo(x+w, y+mt); ctx.stroke();
+          }
+        }
+        ctx.globalAlpha = 0.5;
         // Glass floor diagonal reflection lines
-        ctx.strokeStyle = 'rgba(100,200,255,0.04)';
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(100,200,255,0.06)'; ctx.lineWidth = 1;
         if (horiz) {
           for (let rx = 20; rx < w; rx += 40) {
-            ctx.beginPath(); ctx.moveTo(x+rx, y+8); ctx.lineTo(x+rx+15, y+h-8); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x+rx, y+6); ctx.lineTo(x+rx+14, y+h-6); ctx.stroke();
           }
         } else {
           for (let ry = 20; ry < h; ry += 40) {
-            ctx.beginPath(); ctx.moveTo(x+8, y+ry); ctx.lineTo(x+w-8, y+ry+15); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x+6, y+ry); ctx.lineTo(x+w-6, y+ry+14); ctx.stroke();
           }
         }
-        // Pipe conduits along wall edges
-        ctx.strokeStyle = 'rgba(60,140,200,0.13)'; ctx.lineWidth = 3;
+        // Cyan pipe conduits along wall edges
+        ctx.strokeStyle = 'rgba(60,180,240,0.20)'; ctx.lineWidth = 3.5;
         if (horiz) {
-          ctx.beginPath(); ctx.moveTo(x, y+5); ctx.lineTo(x+w, y+5); ctx.stroke();
-          ctx.beginPath(); ctx.moveTo(x, y+h-5); ctx.lineTo(x+w, y+h-5); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x, y+4); ctx.lineTo(x+w, y+4); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x, y+h-4); ctx.lineTo(x+w, y+h-4); ctx.stroke();
           // Pipe joint rings every 80px
-          ctx.strokeStyle = 'rgba(80,170,230,0.20)'; ctx.lineWidth = 5;
+          ctx.strokeStyle = 'rgba(100,200,255,0.28)'; ctx.lineWidth = 5;
           for (let px2 = 60; px2 < w; px2 += 80) {
-            ctx.beginPath(); ctx.moveTo(x+px2, y+3); ctx.lineTo(x+px2, y+7); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(x+px2, y+h-7); ctx.lineTo(x+px2, y+h-3); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x+px2, y+2); ctx.lineTo(x+px2, y+8); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x+px2, y+h-8); ctx.lineTo(x+px2, y+h-2); ctx.stroke();
           }
         } else {
-          ctx.beginPath(); ctx.moveTo(x+5, y); ctx.lineTo(x+5, y+h); ctx.stroke();
-          ctx.beginPath(); ctx.moveTo(x+w-5, y); ctx.lineTo(x+w-5, y+h); ctx.stroke();
-          ctx.strokeStyle = 'rgba(80,170,230,0.20)'; ctx.lineWidth = 5;
+          ctx.beginPath(); ctx.moveTo(x+4, y); ctx.lineTo(x+4, y+h); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x+w-4, y); ctx.lineTo(x+w-4, y+h); ctx.stroke();
+          ctx.strokeStyle = 'rgba(100,200,255,0.28)'; ctx.lineWidth = 5;
           for (let py2 = 60; py2 < h; py2 += 80) {
-            ctx.beginPath(); ctx.moveTo(x+3, y+py2); ctx.lineTo(x+7, y+py2); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(x+w-7, y+py2); ctx.lineTo(x+w-3, y+py2); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x+2, y+py2); ctx.lineTo(x+8, y+py2); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x+w-8, y+py2); ctx.lineTo(x+w-2, y+py2); ctx.stroke();
           }
         }
         // Support ribs/struts across hallway every 100px
-        ctx.strokeStyle = 'rgba(60,120,180,0.07)'; ctx.lineWidth = 2;
+        ctx.strokeStyle = 'rgba(60,140,220,0.10)'; ctx.lineWidth = 2;
         if (horiz) {
           for (let rx2 = 80; rx2 < w; rx2 += 100) {
             ctx.beginPath(); ctx.moveTo(x+rx2, y); ctx.lineTo(x+rx2, y+h); ctx.stroke();
@@ -7943,20 +8552,33 @@
             ctx.beginPath(); ctx.moveTo(x, y+ry2); ctx.lineTo(x+w, y+ry2); ctx.stroke();
           }
         }
-        // Emergency lighting fixtures at intervals
-        ctx.fillStyle = 'rgba(120,210,255,0.22)';
+        // Bright cyan emergency lighting strips at intervals
+        ctx.fillStyle = 'rgba(140,230,255,0.30)';
         const mirLightSpc = 120;
         if (horiz) {
           for (let lx2 = mirLightSpc*0.5; lx2 < w; lx2 += mirLightSpc) {
-            ctx.fillRect(x+lx2-7, y+1, 14, 3); // top strip
-            ctx.fillRect(x+lx2-7, y+h-4, 14, 3); // bottom strip
+            ctx.fillRect(x+lx2-8, y+1, 16, 3); // top strip
+            ctx.fillRect(x+lx2-8, y+h-4, 16, 3); // bottom strip
+            // Glow cone
+            ctx.fillStyle = 'rgba(80,180,255,0.06)';
+            ctx.fillRect(x+lx2-12, y+4, 24, h-8);
+            ctx.fillStyle = 'rgba(140,230,255,0.30)';
           }
         } else {
           for (let ly2 = mirLightSpc*0.5; ly2 < h; ly2 += mirLightSpc) {
-            ctx.fillRect(x+1, y+ly2-7, 3, 14); // left strip
-            ctx.fillRect(x+w-4, y+ly2-7, 3, 14); // right strip
+            ctx.fillRect(x+1, y+ly2-8, 3, 16); // left strip
+            ctx.fillRect(x+w-4, y+ly2-8, 3, 16); // right strip
           }
         }
+        // Center floor guide stripe
+        ctx.strokeStyle = 'rgba(60,160,255,0.08)'; ctx.lineWidth = 4;
+        ctx.setLineDash([12, 8]);
+        if (horiz) {
+          ctx.beginPath(); ctx.moveTo(x, y+h/2); ctx.lineTo(x+w, y+h/2); ctx.stroke();
+        } else {
+          ctx.beginPath(); ctx.moveTo(x+w/2, y); ctx.lineTo(x+w/2, y+h); ctx.stroke();
+        }
+        ctx.setLineDash([]);
         // Holographic center guide line (dashed)
         ctx.strokeStyle = 'rgba(100,200,255,0.055)'; ctx.lineWidth = 1;
         ctx.setLineDash([10, 14]);
@@ -8110,18 +8732,22 @@
       // Solid wall — map-themed color
       ctx.fillStyle = mapTheme.wall;
       ctx.fillRect(x, y, w, h);
-      // MIRA: blue-steel edge glow on wall faces
+      // MIRA: blue-steel edge glow on wall faces (matching reference's teal-blue wall trim)
       if (selectedMap === 'mira') {
-        const edgeCol = 'rgba(80,160,220,0.18)';
+        const edgeCol = 'rgba(80,180,240,0.30)';
+        const shadowCol = 'rgba(0,10,40,0.35)';
         if (w > h) {
-          ctx.fillStyle = edgeCol; ctx.fillRect(x, y, w, 2);
-          ctx.fillStyle = 'rgba(0,20,60,0.25)'; ctx.fillRect(x, y+h-2, w, 2);
+          ctx.fillStyle = edgeCol; ctx.fillRect(x, y, w, 3);
+          ctx.fillStyle = shadowCol; ctx.fillRect(x, y+h-3, w, 3);
+          // Bright top highlight line
+          ctx.fillStyle = 'rgba(120,210,255,0.20)'; ctx.fillRect(x, y, w, 1);
         } else {
-          ctx.fillStyle = edgeCol; ctx.fillRect(x, y, 2, h);
-          ctx.fillStyle = 'rgba(0,20,60,0.25)'; ctx.fillRect(x+w-2, y, 2, h);
+          ctx.fillStyle = edgeCol; ctx.fillRect(x, y, 3, h);
+          ctx.fillStyle = shadowCol; ctx.fillRect(x+w-3, y, 3, h);
+          ctx.fillStyle = 'rgba(120,210,255,0.20)'; ctx.fillRect(x, y, 1, h);
         }
         // Cyan seam lines every 80px
-        ctx.fillStyle = 'rgba(60,140,200,0.12)';
+        ctx.fillStyle = 'rgba(60,160,220,0.18)';
         if (w > h) {
           for (let px = 80; px < w; px += 80) ctx.fillRect(x+px, y+1, 1, h-2);
         } else {
@@ -8158,18 +8784,18 @@
       // MIRA HQ: vivid room-specific floor color (overpaints the shared roomFloorColors base)
       if (selectedMap === 'mira') {
         const miraColors = {
-          'Launchpad':      '#1c2c40',
-          'Reactor':        '#0e0820',
-          'Laboratory':     '#101c38',
-          'Office':         '#101c34',
-          'Admin':          '#181424',
-          'Greenhouse':     '#083c30',
-          'Locker Room':    '#161a2c',
-          'Communications': '#0c1828',
-          'Storage':        '#1c1408',
-          'Cafeteria':      '#28201a',
-          'MedBay':         '#0a1828',
-          'Decontamination':'#06080e',
+          'Launchpad':      '#18283c',
+          'Reactor':        '#08041a',
+          'Laboratory':     '#0c1830',
+          'Office':         '#0c1828',
+          'Admin':          '#10101e',
+          'Greenhouse':     '#041a10',
+          'Locker Room':    '#10141e',
+          'Communications': '#06101c',
+          'Storage':        '#140e04',
+          'Cafeteria':      '#1a1610',
+          'MedBay':         '#061018',
+          'Decontamination':'#020408',
         };
         const fc = miraColors[name];
         if (fc) {
@@ -8191,6 +8817,86 @@
 
       switch (name) {
         case 'Cafeteria': {
+          // MIRA HQ cafeteria: warm cream tile floor, steel-blue accents
+          if (selectedMap === 'mira') {
+            ctx.globalAlpha = 1.0;
+            // Cream/warm base
+            ctx.fillStyle = '#221a10';
+            ctx.fillRect(x, y, w, h);
+            // Large warm tile floor
+            const mCafTile = 32;
+            for (let ty2 = 0; ty2 < h; ty2 += mCafTile) {
+              for (let tx2 = 0; tx2 < w; tx2 += mCafTile) {
+                const mEven = ((Math.floor(tx2/mCafTile) + Math.floor(ty2/mCafTile)) % 2 === 0);
+                ctx.fillStyle = mEven ? 'rgba(200,170,110,0.22)' : 'rgba(150,120,80,0.14)';
+                ctx.fillRect(x+tx2, y+ty2, mCafTile, mCafTile);
+              }
+            }
+            ctx.strokeStyle = 'rgba(180,150,90,0.18)'; ctx.lineWidth = 0.5;
+            for (let tx2 = 0; tx2 <= w; tx2 += mCafTile) {
+              ctx.beginPath(); ctx.moveTo(x+tx2, y); ctx.lineTo(x+tx2, y+h); ctx.stroke();
+            }
+            for (let ty2 = 0; ty2 <= h; ty2 += mCafTile) {
+              ctx.beginPath(); ctx.moveTo(x, y+ty2); ctx.lineTo(x+w, y+ty2); ctx.stroke();
+            }
+            // Warm overhead ambient
+            const mCafAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.6);
+            mCafAmb.addColorStop(0, 'rgba(220,180,100,0.10)');
+            mCafAmb.addColorStop(1, 'rgba(100,60,20,0)');
+            ctx.fillStyle = mCafAmb; ctx.fillRect(x, y, w, h);
+            // MIRA cafeteria round tables (darker steel-blue, arranged in grid)
+            const mTbl = [[0.20,0.25],[0.50,0.25],[0.75,0.25],[0.20,0.60],[0.50,0.60],[0.75,0.60]];
+            for (const [tx2,ty2] of mTbl) {
+              const tbx = x+w*tx2, tby = y+h*ty2, tr2 = Math.min(w,h)*0.07;
+              // Shadow
+              ctx.fillStyle = 'rgba(0,0,0,0.4)';
+              ctx.beginPath(); ctx.arc(tbx+3, tby+4, tr2+2, 0, Math.PI*2); ctx.fill();
+              // Table top (dark steel-blue MIRA style)
+              const mt = ctx.createRadialGradient(tbx-tr2*0.2, tby-tr2*0.2, 0, tbx, tby, tr2);
+              mt.addColorStop(0, '#2a3a5a');
+              mt.addColorStop(0.6, '#1a2a48');
+              mt.addColorStop(1, '#0e1a30');
+              ctx.globalAlpha = 0.9;
+              ctx.fillStyle = mt;
+              ctx.beginPath(); ctx.arc(tbx, tby, tr2, 0, Math.PI*2); ctx.fill();
+              ctx.globalAlpha = 0.5;
+              ctx.strokeStyle = '#4a6aaa'; ctx.lineWidth = 2;
+              ctx.beginPath(); ctx.arc(tbx, tby, tr2, 0, Math.PI*2); ctx.stroke();
+              // Inner ring
+              ctx.strokeStyle = 'rgba(100,160,255,0.3)'; ctx.lineWidth = 1;
+              ctx.beginPath(); ctx.arc(tbx, tby, tr2*0.6, 0, Math.PI*2); ctx.stroke();
+              // Food/coffee on table
+              ctx.fillStyle = 'rgba(200,160,80,0.35)';
+              ctx.beginPath(); ctx.arc(tbx, tby, tr2*0.18, 0, Math.PI*2); ctx.fill();
+              // 4 chairs around
+              for (let ca = 0; ca < 4; ca++) {
+                const cang2 = ca*Math.PI/2, cr2 = tr2+13;
+                const chx2 = tbx+Math.cos(cang2)*cr2-5, chy2 = tby+Math.sin(cang2)*cr2-5;
+                ctx.fillStyle = '#1a2030';
+                ctx.fillRect(chx2, chy2, 10, 10);
+                ctx.strokeStyle = '#3a4a6a'; ctx.lineWidth = 0.7;
+                ctx.strokeRect(chx2, chy2, 10, 10);
+              }
+            }
+            ctx.globalAlpha = 1.0;
+            // Food counters along top wall
+            ctx.fillStyle = '#2a1e0e';
+            ctx.fillRect(x+10, y+8, w*0.55, 20);
+            ctx.strokeStyle = '#5a3a18'; ctx.lineWidth = 1;
+            ctx.strokeRect(x+10, y+8, w*0.55, 20);
+            // Counter items (trays, food)
+            for (let ci = 0; ci < 4; ci++) {
+              const cix = x+18+ci*(w*0.55-8)/4;
+              ctx.fillStyle = ci%2===0 ? 'rgba(220,180,80,0.4)' : 'rgba(180,140,60,0.3)';
+              ctx.fillRect(cix, y+11, 24, 12);
+            }
+            // Emergency button on wall
+            ctx.fillStyle = '#2a0808'; ctx.fillRect(x+w*0.82, y+6, 26, 20);
+            ctx.strokeStyle = '#5a1414'; ctx.lineWidth = 1; ctx.strokeRect(x+w*0.82, y+6, 26, 20);
+            ctx.fillStyle = 'rgba(255,40,40,0.45)';
+            ctx.beginPath(); ctx.arc(x+w*0.82+13, y+18, 5, 0, Math.PI*2); ctx.fill();
+            break;
+          }
           // Octagonal room shape: cut corners (Skeld only)
           if (selectedMap === 'skeld' || selectedMap === 'airship') {
             const cutSz = Math.min(w, h) * 0.16;
@@ -8507,9 +9213,9 @@
             ctx.globalAlpha = 0.5;
           }
           const rr = Math.min(w,h)*0.18;
-          // Dark spacecraft silhouette fill (matching reference — very dark interior)
+          // Dark interior — deeper for MIRA's darker purple reactor
           ctx.globalAlpha = 1.0;
-          ctx.fillStyle = '#0a0810';
+          ctx.fillStyle = selectedMap === 'mira' ? '#060412' : '#0a0810';
           ctx.fillRect(x, y, w, h);
           // Spacecraft body silhouette (dark gray mass)
           ctx.fillStyle = '#181428';
@@ -9481,44 +10187,87 @@
           break;
         }
         case 'Greenhouse': {
-          // Vivid teal ambient glow (matching reference — bright teal-green)
+          // Bright teal checkered tile floor (matches reference — vivid mint-green grid)
           ctx.globalAlpha = 1.0;
-          const ghAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.7);
-          ghAmb.addColorStop(0, 'rgba(20,160,120,0.22)');
-          ghAmb.addColorStop(0.5, 'rgba(10,100,80,0.12)');
-          ghAmb.addColorStop(1, 'rgba(0,50,40,0)');
+          const ghTile = 22;
+          for (let gty = 0; gty < h; gty += ghTile) {
+            for (let gtx = 0; gtx < w; gtx += ghTile) {
+              const ghEven = (Math.floor(gtx/ghTile) + Math.floor(gty/ghTile)) % 2 === 0;
+              ctx.fillStyle = ghEven ? '#0d4a30' : '#0a3a24';
+              ctx.fillRect(x+gtx, y+gty, ghTile, ghTile);
+            }
+          }
+          // Tile grid lines
+          ctx.strokeStyle = 'rgba(60,200,140,0.20)'; ctx.lineWidth = 0.5;
+          for (let gtx = 0; gtx <= w; gtx += ghTile) {
+            ctx.beginPath(); ctx.moveTo(x+gtx, y); ctx.lineTo(x+gtx, y+h); ctx.stroke();
+          }
+          for (let gty = 0; gty <= h; gty += ghTile) {
+            ctx.beginPath(); ctx.moveTo(x, y+gty); ctx.lineTo(x+w, y+gty); ctx.stroke();
+          }
+          // Vivid teal ambient glow on top of tiles (matching reference)
+          const ghAmb = ctx.createRadialGradient(cx, cy*0.6, 0, cx, cy, Math.max(w,h)*0.7);
+          ghAmb.addColorStop(0, 'rgba(40,200,150,0.28)');
+          ghAmb.addColorStop(0.4, 'rgba(20,140,100,0.14)');
+          ghAmb.addColorStop(1, 'rgba(0,60,40,0)');
           ctx.fillStyle = ghAmb; ctx.fillRect(x, y, w, h);
           ctx.globalAlpha = 0.5;
-          // Soil planter beds — 3 rows of 2 (larger, more prominent)
-          const bedW = w*0.36, bedH = h*0.20;
-          const bedPositions = [[0.04,0.06],[0.60,0.06],[0.04,0.38],[0.60,0.38],[0.04,0.70],[0.60,0.70]];
+          // Soil planter beds — 3 rows of 2 (wider, taller, fully fills reference layout)
+          const bedW = w*0.40, bedH = h*0.22;
+          const bedPositions = [[0.03,0.05],[0.57,0.05],[0.03,0.36],[0.57,0.36],[0.03,0.67],[0.57,0.67]];
           ctx.globalAlpha = 1.0;
           for (const [bpx,bpy] of bedPositions) {
             const bx2=x+w*bpx, by2=y+h*bpy;
-            // Soil bed frame
-            ctx.fillStyle = '#3a2810';
+            // Raised bed frame — dark wood border
+            ctx.fillStyle = '#5a3a14';
+            ctx.fillRect(bx2-3, by2-3, bedW+6, bedH+6);
+            ctx.fillStyle = '#2e1a08';
             ctx.fillRect(bx2, by2, bedW, bedH);
-            ctx.strokeStyle = '#7a5a28'; ctx.lineWidth = 2;
+            ctx.strokeStyle = '#8a6028'; ctx.lineWidth = 2.5;
             ctx.strokeRect(bx2, by2, bedW, bedH);
-            // Soil texture (dark brown rows)
-            ctx.fillStyle = '#4a3018';
-            for (let si = 0; si < 4; si++) ctx.fillRect(bx2+si*bedW*0.22+4, by2+4, bedW*0.19, bedH-8);
-            // Plants growing from soil (vivid at full opacity)
-            const plantColors = ['#22cc22','#44ee44','#55dd22','#33cc33'];
-            for (let pi = 0; pi < 5; pi++) {
-              const px2 = bx2+bedW*0.10+pi*bedW*0.18, py2 = by2+bedH*0.55;
-              const pc = plantColors[pi%4], ph = bedH*(0.70+Math.sin(pi*1.7)*0.22);
-              // Stem
-              ctx.strokeStyle = pc; ctx.lineWidth = 2;
-              ctx.beginPath(); ctx.moveTo(px2, py2); ctx.lineTo(px2, py2-ph); ctx.stroke();
-              // Leaves — bigger ellipses
-              ctx.fillStyle = pc;
-              ctx.beginPath(); ctx.ellipse(px2-7, py2-ph*0.6, 9, 5, -0.4, 0, Math.PI*2); ctx.fill();
-              ctx.beginPath(); ctx.ellipse(px2+5, py2-ph*0.75, 6, 3, 0.4, 0, Math.PI*2); ctx.fill();
-              // Flower/bud at top
-              ctx.fillStyle = pi%3===0 ? '#ffcc00' : pi%3===1 ? '#ff8844' : '#ff44aa';
-              ctx.beginPath(); ctx.arc(px2, py2-ph, 3, 0, Math.PI*2); ctx.fill();
+            // Rich dark soil inside
+            ctx.fillStyle = '#3a2210';
+            ctx.fillRect(bx2+3, by2+3, bedW-6, bedH-6);
+            // Soil furrow rows (tilled lines)
+            ctx.strokeStyle = '#4a2c14'; ctx.lineWidth = 1;
+            for (let si = 0; si < 5; si++) {
+              const sx2 = bx2+4+si*(bedW-8)/4;
+              ctx.beginPath(); ctx.moveTo(sx2, by2+4); ctx.lineTo(sx2, by2+bedH-4); ctx.stroke();
             }
+            // Dense plant rows — 6 plants per bed
+            const plantColorSets = [
+              ['#1ecc1e','#28ee28','#16aa16'],
+              ['#44ee44','#22cc22','#33dd33'],
+              ['#28dd14','#44ff22','#1eaa10'],
+            ];
+            const pcs = plantColorSets[Math.floor(bpy*10) % 3];
+            for (let pi = 0; pi < 6; pi++) {
+              const px2 = bx2+bedW*0.08+pi*(bedW*0.84)/5;
+              const py2 = by2+bedH*0.7;
+              const pc = pcs[pi%3];
+              const ph = bedH*(0.65+Math.sin(pi*1.3)*0.18);
+              // Thick stem
+              ctx.strokeStyle = '#1a6010'; ctx.lineWidth = 2.5;
+              ctx.beginPath(); ctx.moveTo(px2, py2); ctx.lineTo(px2, py2-ph); ctx.stroke();
+              ctx.strokeStyle = pc; ctx.lineWidth = 1.5;
+              ctx.beginPath(); ctx.moveTo(px2, py2); ctx.lineTo(px2, py2-ph); ctx.stroke();
+              // Large leaves
+              ctx.fillStyle = pc;
+              ctx.beginPath(); ctx.ellipse(px2-8, py2-ph*0.55, 11, 6, -0.5, 0, Math.PI*2); ctx.fill();
+              ctx.beginPath(); ctx.ellipse(px2+6, py2-ph*0.70, 8, 4, 0.5, 0, Math.PI*2); ctx.fill();
+              ctx.beginPath(); ctx.ellipse(px2-4, py2-ph*0.85, 7, 4, -0.2, 0, Math.PI*2); ctx.fill();
+              // Top bud/flower — yellow, orange or magenta
+              const budCol = pi%3===0 ? '#ffdd00' : pi%3===1 ? '#ff9933' : '#ff55cc';
+              ctx.fillStyle = budCol;
+              ctx.beginPath(); ctx.arc(px2, py2-ph, 4, 0, Math.PI*2); ctx.fill();
+              ctx.fillStyle = 'rgba(255,255,200,0.6)';
+              ctx.beginPath(); ctx.arc(px2, py2-ph, 1.5, 0, Math.PI*2); ctx.fill();
+            }
+            // Grow light strip above each bed
+            ctx.fillStyle = 'rgba(200,255,200,0.18)';
+            ctx.fillRect(bx2+4, by2-12, bedW-8, 6);
+            ctx.fillStyle = 'rgba(160,255,160,0.30)';
+            ctx.fillRect(bx2+4, by2-12, bedW-8, 2);
           }
           ctx.globalAlpha = 0.5;
           // Overhead grow-light strips between beds (brighter teal)
@@ -10528,11 +11277,29 @@
           ctx.stroke();
         }
       } else if (selectedMap === 'mira') {
-        // Cloud wisps
-        ctx.fillStyle = 'rgba(150,200,255,0.03)';
-        for (let i = 0; i < 15; i++) {
+        // Stars in the sky (MIRA HQ is a sky station)
+        ctx.fillStyle = 'rgba(255,255,255,0.18)';
+        for (let i = 0; i < 120; i++) {
+          const sx = (i * 347 + 89) % MAP_W, sy = (i * 271 + 167) % MAP_H;
+          const sz = i % 5 === 0 ? 2 : 1;
+          ctx.fillRect(sx - ox, sy - oy, sz, sz);
+        }
+        // Brighter twinkling stars
+        ctx.fillStyle = 'rgba(200,230,255,0.35)';
+        for (let i = 0; i < 20; i++) {
+          const sx = (i * 613 + 241) % MAP_W, sy = (i * 487 + 333) % MAP_H;
+          ctx.beginPath(); ctx.arc(sx - ox, sy - oy, 1.5, 0, Math.PI*2); ctx.fill();
+        }
+        // Blue-sky horizon gradient at bottom
+        const miraBg = ctx.createLinearGradient(0, MAP_H*0.6 - oy, 0, MAP_H - oy);
+        miraBg.addColorStop(0, 'rgba(10,30,80,0)');
+        miraBg.addColorStop(1, 'rgba(20,60,140,0.06)');
+        ctx.fillStyle = miraBg; ctx.fillRect(0 - ox, MAP_H*0.6 - oy, MAP_W, MAP_H*0.4);
+        // Faint cloud wisps (sky station atmosphere)
+        ctx.fillStyle = 'rgba(150,200,255,0.04)';
+        for (let i = 0; i < 20; i++) {
           const sx = (i * 431 + 89) % MAP_W, sy = (i * 283 + 167) % MAP_H;
-          ctx.beginPath(); ctx.ellipse(sx - ox, sy - oy, 60, 20, 0, 0, Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.ellipse(sx - ox, sy - oy, 80, 22, 0, 0, Math.PI*2); ctx.fill();
         }
       } else if (selectedMap === 'polus') {
         // Animated snowfall drawn here
@@ -10623,24 +11390,34 @@
       }
 
       // Room labels
-      ctx.font = 'bold 11px Segoe UI, Arial';
+      // ── Room labels with styled pill background ──────────────────────────
+      ctx.save();
       ctx.textAlign = 'center';
-      ctx.shadowColor = 'rgba(0,0,0,0.8)';
-      ctx.shadowBlur = 3;
+      ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowBlur = 4;
       for (const r of rooms) {
-        ctx.fillStyle = 'rgba(255,255,255,0.55)';
-        ctx.fillText(r.name, r.x - ox, r.y - oy);
-      }
-      // Extra labels (e.g. HALLWAY corridor labels)
-      if (mapTheme.extraLabels) {
+        const lx = r.x - ox, ly = r.y - oy;
         ctx.font = 'bold 11px Segoe UI, Arial';
+        const tw = ctx.measureText(r.name).width;
+        // Pill background
+        ctx.globalAlpha = 0.48;
+        ctx.fillStyle = '#000';
+        ctx.beginPath();
+        ctx.roundRect(lx - tw/2 - 5, ly - 10, tw + 10, 14, 4);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        // Label text
+        ctx.fillStyle = 'rgba(255,255,255,0.82)';
+        ctx.fillText(r.name, lx, ly);
+      }
+      // Extra corridor labels
+      if (mapTheme.extraLabels) {
+        ctx.font = '10px Segoe UI, Arial';
         for (const r of mapTheme.extraLabels) {
-          ctx.fillStyle = 'rgba(255,255,255,0.55)';
+          ctx.fillStyle = 'rgba(200,200,255,0.50)';
           ctx.fillText(r.name, r.x - ox, r.y - oy);
         }
       }
-      ctx.shadowBlur = 0;
-      ctx.shadowColor = 'transparent';
+      ctx.restore();
 
       // Vents (enhanced with shadow and depth)
       for (const v of vents) {
@@ -10980,98 +11757,141 @@
     }
 
     function drawMinimap() {
-      const scale = minimapCanvas.width / MAP_W;
-      minimapCtx.fillStyle = 'rgba(0,0,0,0.8)';
-      minimapCtx.fillRect(0, 0, minimapCanvas.width, minimapCanvas.height);
+      const mc = minimapCtx;
+      const sc = minimapCanvas.width / MAP_W;
 
-      // Draw terrain shape on minimap (Polus)
+      // Background
+      mc.fillStyle = 'rgba(0,0,0,0.86)';
+      mc.fillRect(0, 0, minimapCanvas.width, minimapCanvas.height);
+
+      // Terrain (Polus)
       if (mapTheme.terrain) {
-        minimapCtx.fillStyle = 'rgba(160,80,100,0.9)';
-        for (const t of mapTheme.terrain) {
-          minimapCtx.fillRect(t.x * scale, t.y * scale, t.w * scale, t.h * scale);
-        }
+        mc.fillStyle = 'rgba(160,80,100,0.9)';
+        for (const t of mapTheme.terrain)
+          mc.fillRect(t.x*sc, t.y*sc, t.w*sc, t.h*sc);
       }
 
-      // Draw floors on minimap
-      if (selectedMap === 'polus' && mapTheme.floors) {
-        const numRooms = rooms.length;
-        for (let i = 0; i < mapTheme.floors.length; i++) {
-          const f = mapTheme.floors[i];
-          minimapCtx.fillStyle = i < numRooms ? 'rgba(200,20,20,0.8)' : 'rgba(240,180,185,0.7)';
-          minimapCtx.fillRect(f.x * scale, f.y * scale, f.w * scale, f.h * scale);
-        }
+      // Floors — colored per map
+      if (mapTheme.floors) {
+        const nR = rooms.length;
+        const floorCol = selectedMap === 'polus' ? ['rgba(200,20,20,0.8)','rgba(240,180,185,0.7)']
+                       : selectedMap === 'mira'  ? ['rgba(40,60,140,0.6)','rgba(20,40,100,0.4)']
+                       : selectedMap === 'fungle'? ['rgba(40,120,20,0.55)','rgba(20,80,10,0.35)']
+                       : ['rgba(60,65,80,0.65)', 'rgba(40,45,60,0.40)'];
+        mapTheme.floors.forEach((f, i) => {
+          mc.fillStyle = i < nR ? floorCol[0] : floorCol[1];
+          mc.fillRect(f.x*sc, f.y*sc, f.w*sc, f.h*sc);
+        });
       }
 
-      minimapCtx.fillStyle = selectedMap === 'polus' ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.15)';
-      for (const w of walls) {
-        minimapCtx.fillRect(w.x * scale, w.y * scale, Math.max(w.w * scale, 1), Math.max(w.h * scale, 1));
-      }
+      // Walls
+      mc.fillStyle = selectedMap === 'polus' ? 'rgba(255,255,255,0.85)'
+                   : selectedMap === 'mira'  ? 'rgba(60,140,220,0.50)'
+                   : 'rgba(255,255,255,0.18)';
+      for (const w of walls)
+        mc.fillRect(w.x*sc, w.y*sc, Math.max(w.w*sc,1), Math.max(w.h*sc,1));
 
-      // Doors on minimap
+      // Doors — open=teal glow, closed=red glow, flash if active sabotage
+      const doorFlash = sabotage.active && Math.floor(frameCount/15)%2===0;
       for (const d of doors) {
-        minimapCtx.fillStyle = d.closed ? 'rgba(255,60,60,0.9)' : 'rgba(100,255,100,0.15)';
-        minimapCtx.fillRect(d.x * scale, d.y * scale, Math.max(d.w * scale, 2), Math.max(d.h * scale, 2));
+        const dw = Math.max(d.w*sc,3), dh = Math.max(d.h*sc,3);
+        if (d.closed) {
+          mc.fillStyle = doorFlash ? '#ff6666' : 'rgba(255,50,50,0.95)';
+        } else {
+          mc.fillStyle = 'rgba(60,240,120,0.55)';
+        }
+        mc.fillRect(d.x*sc, d.y*sc, dw, dh);
+        // Border
+        mc.strokeStyle = d.closed ? '#ff4444' : '#44ff88';
+        mc.lineWidth = 0.5;
+        mc.strokeRect(d.x*sc, d.y*sc, dw, dh);
       }
 
-      // Task locations on minimap
+      // Task dots (gold = pending, grey = done)
       for (const t of taskLocations) {
-        if (t.done) continue;
-        minimapCtx.fillStyle = 'rgba(255,215,0,0.5)';
-        minimapCtx.beginPath();
-        minimapCtx.arc(t.x * scale, t.y * scale, 2, 0, Math.PI * 2);
-        minimapCtx.fill();
+        mc.fillStyle = t.done ? 'rgba(100,100,100,0.3)' : 'rgba(255,215,0,0.65)';
+        mc.beginPath(); mc.arc(t.x*sc, t.y*sc, t.done ? 1 : 2, 0, Math.PI*2); mc.fill();
       }
 
-      // Vents on minimap (impostor only)
-      if (isImpostor) {
-        for (const v of vents) {
-          minimapCtx.fillStyle = 'rgba(100,100,100,0.8)';
-          minimapCtx.fillRect(v.x * scale - 2, v.y * scale - 1.5, 4, 3);
+      // Sabotage fix points (pulsing when sabotage active)
+      if (sabotage.active && mapTheme.sabFix) {
+        const pulse = 0.6 + 0.4*Math.sin(Date.now()/180);
+        const sabCol = { lights:'#ffee44', o2:'#44ddff', reactor:'#ff8844', comms:'#cc88ff' };
+        const col = sabCol[sabotage.type] || '#ff4444';
+        const locs = mapTheme.sabFix[sabotage.type];
+        if (locs) {
+          const arr = Array.isArray(locs) ? locs : [locs];
+          for (const l of arr) {
+            mc.globalAlpha = pulse;
+            mc.fillStyle = col;
+            mc.beginPath(); mc.arc(l.x*sc, l.y*sc, 4, 0, Math.PI*2); mc.fill();
+            mc.strokeStyle = '#fff'; mc.lineWidth = 1; mc.stroke();
+            mc.globalAlpha = 1;
+          }
         }
       }
 
+      // Vents (impostor: visible; crew: hidden)
+      if (isImpostor) {
+        mc.fillStyle = 'rgba(130,130,150,0.85)';
+        for (const v of vents) {
+          mc.fillRect(v.x*sc-2.5, v.y*sc-1.5, 5, 3);
+        }
+      }
+
+      // NPC dots
       for (const npc of npcs) {
         if (!npc.alive) continue;
-        minimapCtx.fillStyle = npc.color;
-        minimapCtx.beginPath();
-        minimapCtx.arc(npc.x * scale, npc.y * scale, 3, 0, Math.PI * 2);
-        minimapCtx.fill();
+        mc.fillStyle = npc.color;
+        mc.beginPath(); mc.arc(npc.x*sc, npc.y*sc, 3, 0, Math.PI*2); mc.fill();
+        mc.strokeStyle = 'rgba(255,255,255,0.5)'; mc.lineWidth = 0.5; mc.stroke();
       }
 
-      // Tracker target on minimap
+      // Dead body markers (skull)
+      for (const db of deadBodies) {
+        mc.fillStyle = 'rgba(255,255,255,0.4)';
+        mc.font = `${Math.max(6,Math.round(8*sc))}px Arial`;
+        mc.textAlign = 'center';
+        mc.fillText('✕', db.x*sc, db.y*sc + 2);
+      }
+
+      // Tracker target
       if (playerRole === 'tracker' && trackerTarget && trackerTarget.alive && trackerTimer > 0) {
-        const flash = Math.floor(frameCount / 15) % 2 === 0;
-        if (flash) {
-          minimapCtx.fillStyle = '#ff8844';
-          minimapCtx.beginPath();
-          minimapCtx.arc(trackerTarget.x * scale, trackerTarget.y * scale, 5, 0, Math.PI * 2);
-          minimapCtx.fill();
-          minimapCtx.strokeStyle = '#fff';
-          minimapCtx.lineWidth = 1;
-          minimapCtx.stroke();
+        if (Math.floor(frameCount/15)%2 === 0) {
+          mc.fillStyle = '#ff8844';
+          mc.beginPath(); mc.arc(trackerTarget.x*sc, trackerTarget.y*sc, 5, 0, Math.PI*2); mc.fill();
+          mc.strokeStyle = '#fff'; mc.lineWidth = 1; mc.stroke();
         }
       }
 
-      // Shifter evidence on minimap
+      // Shifter evidence
       for (const ev of shifterEvidence) {
-        const fade = ev.timer / ev.maxTimer;
-        minimapCtx.globalAlpha = fade * 0.8;
-        minimapCtx.fillStyle = '#aa44ff';
-        minimapCtx.beginPath();
-        minimapCtx.arc(ev.x * scale, ev.y * scale, 3, 0, Math.PI * 2);
-        minimapCtx.fill();
-        minimapCtx.globalAlpha = 1;
+        mc.globalAlpha = (ev.timer / ev.maxTimer) * 0.8;
+        mc.fillStyle = '#aa44ff';
+        mc.beginPath(); mc.arc(ev.x*sc, ev.y*sc, 3, 0, Math.PI*2); mc.fill();
+        mc.globalAlpha = 1;
       }
 
-      if ((player.alive || isGhost)) {
-        minimapCtx.fillStyle = player.color;
-        minimapCtx.beginPath();
-        minimapCtx.arc(player.x * scale, player.y * scale, 4, 0, Math.PI * 2);
-        minimapCtx.fill();
-        minimapCtx.strokeStyle = '#fff';
-        minimapCtx.lineWidth = 1;
-        minimapCtx.stroke();
+      // Player dot + name
+      if (player.alive || isGhost) {
+        const px = player.x*sc, py = player.y*sc;
+        mc.save();
+        mc.shadowColor = player.color; mc.shadowBlur = 5;
+        mc.fillStyle = player.color;
+        mc.beginPath(); mc.arc(px, py, 4, 0, Math.PI*2); mc.fill();
+        mc.strokeStyle = '#fff'; mc.lineWidth = 1.5; mc.stroke();
+        mc.restore();
+        // Player name label
+        mc.fillStyle = '#fff';
+        mc.font = `bold ${Math.max(6, Math.round(7*sc))}px Arial`;
+        mc.textAlign = 'center';
+        mc.fillText(player.name || 'You', px, py - 6);
       }
+
+      // Minimap border
+      mc.strokeStyle = 'rgba(255,255,255,0.12)';
+      mc.lineWidth = 1;
+      mc.strokeRect(0, 0, minimapCanvas.width, minimapCanvas.height);
     }
 
     function updateActivityLog() {
@@ -11322,28 +12142,127 @@
         ctx.restore();
       }
 
-      // Vision fog of war — skip for ghosts (they see everything)
-      if (player.alive && !isImpostor && !isGhost) {
-        const cx = canvas.width / 2 + player.w / 2;
-        const cy = canvas.height / 2 + player.h / 2;
-        const gradient = ctx.createRadialGradient(cx, cy, visionRadius * 0.7, cx, cy, visionRadius);
-        gradient.addColorStop(0, 'rgba(0,0,0,0)');
-        gradient.addColorStop(1, 'rgba(0,0,0,0.85)');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
+      // ── Vision fog / wall shadows ────────────────────────────────────────
+      // Ghosts with full vision skip all fog.
+      const applyFog = (player.alive || isGhost) && !(isGhost && gameSettings.ghostVision >= 99);
+      if (applyFog) {
+        const pCX  = player.x + player.w / 2;
+        const pCY  = player.y + player.h / 2;
+        const scrX = pCX - ox;
+        const scrY = pCY - oy;
+        const vr   = isGhost ? VISION_NORMAL * gameSettings.ghostVision : visionRadius;
 
-      // Ghost fog-of-war (limited vision unless ghostVision >= 99)
-      if (isGhost && gameSettings.ghostVision < 99) {
-        const cx = canvas.width / 2 + player.w / 2;
-        const cy = canvas.height / 2 + player.h / 2;
-        const ghostVR = VISION_NORMAL * gameSettings.ghostVision;
-        const gradient = ctx.createRadialGradient(cx, cy, ghostVR * 0.7, cx, cy, ghostVR);
-        gradient.addColorStop(0, 'rgba(0,0,0,0)');
-        gradient.addColorStop(1, 'rgba(0,0,0,0.75)');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+
+        if (!isGhost) {
+          // ── Wall-occluded shadow mask (crew + impostor) ────────────────
+          // Build visibility polygon: N rays stopped by first wall hit.
+          const poly = _buildShadowPolygon(pCX, pCY, vr, ox, oy);
+
+          // Draw dark fog everywhere EXCEPT inside the visibility polygon
+          // (evenodd fill rule: outer rect fills, inner polygon cancels it).
+          ctx.fillStyle = 'rgba(0,0,0,0.93)';
+          ctx.beginPath();
+          ctx.rect(0, 0, canvas.width, canvas.height);
+          ctx.moveTo(poly[0], poly[1]);
+          for (let i = 2; i < poly.length; i += 2) ctx.lineTo(poly[i], poly[i + 1]);
+          ctx.closePath();
+          ctx.fill('evenodd');
+
+          // Soft radial fade at the edge of vision range
+          const grd = ctx.createRadialGradient(scrX, scrY, vr * 0.72, scrX, scrY, vr * 1.05);
+          grd.addColorStop(0, 'rgba(0,0,0,0)');
+          grd.addColorStop(1, 'rgba(0,0,0,0.75)');
+          ctx.fillStyle = grd;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        } else {
+          // Ghost: simple radial gradient (no wall occlusion — they're dead)
+          const grd = ctx.createRadialGradient(scrX, scrY, vr * 0.7, scrX, scrY, vr);
+          grd.addColorStop(0, 'rgba(0,0,0,0)');
+          grd.addColorStop(1, 'rgba(0,0,0,0.75)');
+          ctx.fillStyle = grd;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        ctx.restore();
       }
+      // ─────────────────────────────────────────────────────────────────────
+
+      // ── Navigation arrows (task + sabotage fix pointers) ─────────────────
+      if (!inMeeting && !gameOver && player && player.alive) {
+        const pCX = player.x + player.w / 2;
+        const pCY = player.y + player.h / 2;
+        const CX  = pCX - ox; // player screen centre
+        const CY  = pCY - oy;
+        const EDGE  = 52; // px from screen edge
+        const ARROW = 14; // half-size of arrowhead
+
+        function _drawNavArrow(wx2, wy2, color, pulse) {
+          // world → screen
+          const sx = wx2 - ox, sy = wy2 - oy;
+          const dx = sx - CX, dy = sy - CY;
+          const d  = Math.sqrt(dx*dx + dy*dy);
+          // Only draw if target is off-screen
+          if (sx > EDGE && sx < canvas.width - EDGE && sy > EDGE && sy < canvas.height - EDGE) return;
+          if (d < 5) return;
+          const ang = Math.atan2(dy, dx);
+          // Clamp to screen rectangle
+          const hW = canvas.width  / 2 - EDGE;
+          const hH = canvas.height / 2 - EDGE;
+          const cosA = Math.cos(ang), sinA = Math.sin(ang);
+          let t = Infinity;
+          if (Math.abs(cosA) > 1e-6) t = Math.min(t, hW / Math.abs(cosA));
+          if (Math.abs(sinA) > 1e-6) t = Math.min(t, hH / Math.abs(sinA));
+          const arX = canvas.width/2  + cosA * t;
+          const arY = canvas.height/2 + sinA * t;
+          // Pulsing alpha
+          const alpha = pulse ? 0.6 + 0.4 * Math.abs(Math.sin(Date.now() / 280)) : 0.85;
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          ctx.translate(arX, arY);
+          ctx.rotate(ang);
+          // Shadow
+          ctx.shadowColor = color; ctx.shadowBlur = 8;
+          // Arrowhead
+          ctx.beginPath();
+          ctx.moveTo(ARROW + 4, 0);
+          ctx.lineTo(-ARROW, -ARROW * 0.7);
+          ctx.lineTo(-ARROW * 0.4, 0);
+          ctx.lineTo(-ARROW, ARROW * 0.7);
+          ctx.closePath();
+          ctx.fillStyle = color;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+          ctx.restore();
+        }
+
+        // Gold arrows → nearest incomplete task
+        if (!isImpostor) {
+          let nearestTask = null, nearestDist = Infinity;
+          for (const t of taskLocations) {
+            if (t.done) continue;
+            const tx = t.x + 8, ty = t.y + 17;
+            const td = Math.sqrt((tx - pCX)**2 + (ty - pCY)**2);
+            if (td < nearestDist) { nearestDist = td; nearestTask = t; }
+          }
+          if (nearestTask) {
+            _drawNavArrow(nearestTask.x + 8, nearestTask.y + 17, '#ffe140', false);
+          }
+        }
+
+        // Red pulsing arrows → active sabotage fix points
+        if (sabotage && sabotage.active && mapTheme.sabFix) {
+          const fixType = sabotage.type;
+          const locs = mapTheme.sabFix[fixType];
+          if (locs) {
+            const arr = Array.isArray(locs) ? locs : [locs];
+            for (const loc of arr) {
+              _drawNavArrow(loc.x, loc.y, '#ff4040', true);
+            }
+          }
+        }
+      }
+      // ── End navigation arrows ─────────────────────────────────────────────
 
       // Ghost overlay tint
       if (isGhost) {
@@ -12386,8 +13305,13 @@
           sabControls.style.display = 'flex';
         }
       }
+      if (e.key.toLowerCase() === 'm' && !inMeeting && !gameOver) {
+        if (taskMapOpen) { closeTaskMap(); } else { openTaskMap(); }
+      }
       if (e.key === 'Escape') {
+        if (taskMapOpen) { closeTaskMap(); return; }
         if (taskModalOpen) { closeTaskModal(); return; }
+        if (sabMapOpen) { closeSabotageMap(); return; }
         if (adminMapOpen) { closeAdminMap(); return; }
         if (viewingCameras) { viewingCameras = false; return; }
         if (vitalsOpen) { vitalsOpen = false; document.getElementById('vitalsPanel').style.display = 'none'; return; }
