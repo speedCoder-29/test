@@ -1060,9 +1060,10 @@
       for (let i = 0; i < d.length; i += 4) {
         if (d[i+3] < 10) continue; // skip transparent
         const sr = d[i], sg = d[i+1], sb = d[i+2];
-        // Only recolor pixels where red is dominant (body, legs, backpack).
-        // Visor (blue/white) and other elements are left unchanged.
-        if (sr > sg + 25 && sr > sb + 25) {
+        // Recolor pixels where red is dominant (body, legs, backpack, outlines).
+        // Uses ratio test so dark outline pixels (~8,1,1) are caught alongside bright body pixels.
+        // Visor (blue/white: sb > sr, or equal high-value channels) is skipped.
+        if (sr > sg * 1.5 && sr > sb * 1.5 && sr > 5) {
           const lum = Math.sqrt(0.299*(sr/255)**2 + 0.587*(sg/255)**2 + 0.114*(sb/255)**2);
           const ratio = lum / BASE_LUM;
           d[i]   = Math.min(255, Math.round(tr * ratio));
@@ -1098,10 +1099,6 @@
       function done() {
         if (--pending === 0) {
           _spriteFrames.ready = !!(_spriteFrames.idle && _spriteFrames.idle.naturalWidth > 0);
-          if (_spriteFrames.ready) {
-            // Pre-build recolored sprites for all standard colors so first frame is smooth
-            for (const c of COLORS) _getColoredSprites(c.hex);
-          }
         }
       }
       const idle = new Image(); idle.crossOrigin = 'anonymous';
@@ -3136,8 +3133,7 @@
       minimapCanvas.height = Math.round(180 * (MAP_H / MAP_W));
       // Build walkable grid for pathfinding
       buildWalkableGrid();
-      // Pre-render static map to offscreen canvas so render() only needs drawImage()
-      prerenderStaticMap();
+      _staticMapCanvas = null; // will be built lazily on first drawMap() call inside RAF
       loadedMapId = mapId;
     }
 
@@ -10559,7 +10555,8 @@
 
     function drawMap(ox, oy) {
       // Static pre-rendered map: bg, terrain, environment (stars/hull/clouds/mushrooms), floors, walls.
-      // Built once by prerenderStaticMap() so render() only needs a single drawImage().
+      // Built lazily on first drawMap() call (inside RAF) so loadMap() doesn't block the click handler.
+      if (!_staticMapCanvas) prerenderStaticMap();
       if (_staticMapCanvas) {
         ctx.drawImage(_staticMapCanvas, Math.round(-ox), Math.round(-oy));
       } else {
