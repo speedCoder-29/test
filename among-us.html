@@ -4827,15 +4827,6 @@
         c.fillText(r.name, lx, ly);
       }
 
-      // NPC dots
-      for (const npc of npcs) {
-        if (!npc.alive) continue;
-        const nx = npc.x*sc, ny = npc.y*sc;
-        c.fillStyle = npc.color;
-        c.beginPath(); c.arc(nx, ny, Math.max(3, 3.5*sc), 0, Math.PI*2); c.fill();
-        c.strokeStyle = '#fff'; c.lineWidth = 0.7; c.stroke();
-      }
-
       // Player dot
       if (player) {
         const px2 = player.x*sc, py2 = player.y*sc;
@@ -11839,14 +11830,6 @@
         }
       }
 
-      // NPC dots
-      for (const npc of npcs) {
-        if (!npc.alive) continue;
-        mc.fillStyle = npc.color;
-        mc.beginPath(); mc.arc(npc.x*sc, npc.y*sc, 3, 0, Math.PI*2); mc.fill();
-        mc.strokeStyle = 'rgba(255,255,255,0.5)'; mc.lineWidth = 0.5; mc.stroke();
-      }
-
       // Dead body markers (skull)
       for (const db of deadBodies) {
         mc.fillStyle = 'rgba(255,255,255,0.4)';
@@ -11898,8 +11881,6 @@
       const log = document.getElementById('npcActivity');
       const lines = [];
       lines.push(MAPS[selectedMap].name);
-      const aliveCount = npcs.filter(n => n.alive).length + (player.alive ? 1 : 0);
-      lines.push('Alive: ' + aliveCount + '/10');
       log.innerHTML = lines.join('<br>');
     }
 
@@ -12577,6 +12558,11 @@
         if (dropshipCountdownFrames <= 0) {
           dropshipCountdown--;
           dropshipCountdownFrames = 60;
+          if (dropshipCountdown === 1) {
+            // Pre-build the static map canvas now (during the "1" display frame)
+            // so the first game frame finds it ready and doesn't freeze.
+            if (!_staticMapCanvas) prerenderStaticMap();
+          }
           if (dropshipCountdown === 0) {
             // Frame A: run init() while still in dropship mode so the cheap
             // dropship render (not the heavy first game render) fires this frame.
