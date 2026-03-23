@@ -1022,7 +1022,7 @@
     }
 
     const canvas = document.getElementById('game');
-    const ctx = canvas.getContext('2d');
+    let ctx = canvas.getContext('2d');
     const minimapCanvas = document.getElementById('minimap');
     const minimapCtx = minimapCanvas.getContext('2d');
 
@@ -3069,6 +3069,7 @@
     let doorCooldown = 0;
 
     let loadedMapId = null; // track last loaded map to avoid re-building walkGrid unnecessarily
+    let _staticMapCanvas = null; // offscreen pre-rendered static map for fast drawMap()
 
     function loadMap(mapId) {
       if (loadedMapId === mapId) return; // already loaded, skip expensive rebuild
@@ -3100,6 +3101,8 @@
       minimapCanvas.height = Math.round(180 * (MAP_H / MAP_W));
       // Build walkable grid for pathfinding
       buildWalkableGrid();
+      // Pre-render static map to offscreen canvas so render() only needs drawImage()
+      prerenderStaticMap();
       loadedMapId = mapId;
     }
 
@@ -3126,6 +3129,77 @@
           }
         }
       }
+    }
+
+    // Pre-render static parts of the map to an offscreen canvas.
+    // Called once per map load. drawMap() then does a single drawImage() instead of
+    // re-drawing every floor, tile, and wall every frame.
+    function prerenderStaticMap() {
+      const ofc = document.createElement('canvas');
+      ofc.width  = MAP_W;
+      ofc.height = MAP_H;
+      _staticMapCanvas = ofc;
+      const offCtx = ofc.getContext('2d');
+
+      // Temporarily redirect global ctx so drawFloorTiles/draw3DWall/drawRoomDecor
+      // write to the offscreen canvas (they all close over ctx).
+      const savedCtx = ctx;
+      ctx = offCtx;
+
+      // Background
+      ctx.fillStyle = mapTheme.bg;
+      ctx.fillRect(0, 0, MAP_W, MAP_H);
+
+      // Terrain shape (Polus outline, etc.) — drawn before environment BG, matching drawMap order
+      if (mapTheme.terrain) {
+        ctx.fillStyle = mapTheme.terrainColor || '#c46878';
+        for (const t of mapTheme.terrain) ctx.fillRect(t.x, t.y, t.w, t.h);
+      }
+
+      // Static environment (stars, ship hull, MIRA clouds, Fungle mushrooms).
+      // Polus snow is animated (snowParticles empty here) so it's a no-op and drawn live in drawMap().
+      drawEnvironmentBG(0, 0);
+
+      // Room floors with per-room colors, tiles, decor, and hallways
+      if (mapTheme.floors) {
+        const numRooms = rooms.length;
+        for (let i = 0; i < mapTheme.floors.length; i++) {
+          const f = mapTheme.floors[i];
+          const fx = f.x, fy = f.y;
+          if (i < numRooms) {
+            ctx.fillStyle = selectedMap === 'polus' ? '#cc1111' : (roomFloorColors[rooms[i].name] || '#222228');
+            ctx.fillRect(fx, fy, f.w, f.h);
+            ctx.fillStyle = 'rgba(255,255,255,0.03)';
+            ctx.fillRect(fx + 1, fy + 1, f.w, 4);
+            drawFloorTiles(fx, fy, f.w, f.h);
+            ctx.strokeStyle = selectedMap === 'polus' ? 'rgba(255,255,255,0.15)' :
+                              selectedMap === 'skeld' ? 'rgba(255,255,255,0.07)' :
+                              selectedMap === 'mira'  ? 'rgba(80,200,255,0.18)' :
+                                                        'rgba(255,255,255,0.04)';
+            ctx.lineWidth = selectedMap === 'polus' ? 2 : selectedMap === 'mira' ? 2 : selectedMap === 'skeld' ? 1.5 : 1;
+            ctx.strokeRect(fx + 2, fy + 2, f.w - 4, f.h - 4);
+            if (selectedMap === 'mira') {
+              ctx.strokeStyle = 'rgba(60,160,220,0.08)';
+              ctx.lineWidth = 4;
+              ctx.strokeRect(fx + 6, fy + 6, f.w - 12, f.h - 12);
+            }
+            drawRoomDecor(rooms[i].name, fx, fy, f.w, f.h);
+          } else {
+            ctx.fillStyle = selectedMap === 'polus' ? '#f4b8bc' :
+                            selectedMap === 'fungle' ? 'rgba(80,120,60,0.06)' :
+                            selectedMap === 'mira'   ? '#101e30' :
+                            selectedMap === 'skeld'  ? 'rgba(160,200,240,0.10)' :
+                                                       'rgba(150,150,180,0.06)';
+            ctx.fillRect(fx, fy, f.w, f.h);
+            drawHallwayDetail(fx, fy, f.w, f.h);
+          }
+        }
+      }
+
+      // 3D Walls
+      for (const w of walls) draw3DWall(w.x, w.y, w.w, w.h);
+
+      ctx = savedCtx;
     }
 
     // Build map selector UI
@@ -10421,67 +10495,18 @@
     }
 
     function drawMap(ox, oy) {
-      // Background
-      ctx.fillStyle = mapTheme.bg;
-      ctx.fillRect(-ox, -oy, MAP_W, MAP_H);
-
-      // Terrain shape (Polus: dark pink map outline on black background)
-      if (mapTheme.terrain) {
-        ctx.fillStyle = mapTheme.terrainColor || '#c46878';
-        for (const t of mapTheme.terrain) {
-          ctx.fillRect(t.x - ox, t.y - oy, t.w, t.h);
-        }
+      // Static pre-rendered map: bg, terrain, environment (stars/hull/clouds/mushrooms), floors, walls.
+      // Built once by prerenderStaticMap() so render() only needs a single drawImage().
+      if (_staticMapCanvas) {
+        ctx.drawImage(_staticMapCanvas, Math.round(-ox), Math.round(-oy));
+      } else {
+        // Fallback (shouldn't occur in normal play)
+        ctx.fillStyle = mapTheme.bg;
+        ctx.fillRect(-ox, -oy, MAP_W, MAP_H);
       }
 
-      // Environment background (stars, snow, mushrooms, clouds)
-      drawEnvironmentBG(ox, oy);
-
-      // Room floors with per-room colors and textures
-      if (mapTheme.floors) {
-        const numRooms = rooms.length;
-        for (let i = 0; i < mapTheme.floors.length; i++) {
-          const f = mapTheme.floors[i];
-          const fx = f.x - ox, fy = f.y - oy;
-          if (i < numRooms) {
-            // Room floor with unique color (Polus uses dark red for all rooms)
-            ctx.fillStyle = selectedMap === 'polus' ? '#cc1111' : (roomFloorColors[rooms[i].name] || '#222228');
-            ctx.fillRect(fx, fy, f.w, f.h);
-            // Subtle floor highlight (top edge shimmer)
-            ctx.fillStyle = 'rgba(255,255,255,0.03)';
-            ctx.fillRect(fx + 1, fy + 1, f.w, 4);
-            drawFloorTiles(fx, fy, f.w, f.h);
-            // Room border glow
-            ctx.strokeStyle = selectedMap === 'polus' ? 'rgba(255,255,255,0.15)' :
-                              selectedMap === 'skeld' ? 'rgba(255,255,255,0.07)' :
-                              selectedMap === 'mira'  ? 'rgba(80,200,255,0.18)' :
-                                                        'rgba(255,255,255,0.04)';
-            ctx.lineWidth = selectedMap === 'polus' ? 2 : selectedMap === 'mira' ? 2 : selectedMap === 'skeld' ? 1.5 : 1;
-            ctx.strokeRect(fx + 2, fy + 2, f.w - 4, f.h - 4);
-            // MIRA: second inner glow line for depth
-            if (selectedMap === 'mira') {
-              ctx.strokeStyle = 'rgba(60,160,220,0.08)';
-              ctx.lineWidth = 4;
-              ctx.strokeRect(fx + 6, fy + 6, f.w - 12, f.h - 12);
-            }
-            // Room decorations
-            drawRoomDecor(rooms[i].name, fx, fy, f.w, f.h);
-          } else {
-            // Hallway
-            ctx.fillStyle = selectedMap === 'polus' ? '#f4b8bc' :
-                            selectedMap === 'fungle' ? 'rgba(80,120,60,0.06)' :
-                            selectedMap === 'mira' ? '#101e30' :
-                            selectedMap === 'skeld' ? 'rgba(160,200,240,0.10)' :
-                            'rgba(150,150,180,0.06)';
-            ctx.fillRect(fx, fy, f.w, f.h);
-            drawHallwayDetail(fx, fy, f.w, f.h);
-          }
-        }
-      }
-
-      // 3D Walls with panel detail
-      for (const w of walls) {
-        draw3DWall(w.x - ox, w.y - oy, w.w, w.h);
-      }
+      // Polus snow is animated (not in static canvas) — draw it live on top of the map
+      if (selectedMap === 'polus') drawSnow(ox, oy);
 
       // Doors
       for (const d of doors) {
