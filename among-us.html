@@ -4,13 +4,15 @@
   <meta charset="UTF-8">
   <title>Among Us</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700;800&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #000; overflow: hidden; font-family: 'Segoe UI', system-ui, Arial, sans-serif; }
+    body { background: #1a1a2e; overflow: hidden; font-family: 'Barlow Semi Condensed', 'Segoe UI', system-ui, Arial, sans-serif; }
     canvas { display: block; }
 
     #startScreen {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.95); display: flex; flex-direction: column;
+      background: radial-gradient(ellipse at 20% 50%, #1a0a2e 0%, #0d0d1f 50%, #000 100%);
+      display: flex; flex-direction: column;
       justify-content: flex-start; align-items: center; color: #fff; z-index: 100;
       overflow-y: auto; padding: 20px 16px 30px;
     }
@@ -37,7 +39,12 @@
       60%  { transform: scale(1.05) translateY(4px); opacity: 1; }
       100% { transform: scale(1) translateY(0); opacity: 1; }
     }
-    #startScreen h1 { font-size: 52px; color: #c51111; text-shadow: 3px 3px 0 #000; margin-bottom: 6px; animation: titlePop 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
+    #startScreen h1 {
+      font-size: 58px; font-weight: 800; color: #c51111;
+      text-shadow: 4px 4px 0 #000, 0 0 30px rgba(197,17,17,0.6);
+      margin-bottom: 4px; letter-spacing: 3px; text-transform: uppercase;
+      animation: titlePop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -51,49 +58,60 @@
     .color-swatch:hover { transform: scale(1.15); }
     .color-swatch.selected { border-color: #fff; transform: scale(1.2); }
     #nameInput {
-      padding: 10px 20px; font-size: 16px; border: 2px solid #555; border-radius: 8px;
-      background: rgba(255,255,255,0.1); color: #fff; text-align: center; width: 250px;
-      outline: none; margin-bottom: 12px;
+      padding: 11px 20px; font-size: 17px; font-weight: 700;
+      border: 2px solid rgba(255,255,255,0.2); border-radius: 8px;
+      background: rgba(255,255,255,0.08); color: #fff; text-align: center;
+      width: 260px; outline: none; margin-bottom: 12px;
+      letter-spacing: 1px; font-family: inherit;
     }
-    #nameInput:focus {
-      border-color: #c51111;
-      box-shadow: 0 0 12px rgba(197,17,17,0.35);
-    }
+    #nameInput:focus { border-color: #c51111; box-shadow: 0 0 12px rgba(197,17,17,0.35); }
+    #nameInput::placeholder { color: rgba(255,255,255,0.3); }
     #startBtn {
-      padding: 15px 50px; font-size: 22px; background: linear-gradient(135deg, #c51111, #8b0000);
-      color: #fff; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;
-      box-shadow: 0 0 20px rgba(197,17,17,0.5), 0 4px 15px rgba(0,0,0,0.4);
-      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
-      animation: fadeUp 0.5s 0.4s both;
+      padding: 16px 56px; font-size: 24px; font-weight: 800; letter-spacing: 3px;
+      background: linear-gradient(135deg, #c51111, #8b0000);
+      color: #fff; border: none; border-radius: 12px; cursor: pointer;
+      box-shadow: 0 0 24px rgba(197,17,17,0.5), 0 4px 15px rgba(0,0,0,0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+      text-transform: uppercase; animation: fadeUp 0.5s 0.4s both;
     }
     #startBtn:hover {
       background: linear-gradient(135deg, #e01515, #aa0000);
-      box-shadow: 0 0 30px rgba(220,30,30,0.7), 0 6px 20px rgba(0,0,0,0.5);
-      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 0 36px rgba(220,30,30,0.7), 0 6px 20px rgba(0,0,0,0.5);
+      transform: translateY(-2px) scale(1.04);
     }
-    #startBtn:active { transform: scale(0.96); }
+    #startBtn:active { transform: scale(0.95); }
     .controls-info { color: #666; font-size: 14px; margin-top: 20px; }
     .map-select { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; justify-content: center; max-width: 600px; }
     .map-card {
       width: 105px; padding: 10px 8px; border-radius: 10px; cursor: pointer;
-      border: 3px solid transparent; text-align: center; transition: transform 0.15s, border-color 0.15s;
+      border: 3px solid rgba(255,255,255,0.15); text-align: center;
+      transition: transform 0.15s, border-color 0.15s;
+      background: rgba(255,255,255,0.05);
     }
-    .map-card:hover { transform: scale(1.08); }
-    .map-card.selected { border-color: #fff; transform: scale(1.1); }
+    .map-card:hover { transform: scale(1.08); border-color: rgba(255,255,255,0.5); }
+    .map-card.selected { border-color: #fff; transform: scale(1.1); background: rgba(255,255,255,0.1); }
     .map-card .map-icon { font-size: 28px; margin-bottom: 4px; }
     .map-card .map-name { font-size: 12px; font-weight: bold; color: #fff; }
     .map-card .map-size { font-size: 10px; color: rgba(255,255,255,0.5); }
 
     #taskBar {
-      position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
-      width: 300px; height: 22px; background: rgba(0,0,0,0.6); border: 2px solid #555;
-      border-radius: 11px; overflow: hidden; z-index: 10;
+      position: fixed; top: 12px; left: 12px;
+      width: 200px; background: transparent;
+      z-index: 10;
+    }
+    #taskBarLabel {
+      color: #fff; font-size: 13px; font-weight: 700;
+      letter-spacing: 1px; margin-bottom: 3px; text-shadow: 1px 1px 2px #000;
+    }
+    #taskBarTrack {
+      position: relative; width: 100%; height: 16px; background: rgba(0,0,0,0.6);
+      border: 2px solid rgba(255,255,255,0.25); border-radius: 3px; overflow: hidden;
     }
     #taskFill {
       height: 100%; width: 0%;
-      background: linear-gradient(90deg, #2aa8a0, #4ecdc4, #6ef0e8);
+      background: linear-gradient(90deg, #4caf50, #72fa79);
       transition: width 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
-      box-shadow: 0 0 8px rgba(78,205,196,0.5);
+      box-shadow: 0 0 6px rgba(114,250,121,0.5);
     }
     @keyframes taskComplete {
       0%,100% { box-shadow: 0 0 8px rgba(78,205,196,0.5); }
@@ -101,7 +119,8 @@
     }
     #taskText {
       position: absolute; top: 0; left: 0; width: 100%; text-align: center;
-      color: #fff; font-size: 13px; line-height: 22px; font-weight: bold; text-shadow: 1px 1px 1px #000;
+      color: #fff; font-size: 11px; line-height: 16px; font-weight: 700;
+      text-shadow: 1px 1px 1px #000;
     }
     #roleTag {
       position: fixed; top: 50px; left: 50%; transform: translateX(-50%);
@@ -110,13 +129,16 @@
     }
     @keyframes fadeRole { 0%,70% { opacity: 1; } 100% { opacity: 0; } }
     #interactHint {
-      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-      color: #fff; font-size: 16px; background: rgba(0,0,0,0.7); padding: 8px 20px;
-      border-radius: 8px; display: none; z-index: 10;
+      position: fixed; bottom: 104px; left: 50%; transform: translateX(-50%);
+      color: #fff; font-size: 15px; font-weight: 700; letter-spacing: 0.5px;
+      background: rgba(0,0,0,0.75); padding: 8px 22px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.2); display: none; z-index: 10;
     }
     #killCooldown {
-      position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%);
-      color: #ff4444; font-size: 14px; font-weight: bold; display: none; z-index: 10;
+      position: fixed; bottom: 110px; right: 20px;
+      color: #ffaaaa; font-size: 13px; font-weight: 700; display: none; z-index: 10;
+      background: rgba(80,0,0,0.75); padding: 4px 12px; border-radius: 20px;
+      border: 1px solid rgba(197,17,17,0.5); letter-spacing: 0.5px;
     }
     #npcActivity {
       position: fixed; top: 50px; right: 15px; color: rgba(255,255,255,0.4);
@@ -124,8 +146,11 @@
     }
     #sabotageHUD {
       position: fixed; top: 50px; left: 50%; transform: translateX(-50%);
-      color: #ff4444; font-size: 22px; font-weight: bold; display: none; z-index: 20;
+      color: #ff4444; font-size: 20px; font-weight: 800; display: none; z-index: 20;
       text-shadow: 0 0 10px #ff0000; animation: pulse 0.5s infinite alternate;
+      letter-spacing: 2px; text-transform: uppercase;
+      background: rgba(40,0,0,0.75); padding: 6px 20px; border-radius: 8px;
+      border: 1px solid rgba(255,68,68,0.4);
     }
     @keyframes pulse { from { opacity: 0.7; } to { opacity: 1; } }
     #sabotageBar {
@@ -160,39 +185,45 @@
       background: rgba(0,0,0,0.65); padding: 5px 14px; border-radius: 8px; text-align: center;
     }
     #actionButtons {
-      position: fixed; bottom: 20px; right: 20px; display: none;
-      flex-wrap: wrap; gap: 8px; width: 168px; justify-content: flex-end;
-      z-index: 15; pointer-events: none;
+      position: fixed; bottom: 16px; right: 16px; display: none;
+      flex-wrap: wrap; gap: 10px; width: 180px; justify-content: flex-end;
+      z-index: 15; pointer-events: none; align-items: center;
     }
     .action-btn {
-      width: 76px; height: 66px; border-radius: 14px;
-      border: 2px solid rgba(255,255,255,0.25); background: rgba(15,15,30,0.9);
+      width: 72px; height: 72px; border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.3);
+      background: rgba(20,20,50,0.92);
       color: #fff; cursor: pointer; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 3px;
-      font-weight: bold; transition: background 0.1s, opacity 0.15s;
-      pointer-events: auto; user-select: none;
+      align-items: center; justify-content: center; gap: 2px;
+      font-weight: 700; transition: transform 0.1s, opacity 0.15s, box-shadow 0.1s;
+      pointer-events: auto; user-select: none; box-shadow: 0 4px 12px rgba(0,0,0,0.6);
     }
-    .action-btn:hover:not(:disabled) { background: rgba(60,60,90,0.95); border-color: rgba(255,255,255,0.55); }
-    .action-btn:active:not(:disabled) {
-      transform: scale(0.88);
-      box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
-    }
+    .action-btn:hover:not(:disabled) { transform: scale(1.08); border-color: rgba(255,255,255,0.7); }
+    .action-btn:active:not(:disabled) { transform: scale(0.9); }
     @keyframes killReady {
       0%, 100% { box-shadow: 0 0 8px rgba(255,60,60,0.4); }
       50%       { box-shadow: 0 0 18px rgba(255,60,60,0.9); }
     }
     #btn-kill:not(:disabled) { animation: killReady 1.2s ease-in-out infinite; }
     .action-btn:disabled { opacity: 0.28; cursor: default; pointer-events: none; }
-    .btn-icon { font-size: 22px; line-height: 1; }
-    .btn-lbl { font-size: 10px; letter-spacing: 0.5px; }
-    .btn-cd { font-size: 9px; color: #ffd700; min-height: 11px; }
-    #btn-kill { border-color: #ff5555; background: rgba(50,0,0,0.9); }
-    #btn-kill:hover:not(:disabled) { background: rgba(80,10,10,0.95); }
-    #btn-report { border-color: #ffdd44; background: rgba(40,30,0,0.9); }
-    #btn-report:hover:not(:disabled) { background: rgba(70,55,0,0.95); }
-    #btn-sabotage { border-color: #ff7700; background: rgba(40,15,0,0.9); }
-    #btn-sabotage:hover:not(:disabled) { background: rgba(70,25,0,0.95); }
-    #btn-vent { border-color: #888; }
+    .btn-icon { font-size: 26px; line-height: 1; }
+    .btn-lbl { font-size: 9px; letter-spacing: 0.5px; font-weight: 700; }
+    .btn-cd { font-size: 9px; color: #ffd700; min-height: 10px; }
+    #btn-kill {
+      width: 80px; height: 80px;
+      border-color: #c51111; background: radial-gradient(circle at 35% 35%, #e83535, #8b0000);
+      box-shadow: 0 0 16px rgba(197,17,17,0.7), 0 4px 12px rgba(0,0,0,0.6);
+    }
+    #btn-kill:hover:not(:disabled) { background: radial-gradient(circle at 35% 35%, #ff4444, #aa0000); }
+    #btn-report {
+      width: 80px; height: 80px;
+      border-color: #f5a623; background: radial-gradient(circle at 35% 35%, #ffca44, #c07800);
+      box-shadow: 0 0 14px rgba(245,166,35,0.6), 0 4px 12px rgba(0,0,0,0.6);
+    }
+    #btn-report:hover:not(:disabled) { background: radial-gradient(circle at 35% 35%, #ffe066, #d08800); }
+    #btn-sabotage { border-color: #ff6600; background: radial-gradient(circle at 35% 35%, #ff8844, #8b3000); }
+    #btn-sabotage:hover:not(:disabled) { background: radial-gradient(circle at 35% 35%, #ffaa66, #aa3800); }
+    #btn-vent { border-color: #666; background: radial-gradient(circle at 35% 35%, #555, #1a1a2e); }
     #sabSubMenu {
       position: fixed; bottom: 112px; right: 20px; width: 160px;
       display: none; flex-direction: column; gap: 6px; z-index: 16;
@@ -229,17 +260,37 @@
       100% { background: rgba(0,0,0,0.92); }
     }
     #reportScreen.active { animation: reportFlash 0.5s ease-out forwards; }
-    #reportScreen h1 { font-size: 50px; color: #ff4444; margin-bottom: 10px; }
-    #reportScreen p { color: #aaa; font-size: 18px; }
-    #voteScreen h2 { font-size: 28px; margin-bottom: 20px; color: #ffd700; }
+    #reportScreen h1 {
+      font-size: 44px; font-weight: 800; color: #ff4444;
+      text-shadow: 0 0 20px rgba(255,68,68,0.8), 3px 3px 0 rgba(0,0,0,0.5);
+      letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;
+      animation: reportTextPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes reportTextPop {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    #reportScreen p { color: #ccc; font-size: 18px; letter-spacing: 1px; }
+    #voteScreen { background: rgba(0,10,30,0.95); }
+    #voteScreen h2 {
+      font-size: 30px; margin-bottom: 16px; color: #ffd700;
+      letter-spacing: 2px; text-transform: uppercase; font-weight: 800;
+      text-shadow: 0 0 20px rgba(255,215,0,0.5);
+    }
     .vote-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; max-height: 400px; overflow-y: auto; }
     .vote-btn {
-      padding: 12px 30px; font-size: 16px; border: 2px solid #555; border-radius: 8px;
-      background: rgba(255,255,255,0.1); color: #fff; cursor: pointer; pointer-events: auto;
-      display: flex; align-items: center; gap: 12px; min-width: 250px; transition: background 0.15s;
+      padding: 10px 14px; font-size: 15px; font-weight: 700;
+      border: 2px solid rgba(255,255,255,0.15); border-radius: 10px;
+      background: rgba(255,255,255,0.06); color: #fff; cursor: pointer; pointer-events: auto;
+      display: flex; align-items: center; gap: 10px; min-width: 260px;
+      transition: background 0.15s, border-color 0.15s; letter-spacing: 0.5px;
     }
-    .vote-btn:hover { background: rgba(255,255,255,0.2); }
-    .vote-dot { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; }
+    .vote-btn:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.4); }
+    .vote-btn.voted { border-color: #ffd700; background: rgba(255,215,0,0.12); }
+    .vote-dot {
+      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+      border: 2px solid rgba(255,255,255,0.3); box-shadow: 0 0 6px currentColor;
+    }
     .vote-count { margin-left: auto; color: #ffd700; font-weight: bold; }
     #voteResult { font-size: 22px; margin-top: 15px; }
     #discussPhase { display:flex; flex-direction:column; align-items:center; gap:8px; width:580px; max-width:96vw; }
@@ -258,19 +309,28 @@
       to   { opacity: 1; transform: scale(1); }
     }
     #gameOverScreen.visible { animation: gameOverIn 0.4s cubic-bezier(0.34,1.2,0.64,1) both; }
-    #gameOverScreen h1 { font-size: 50px; margin-bottom: 15px; text-shadow: 0 0 30px currentColor; }
-    #gameOverScreen p { font-size: 20px; color: #aaa; margin-bottom: 25px; }
+    #gameOverScreen { background: linear-gradient(180deg, rgba(0,0,0,0.97) 0%, rgba(10,0,20,0.97) 100%); }
+    #gameOverScreen h1 {
+      font-size: 56px; margin-bottom: 10px; font-weight: 800; letter-spacing: 3px;
+      text-shadow: 0 0 30px currentColor, 3px 3px 0 rgba(0,0,0,0.5);
+      text-transform: uppercase; animation: winTitlePop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes winTitlePop {
+      0% { transform: scale(0.5) translateY(-30px); opacity: 0; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    #gameOverScreen p { font-size: 18px; color: #bbb; margin-bottom: 20px; letter-spacing: 0.5px; }
     #restartBtn {
-      padding: 13px 44px; font-size: 18px;
+      padding: 14px 48px; font-size: 20px; font-weight: 800; letter-spacing: 2px;
       background: linear-gradient(135deg, #c51111, #8b0000);
       color: #fff; border: none; border-radius: 10px; cursor: pointer;
-      font-weight: bold; pointer-events: auto;
-      box-shadow: 0 0 20px rgba(197,17,17,0.4), 0 4px 15px rgba(0,0,0,0.4);
+      box-shadow: 0 0 24px rgba(197,17,17,0.5), 0 4px 15px rgba(0,0,0,0.4);
       transition: transform 0.15s, box-shadow 0.15s;
+      text-transform: uppercase;
     }
     #restartBtn:hover {
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 0 30px rgba(220,30,30,0.6), 0 6px 20px rgba(0,0,0,0.5);
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 0 36px rgba(220,30,30,0.7), 0 6px 20px rgba(0,0,0,0.5);
     }
     #restartBtn:active { transform: scale(0.95); }
     #minimap {
@@ -291,14 +351,15 @@
     }
     .settings-inner {
       background: linear-gradient(180deg, #141824 0%, #0e1218 100%);
-      border: 2px solid #4ecdc4; border-radius: 14px;
+      border: 2px solid rgba(255,255,255,0.15); border-radius: 14px;
       padding: 20px 24px; width: 560px; max-width: 95vw; max-height: 88vh;
       display: flex; flex-direction: column; overflow: hidden;
-      box-shadow: 0 0 40px rgba(78,205,196,0.15), 0 20px 60px rgba(0,0,0,0.8);
+      box-shadow: 0 0 40px rgba(0,0,0,0.6), 0 20px 60px rgba(0,0,0,0.8);
     }
     .settings-inner h2 {
-      color: #4ecdc4; text-align: center; margin-bottom: 12px; font-size: 22px;
-      letter-spacing: 3px; text-shadow: 0 0 20px rgba(78,205,196,0.5);
+      color: #ffd700; text-align: center; margin-bottom: 12px; font-size: 22px;
+      letter-spacing: 3px; text-shadow: 0 0 20px rgba(255,215,0,0.4);
+      text-transform: uppercase; font-weight: 800;
     }
     #settingsContent { overflow-y: auto; flex: 1; padding: 0 2px; }
     .sett-section {
@@ -429,11 +490,11 @@
     .mode-select { display: flex; gap: 10px; margin-bottom: 12px; justify-content: center; }
     .mode-card {
       width: 115px; padding: 8px 6px; border-radius: 10px; cursor: pointer;
-      border: 3px solid transparent; text-align: center; transition: transform 0.15s, border-color 0.15s;
-      background: rgba(255,255,255,0.06);
+      border: 3px solid rgba(255,255,255,0.15); text-align: center;
+      transition: transform 0.15s, border-color 0.15s; background: rgba(255,255,255,0.05);
     }
-    .mode-card:hover { transform: scale(1.08); }
-    .mode-card.selected { border-color: #fff; transform: scale(1.1); }
+    .mode-card:hover { transform: scale(1.08); border-color: rgba(255,255,255,0.5); }
+    .mode-card.selected { border-color: #fff; transform: scale(1.1); background: rgba(255,255,255,0.1); }
     @keyframes cardSelect {
       0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.6); }
       100% { box-shadow: 0 0 0 6px rgba(255,255,255,0); }
@@ -714,7 +775,7 @@
     <p class="controls-info">WASD/arrows · E interact · R report · Space kill · V vent · Q sabotage</p>
   </div>
 
-  <div id="taskBar"><div id="taskFill"></div><div id="taskText">Tasks: 0/8</div></div>
+  <div id="taskBar"><div id="taskBarLabel">TASKS</div><div id="taskBarTrack"><div id="taskFill"></div><div id="taskText">0 / 8</div></div></div>
   <div id="roleTag"></div>
   <div id="interactHint"></div>
   <div id="killCooldown"></div>
@@ -971,6 +1032,60 @@
     minimapCanvas.height = 135;
 
     window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+    // ===== AMONG US SPRITE SYSTEM =====
+    // Sprites from space-elephant/among-us-sprites (GPL-3.0)
+    const _SPRITE_BASE = 'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/player/';
+    const _spriteFrames = { idle: null, walk: new Array(12).fill(null), ready: false };
+    const _spriteFilterCache = {};
+
+    function _loadGameSprites() {
+      let pending = 13; // 1 idle + 12 walk
+      function done() { if (--pending === 0) _spriteFrames.ready = _spriteFrames.idle && _spriteFrames.idle.naturalWidth > 0; }
+      const idle = new Image(); idle.crossOrigin = 'anonymous';
+      idle.onload = done; idle.onerror = done;
+      idle.src = _SPRITE_BASE + 'idle.png';
+      _spriteFrames.idle = idle;
+      for (let i = 0; i < 12; i++) {
+        const img = new Image(); img.crossOrigin = 'anonymous';
+        img.onload = done; img.onerror = done;
+        img.src = _SPRITE_BASE + 'Walk/walkcolor' + String(i + 1).padStart(4, '0') + '.png';
+        _spriteFrames.walk[i] = img;
+      }
+    }
+
+    // Returns a CSS filter string to recolor the red sprite to targetHex,
+    // or null if the color is too dark/desaturated for hue-rotation to look right.
+    function _getSpriteFilter(hex) {
+      if (_spriteFilterCache[hex] !== undefined) return _spriteFilterCache[hex];
+      const r = parseInt(hex.slice(1,3),16)/255;
+      const g = parseInt(hex.slice(3,5),16)/255;
+      const b = parseInt(hex.slice(5,7),16)/255;
+      const max = Math.max(r,g,b), min = Math.min(r,g,b);
+      const l = (max + min) / 2;
+      const d = max - min;
+      const s = d === 0 ? 0 : d / (1 - Math.abs(2*l - 1));
+      // Too dark, too light, or too desaturated — fallback to canvas drawing
+      if (l < 0.18 || l > 0.80 || s < 0.22) return (_spriteFilterCache[hex] = null);
+      let h = 0;
+      if (d > 0) {
+        if (max === r) h = ((g - b)/d + (g < b ? 6 : 0)) / 6;
+        else if (max === g) h = ((b - r)/d + 2) / 6;
+        else h = ((r - g)/d + 4) / 6;
+      }
+      h *= 360;
+      // Base sprite: red hue≈0°, sat≈84%, lightness≈42%
+      const hRot   = Math.round(h);
+      const sat    = Math.max(10, Math.round((s / 0.84) * 100));
+      const bright = Math.max(20, Math.round((l / 0.42) * 100));
+      return (_spriteFilterCache[hex] = `hue-rotate(${hRot}deg) saturate(${sat}%) brightness(${bright}%)`);
+    }
+
+    // States where the crewmate stands still (matches AI_STATE string values)
+    const _SPRITE_STILL_STATES = new Set(['idle', 'doing_task', 'faking_task', null, undefined]);
+
+    _loadGameSprites();
+    // ===== END SPRITE SYSTEM =====
 
     const COLORS = [
       { name: 'Red', hex: '#c51111' }, { name: 'Blue', hex: '#132ed1' },
@@ -3180,6 +3295,7 @@
       crateR:   {x:566, y:448, w:134, h:108},
     };
     let dropshipPhase = false;
+    let _dropshipInitDone = false; // true for exactly one frame while init() has run but game hasn't started yet
     let dropshipPlayer = null;
     let dropshipWalls = [];
     let dropshipCountdown = -1;
@@ -4426,7 +4542,7 @@
       const npcPct = npcTasksTotal > 0 ? npcTasksDone / npcTasksTotal : 0;
       const totalPct = ((playerPct + npcPct) / 2) * 100;
       document.getElementById('taskFill').style.width = Math.min(totalPct, 100) + '%';
-      document.getElementById('taskText').textContent = 'Tasks: ' + Math.round(totalPct) + '%';
+      document.getElementById('taskText').textContent = tasksCompleted + ' / ' + totalTasks;
       const fillEl = document.getElementById('taskFill');
       if (totalPct >= 100) {
         fillEl.style.animation = 'none';
@@ -4527,10 +4643,12 @@
       const dx = tx - npc.x;
       const dy = ty - npc.y;
       const d = Math.sqrt(dx * dx + dy * dy);
-      if (d < 8) return true;
+      if (d < 8) { npc.moving = false; return true; }
 
       const mx = (dx / d) * npc.speed;
       const my = (dy / d) * npc.speed;
+      if (mx < 0) npc.facingLeft = true; else if (mx > 0) npc.facingLeft = false;
+      npc.moving = true;
 
       const moved = tryMove(npc, mx, my);
 
@@ -5822,6 +5940,8 @@
       if (keys['s'] || keys['arrowdown']) dy = player.speed;
       if (keys['a'] || keys['arrowleft']) dx = -player.speed;
       if (keys['d'] || keys['arrowright']) dx = player.speed;
+      if (dx < 0) player.facingLeft = true; else if (dx > 0) player.facingLeft = false;
+      player.moving = (dx !== 0 || dy !== 0);
       if (dx !== 0 && dy !== 0) { dx *= 0.707; dy *= 0.707; }
       if (dx !== 0 || dy !== 0) {
         if (isGhost) {
@@ -7093,6 +7213,67 @@
       const isGhostDraw = !alive && alpha !== undefined && alpha < 1;
       if (!alive && !isGhostDraw) return;
       const a = (alpha !== undefined) ? alpha : 1;
+
+      // ── Sprite rendering (living, non-ghost, non-special) ──
+      const isSeeker = gameMode === 'hideseek' && role === 'impostor';
+      const isMixup  = mushroomMixupTimer > 0;
+      if (alive && !isGhostDraw && !isSeeker && !isMixup && _spriteFrames.ready && a >= 1) {
+        const filter = _getSpriteFilter(color);
+        if (filter) {
+          // Pick frame: cycle walk frames while moving, show idle when still
+          const _stillStates = _SPRITE_STILL_STATES;
+          const isMoving = !_stillStates.has(state);
+          const walkIdx  = Math.floor(frameCount / 5) % 12;
+          const frame    = isMoving ? (_spriteFrames.walk[walkIdx] || _spriteFrames.idle) : _spriteFrames.idle;
+          if (frame && frame.complete && frame.naturalWidth > 0) {
+            ctx.save();
+            ctx.filter = filter;
+            // Flip horizontally when facing left (encoded as negative state or via entity flag)
+            const flipLeft = (state === 'left');
+            if (flipLeft) {
+              ctx.translate(x + w, y); ctx.scale(-1, 1);
+              ctx.drawImage(frame, 0, 0, w, h);
+            } else {
+              ctx.drawImage(frame, x, y, w, h);
+            }
+            ctx.filter = 'none';
+            ctx.restore();
+            // Name label
+            if (name && mushroomMixupTimer <= 0) {
+              ctx.save();
+              ctx.font = 'bold 12px Arial'; ctx.textAlign = 'center';
+              ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fillText(name, x + w/2 + 1, y - 7);
+              ctx.fillStyle = '#fff';             ctx.fillText(name, x + w/2, y - 8);
+              ctx.restore();
+            }
+            // Task/role indicator still drawn on top
+            if (state === AI_STATE.DOING_TASK || state === AI_STATE.FAKING_TASK) {
+              ctx.fillStyle = '#ffd700'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center';
+              ctx.fillText('...', x + w/2, y - 22);
+            }
+            if (role && ROLE_COLORS[role]) {
+              ctx.fillStyle = ROLE_COLORS[role]; ctx.font = 'bold 9px Arial'; ctx.textAlign = 'center';
+              ctx.fillText(role.toUpperCase().slice(0,3), x + w/2, y - 20);
+            }
+            // Hat
+            if (hat && hat !== 'none') drawHat(ctx, x, y, w, h, hat);
+            // Skin
+            if (skin && skin !== 'none') drawSkinOverlay(ctx, x, y, w, h, skin);
+            // Protection shield
+            if (protTimer > 0) {
+              const pulse = 0.6 + 0.4 * Math.sin(Date.now() / 200);
+              ctx.save(); ctx.globalAlpha = pulse;
+              ctx.strokeStyle = '#88ffff'; ctx.lineWidth = 3;
+              ctx.shadowColor = '#00ffff'; ctx.shadowBlur = 12;
+              ctx.beginPath(); ctx.ellipse(x + w/2, y + h*0.55, w*0.7, h*0.7, 0, 0, Math.PI*2); ctx.stroke();
+              ctx.restore();
+            }
+            return; // done — skip canvas fallback
+          }
+        }
+      }
+
+      // ── Canvas fallback ──
       ctx.save();
       if (a < 1) ctx.globalAlpha = a;
       // Ghost glow
@@ -10885,7 +11066,8 @@
           }
           // Detective scan: show "!" over impostors within range
           const showSuspect = detectiveScanActive && npc.isImpostor && dist(player, npc) < 400;
-          drawCrewmate(ctx, npc.x - ox, npc.y - oy, npc.w, npc.h, npc.color, npc.name, npc.alive, npc.state, 1, showSuspect ? 'impostor' : null, npc.hat, npc.protectionTimer);
+          drawCrewmate(ctx, npc.x - ox, npc.y - oy, npc.w, npc.h, npc.color, npc.name, npc.alive,
+            npc.facingLeft ? 'left' : npc.state, 1, showSuspect ? 'impostor' : null, npc.hat, npc.protectionTimer);
           // Witness speech bubble
           if (npc.speechBubble) {
             const bx = npc.x - ox + npc.w / 2;
@@ -10988,8 +11170,10 @@
           (playerRole === 'shapeshifter' && abilityActive && shiftTarget) ? shiftTarget.color : player.color;
         const drawName  = (playerRole === 'shapeshifter' && abilityActive && shiftTarget) ? shiftTarget.name  : player.name;
         const drawAlpha = isGhost ? 0.4 : (playerRole === 'phantom' && abilityActive) ? 0.2 : 1;
+        const _playerState = playerDoingTask ? AI_STATE.DOING_TASK :
+          (player.facingLeft ? 'left' : (player.moving ? AI_STATE.WALKING_RANDOM : AI_STATE.IDLE));
         drawCrewmate(ctx, player.x - ox, player.y - oy, player.w, player.h, drawColor, drawName, true,
-          playerDoingTask ? AI_STATE.DOING_TASK : null, drawAlpha, playerRole, selectedHat, player.protectionTimer, selectedSkin);
+          _playerState, drawAlpha, playerRole, selectedHat, player.protectionTimer, selectedSkin);
       }
 
       // Draw H&S ping effects (expanding rings at hider locations)
@@ -11322,6 +11506,7 @@
       loadedMapId = null; // force reload if map changed between games
       loadMap(selectedMap); // preload map + build walkGrid NOW during lobby, not at countdown end
       dropshipPhase = true;
+      _dropshipInitDone = false;
       dropshipCountdown = -1;
       dropshipCountdownFrames = 0;
       dropshipWardrobeOpen = false;
@@ -11368,8 +11553,18 @@
           dropshipCountdown--;
           dropshipCountdownFrames = 60;
           if (dropshipCountdown === 0) {
-            dropshipPhase = false;
-            try { init(); } catch(e) { console.error('init() failed:', e); }
+            if (!_dropshipInitDone) {
+              // Frame A: run init() while dropshipPhase is still true so only
+              // the cheap dropship render fires this frame — avoids a freeze
+              // caused by init() + first full game render in the same frame.
+              _dropshipInitDone = true;
+              try { init(); } catch(e) { console.error('init() failed:', e); }
+              // stay in dropship mode — fall through to renderDropship below
+            } else {
+              // Frame B (next frame): switch to game now that the frame budget is fresh
+              _dropshipInitDone = false;
+              dropshipPhase = false;
+            }
             return;
           }
         }
