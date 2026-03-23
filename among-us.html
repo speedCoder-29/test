@@ -1647,69 +1647,69 @@
           w.push({ x: 2084, y: 1370, w: 96, h: 16 });  // bottom right (x:2084-2180, right of Comms entry)
 
 
-          // ============ ROOM OBSTACLES (furniture/equipment) ============
+          // ============ ROOM OBSTACLES (furniture/equipment) — obj:true skips shadow raycasts ============
 
-          // --- Cafeteria: 5 round tables — centered pentagon matching new visual positions ---
-          w.push({ x: 1151, y: 197, w: 50, h: 50 });    // table top-left    (rel 0.22,0.24)
-          w.push({ x: 1505, y: 197, w: 50, h: 50 });    // table top-right   (rel 0.63,0.24)
-          w.push({ x: 1117, y: 381, w: 50, h: 50 });    // table mid-left    (rel 0.18,0.64)
-          w.push({ x: 1557, y: 381, w: 50, h: 50 });    // table mid-right   (rel 0.69,0.64)
-          w.push({ x: 1333, y: 464, w: 50, h: 50 });    // table bottom-ctr  (rel 0.43,0.82)
+          // --- Cafeteria: 5 round tables ---
+          w.push({ x: 1151, y: 197, w: 50, h: 50, obj: true });
+          w.push({ x: 1505, y: 197, w: 50, h: 50, obj: true });
+          w.push({ x: 1117, y: 381, w: 50, h: 50, obj: true });
+          w.push({ x: 1557, y: 381, w: 50, h: 50, obj: true });
+          w.push({ x: 1333, y: 464, w: 50, h: 50, obj: true });
 
-          // --- Reactor: Large reactor core (central ring) ---
-          w.push({ x: 180, y: 660, w: 80, h: 80 });     // reactor core center
+          // --- Reactor: Large reactor core (centered in room, clear of door gap) ---
+          w.push({ x: 90, y: 760, w: 80, h: 80, obj: true });  // reactor core center
           // Reactor support pillars
-          w.push({ x: 140, y: 500, w: 24, h: 24 });     // upper support
-          w.push({ x: 200, y: 500, w: 24, h: 24 });     // upper support right
-          w.push({ x: 140, y: 880, w: 24, h: 24 });     // lower support
-          w.push({ x: 200, y: 880, w: 24, h: 24 });     // lower support right
+          w.push({ x: 60,  y: 550, w: 24, h: 24, obj: true });
+          w.push({ x: 140, y: 550, w: 24, h: 24, obj: true });
+          w.push({ x: 60,  y: 930, w: 24, h: 24, obj: true });
+          w.push({ x: 140, y: 930, w: 24, h: 24, obj: true });
 
           // --- Admin: Map/admin table ---
-          w.push({ x: 1510, y: 770, w: 110, h: 60 });   // admin map table
+          w.push({ x: 1510, y: 770, w: 110, h: 60, obj: true });
 
           // --- Storage: Crates and boxes ---
-          w.push({ x: 1080, y: 1250, w: 45, h: 35 });   // crate top-left
-          w.push({ x: 1080, y: 1450, w: 50, h: 40 });   // crate bottom-left
-          w.push({ x: 1240, y: 1350, w: 40, h: 50 });   // crate center
-          w.push({ x: 1380, y: 1250, w: 45, h: 40 });   // crate top-right
-          w.push({ x: 1400, y: 1480, w: 55, h: 40 });   // crate bottom-right
-          w.push({ x: 1200, y: 1520, w: 40, h: 35 });   // crate bottom-center
+          w.push({ x: 1080, y: 1250, w: 45, h: 35, obj: true });
+          w.push({ x: 1080, y: 1450, w: 50, h: 40, obj: true });
+          w.push({ x: 1240, y: 1350, w: 40, h: 50, obj: true });
+          w.push({ x: 1380, y: 1250, w: 45, h: 40, obj: true });
+          w.push({ x: 1400, y: 1480, w: 55, h: 40, obj: true });
+          w.push({ x: 1200, y: 1520, w: 40, h: 35, obj: true });
 
-          // --- Electrical: Equipment racks and panels (shifted up by ~240 to match new y:940-1290) ---
-          w.push({ x: 580, y: 990, w: 16, h: 120 });    // left panel rack
-          w.push({ x: 700, y: 960, w: 80, h: 16 });     // top horizontal panel
-          w.push({ x: 820, y: 1040, w: 16, h: 100 });   // right panel rack
-          w.push({ x: 620, y: 1190, w: 60, h: 16 });    // lower wire tray
-          w.push({ x: 760, y: 1220, w: 80, h: 16 });    // lower equipment shelf
+          // --- Electrical: Equipment racks and panels ---
+          w.push({ x: 580, y: 990, w: 16, h: 120, obj: true });
+          w.push({ x: 700, y: 960, w: 80, h: 16,  obj: true });
+          w.push({ x: 820, y: 1040, w: 16, h: 100, obj: true });
+          w.push({ x: 620, y: 1190, w: 60, h: 16,  obj: true });
+          w.push({ x: 760, y: 1220, w: 80, h: 16,  obj: true });
 
-          // --- MedBay: Scanner bed (shifted down to new y:280-540 position) ---
-          w.push({ x: 660, y: 380, w: 60, h: 80 });     // scanner platform
+          // --- MedBay: Scanner bed ---
+          w.push({ x: 660, y: 380, w: 60, h: 80, obj: true });
 
           // --- Weapons: Asteroid turret seat ---
-          w.push({ x: 2300, y: 200, w: 55, h: 55 });    // turret console
+          w.push({ x: 2300, y: 200, w: 55, h: 55, obj: true });
 
           // --- Navigation: Steering console and screens ---
-          w.push({ x: 2730, y: 690, w: 80, h: 16 });    // front console desk
-          w.push({ x: 2820, y: 730, w: 40, h: 50 });    // steering wheel console
+          w.push({ x: 2730, y: 690, w: 80, h: 16, obj: true });
+          w.push({ x: 2820, y: 730, w: 40, h: 50, obj: true });
 
-          // --- Security: Camera monitor desk (moved right of corridor) ---
-          w.push({ x: 440, y: 660, w: 70, h: 50 });     // monitor desk
+          // --- Security: Camera monitor desk ---
+          w.push({ x: 440, y: 660, w: 70, h: 50, obj: true });
 
           // --- O2: Plant shelves and filter equipment ---
-          w.push({ x: 2000, y: 650, w: 50, h: 50 });    // filter unit
-          w.push({ x: 2150, y: 750, w: 40, h: 40 });    // plant shelf
+          w.push({ x: 2000, y: 650, w: 50, h: 50, obj: true });
+          w.push({ x: 2150, y: 750, w: 40, h: 40, obj: true });
 
-          // --- Communications: Radio console (moved below corridor) ---
-          w.push({ x: 1860, y: 1520, w: 70, h: 40 });   // radio desk
+          // --- Communications: Radio console ---
+          w.push({ x: 1860, y: 1520, w: 70, h: 40, obj: true });
 
           // --- Shields: Shield generator ---
-          w.push({ x: 2340, y: 1260, w: 50, h: 50 });   // shield hex console
+          w.push({ x: 2340, y: 1260, w: 50, h: 50, obj: true });
 
           // --- Upper Engine: Engine block ---
-          w.push({ x: 230, y: 200, w: 80, h: 60 });     // engine block
+          w.push({ x: 230, y: 200, w: 80, h: 60, obj: true });
 
           // --- Lower Engine: Engine block ---
-          w.push({ x: 230, y: 1370, w: 80, h: 60 });    // engine block
+          w.push({ x: 230, y: 1370, w: 80, h: 60, obj: true });
 
           return w;
         })(),
@@ -1746,6 +1746,7 @@
           { x: 536, y: 940, w: 368, h: 350 },    // 8: Electrical (ABOVE corridor)
           { x: 156, y: 1226, w: 258, h: 282 },   // 9: Lower Engine
           { x: 16, y: 394, w: 228, h: 832 },     // 10: Reactor (tall, x:16-244, y:394-1226)
+          { x: 244, y: 700, w: 16, h: 80 },      // Reactor door connector (fills gap for walkGrid)
           { x: 380, y: 576, w: 216, h: 268 },    // 11: Security (adjacent to UE-LE corridor)
           { x: 156, y: 146, w: 258, h: 248 },    // 12: Upper Engine
           { x: 536, y: 280, w: 328, h: 320 },    // 13: MedBay (BELOW top corridor)
@@ -4233,7 +4234,7 @@
       ghostVoting: false,           // ghosts can vote
       doorsSabotage: true,          // impostors can close doors
       hideSeekHideTime: 60,      // seconds for hide phase
-      seekerSpeed: 2.0,
+      seekerSpeed: 1.7,
       seekerVision: 2.0,
       seekerKillCooldown: 10,
       hsTasksEnabled: true,
@@ -4436,6 +4437,9 @@
           npcs[0].killCooldown = gameSettings.seekerKillCooldown * 60;
           npcs[0].speed = (gameSettings.playerSpeed || 1.0) * gameSettings.seekerSpeed * 2.0;
         }
+        // Hider speed boost (+20%) for all non-seeker entities
+        if (!isImpostor) player.speed *= 1.2;
+        for (const npc of npcs) { if (!npc.hsSeeker && !npc.isImpostor) npc.speed *= 1.2; }
         // Hider vent uses
         playerHsVentUses = isImpostor ? 0 : gameSettings.hiderVentUses;
         // Apply hider vision
@@ -5262,6 +5266,7 @@
         const dx = Math.cos(ang), dy = Math.sin(ang);
         let t = visionR;
         for (const w of walls) {
+          if (w.obj) continue; // furniture/equipment doesn't cast shadows
           const hit = _rayRect(worldPX, worldPY, dx, dy, w.x, w.y, w.w, w.h);
           if (hit !== null && hit > 3 && hit < t) t = hit;
         }
