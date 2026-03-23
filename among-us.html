@@ -3990,7 +3990,7 @@
         stuckTimer: 0,
         fixingSabotage: false,
         lastX: x, lastY: y,
-        navPath: null, navIndex: 0, navRecalc: 0,
+        navPath: [], navIndex: 0, navRecalc: 0,
         personality: {
           bravery: 0.3 + Math.random() * 0.7,
           taskSpeed: 0.8 + Math.random() * 0.4,
@@ -4053,6 +4053,7 @@
         npc.taskList = shuffled.slice(0, taskCount).map(t => ({ ...t, npcDone: false }));
         npc.currentTaskIndex = 0;
 
+        npc.navRecalc = i * 15 + 1; // stagger first pathfind across frames (NPC 0→frame 1, NPC 1→frame 16, …)
         npcs.push(npc);
       }
 
@@ -5561,8 +5562,22 @@
       return best;
     }
 
+    // BFS buffers — allocated once and reused to avoid per-call GC pressure
+    let _bfsVisited = null, _bfsParent = null, _bfsQueue = null, _bfsTotal = 0;
+
     function findPath(fromX, fromY, toX, toY) {
       if (!walkGrid) return null;
+
+      const total = gridW * gridH;
+      if (_bfsTotal !== total) {
+        // (Re)allocate only when grid size changes (map switch)
+        _bfsVisited = new Uint8Array(total);
+        _bfsParent  = new Int32Array(total);
+        _bfsQueue   = new Int32Array(total);
+        _bfsTotal   = total;
+      }
+      _bfsVisited.fill(0);
+      _bfsParent.fill(-1);
 
       // Find nearest walkable grid cell to a world position
       function nearestWalkable(wx, wy) {
@@ -5586,10 +5601,10 @@
       const endIdx   = nearestWalkable(toX, toY);
       if (startIdx === endIdx) return null;
 
-      const total   = gridW * gridH;
-      const visited = new Uint8Array(total);
-      const parent  = new Int32Array(total).fill(-1);
-      const queue   = new Int32Array(total);
+      // Use pre-allocated buffers (reset above via .fill)
+      const visited = _bfsVisited;
+      const parent  = _bfsParent;
+      const queue   = _bfsQueue;
       let qHead = 0, qTail = 0;
 
       queue[qTail++] = startIdx;
@@ -11528,6 +11543,12 @@
     }
 
     function updateDropship() {
+      // Frame B: init() ran last frame; now switch to game with a fresh frame budget
+      if (_dropshipInitDone) {
+        _dropshipInitDone = false;
+        dropshipPhase = false;
+        return;
+      }
       const p = dropshipPlayer;
       let dx = 0, dy = 0;
       if (keys['arrowleft'] || keys['a']) dx -= p.speed;
@@ -11553,18 +11574,12 @@
           dropshipCountdown--;
           dropshipCountdownFrames = 60;
           if (dropshipCountdown === 0) {
-            if (!_dropshipInitDone) {
-              // Frame A: run init() while dropshipPhase is still true so only
-              // the cheap dropship render fires this frame — avoids a freeze
-              // caused by init() + first full game render in the same frame.
-              _dropshipInitDone = true;
-              try { init(); } catch(e) { console.error('init() failed:', e); }
-              // stay in dropship mode — fall through to renderDropship below
-            } else {
-              // Frame B (next frame): switch to game now that the frame budget is fresh
-              _dropshipInitDone = false;
-              dropshipPhase = false;
-            }
+            // Frame A: run init() while still in dropship mode so the cheap
+            // dropship render (not the heavy first game render) fires this frame.
+            // updateDropship() checks _dropshipInitDone on the very next call
+            // (Frame B) and switches to game then — giving a fresh frame budget.
+            _dropshipInitDone = true;
+            try { init(); } catch(e) { console.error('init() failed:', e); }
             return;
           }
         }
