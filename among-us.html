@@ -1037,11 +1037,73 @@
     // Sprites from space-elephant/among-us-sprites (GPL-3.0)
     const _SPRITE_BASE = 'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/player/';
     const _spriteFrames = { idle: null, walk: new Array(12).fill(null), ready: false };
-    const _spriteFilterCache = {};
+
+    // Per-color pre-rendered sprite cache (pixel-based recoloring, accurate for all colors)
+    const _coloredSpriteCache = {}; // hex → { idle: canvas, walk: canvas[12] } | { failed: true }
+
+    // Recolor a single sprite image to targetHex using luminance-preserving pixel replacement.
+    // Only reddish body pixels are recolored; visor and other elements are preserved.
+    function _recolorImage(img, hex) {
+      const sw = img.naturalWidth, sh = img.naturalHeight;
+      if (!sw || !sh) return null;
+      const ofc = document.createElement('canvas');
+      ofc.width = sw; ofc.height = sh;
+      const oc = ofc.getContext('2d', { willReadFrequently: true });
+      oc.drawImage(img, 0, 0);
+      const imgData = oc.getImageData(0, 0, sw, sh); // throws SecurityError if CORS unavailable
+      const d = imgData.data;
+      const tr = parseInt(hex.slice(1,3), 16);
+      const tg = parseInt(hex.slice(3,5), 16);
+      const tb = parseInt(hex.slice(5,7), 16);
+      // Sprite body base luminance for red #c51111 (r=197,g=17,b=17)
+      const BASE_LUM = Math.sqrt(0.299*(197/255)**2 + 0.587*(17/255)**2 + 0.114*(17/255)**2);
+      for (let i = 0; i < d.length; i += 4) {
+        if (d[i+3] < 10) continue; // skip transparent
+        const sr = d[i], sg = d[i+1], sb = d[i+2];
+        // Only recolor pixels where red is dominant (body, legs, backpack).
+        // Visor (blue/white) and other elements are left unchanged.
+        if (sr > sg + 25 && sr > sb + 25) {
+          const lum = Math.sqrt(0.299*(sr/255)**2 + 0.587*(sg/255)**2 + 0.114*(sb/255)**2);
+          const ratio = lum / BASE_LUM;
+          d[i]   = Math.min(255, Math.round(tr * ratio));
+          d[i+1] = Math.min(255, Math.round(tg * ratio));
+          d[i+2] = Math.min(255, Math.round(tb * ratio));
+        }
+      }
+      oc.putImageData(imgData, 0, 0);
+      return ofc;
+    }
+
+    // Returns the pre-recolored sprite set for targetHex, building it lazily if needed.
+    // Returns null if sprites aren't ready or if CORS pixel access failed.
+    function _getColoredSprites(hex) {
+      const cached = _coloredSpriteCache[hex];
+      if (cached) return cached.failed ? null : cached;
+      if (!_spriteFrames.ready) return null;
+      try {
+        const result = {
+          idle: _recolorImage(_spriteFrames.idle, hex),
+          walk: _spriteFrames.walk.map(f => f ? _recolorImage(f, hex) : null)
+        };
+        _coloredSpriteCache[hex] = result;
+        return result;
+      } catch(e) {
+        _coloredSpriteCache[hex] = { failed: true };
+        return null;
+      }
+    }
 
     function _loadGameSprites() {
       let pending = 13; // 1 idle + 12 walk
-      function done() { if (--pending === 0) _spriteFrames.ready = _spriteFrames.idle && _spriteFrames.idle.naturalWidth > 0; }
+      function done() {
+        if (--pending === 0) {
+          _spriteFrames.ready = !!(_spriteFrames.idle && _spriteFrames.idle.naturalWidth > 0);
+          if (_spriteFrames.ready) {
+            // Pre-build recolored sprites for all standard colors so first frame is smooth
+            for (const c of COLORS) _getColoredSprites(c.hex);
+          }
+        }
+      }
       const idle = new Image(); idle.crossOrigin = 'anonymous';
       idle.onload = done; idle.onerror = done;
       idle.src = _SPRITE_BASE + 'idle.png';
@@ -1052,33 +1114,6 @@
         img.src = _SPRITE_BASE + 'Walk/walkcolor' + String(i + 1).padStart(4, '0') + '.png';
         _spriteFrames.walk[i] = img;
       }
-    }
-
-    // Returns a CSS filter string to recolor the red sprite to targetHex,
-    // or null if the color is too dark/desaturated for hue-rotation to look right.
-    function _getSpriteFilter(hex) {
-      if (_spriteFilterCache[hex] !== undefined) return _spriteFilterCache[hex];
-      const r = parseInt(hex.slice(1,3),16)/255;
-      const g = parseInt(hex.slice(3,5),16)/255;
-      const b = parseInt(hex.slice(5,7),16)/255;
-      const max = Math.max(r,g,b), min = Math.min(r,g,b);
-      const l = (max + min) / 2;
-      const d = max - min;
-      const s = d === 0 ? 0 : d / (1 - Math.abs(2*l - 1));
-      // Too dark, too light, or too desaturated — fallback to canvas drawing
-      if (l < 0.18 || l > 0.80 || s < 0.22) return (_spriteFilterCache[hex] = null);
-      let h = 0;
-      if (d > 0) {
-        if (max === r) h = ((g - b)/d + (g < b ? 6 : 0)) / 6;
-        else if (max === g) h = ((b - r)/d + 2) / 6;
-        else h = ((r - g)/d + 4) / 6;
-      }
-      h *= 360;
-      // Base sprite: red hue≈0°, sat≈84%, lightness≈42%
-      const hRot   = Math.round(h);
-      const sat    = Math.max(10, Math.round((s / 0.84) * 100));
-      const bright = Math.max(20, Math.round((l / 0.42) * 100));
-      return (_spriteFilterCache[hex] = `hue-rotate(${hRot}deg) saturate(${sat}%) brightness(${bright}%)`);
     }
 
     // States where the crewmate stands still (matches AI_STATE string values)
@@ -3123,8 +3158,9 @@
             }
           }
           if (!onFloor) continue;
-          // Mark walkable if an NPC body fits with extra wall-clearance margin
-          if (!isBlockedAt(cx - 20, cy - 24, 40, 48)) {
+          // Mark walkable using a hitbox slightly smaller than the NPC (32×40)
+          // so narrow doorways appear passable in the grid; tryMove handles wall sliding
+          if (!isBlockedAt(cx - 13, cy - 17, 26, 34)) {
             walkGrid[gy * gridW + gx] = 1;
           }
         }
@@ -4740,11 +4776,29 @@
           }
         }
         if (npc.stuckTimer > 45) {
-          // Pick a completely new random target far from current position
+          // Snap to the nearest walkable grid cell center so the NPC is never stuck
+          // inside a wall or on a non-navigable tile before picking a new target.
+          const cgx = Math.round((npc.x + npc.w / 2) / GRID_SIZE);
+          const cgy = Math.round((npc.y + npc.h / 2) / GRID_SIZE);
+          let snapped = false;
+          outer: for (let r = 0; r <= 6; r++) {
+            for (let oy = -r; oy <= r; oy++) {
+              for (let ox = -r; ox <= r; ox++) {
+                if (Math.abs(ox) !== r && Math.abs(oy) !== r) continue; // perimeter only
+                const gx2 = cgx + ox, gy2 = cgy + oy;
+                if (gx2 >= 0 && gx2 < gridW && gy2 >= 0 && gy2 < gridH && walkGrid[gy2 * gridW + gx2]) {
+                  npc.x = gx2 * GRID_SIZE + GRID_SIZE / 2 - npc.w / 2;
+                  npc.y = gy2 * GRID_SIZE + GRID_SIZE / 2 - npc.h / 2;
+                  snapped = true; break outer;
+                }
+              }
+            }
+          }
+          // Pick a new random reachable target
           const angle = Math.random() * Math.PI * 2;
-          const dist = 200 + Math.random() * 300;
-          npc.targetX = Math.max(80, Math.min(MAP_W - 80, npc.x + Math.cos(angle) * dist));
-          npc.targetY = Math.max(80, Math.min(MAP_H - 80, npc.y + Math.sin(angle) * dist));
+          const rDist = 200 + Math.random() * 300;
+          npc.targetX = Math.max(80, Math.min(MAP_W - 80, npc.x + Math.cos(angle) * rDist));
+          npc.targetY = Math.max(80, Math.min(MAP_H - 80, npc.y + Math.sin(angle) * rDist));
           npc.navPath = null;
           npc.navIndex = 0;
           npc.state = AI_STATE.WALKING_RANDOM;
@@ -4893,7 +4947,7 @@
       switch (npc.state) {
         case AI_STATE.IDLE:
           npc.idleTimer++;
-          if (npc.idleTimer > 40 + Math.random() * 60) {
+          if (npc.idleTimer > 5 + Math.random() * 10) {
             npc.idleTimer = 0;
             if (npc.aiConfig) {
               requestAIDecision(npc); // LLM decides next action
@@ -4902,7 +4956,7 @@
               const hasTask = npc.taskList.some(t => !t.npcDone);
               const roll = Math.random();
 
-              if (hasTask && roll < 0.7) {
+              if (hasTask && roll < 0.8) {
                 // Go do next task
                 const nextTask = npc.taskList.find(t => !t.npcDone);
                 if (nextTask) {
@@ -4911,25 +4965,25 @@
                   npc.state = AI_STATE.WALKING_TO_TASK;
                   npc.stateTimer = 0;
                 }
-              } else if (roll < 0.85 && npc.personality.sociability > 0.5) {
+              } else if (roll < 0.9 && npc.personality.sociability > 0.5) {
                 // Follow someone (safety in numbers)
                 const others = npcs.filter(n => n !== npc && n.alive && dist(npc, n) < 400);
                 if (others.length > 0) {
                   npc.companionTarget = others[Math.floor(Math.random() * others.length)];
                   npc.state = AI_STATE.FOLLOWING;
-                  npc.stateTimer = 180 + Math.random() * 300;
-                } else {
-                  npc.targetX = 200 + Math.random() * (MAP_W - 400);
-                  npc.targetY = 200 + Math.random() * (MAP_H - 400);
-                  npc.state = AI_STATE.WALKING_RANDOM;
                   npc.stateTimer = 120 + Math.random() * 180;
+                } else {
+                  npc.targetX = 100 + Math.random() * (MAP_W - 200);
+                  npc.targetY = 100 + Math.random() * (MAP_H - 200);
+                  npc.state = AI_STATE.WALKING_RANDOM;
+                  npc.stateTimer = 180 + Math.random() * 240;
                 }
               } else {
                 // Random walk
-                npc.targetX = 200 + Math.random() * (MAP_W - 400);
-                npc.targetY = 200 + Math.random() * (MAP_H - 400);
+                npc.targetX = 100 + Math.random() * (MAP_W - 200);
+                npc.targetY = 100 + Math.random() * (MAP_H - 200);
                 npc.state = AI_STATE.WALKING_RANDOM;
-                npc.stateTimer = 120 + Math.random() * 180;
+                npc.stateTimer = 180 + Math.random() * 240;
               }
             }
           }
@@ -4988,9 +5042,17 @@
 
         case AI_STATE.WALKING_RANDOM:
           npc.stateTimer--;
-          if (npc.stateTimer <= 0 || moveToward(npc, npc.targetX, npc.targetY)) {
-            npc.state = AI_STATE.IDLE;
-            npc.idleTimer = 0;
+          if (moveToward(npc, npc.targetX, npc.targetY) || npc.stateTimer <= 0) {
+            // Reached destination or timed out — pick a new one immediately (no idle pause)
+            const hasTask2 = npc.taskList.some(t => !t.npcDone);
+            if (hasTask2 && Math.random() < 0.6) {
+              npc.state = AI_STATE.IDLE; // let idle handler dispatch the task
+              npc.idleTimer = 999;       // force immediate decision next frame
+            } else {
+              npc.targetX = 100 + Math.random() * (MAP_W - 200);
+              npc.targetY = 100 + Math.random() * (MAP_H - 200);
+              npc.stateTimer = 180 + Math.random() * 240;
+            }
           }
           break;
 
@@ -5076,7 +5138,7 @@
       switch (npc.state) {
         case AI_STATE.IDLE:
           npc.idleTimer++;
-          if (npc.idleTimer > 30 + Math.random() * 40) {
+          if (npc.idleTimer > 5 + Math.random() * 10) {
             npc.idleTimer = 0;
             if (npc.aiConfig) {
               requestAIDecision(npc); // LLM decides next action
@@ -5205,9 +5267,13 @@
 
         case AI_STATE.WALKING_RANDOM:
           npc.stateTimer--;
-          if (npc.stateTimer <= 0 || moveToward(npc, npc.targetX, npc.targetY)) {
-            npc.state = AI_STATE.IDLE;
-            npc.idleTimer = 0;
+          if (moveToward(npc, npc.targetX, npc.targetY) || npc.stateTimer <= 0) {
+            // Pick another destination immediately to keep moving
+            npc.targetX = 100 + Math.random() * (MAP_W - 200);
+            npc.targetY = 100 + Math.random() * (MAP_H - 200);
+            npc.stateTimer = 180 + Math.random() * 240;
+            // Occasionally switch back to IDLE so impostor can re-evaluate
+            if (Math.random() < 0.3) { npc.state = AI_STATE.IDLE; npc.idleTimer = 999; }
           }
           // Opportunistic kill
           if (npc.killCooldown <= 0) {
@@ -7306,18 +7372,16 @@
       // ── Sprite rendering (living, non-ghost, non-special) ──
       const isSeeker = gameMode === 'hideseek' && role === 'impostor';
       const isMixup  = mushroomMixupTimer > 0;
-      if (alive && !isGhostDraw && !isSeeker && !isMixup && _spriteFrames.ready && a >= 1) {
-        const filter = _getSpriteFilter(color);
-        if (filter) {
+      if (alive && !isGhostDraw && !isSeeker && !isMixup && a >= 1) {
+        const sprites = _getColoredSprites(color);
+        if (sprites) {
           // Pick frame: cycle walk frames while moving, show idle when still
-          const _stillStates = _SPRITE_STILL_STATES;
-          const isMoving = !_stillStates.has(state);
+          const isMoving = !_SPRITE_STILL_STATES.has(state);
           const walkIdx  = Math.floor(frameCount / 5) % 12;
-          const frame    = isMoving ? (_spriteFrames.walk[walkIdx] || _spriteFrames.idle) : _spriteFrames.idle;
-          if (frame && frame.complete && frame.naturalWidth > 0) {
+          const frame    = isMoving ? (sprites.walk[walkIdx] || sprites.idle) : sprites.idle;
+          if (frame) {
             ctx.save();
-            ctx.filter = filter;
-            // Flip horizontally when facing left (encoded as negative state or via entity flag)
+            // Flip horizontally when facing left
             const flipLeft = (state === 'left');
             if (flipLeft) {
               ctx.translate(x + w, y); ctx.scale(-1, 1);
@@ -7325,7 +7389,6 @@
             } else {
               ctx.drawImage(frame, x, y, w, h);
             }
-            ctx.filter = 'none';
             ctx.restore();
             // Name label
             if (name && mushroomMixupTimer <= 0) {
