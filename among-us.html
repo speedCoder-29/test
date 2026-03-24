@@ -61,7 +61,7 @@
       padding: 11px 20px; font-size: 17px; font-weight: 700;
       border: 2px solid rgba(255,255,255,0.2); border-radius: 8px;
       background: rgba(255,255,255,0.08); color: #fff; text-align: center;
-      width: 100%; max-width: 320px; outline: none; margin-bottom: 12px;
+      width: 100%; max-width: 340px; outline: none; margin-bottom: 12px;
       letter-spacing: 1px; font-family: inherit;
     }
     #nameInput:focus { border-color: #c51111; box-shadow: 0 0 12px rgba(197,17,17,0.35); }
@@ -84,8 +84,15 @@
     /* Consistent homepage content wrapper */
     #startContent {
       display: flex; flex-direction: column; align-items: center;
-      width: 100%; max-width: 500px;
+      width: 100%; max-width: 640px;
     }
+    /* Mode + Map row: side-by-side on wide screens, stacked on narrow */
+    #modeMapRow {
+      display: flex; gap: 24px; align-items: flex-start;
+      flex-wrap: wrap; justify-content: center;
+      width: 100%; margin-bottom: 12px;
+    }
+    #modeMapRow > div { display: flex; flex-direction: column; align-items: center; }
     /* Section label used throughout homepage */
     .ss-label {
       color: #888; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
@@ -100,7 +107,7 @@
     }
     #cosmeticsToggleBtn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.4); color: #fff; }
     #cosmeticsPanel { width: 100%; text-align: center; }
-    .map-select { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; justify-content: center; max-width: 600px; }
+    .map-select { display: flex; gap: 8px; margin-bottom: 0; flex-wrap: wrap; justify-content: center; }
     .map-card {
       width: 105px; padding: 10px 8px; border-radius: 10px; cursor: pointer;
       border: 3px solid rgba(255,255,255,0.15); text-align: center;
@@ -418,49 +425,49 @@
     }
     #settingsContent { overflow-y: auto; flex: 1; padding: 0 2px; }
     .sett-section {
-  display: flex; align-items: center; gap: 8px;
-  color: #fff; font-size: 12px; font-weight: bold; letter-spacing: 1.5px;
-  margin: 16px 0 6px; padding: 8px 10px; border-radius: 8px;
-  text-transform: uppercase; position: relative;
-}
-.sett-section-icon { font-size: 16px; flex-shrink: 0; }
-.sett-section-text { flex: 1; }
-.sett-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 10px; border-radius: 7px; gap: 12px;
-  transition: background 0.1s; margin-bottom: 2px;
-}
-.sett-row:hover { background: rgba(255,255,255,0.04); }
-.sett-label { color: #e0e0e0; font-size: 13px; font-weight: bold; flex: 1; }
-.sett-hint { color: #666; font-size: 11px; margin-top: 1px; }
-.sett-ctrl { display: flex; gap: 5px; align-items: center; flex-shrink: 0; }
-.sett-val { color: #ffd700; font-weight: bold; font-size: 14px; min-width: 54px; text-align: center; }
-.sett-opt {
-  padding: 4px 11px; border: 1px solid #3a3a4a; border-radius: 6px;
-  background: rgba(255,255,255,0.05); color: #888; cursor: pointer;
-  font-size: 12px; font-weight: bold; transition: all 0.12s;
-}
-.sett-opt:hover { background: rgba(255,255,255,0.14); color: #fff; }
-.sett-opt.on { background: linear-gradient(135deg,#4ecdc4,#2aa8a0); color: #000; border-color: #4ecdc4; }
-.sett-adj {
-  width: 28px; height: 28px; border-radius: 6px; border: 1px solid #3a3a4a;
-  background: rgba(255,255,255,0.07); color: #fff; cursor: pointer;
-  font-size: 18px; font-weight: bold; line-height: 26px; text-align: center;
-  transition: background 0.1s;
-}
-.sett-adj:hover { background: rgba(255,255,255,0.2); }
-.preset-row {
-  display: flex; gap: 8px; margin-bottom: 14px; padding: 12px 10px;
-  background: rgba(255,255,255,0.04); border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);
-}
-.preset-label { color: #888; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; align-self: center; margin-right: 4px; white-space: nowrap; }
-.preset-btn {
-  flex: 1; padding: 8px 4px; border-radius: 8px; border: 1px solid;
-  font-size: 12px; font-weight: bold; cursor: pointer; text-align: center;
-  transition: all 0.15s; line-height: 1.3;
-}
-.preset-btn:hover { transform: scale(1.05); }
-.sett-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 4px 0; }
+      display: flex; align-items: center; gap: 8px;
+      color: #fff; font-size: 12px; font-weight: bold; letter-spacing: 1.5px;
+      margin: 16px 0 6px; padding: 8px 10px; border-radius: 8px;
+      text-transform: uppercase; position: relative;
+    }
+    .sett-section-icon { font-size: 16px; flex-shrink: 0; }
+    .sett-section-text { flex: 1; }
+    .sett-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 10px; border-radius: 7px; gap: 12px;
+      transition: background 0.1s; margin-bottom: 2px;
+    }
+    .sett-row:hover { background: rgba(255,255,255,0.04); }
+    .sett-label { color: #e0e0e0; font-size: 13px; font-weight: bold; flex: 1; }
+    .sett-hint { color: #666; font-size: 11px; margin-top: 1px; }
+    .sett-ctrl { display: flex; gap: 5px; align-items: center; flex-shrink: 0; }
+    .sett-val { color: #ffd700; font-weight: bold; font-size: 14px; min-width: 54px; text-align: center; }
+    .sett-opt {
+      padding: 4px 11px; border: 1px solid #3a3a4a; border-radius: 6px;
+      background: rgba(255,255,255,0.05); color: #888; cursor: pointer;
+      font-size: 12px; font-weight: bold; transition: all 0.12s;
+    }
+    .sett-opt:hover { background: rgba(255,255,255,0.14); color: #fff; }
+    .sett-opt.on { background: linear-gradient(135deg,#4ecdc4,#2aa8a0); color: #000; border-color: #4ecdc4; }
+    .sett-adj {
+      width: 28px; height: 28px; border-radius: 6px; border: 1px solid #3a3a4a;
+      background: rgba(255,255,255,0.07); color: #fff; cursor: pointer;
+      font-size: 18px; font-weight: bold; line-height: 26px; text-align: center;
+      transition: background 0.1s;
+    }
+    .sett-adj:hover { background: rgba(255,255,255,0.2); }
+    .preset-row {
+      display: flex; gap: 8px; margin-bottom: 14px; padding: 12px 10px;
+      background: rgba(255,255,255,0.04); border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);
+    }
+    .preset-label { color: #888; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; align-self: center; margin-right: 4px; white-space: nowrap; }
+    .preset-btn {
+      flex: 1; padding: 8px 4px; border-radius: 8px; border: 1px solid;
+      font-size: 12px; font-weight: bold; cursor: pointer; text-align: center;
+      transition: all 0.15s; line-height: 1.3;
+    }
+    .preset-btn:hover { transform: scale(1.05); }
+    .sett-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 4px 0; }
     #settingsStartBtn {
       margin-top: 14px; padding: 13px; width: 100%;
       background: linear-gradient(135deg, #117f2d, #0d6122);
@@ -549,12 +556,14 @@
       transition: transform 0.15s, border-color 0.15s; background: rgba(255,255,255,0.05);
     }
     .mode-card:hover { transform: scale(1.08); border-color: rgba(255,255,255,0.5); }
-    .mode-card.selected { border-color: #fff; transform: scale(1.1); background: rgba(255,255,255,0.1); }
     @keyframes cardSelect {
       0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.6); }
       100% { box-shadow: 0 0 0 6px rgba(255,255,255,0); }
     }
-    .mode-card.selected { animation: cardSelect 0.35s ease-out; }
+    .mode-card.selected {
+      border-color: #fff; transform: scale(1.1); background: rgba(255,255,255,0.1);
+      animation: cardSelect 0.35s ease-out;
+    }
     .mode-card .mode-icon { font-size: 28px; margin-bottom: 4px; }
     .mode-card .mode-name { font-size: 12px; font-weight: bold; color: #fff; }
     .mode-card .mode-desc { font-size: 10px; color: rgba(255,255,255,0.5); }
@@ -860,8 +869,8 @@
     <div id="startContent">
 
     <!-- Row 1: Mode + Map side by side -->
-    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;justify-content:center;margin-bottom:12px;width:100%;">
-      <div style="display:flex;flex-direction:column;align-items:center;">
+    <div id="modeMapRow">
+      <div>
         <p class="ss-label">Mode</p>
         <div class="mode-select" id="modeSelect" style="margin-bottom:0;">
           <div class="mode-card selected" id="modeClassic" onclick="selectMode('classic')">
@@ -876,7 +885,7 @@
           </div>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:center;">
+      <div>
         <p class="ss-label">Map</p>
         <div class="map-select" id="mapSelect" style="margin-bottom:0;"></div>
       </div>
