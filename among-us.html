@@ -5255,12 +5255,13 @@
         tc.strokeStyle = strokeCol;
         tc.lineWidth = 1;
         tc.stroke();
-        // Task initial
-        tc.fillStyle = '#000';
-        tc.font = `bold ${Math.max(6, Math.round(r * 1.0))}px Arial`;
+        // Task type icon
+        tc.fillStyle = t.done ? '#003311' : '#111';
+        tc.font = `bold ${Math.max(6, Math.round(r * 1.1))}px Arial`;
         tc.textAlign = 'center';
         tc.textBaseline = 'middle';
-        tc.fillText(t.done ? '✓' : '!', tx, ty);
+        const _tmSym = t.done ? '✓' : ttype === 'common' ? '★' : ttype === 'long' ? '⚙' : '⚡';
+        tc.fillText(_tmSym, tx, ty);
       }
 
       // Sabotage fix-point markers (only when sabotage active)
@@ -8269,8 +8270,25 @@
               ctx.restore();
             }
             if (state === AI_STATE.DOING_TASK || state === AI_STATE.FAKING_TASK) {
-              ctx.fillStyle = '#ffd700'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center';
-              ctx.fillText('...', x + w/2, y - 22);
+              const _spIsFake = state === AI_STATE.FAKING_TASK;
+              const _spgx = x + w / 2, _spgy = y - 20, _spgr = 7;
+              const _sprot = (Date.now() / 500) * (_spIsFake ? -1.5 : 1);
+              ctx.save();
+              ctx.translate(_spgx, _spgy);
+              ctx.rotate(_sprot);
+              ctx.fillStyle = _spIsFake ? '#ff7766' : '#ffd700';
+              ctx.beginPath();
+              for (let _spi = 0; _spi < 12; _spi++) {
+                const _spa = (_spi / 12) * Math.PI * 2;
+                const _spr2 = _spi % 2 === 0 ? _spgr : _spgr * 0.68;
+                _spi === 0 ? ctx.moveTo(Math.cos(_spa) * _spr2, Math.sin(_spa) * _spr2)
+                           : ctx.lineTo(Math.cos(_spa) * _spr2, Math.sin(_spa) * _spr2);
+              }
+              ctx.closePath();
+              ctx.fill();
+              ctx.fillStyle = '#1a1a2e';
+              ctx.beginPath(); ctx.arc(0, 0, _spgr * 0.32, 0, Math.PI * 2); ctx.fill();
+              ctx.restore();
             }
             if (role && ROLE_COLORS[role]) {
               ctx.fillStyle = ROLE_COLORS[role]; ctx.font = 'bold 9px Arial'; ctx.textAlign = 'center';
@@ -8317,22 +8335,108 @@
       ctx.beginPath();
       ctx.ellipse(x + w / 2, y + h * 0.55, w / 2, h * 0.45, 0, 0, Math.PI * 2);
       ctx.fill();
+      // Body outline
+      ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      // Body highlight gradient
+      const _bGrad = ctx.createRadialGradient(x + w * 0.38, y + h * 0.28, 1, x + w / 2, y + h * 0.55, w * 0.52);
+      _bGrad.addColorStop(0, 'rgba(255,255,255,0.28)');
+      _bGrad.addColorStop(0.5, 'rgba(255,255,255,0.06)');
+      _bGrad.addColorStop(1, 'rgba(0,0,0,0.18)');
+      ctx.fillStyle = _bGrad;
+      ctx.beginPath();
+      ctx.ellipse(x + w / 2, y + h * 0.55, w / 2, h * 0.45, 0, 0, Math.PI * 2);
+      ctx.fill();
       // Visor
       ctx.fillStyle = '#9cd8f7';
       ctx.beginPath();
       ctx.ellipse(x + w * 0.65, y + h * 0.35, w * 0.22, h * 0.18, 0, 0, Math.PI * 2);
       ctx.fill();
-      // Visor shine
-      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      // Visor border
+      ctx.strokeStyle = '#1a3a5c';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      // Visor inner gradient
+      const _vGrad = ctx.createLinearGradient(x + w * 0.43, y + h * 0.17, x + w * 0.87, y + h * 0.53);
+      _vGrad.addColorStop(0, 'rgba(200,235,255,0.5)');
+      _vGrad.addColorStop(1, 'rgba(80,160,220,0.3)');
+      ctx.fillStyle = _vGrad;
       ctx.beginPath();
-      ctx.ellipse(x + w * 0.7, y + h * 0.3, w * 0.08, h * 0.06, 0, 0, Math.PI * 2);
+      ctx.ellipse(x + w * 0.65, y + h * 0.35, w * 0.22, h * 0.18, 0, 0, Math.PI * 2);
       ctx.fill();
-      // Backpack
+      // Visor primary shine
+      ctx.fillStyle = 'rgba(255,255,255,0.55)';
+      ctx.beginPath();
+      ctx.ellipse(x + w * 0.71, y + h * 0.27, w * 0.1, h * 0.065, -0.3, 0, Math.PI * 2);
+      ctx.fill();
+      // Visor secondary reflection
+      ctx.fillStyle = 'rgba(255,255,255,0.2)';
+      ctx.beginPath();
+      ctx.ellipse(x + w * 0.59, y + h * 0.4, w * 0.05, h * 0.04, 0.4, 0, Math.PI * 2);
+      ctx.fill();
+      // Arms (drawn before backpack so backpack overlaps left arm)
+      const _armY = y + h * 0.60;
       ctx.fillStyle = drawColor;
-      ctx.fillRect(x - 6, y + h * 0.35, 8, h * 0.3);
+      // Left arm
+      ctx.beginPath();
+      ctx.ellipse(x + 3, _armY, w * 0.12, h * 0.10, -0.25, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      // Right arm
+      ctx.beginPath();
+      ctx.ellipse(x + w - 3, _armY, w * 0.12, h * 0.10, 0.25, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      // Arm highlights
+      ctx.fillStyle = 'rgba(255,255,255,0.15)';
+      ctx.beginPath();
+      ctx.ellipse(x + 2, _armY - h * 0.03, w * 0.05, h * 0.04, -0.25, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(x + w - 2, _armY - h * 0.03, w * 0.05, h * 0.04, 0.25, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Backpack
+      const _bpX = x - 7, _bpY = y + h * 0.32, _bpW = 9, _bpH = h * 0.32;
+      ctx.fillStyle = drawColor;
+      ctx.beginPath();
+      if (ctx.roundRect) { ctx.roundRect(_bpX, _bpY, _bpW, _bpH, 3); } else { ctx.rect(_bpX, _bpY, _bpW, _bpH); }
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      // Backpack highlight line
+      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(_bpX + 2, _bpY + 2);
+      ctx.lineTo(_bpX + 2, _bpY + _bpH - 2);
+      ctx.stroke();
       // Legs
-      ctx.fillRect(x + 4, y + h * 0.85, 10, 8);
-      ctx.fillRect(x + w - 14, y + h * 0.85, 10, 8);
+      const _legY = y + h * 0.85, _legH = 9;
+      ctx.fillStyle = drawColor;
+      // Left leg
+      ctx.beginPath();
+      if (ctx.roundRect) { ctx.roundRect(x + 3, _legY, 10, _legH, [0, 0, 3, 3]); } else { ctx.rect(x + 3, _legY, 10, _legH); }
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      // Right leg
+      ctx.beginPath();
+      if (ctx.roundRect) { ctx.roundRect(x + w - 13, _legY, 10, _legH, [0, 0, 3, 3]); } else { ctx.rect(x + w - 13, _legY, 10, _legH); }
+      ctx.fill();
+      ctx.stroke();
+      // Leg center seam
+      ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x + w / 2, _legY);
+      ctx.lineTo(x + w / 2, _legY + _legH);
+      ctx.stroke();
       // Seeker monster features (H&S mode)
       if (gameMode === 'hideseek' && role === 'impostor') {
         const a2 = (typeof alpha === 'number' ? alpha : 1);
@@ -8381,11 +8485,30 @@
         ctx.textAlign = 'center';
         ctx.fillText(name, x + w / 2, y - 8);
       }
-      // Task indicator
+      // Task indicator — animated spinning gear
       if (state === AI_STATE.DOING_TASK || state === AI_STATE.FAKING_TASK) {
-        ctx.fillStyle = '#ffd700';
-        ctx.font = 'bold 14px Arial';
-        ctx.fillText('...', x + w / 2, y - 22);
+        const _gIsFake = state === AI_STATE.FAKING_TASK;
+        const _gx = x + w / 2, _gy = y - 20, _gr = 7;
+        const _grot = (Date.now() / 500) * (_gIsFake ? -1.5 : 1);
+        ctx.save();
+        ctx.translate(_gx, _gy);
+        ctx.rotate(_grot);
+        const _gc = _gIsFake ? '#ff7766' : '#ffd700';
+        ctx.fillStyle = _gc;
+        ctx.beginPath();
+        for (let _gi = 0; _gi < 12; _gi++) {
+          const _ga = (_gi / 12) * Math.PI * 2;
+          const _gr2 = _gi % 2 === 0 ? _gr : _gr * 0.68;
+          _gi === 0 ? ctx.moveTo(Math.cos(_ga) * _gr2, Math.sin(_ga) * _gr2)
+                    : ctx.lineTo(Math.cos(_ga) * _gr2, Math.sin(_ga) * _gr2);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = '#1a1a2e';
+        ctx.beginPath();
+        ctx.arc(0, 0, _gr * 0.32, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
       }
       // Role badge
       if (role && ROLE_COLORS[role]) {
@@ -8514,15 +8637,77 @@
     }
 
     function drawDeadBody(ctx, x, y, color) {
+      ctx.save();
+      // Blood pool (radial gradient)
+      const _bpGrad = ctx.createRadialGradient(x + 15, y + 28, 2, x + 15, y + 28, 20);
+      _bpGrad.addColorStop(0, 'rgba(180,0,0,0.75)');
+      _bpGrad.addColorStop(0.55, 'rgba(110,0,0,0.45)');
+      _bpGrad.addColorStop(1, 'rgba(70,0,0,0)');
+      ctx.fillStyle = _bpGrad;
+      ctx.beginPath();
+      ctx.ellipse(x + 15, y + 28, 22, 13, 0.25, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Backpack (visible lying flat behind body)
       ctx.fillStyle = color;
       ctx.beginPath();
-      ctx.ellipse(x + 16, y + 25, 16, 12, 0, 0, Math.PI * 2);
+      if (ctx.roundRect) { ctx.roundRect(x + 1, y + 10, 8, 16, 3); } else { ctx.rect(x + 1, y + 10, 8, 16); }
       ctx.fill();
-      ctx.fillStyle = '#ddd';
+      ctx.strokeStyle = 'rgba(0,0,0,0.45)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Main body (lying on side, tilted ellipse)
+      ctx.fillStyle = color;
       ctx.beginPath();
-      ctx.ellipse(x + 35, y + 15, 5, 5, 0, 0, Math.PI * 2);
+      ctx.ellipse(x + 17, y + 21, 16, 10, 0.15, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillRect(x + 30, y + 20, 3, 8);
+      ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      // Body highlight
+      const _bdGrad = ctx.createRadialGradient(x + 12, y + 16, 1, x + 17, y + 21, 16);
+      _bdGrad.addColorStop(0, 'rgba(255,255,255,0.22)');
+      _bdGrad.addColorStop(1, 'rgba(0,0,0,0.15)');
+      ctx.fillStyle = _bdGrad;
+      ctx.beginPath();
+      ctx.ellipse(x + 17, y + 21, 16, 10, 0.15, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Leg sticking upward
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      if (ctx.roundRect) { ctx.roundRect(x + 26, y + 9, 9, 14, [0, 0, 3, 3]); } else { ctx.rect(x + 26, y + 9, 9, 14); }
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Cracked visor
+      ctx.fillStyle = 'rgba(100,185,225,0.55)';
+      ctx.beginPath();
+      ctx.ellipse(x + 24, y + 17, 7, 5, 0.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#1a3a5c';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      // Crack lines
+      ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(x + 23, y + 13); ctx.lineTo(x + 20, y + 20);
+      ctx.moveTo(x + 23, y + 13); ctx.lineTo(x + 28, y + 19);
+      ctx.stroke();
+      // X eyes through cracked visor
+      ctx.strokeStyle = 'rgba(220,20,20,0.9)';
+      ctx.lineWidth = 1.5;
+      const _ex = x + 24, _ey = y + 17;
+      ctx.beginPath();
+      ctx.moveTo(_ex - 3, _ey - 2); ctx.lineTo(_ex + 1, _ey + 2);
+      ctx.moveTo(_ex + 1, _ey - 2); ctx.lineTo(_ex - 3, _ey + 2);
+      ctx.stroke();
+
+      ctx.restore();
     }
 
     // ====== TEXTURE & DECORATION SYSTEM ======
@@ -12484,27 +12669,68 @@
         ctx.beginPath(); ctx.arc(ebx, eby, 75, 0, Math.PI * 2); ctx.fill();
       }
 
-      // Tasks (enhanced with glow, visual tasks shown in purple/pink)
+      // Tasks — type-specific icons with pulsing glow
+      const _tPulse = 0.55 + 0.45 * Math.sin(Date.now() / 600);
       for (const t of taskLocations) {
-        const tx = t.x - ox, ty = t.y - oy;
+        const _ttx = t.x - ox, _tty = t.y - oy;
+        const _ttype = getTaskType(t.name);
+        ctx.save();
         if (t.done) {
-          ctx.fillStyle = 'rgba(78,205,196,0.1)';
-          ctx.beginPath(); ctx.arc(tx, ty, 20, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = 'rgba(78,205,196,0.2)';
-          ctx.beginPath(); ctx.arc(tx, ty, 12, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#4ecdc4'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
-          ctx.fillText('\u2713', tx, ty + 6);
+          // Done task — teal with fading checkmark
+          ctx.globalAlpha = 0.55;
+          ctx.fillStyle = 'rgba(78,205,196,0.18)';
+          ctx.beginPath(); ctx.arc(_ttx, _tty, 18, 0, Math.PI * 2); ctx.fill();
+          ctx.globalAlpha = 0.8;
+          ctx.fillStyle = '#4ecdc4';
+          ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+          ctx.lineWidth = 2;
+          ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText('✓', _ttx, _tty);
         } else {
-          const isVisual = t.visual;
-          const baseColor = isVisual ? 'rgba(200,100,255,' : (isImpostor ? 'rgba(255,255,0,' : 'rgba(255,255,0,');
-          ctx.fillStyle = isVisual ? 'rgba(200,100,255,0.08)' : (isImpostor ? 'rgba(255,255,0,0.05)' : 'rgba(255,255,0,0.12)');
-          ctx.beginPath(); ctx.arc(tx, ty, 24, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = isVisual ? 'rgba(200,100,255,0.2)' : (isImpostor ? 'rgba(255,255,0,0.08)' : 'rgba(255,255,0,0.25)');
-          ctx.beginPath(); ctx.arc(tx, ty, 15, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = isVisual ? '#cc66ff' : '#ffd700';
-          ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
-          ctx.fillText(isVisual ? '★' : '!', tx, ty + 6);
+          const _tisVisual = t.visual;
+          const _tc = _tisVisual ? '#cc66ff' : (_ttype === 'common' ? '#c87eff' : _ttype === 'long' ? '#ff9944' : '#ffe140');
+          const _tcAlpha = isImpostor ? 0.04 : 0.12;
+          // Outer glow ring (pulsing)
+          ctx.globalAlpha = _tPulse * (isImpostor ? 0.07 : 0.18);
+          ctx.fillStyle = _tc;
+          ctx.beginPath(); ctx.arc(_ttx, _tty, 26, 0, Math.PI * 2); ctx.fill();
+          // Inner marker disc
+          ctx.globalAlpha = isImpostor ? 0.12 : 0.35;
+          ctx.fillStyle = _tc;
+          ctx.beginPath(); ctx.arc(_ttx, _tty, 14, 0, Math.PI * 2); ctx.fill();
+          // Disc border
+          ctx.globalAlpha = isImpostor ? 0.15 : 0.7;
+          ctx.strokeStyle = _tc;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(_ttx, _tty, 14, 0, Math.PI * 2); ctx.stroke();
+          // Icon label
+          ctx.globalAlpha = isImpostor ? 0.2 : 0.95;
+          ctx.fillStyle = isImpostor ? _tc : '#fff';
+          ctx.font = `bold 13px Arial`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          const _tsym = _tisVisual ? '★' : _ttype === 'common' ? '★' : _ttype === 'long' ? '⚙' : '⚡';
+          ctx.fillText(_tsym, _ttx, _tty);
+          // Proximity label: show task name when player is close
+          if (!isImpostor) {
+            const _tDist = Math.hypot(t.x - (player.x + player.w / 2), t.y - (player.y + player.h / 2));
+            if (_tDist < 90) {
+              const _tfade = Math.max(0, 1 - _tDist / 90);
+              ctx.globalAlpha = _tfade * 0.92;
+              ctx.font = 'bold 10px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+              const _tlabel = t.name.length > 18 ? t.name.slice(0, 17) + '…' : t.name;
+              const _tlw = ctx.measureText(_tlabel).width + 8;
+              // Label pill background
+              ctx.fillStyle = 'rgba(0,0,0,0.7)';
+              ctx.beginPath();
+              if (ctx.roundRect) { ctx.roundRect(_ttx - _tlw / 2, _tty + 18, _tlw, 14, 4); }
+              else { ctx.rect(_ttx - _tlw / 2, _tty + 18, _tlw, 14); }
+              ctx.fill();
+              ctx.fillStyle = _tc;
+              ctx.textBaseline = 'middle';
+              ctx.fillText(_tlabel, _ttx, _tty + 25);
+            }
+          }
         }
+        ctx.restore();
       }
 
       // Draw sabotage fix consoles
@@ -12919,6 +13145,50 @@
             ctx.font = 'bold 18px Arial';
             ctx.textAlign = 'center';
             ctx.fillText('!', npc.x - ox + npc.w / 2, npc.y - oy - 30);
+          }
+          // NPC state indicator overhead
+          if (npc.alive && !showSuspect) {
+            const _nix = npc.x - ox + npc.w / 2;
+            const _niy = npc.y - oy;
+            if (npc.state === 'fleeing') {
+              // Red ! with pulsing glow
+              const _fPulse = 0.6 + 0.4 * Math.sin(Date.now() / 120);
+              ctx.save();
+              ctx.globalAlpha = _fPulse;
+              ctx.shadowColor = '#ff4444'; ctx.shadowBlur = 8;
+              ctx.fillStyle = '#ff4444';
+              ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
+              ctx.fillText('!', _nix, _niy - 32);
+              ctx.restore();
+            } else if (npc.state === 'idle' && npc.stateTimer > 90) {
+              // Zzz sleep bubbles (floating upward)
+              ctx.save();
+              ctx.globalAlpha = 0.65;
+              ctx.fillStyle = '#88aaff';
+              ctx.font = 'bold 9px Arial'; ctx.textAlign = 'center';
+              const _zBob = Math.sin(Date.now() / 500) * 2;
+              ctx.fillText('z', _nix + 6, _niy - 26 + _zBob);
+              ctx.font = 'bold 7px Arial';
+              ctx.fillText('z', _nix + 11, _niy - 33 + _zBob);
+              ctx.restore();
+            } else if (npc.state === 'following') {
+              // Eye icon — following player
+              ctx.save();
+              ctx.globalAlpha = 0.7;
+              ctx.fillStyle = '#fff';
+              ctx.beginPath();
+              ctx.ellipse(_nix, _niy - 30, 7, 4, 0, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.fillStyle = '#2255ff';
+              ctx.beginPath();
+              ctx.arc(_nix, _niy - 30, 2.5, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.fillStyle = '#000';
+              ctx.beginPath();
+              ctx.arc(_nix + 0.5, _niy - 30, 1.2, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.restore();
+            }
           }
         }
       }
