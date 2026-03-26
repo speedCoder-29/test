@@ -215,6 +215,17 @@
       border: 1px solid rgba(255,68,68,0.4);
     }
     @keyframes pulse { from { opacity: 0.7; } to { opacity: 1; } }
+    @keyframes sabFlash {
+      0%   { opacity: 0; box-shadow: inset 0 0 0px 0px rgba(255,40,0,0); }
+      12%  { opacity: 1; box-shadow: inset 0 0 180px 60px rgba(255,40,0,0.55); }
+      35%  { opacity: 0.6; box-shadow: inset 0 0 120px 40px rgba(255,40,0,0.35); }
+      55%  { opacity: 0.9; box-shadow: inset 0 0 160px 50px rgba(255,40,0,0.45); }
+      100% { opacity: 0; box-shadow: inset 0 0 0px 0px rgba(255,40,0,0); }
+    }
+    #sabFlashOverlay.active {
+      animation: sabFlash 0.9s ease-out forwards;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(255,40,0,0.12) 100%);
+    }
     #sabotageBar {
       position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
       width: 250px; height: 14px; background: rgba(0,0,0,0.6); border: 2px solid #ff4444;
@@ -333,28 +344,45 @@
       100% { transform: scale(1); opacity: 1; }
     }
     #reportScreen p { color: #ccc; font-size: 18px; letter-spacing: 1px; }
-    #voteScreen { background: rgba(0,10,30,0.95); }
+    #voteScreen { background: rgba(0,8,24,0.97); }
     #voteScreen h2 {
       font-size: 30px; margin-bottom: 16px; color: #ffd700;
       letter-spacing: 2px; text-transform: uppercase; font-weight: 800;
-      text-shadow: 0 0 20px rgba(255,215,0,0.5);
+      text-shadow: 0 0 20px rgba(255,215,0,0.5), 0 0 40px rgba(255,215,0,0.2);
     }
-    .vote-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; max-height: 400px; overflow-y: auto; }
+    .vote-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; max-height: 420px; overflow-y: auto; }
     .vote-btn {
-      padding: 10px 14px; font-size: 15px; font-weight: 700;
-      border: 2px solid rgba(255,255,255,0.15); border-radius: 10px;
-      background: rgba(255,255,255,0.06); color: #fff; cursor: pointer; pointer-events: auto;
-      display: flex; align-items: center; gap: 10px; min-width: 260px;
-      transition: background 0.15s, border-color 0.15s; letter-spacing: 0.5px;
+      padding: 9px 14px 9px 0; font-size: 15px; font-weight: 700;
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 10px;
+      background: rgba(255,255,255,0.05); color: #fff; cursor: pointer; pointer-events: auto;
+      display: flex; align-items: center; gap: 0; min-width: 300px; overflow: hidden;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s; letter-spacing: 0.5px;
+      position: relative;
     }
-    .vote-btn:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.4); }
-    .vote-btn.voted { border-color: #ffd700; background: rgba(255,215,0,0.12); }
+    .vote-btn:hover { background: rgba(255,255,255,0.11); border-color: rgba(255,255,255,0.35); box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
+    .vote-btn.voted { border-color: #ffd700; background: rgba(255,215,0,0.10); box-shadow: 0 0 14px rgba(255,215,0,0.2); }
+    @keyframes voteCast {
+      0%   { transform: scale(1);    box-shadow: 0 0 0px rgba(255,215,0,0); }
+      30%  { transform: scale(1.04); box-shadow: 0 0 28px rgba(255,215,0,0.7); }
+      60%  { transform: scale(0.98); box-shadow: 0 0 16px rgba(255,215,0,0.4); }
+      100% { transform: scale(1);    box-shadow: 0 0 14px rgba(255,215,0,0.2); }
+    }
+    .vote-btn.vote-cast-anim { animation: voteCast 0.35s ease-out forwards; }
+    .vote-color-bar { width: 5px; align-self: stretch; flex-shrink: 0; margin-right: 12px; }
     .vote-dot {
-      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
-      border: 2px solid rgba(255,255,255,0.3); box-shadow: 0 0 6px currentColor;
+      width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+      border: 2px solid rgba(255,255,255,0.35); margin-right: 10px;
     }
-    .vote-count { margin-left: auto; color: #ffd700; font-weight: bold; }
-    #voteResult { font-size: 22px; margin-top: 15px; }
+    .vote-name { flex: 1; }
+    .vote-tally { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; margin-left: auto; padding-left: 10px; }
+    .vote-count { color: #ffd700; font-weight: bold; font-size: 13px; }
+    .vote-bar-wrap { width: 60px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+    .vote-bar-fill { height: 100%; background: #ffd700; border-radius: 2px; transition: width 0.3s; }
+    #voteResult {
+      font-size: 20px; margin-top: 15px; padding: 12px 20px;
+      background: rgba(255,255,255,0.05); border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1); text-align: center; min-width: 300px;
+    }
     #discussPhase { display:flex; flex-direction:column; align-items:center; gap:8px; width:580px; max-width:96vw; }
     #discussInfo { color:#aaa; font-size:14px; }
     #discussInfo span { color:#ffd700; font-weight:bold; }
@@ -3533,14 +3561,23 @@
       if (hasLineOfSight(fromX, fromY, toX, toY, 26, 34)) return [{ x: toX, y: toY }];
 
       const n = waypoints.length;
-      // Find nearest waypoint to start and goal by straight-line distance
-      let si = 0, gi = 0, sd2 = Infinity, gd2 = Infinity;
+      // Find nearest waypoint to goal by distance, and nearest LOS-visible waypoint to start
+      let gi = 0, gd2 = Infinity;
+      const _swp = new Array(n);
       for (let i = 0; i < n; i++) {
         const wp = waypoints[i];
-        const ds = (wp.x - fromX) ** 2 + (wp.y - fromY) ** 2;
-        const dg = (wp.x - toX)   ** 2 + (wp.y - toY)   ** 2;
-        if (ds < sd2) { sd2 = ds; si = i; }
+        _swp[i] = { i, ds: (wp.x - fromX) ** 2 + (wp.y - fromY) ** 2 };
+        const dg = (wp.x - toX) ** 2 + (wp.y - toY) ** 2;
         if (dg < gd2) { gd2 = dg; gi = i; }
+      }
+      _swp.sort((a, b) => a.ds - b.ds);
+      // Pick nearest waypoint with LOS from start (check up to 8 nearest candidates)
+      let si = _swp[0].i;
+      const _chk = Math.min(8, n);
+      for (let ci = 0; ci < _chk; ci++) {
+        if (hasLineOfSight(fromX, fromY, waypoints[_swp[ci].i].x, waypoints[_swp[ci].i].y, 26, 34)) {
+          si = _swp[ci].i; break;
+        }
       }
       if (si === gi) return [{ x: toX, y: toY }];
 
@@ -3674,7 +3711,7 @@
     // Sabotage system
     let sabotage = { active: false, type: null, timer: 0, maxTime: 0, cooldown: 0, fixProgress: 0, fixProgressB: 0 };
     const SABOTAGE_COOLDOWN = 1800; // legacy fallback, now uses gameSettings.sabotageCooldown
-    const VISION_NORMAL = 350;
+    const VISION_NORMAL = 460;
     const VISION_LIGHTS_OUT = 120;
     let visionRadius = VISION_NORMAL;
 
@@ -3824,6 +3861,45 @@
     let hideSeekPingTimer = 0;
     let hsSeekTimer = 0;         // countdown for final seek phase
     let hsPingEffects = [];      // [{x,y,r,maxR,alpha}] visual ping ripples on canvas
+    let killEffects = [];        // blood splatter particles [{x,y,vx,vy,r,alpha,color}]
+    let ventEffects = [];        // vent ripple rings [{x,y,r,alpha}]
+    let taskEffects = [];        // task-complete sparkles [{x,y,vx,vy,r,alpha,color}]
+    let shieldEffects = [];      // shield-absorb rings [{x,y,r,alpha}]
+    let floatTexts = [];         // floating text labels [{x,y,vy,text,color,alpha,timer}]
+
+    function spawnKillEffect(wx, wy, victimColor) {
+      for (let _i = 0; _i < 16; _i++) {
+        const _a = Math.random() * Math.PI * 2;
+        const _s = 1.8 + Math.random() * 4;
+        killEffects.push({ x: wx, y: wy,
+          vx: Math.cos(_a) * _s, vy: Math.sin(_a) * _s - 0.8,
+          r: 1.5 + Math.random() * 3, alpha: 0.85 + Math.random() * 0.15,
+          color: _i < 12 ? (_i < 8 ? '#cc0000' : '#880000') : victimColor });
+      }
+    }
+
+    function spawnVentEffect(wx, wy) {
+      for (let _i = 0; _i < 3; _i++)
+        ventEffects.push({ x: wx, y: wy, r: 6 + _i * 14, alpha: 0.8 - _i * 0.2 });
+    }
+
+    function spawnTaskEffect(wx, wy) {
+      const _cols = ['#ffd700','#4ecdc4','#ff9944','#ff69b4','#aaffaa','#ffffff'];
+      for (let _i = 0; _i < 20; _i++) {
+        const _a = (_i / 20) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
+        const _s = 2 + Math.random() * 3.5;
+        taskEffects.push({ x: wx, y: wy,
+          vx: Math.cos(_a) * _s, vy: Math.sin(_a) * _s - 2.2,
+          r: 1.5 + Math.random() * 2.5, alpha: 1, color: _cols[_i % _cols.length] });
+      }
+      floatTexts.push({ x: wx, y: wy - 20, vy: -1.2, text: '✓ Task Complete', color: '#4ecdc4', alpha: 1, timer: 70 });
+    }
+
+    function spawnShieldEffect(wx, wy) {
+      for (let _i = 0; _i < 3; _i++)
+        shieldEffects.push({ x: wx, y: wy, r: 10 + _i * 8, alpha: 1 - _i * 0.25 });
+      floatTexts.push({ x: wx, y: wy - 30, vy: -1, text: 'BLOCKED!', color: '#88ffff', alpha: 1, timer: 55 });
+    }
     let playerHsVentUses = 0;    // player's remaining vent uses in H&S
     let hsInitialFreezeTimer = 0; // countdown for first hide phase (seeker can move after release)
     let hsReleaseTimer = 0;       // 10-second freeze animation at start before seeker is released
@@ -4467,7 +4543,7 @@
       impostors: 1,
       playerCount: 9,
       playerSpeed: 1.0,
-      crewVision: 1.0,
+      crewVision: 1.2,
       impVision: 1.5,
       killCooldown: 25,
       killDistance: 'Medium',
@@ -4627,7 +4703,7 @@
       // Assign impostor(s)
       const npcImpCount = gameSettings.impostors - (isImpostor ? 1 : 0);
       const shuffledForImp = [...npcs].sort(() => Math.random() - 0.5);
-      for (let i = 0; i < npcImpCount; i++) {
+      for (let i = 0; i < Math.min(npcImpCount, npcs.length); i++) {
         shuffledForImp[i].isImpostor = true;
         shuffledForImp[i].speed = 2.5 * gameSettings.playerSpeed;
       }
@@ -4678,7 +4754,7 @@
       document.getElementById('hsHiderIcons').style.display = 'none';
       document.getElementById('hsShieldBtn').style.display = 'none';
       document.getElementById('hsGhostPanel').style.display = 'none';
-      hsPingEffects = [];
+      hsPingEffects = []; killEffects = []; ventEffects = []; taskEffects = []; shieldEffects = []; floatTexts = [];
 
       // Assign NPC hats and pets randomly
       const hatKeys = HATS.slice(1); // exclude 'none'
@@ -4723,7 +4799,7 @@
         finalHide = false;
         hsHidePhase = false;
         hideSeekPingTimer = 0;
-        hsPingEffects = [];
+        hsPingEffects = []; killEffects = []; ventEffects = []; taskEffects = []; shieldEffects = []; floatTexts = [];
         hsInitialFreezeTimer = gameSettings.hideSeekHideTime * 60;
         hsReleaseTimer = 10 * 60; // seeker frozen for first 10 seconds of hide time
         hsHidePhase = true;
@@ -5487,6 +5563,8 @@
       // Taskbar visibility based on mode
       const taskBar = document.getElementById('taskBar');
       if (gameMode === 'hideseek') {
+        // Hide task bar during final hunt — tasks are disabled
+        if (finalHide) { taskBar.style.visibility = 'hidden'; return; }
         // In H&S, seeker can optionally see task bar; hiders always see it
         const hsBarVis = gameSettings.hsTaskBarVisible || 'Always';
         taskBar.style.visibility = (hsBarVis === 'Always' || !isImpostor) ? 'visible' : 'hidden';
@@ -5611,7 +5689,7 @@
 
     function hasLineOfSight(x1, y1, x2, y2, ew, eh) {
       const ddx = x2 - x1, ddy = y2 - y1;
-      const steps = Math.ceil(Math.sqrt(ddx * ddx + ddy * ddy) / 12);
+      const steps = Math.ceil(Math.sqrt(ddx * ddx + ddy * ddy) / 8);
       if (steps === 0) return true;
       for (let i = 1; i <= steps; i++) {
         const t = i / steps;
@@ -5636,7 +5714,7 @@
       // Stuck detection
       if (!moved || (Math.abs(npc.x - npc.lastX) < 0.5 && Math.abs(npc.y - npc.lastY) < 0.5)) {
         npc.stuckTimer++;
-        if (npc.stuckTimer > 15) {
+        if (npc.stuckTimer > 8) {
           // Check for a nearby door and steer through it
           const npcCX = npc.x + npc.w / 2, npcCY = npc.y + npc.h / 2;
           let bestDoor = null, bestDist = 100;
@@ -5710,13 +5788,17 @@
         return moveTowardDirect(npc, tx, ty);
       }
 
-      // Recalculate path when missing or NPC was stuck (navPath cleared by stuckTimer)
-      // Also refresh every 120 frames (~2s) as a safety net
+      // Recalculate path when missing, target moved significantly, or stale (~0.75s)
+      const cx2 = npc.x + npc.w / 2, cy2 = npc.y + npc.h / 2;
+      if (npc.navPath) {
+        const tdx = tx - (npc._navTx || tx), tdy = ty - (npc._navTy || ty);
+        if (tdx * tdx + tdy * tdy > 90 * 90) npc.navPath = null; // target moved too far
+      }
       if (!npc.navPath || npc.navRecalc-- <= 0) {
-        const cx2 = npc.x + npc.w / 2, cy2 = npc.y + npc.h / 2;
-        npc.navPath = waypointAStar(cx2, cy2, tx, ty) || findPath(npc.x, npc.y, tx, ty);
+        npc.navPath = waypointAStar(cx2, cy2, tx, ty) || findPath(cx2, cy2, tx, ty);
         npc.navIndex = 0;
-        npc.navRecalc = 120;
+        npc.navRecalc = 45;
+        npc._navTx = tx; npc._navTy = ty;
       }
 
       if (npc.navPath && npc.navIndex < npc.navPath.length) {
@@ -5921,6 +6003,7 @@
                 }
               }
               npc.currentVisualTask = null;
+              spawnTaskEffect(npc.x + npc.w / 2, npc.y + npc.h / 2);
             }
             npc.state = AI_STATE.IDLE;
             npc.idleTimer = 0;
@@ -6369,6 +6452,7 @@
         }
         player.alive = false;
         deadBodies.push({ x: player.x, y: player.y, color: player.color, name: player.name });
+        spawnKillEffect(player.x + player.w / 2, player.y + player.h / 2, player.color);
         if (playerRole === 'noisemaker') triggerNoisemakerAlert(player);
         playSfx('kill');
         killFlash = 20;
@@ -6394,12 +6478,14 @@
         if (!hasLineOfSight(impostor.x+16, impostor.y+20, npcVictim.x+16, npcVictim.y+20, 4, 4)) return;
         // Check NPC protection
         if (npcVictim.protectionTimer > 0) {
+          spawnShieldEffect(npcVictim.x + npcVictim.w / 2, npcVictim.y + npcVictim.h / 2);
           npcVictim.protectionTimer = 0;
           npcVictim.protectedBy = null;
           return;
         }
         npcVictim.alive = false;
         deadBodies.push({ x: npcVictim.x, y: npcVictim.y, color: npcVictim.color, name: npcVictim.name });
+        spawnKillEffect(npcVictim.x + npcVictim.w / 2, npcVictim.y + npcVictim.h / 2, npcVictim.color);
         // Pet stays at death location
         if (npcVictim.pet && npcVictim.pet !== 'none') {
           deadPets.push({x: npcVictim.x + 10, y: npcVictim.y + npcVictim.h, petType: npcVictim.pet, color: npcVictim.color});
@@ -6412,7 +6498,7 @@
           if (flashEl) { flashEl.style.opacity = '0.5'; setTimeout(() => { flashEl.style.opacity = '0'; }, 300); }
         }
 
-        const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length + ((!isImpostor && (player.alive || isGhost)) ? 0 : 0) + (!isImpostor && player.alive ? 1 : 0);
+        const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length + (!isImpostor && player.alive ? 1 : 0);
         const aliveImpostors = npcs.filter(n => n.alive && n.isImpostor).length + (player.alive && isImpostor ? 1 : 0);
         if (gameMode !== 'hideseek' && aliveImpostors >= aliveCrewmates) endGame(true);
       }
@@ -6672,14 +6758,17 @@
       raw.reverse();
       if (raw.length === 0) return null;
 
-      // Simplify: drop only perfectly collinear middle points (keep all bends)
-      const path = [raw[0]];
-      for (let i = 1; i < raw.length - 1; i++) {
-        const a = path[path.length - 1], b = raw[i], c = raw[i + 1];
-        const cross = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-        if (Math.abs(cross) > 0.01) path.push(b);
+      // String-pull: skip waypoints whenever the NPC has clear LOS,
+      // producing the shortest sequence of turns needed.
+      const path = [];
+      let pi = 0;
+      while (pi < raw.length - 1) {
+        let qi = raw.length - 1;
+        while (qi > pi + 1 && !hasLineOfSight(raw[pi].x, raw[pi].y, raw[qi].x, raw[qi].y, 26, 34)) qi--;
+        pi = qi;
+        path.push(raw[pi]);
       }
-      path.push(raw[raw.length - 1]);
+      if (path.length === 0) path.push(raw[raw.length - 1]);
       return path;
     }
 
@@ -6688,6 +6777,8 @@
       if (gameMode === 'hideseek') return;
       if (sabotage.active || sabotage.cooldown > 0 || gameOver) return;
       sabotage.active = true;
+      const _sf = document.getElementById('sabFlashOverlay');
+      if (_sf) { _sf.classList.remove('active'); void _sf.offsetWidth; _sf.classList.add('active'); }
       sabotage.type = type;
       sabotage.fixProgress = 0;
       sabotage.fixProgressB = 0;
@@ -6868,6 +6959,7 @@
           playerHsVentUses--;
           playerHsVentTimer = gameSettings.hiderVentDuration * 60;
           document.getElementById('hsVentHUD').textContent = '🕳 ' + playerHsVentUses + ' left  ⏱ ' + gameSettings.hiderVentDuration + 's';
+          spawnVentEffect(vent.x, vent.y);
           playSfx('vent');
         }
         return;
@@ -6877,12 +6969,15 @@
       if (vent) {
         inVent = true;
         player.visible = false;
+        spawnVentEffect(vent.x, vent.y);
         playSfx('vent');
       }
     }
 
     function exitVent() {
       if (!inVent) return;
+      const _exitVent = getNearbyVent();
+      if (_exitVent) spawnVentEffect(_exitVent.x, _exitVent.y);
       inVent = false;
       player.visible = true;
       playerHsVentTimer = 0;
@@ -6935,6 +7030,7 @@
       document.getElementById('taskProgressFill').style.width = playerTaskProgress + '%';
       if (playerTaskProgress >= 100) {
         currentPlayerTask.done = true;
+        spawnTaskEffect(currentPlayerTask.x, currentPlayerTask.y);
         tasksCompleted++;
         updateTaskBar();
         if (gameMode === 'hideseek' && gameSettings.hsTasksEnabled && hsSeekTimer > 0) {
@@ -7017,6 +7113,42 @@
       for (let i = shifterEvidence.length - 1; i >= 0; i--) {
         shifterEvidence[i].timer--;
         if (shifterEvidence[i].timer <= 0) shifterEvidence.splice(i, 1);
+      }
+      // Kill splatter
+      for (let i = killEffects.length - 1; i >= 0; i--) {
+        const _kp = killEffects[i];
+        _kp.x += _kp.vx * _frameDt; _kp.y += _kp.vy * _frameDt;
+        _kp.vy += 0.14 * _frameDt; _kp.vx *= 0.97;
+        _kp.alpha -= 0.022 * _frameDt;
+        if (_kp.alpha <= 0) killEffects.splice(i, 1);
+      }
+      // Vent ripples
+      for (let i = ventEffects.length - 1; i >= 0; i--) {
+        ventEffects[i].r += 3 * _frameDt;
+        ventEffects[i].alpha -= 0.035 * _frameDt;
+        if (ventEffects[i].alpha <= 0) ventEffects.splice(i, 1);
+      }
+      // Task sparkles
+      for (let i = taskEffects.length - 1; i >= 0; i--) {
+        const _tp = taskEffects[i];
+        _tp.x += _tp.vx * _frameDt; _tp.y += _tp.vy * _frameDt;
+        _tp.vy += 0.1 * _frameDt; _tp.vx *= 0.98;
+        _tp.alpha -= 0.018 * _frameDt;
+        if (_tp.alpha <= 0) taskEffects.splice(i, 1);
+      }
+      // Shield absorb rings
+      for (let i = shieldEffects.length - 1; i >= 0; i--) {
+        shieldEffects[i].r += 4 * _frameDt;
+        shieldEffects[i].alpha -= 0.05 * _frameDt;
+        if (shieldEffects[i].alpha <= 0) shieldEffects.splice(i, 1);
+      }
+      // Floating texts
+      for (let i = floatTexts.length - 1; i >= 0; i--) {
+        const _ft = floatTexts[i];
+        _ft.y += _ft.vy * _frameDt;
+        _ft.timer -= _frameDt;
+        _ft.alpha = Math.min(1, _ft.timer / 15);
+        if (_ft.timer <= 0) floatTexts.splice(i, 1);
       }
       // Mushroom mixup countdown
       if (mushroomMixupTimer > 0) {
@@ -7310,6 +7442,7 @@
             if (npc.isImpostor) {
               npc.alive = false;
               deadBodies.push({ x: npc.x, y: npc.y, color: npc.color, name: npc.name });
+              spawnKillEffect(npc.x + npc.w / 2, npc.y + npc.h / 2, npc.color);
               if (npc.pet && npc.pet !== 'none') {
                 deadPets.push({x: npc.x + 10, y: npc.y + npc.h, petType: npc.pet, color: npc.color});
               }
@@ -7323,6 +7456,7 @@
               // Sheriff shot a crewmate — sheriff dies
               player.alive = false;
               deadBodies.push({ x: player.x, y: player.y, color: player.color, name: player.name });
+              spawnKillEffect(player.x + player.w / 2, player.y + player.h / 2, player.color);
               playSfx('kill');
               killFlash = 20;
               isGhost = true;
@@ -7339,6 +7473,7 @@
           if (!npc.isImpostor) {
             npc.alive = false;
             deadBodies.push({ x: npc.x, y: npc.y, color: npc.color, name: npc.name });
+            spawnKillEffect(npc.x + npc.w / 2, npc.y + npc.h / 2, npc.color);
             // Pet stays at death location
             if (npc.pet && npc.pet !== 'none') {
               deadPets.push({x: npc.x + 10, y: npc.y + npc.h, petType: npc.pet, color: npc.color});
@@ -7603,6 +7738,12 @@
     }
 
     let voteTimerInterval = null;
+    function _hexToRgbVote(hex) {
+      const r = parseInt((hex||'#888888').slice(1,3),16)||136;
+      const g = parseInt((hex||'#888888').slice(3,5),16)||136;
+      const b = parseInt((hex||'#888888').slice(5,7),16)||136;
+      return `${r},${g},${b}`;
+    }
 
     function showVotingPhase(candidates, npcVotes) {
       const voteList = document.getElementById('voteList');
@@ -7625,34 +7766,57 @@
         return;
       }
 
+      const totalVotesCast = Object.values(npcVotes).reduce((a, b) => a + b, 0) || 1;
       candidates.forEach(c => {
         const btn = document.createElement('button');
         btn.className = 'vote-btn';
-        const impMark = (isImpostor && c.isImpostor && !c.isPlayer) ? ' <span style="color:#ff4444;">&#9760;</span>' : '';
-        const voteCount = gameSettings.anonymousVotes ? '?' : (npcVotes[c.name] || 0) + ' votes';
-        btn.innerHTML = '<div class="vote-dot" style="background:' + c.color + '"></div>' + c.name + impMark +
-          '<span class="vote-count">' + voteCount + '</span>';
+        const impMark = (isImpostor && c.isImpostor && !c.isPlayer) ? ' <span style="color:#ff6666;font-size:14px;">☠</span>' : '';
+        const isYou = c.isPlayer ? ' <span style="color:#aaffaa;font-size:11px;"> (You)</span>' : '';
+        const cnt = gameSettings.anonymousVotes ? '?' : (npcVotes[c.name] || 0);
+        const pct = gameSettings.anonymousVotes ? 0 : Math.round(((npcVotes[c.name] || 0) / totalVotesCast) * 100);
+        const voteLabel = gameSettings.anonymousVotes ? '?' : cnt + (cnt === 1 ? ' vote' : ' votes');
+        btn.style.cssText = `box-shadow: inset 0 0 30px rgba(${_hexToRgbVote(c.color)},0.07)`;
+        btn.innerHTML =
+          `<div class="vote-color-bar" style="background:${c.color}"></div>` +
+          `<div class="vote-dot" style="background:${c.color};box-shadow:0 0 8px ${c.color}88"></div>` +
+          `<span class="vote-name">${c.name}${isYou}${impMark}</span>` +
+          `<div class="vote-tally">` +
+            `<span class="vote-count">${voteLabel}</span>` +
+            `<div class="vote-bar-wrap"><div class="vote-bar-fill" style="width:${pct}%"></div></div>` +
+          `</div>`;
         btn.onclick = () => {
           playSfx('vote_cast');
+          btn.classList.add('voted', 'vote-cast-anim');
+          void btn.offsetWidth;
           if (voteTimerInterval) { clearInterval(voteTimerInterval); voteTimerInterval = null; }
           if (voteTimerEl) voteTimerEl.style.display = 'none';
           npcVotes[c.name] = (npcVotes[c.name] || 0) + 1;
-          resolveVote(candidates, npcVotes);
+          setTimeout(() => resolveVote(candidates, npcVotes), 320);
         };
         voteList.appendChild(btn);
       });
 
       const skipBtn = document.createElement('button');
       skipBtn.className = 'vote-btn';
-      const skipCount = gameSettings.anonymousVotes ? '?' : npcVotes['skip'] + ' votes';
-      skipBtn.innerHTML = '<div class="vote-dot" style="background:#555"></div>Skip Vote' +
-        '<span class="vote-count">' + skipCount + '</span>';
+      const skipCnt = gameSettings.anonymousVotes ? '?' : (npcVotes['skip'] || 0);
+      const skipPct = gameSettings.anonymousVotes ? 0 : Math.round(((npcVotes['skip'] || 0) / totalVotesCast) * 100);
+      const skipCount = gameSettings.anonymousVotes ? '?' : skipCnt + (skipCnt === 1 ? ' vote' : ' votes');
+      skipBtn.innerHTML =
+        `<div class="vote-color-bar" style="background:#666"></div>` +
+        `<div class="vote-dot" style="background:#555;box-shadow:0 0 6px #888"></div>` +
+        `<span class="vote-name">Skip Vote</span>` +
+        `<div class="vote-tally">` +
+          `<span class="vote-count">${skipCount}</span>` +
+          `<div class="vote-bar-wrap"><div class="vote-bar-fill" style="width:${skipPct}%;background:#888"></div></div>` +
+        `</div>`;
       skipBtn.onclick = () => {
         playSfx('vote_cast');
+        skipBtn.classList.add('voted', 'vote-cast-anim');
+        void skipBtn.offsetWidth;
         if (voteTimerInterval) { clearInterval(voteTimerInterval); voteTimerInterval = null; }
         if (voteTimerEl) voteTimerEl.style.display = 'none';
         npcVotes['skip']++;
-        resolveVote(candidates, npcVotes);
+        setTimeout(() => resolveVote(candidates, npcVotes), 320);
       };
       voteList.appendChild(skipBtn);
 
@@ -7986,7 +8150,7 @@
       voteList.style.display = 'none';
 
       // Find who got most votes
-      let maxVotes = votes['skip'];
+      let maxVotes = votes['skip'] || 0;
       let ejected = null;
       for (const c of candidates) {
         if ((votes[c.name] || 0) > maxVotes) {
@@ -8039,7 +8203,7 @@
           setTimeout(() => { voteScreen.style.display = 'none'; inMeeting = false; endGame(false); }, 3000);
         } else {
           playSfx('eject');
-          showEjectionAnim(ejected.name, ejected.color, false, npcs.filter(n => n.alive && n.isImpostor).length + 1);
+          showEjectionAnim(ejected.name, ejected.color, false, remainingImps);
           setTimeout(() => { voteScreen.style.display = 'none'; inMeeting = false; endGame(true); }, 3000);
         }
       } else {
@@ -8172,7 +8336,7 @@
       document.getElementById('hsVentHUD').style.display = 'none';
       document.getElementById('hsShieldBtn').style.display = 'none';
       document.getElementById('hsGhostPanel').style.display = 'none';
-      hsPingEffects = [];
+      hsPingEffects = []; killEffects = []; ventEffects = []; taskEffects = []; shieldEffects = []; floatTexts = [];
       updateHsHiderIcons();
       const title = document.getElementById('winTitle');
       const desc = document.getElementById('winDesc');
@@ -8188,13 +8352,26 @@
         desc.textContent = isImpostor ? 'The hiders completed all tasks before you caught them!' : 'You completed all tasks and survived!';
       }
       const statsEl = document.getElementById('gameStats');
-      if (statsEl) {
-        statsEl.innerHTML = 'Tasks: ' + statsTasksCompleted + '/' + totalTasks + ' completed<br>' +
-          'Hiders caught: ' + npcs.filter(n => !n.isImpostor && !n.alive).length;
-      }
+      if (statsEl) statsEl.innerHTML = _buildStatsHTML([
+        ['✅', 'Tasks', statsTasksCompleted + '/' + totalTasks, '#4ecdc4'],
+        ['🎯', 'Hiders caught', npcs.filter(n => !n.isImpostor && !n.alive).length, '#ff9944'],
+      ]);
       document.getElementById('gameOverScreen').style.display = 'flex';
       document.getElementById('gameOverScreen').classList.add('visible');
       mpPublishGameOver('hideseek', { seekerWins });
+    }
+
+    function _buildStatsHTML(items) {
+      return `<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:8px;">` +
+        items.map(([icon, label, val, col]) =>
+          `<div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.13);border-radius:8px;padding:6px 14px;">
+            <span style="font-size:18px;">${icon}</span>
+            <div style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.2;">
+              <span style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:0.5px;">${label}</span>
+              <span style="font-size:15px;font-weight:800;color:${col||'#fff'};">${val}</span>
+            </div>
+          </div>`
+        ).join('') + `</div>`;
     }
 
     function endGame(impostorWins) {
@@ -8215,12 +8392,11 @@
       }
       // Show game stats
       const statsEl = document.getElementById('gameStats');
-      if (statsEl) {
-        statsEl.innerHTML =
-          'Tasks: ' + statsTasksCompleted + '/' + totalTasks + ' completed<br>' +
-          'Meetings: ' + statsMeetingsCalled + ' called<br>' +
-          'Bodies reported: ' + statsBodiesReported;
-      }
+      if (statsEl) statsEl.innerHTML = _buildStatsHTML([
+        ['✅', 'Tasks', statsTasksCompleted + '/' + totalTasks, '#4ecdc4'],
+        ['📣', 'Meetings', statsMeetingsCalled, '#ffd700'],
+        ['💀', 'Bodies reported', statsBodiesReported, '#ff7777'],
+      ]);
       document.getElementById('gameOverScreen').style.display = 'flex';
       document.getElementById('gameOverScreen').classList.add('visible');
       mpPublishGameOver('classic', { impostorWins });
@@ -8239,12 +8415,11 @@
         desc.textContent = 'The Jester won... they got ejected on purpose.';
       }
       const statsEl = document.getElementById('gameStats');
-      if (statsEl) {
-        statsEl.innerHTML =
-          'Tasks: ' + statsTasksCompleted + '/' + totalTasks + ' completed<br>' +
-          'Meetings: ' + statsMeetingsCalled + ' called<br>' +
-          'Bodies reported: ' + statsBodiesReported;
-      }
+      if (statsEl) statsEl.innerHTML = _buildStatsHTML([
+        ['✅', 'Tasks', statsTasksCompleted + '/' + totalTasks, '#4ecdc4'],
+        ['📣', 'Meetings', statsMeetingsCalled, '#ffd700'],
+        ['💀', 'Bodies reported', statsBodiesReported, '#ff7777'],
+      ]);
       document.getElementById('gameOverScreen').style.display = 'flex';
       document.getElementById('gameOverScreen').classList.add('visible');
       mpPublishGameOver('jester', { playerWasJester });
@@ -12342,7 +12517,9 @@
       // Built lazily on first drawMap() call (inside RAF) so loadMap() doesn't block the click handler.
       if (!_staticMapCanvas) prerenderStaticMap();
       if (_staticMapCanvas) {
+        ctx.filter = 'brightness(1.55)';
         ctx.drawImage(_staticMapCanvas, Math.round(-ox), Math.round(-oy));
+        ctx.filter = 'none';
       } else {
         // Fallback (shouldn't occur in normal play)
         ctx.fillStyle = mapTheme.bg;
@@ -12681,8 +12858,9 @@
         ctx.beginPath(); ctx.arc(ebx, eby, 75, 0, Math.PI * 2); ctx.fill();
       }
 
-      // Tasks — type-specific icons with pulsing glow
+      // Tasks — type-specific icons with pulsing glow (hidden during H&S final hunt)
       const _tPulse = 0.55 + 0.45 * Math.sin(Date.now() / 600);
+      if (gameMode !== 'hideseek' || !finalHide)
       for (const t of taskLocations) {
         const _ttx = t.x - ox, _tty = t.y - oy;
         const _ttype = getTaskType(t.name);
@@ -12925,12 +13103,27 @@
         }
       }
 
-      // Dead body markers (skull)
+      // Dead body markers
       for (const db of deadBodies) {
-        mc.fillStyle = 'rgba(255,255,255,0.4)';
-        mc.font = `${Math.max(6,Math.round(8*sc))}px Arial`;
-        mc.textAlign = 'center';
-        mc.fillText('✕', db.x*sc, db.y*sc + 2);
+        const _dbx = db.x * sc, _dby = db.y * sc;
+        mc.save();
+        // Blood pool glow
+        mc.shadowColor = '#cc0000';
+        mc.shadowBlur = 5;
+        mc.fillStyle = 'rgba(180,0,0,0.65)';
+        mc.beginPath(); mc.ellipse(_dbx, _dby + 1, 4, 2.5, 0.2, 0, Math.PI * 2); mc.fill();
+        mc.shadowBlur = 0;
+        // Body dot in player color
+        mc.fillStyle = db.color || '#ffffff';
+        mc.beginPath(); mc.arc(_dbx - 1, _dby - 1, 2.5, 0, Math.PI * 2); mc.fill();
+        mc.strokeStyle = 'rgba(0,0,0,0.6)'; mc.lineWidth = 0.8; mc.stroke();
+        // X mark
+        mc.strokeStyle = 'rgba(255,255,255,0.85)'; mc.lineWidth = 1.2;
+        mc.beginPath();
+        mc.moveTo(_dbx - 2.5, _dby - 2.5); mc.lineTo(_dbx + 2.5, _dby + 2.5);
+        mc.moveTo(_dbx + 2.5, _dby - 2.5); mc.lineTo(_dbx - 2.5, _dby + 2.5);
+        mc.stroke();
+        mc.restore();
       }
 
       // Tracker target
@@ -13007,6 +13200,58 @@
       for (const body of deadBodies) {
         drawDeadBody(ctx, body.x - ox, body.y - oy, body.color);
       }
+
+      // ── Canvas effect animations ──────────────────────────────────────────
+      // Kill blood splatter
+      for (const _kp of killEffects) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, _kp.alpha);
+        ctx.fillStyle = _kp.color;
+        ctx.beginPath(); ctx.arc(_kp.x - ox, _kp.y - oy, _kp.r, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      }
+      // Vent ripple rings
+      for (const _vr of ventEffects) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, _vr.alpha);
+        ctx.strokeStyle = '#44ddff';
+        ctx.lineWidth = 2;
+        ctx.shadowColor = '#44ddff'; ctx.shadowBlur = 6;
+        ctx.beginPath(); ctx.arc(_vr.x - ox, _vr.y - oy, _vr.r, 0, Math.PI * 2); ctx.stroke();
+        ctx.restore();
+      }
+      // Task complete sparkles
+      for (const _ts of taskEffects) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, _ts.alpha);
+        ctx.fillStyle = _ts.color;
+        ctx.shadowColor = _ts.color; ctx.shadowBlur = 4;
+        ctx.beginPath(); ctx.arc(_ts.x - ox, _ts.y - oy, _ts.r, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      }
+      // Shield absorb rings
+      for (const _sr of shieldEffects) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, _sr.alpha);
+        ctx.strokeStyle = '#88ffff';
+        ctx.lineWidth = 2.5;
+        ctx.shadowColor = '#00ffff'; ctx.shadowBlur = 10;
+        ctx.beginPath(); ctx.arc(_sr.x - ox, _sr.y - oy, _sr.r, 0, Math.PI * 2); ctx.stroke();
+        ctx.restore();
+      }
+      // Floating text labels
+      for (const _ft of floatTexts) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, _ft.alpha);
+        ctx.font = 'bold 13px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.shadowColor = _ft.color; ctx.shadowBlur = 8;
+        ctx.fillStyle = '#000';
+        ctx.fillText(_ft.text, _ft.x - ox + 1, _ft.y - oy + 1);
+        ctx.fillStyle = _ft.color;
+        ctx.fillText(_ft.text, _ft.x - ox, _ft.y - oy);
+        ctx.restore();
+      }
+      // ─────────────────────────────────────────────────────────────────────
 
       // Poison traps (viper)
       for (const trap of poisonTraps) {
@@ -13214,6 +13459,29 @@
           (player.facingLeft ? 'left' : (player.moving ? AI_STATE.WALKING_RANDOM : AI_STATE.IDLE));
         drawCrewmate(ctx, player.x - ox, player.y - oy, player.w, player.h, drawColor, drawName, true,
           _playerState, drawAlpha, playerRole, selectedHat, player.protectionTimer, selectedSkin);
+
+        // Final hunt: pulsing red scan ring shows seeker has eyes on player
+        if (gameMode === 'hideseek' && finalHide && !isImpostor && !isGhost) {
+          const _hx = player.x - ox + player.w / 2;
+          const _hy = player.y - oy + player.h / 2;
+          const _hp = 0.5 + 0.5 * Math.sin(Date.now() / 220);
+          ctx.save();
+          ctx.globalAlpha = 0.18 + 0.18 * _hp;
+          ctx.strokeStyle = '#ff2222';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath(); ctx.arc(_hx, _hy, 28 + _hp * 6, 0, Math.PI * 2); ctx.stroke();
+          ctx.globalAlpha = 0.09 + 0.09 * _hp;
+          ctx.fillStyle = '#ff2222';
+          ctx.beginPath(); ctx.arc(_hx, _hy, 28 + _hp * 6, 0, Math.PI * 2); ctx.fill();
+          // Eye icon above head
+          ctx.globalAlpha = 0.7 + 0.3 * _hp;
+          ctx.font = '13px Arial'; ctx.textAlign = 'center';
+          ctx.fillStyle = '#ff4444';
+          ctx.shadowColor = '#ff0000'; ctx.shadowBlur = 8;
+          ctx.fillText('👁', _hx, _hy - player.h / 2 - 10);
+          ctx.shadowBlur = 0;
+          ctx.restore();
+        }
       }
 
       // Draw H&S ping effects (expanding rings at hider locations)
@@ -13281,7 +13549,7 @@
 
           // Draw dark fog everywhere EXCEPT inside the visibility polygon
           // (evenodd fill rule: outer rect fills, inner polygon cancels it).
-          ctx.fillStyle = 'rgba(0,0,0,0.93)';
+          ctx.fillStyle = 'rgba(0,0,0,0.86)';
           ctx.beginPath();
           ctx.rect(0, 0, canvas.width, canvas.height);
           ctx.moveTo(poly[0], poly[1]);
@@ -13290,16 +13558,30 @@
           ctx.fill('evenodd');
 
           // Soft radial fade at the edge of vision range
-          const grd = ctx.createRadialGradient(scrX, scrY, vr * 0.72, scrX, scrY, vr * 1.05);
+          const grd = ctx.createRadialGradient(scrX, scrY, vr * 0.75, scrX, scrY, vr * 1.05);
           grd.addColorStop(0, 'rgba(0,0,0,0)');
-          grd.addColorStop(1, 'rgba(0,0,0,0.75)');
+          grd.addColorStop(0.7, 'rgba(0,0,0,0.30)');
+          grd.addColorStop(1, 'rgba(0,0,0,0.68)');
           ctx.fillStyle = grd;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          // Inner vignette — very subtle darkening toward edges of lit area
+          const vigGrd = ctx.createRadialGradient(scrX, scrY, vr * 0.35, scrX, scrY, vr * 0.80);
+          vigGrd.addColorStop(0, 'rgba(0,0,0,0)');
+          vigGrd.addColorStop(1, 'rgba(0,0,10,0.12)');
+          ctx.fillStyle = vigGrd;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          // Atmospheric blue haze ring at vision boundary
+          const hazeGrd = ctx.createRadialGradient(scrX, scrY, vr * 0.65, scrX, scrY, vr * 0.90);
+          hazeGrd.addColorStop(0, 'rgba(0,0,0,0)');
+          hazeGrd.addColorStop(0.5, 'rgba(10,20,60,0.10)');
+          hazeGrd.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = hazeGrd;
           ctx.fillRect(0, 0, canvas.width, canvas.height);
         } else {
           // Ghost: simple radial gradient (no wall occlusion — they're dead)
-          const grd = ctx.createRadialGradient(scrX, scrY, vr * 0.7, scrX, scrY, vr);
+          const grd = ctx.createRadialGradient(scrX, scrY, vr * 0.75, scrX, scrY, vr);
           grd.addColorStop(0, 'rgba(0,0,0,0)');
-          grd.addColorStop(1, 'rgba(0,0,0,0.75)');
+          grd.addColorStop(1, 'rgba(0,0,0,0.58)');
           ctx.fillStyle = grd;
           ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
@@ -14004,7 +14286,7 @@
       hide('pauseMenu'); hide('gameOverScreen');
       const role = document.getElementById('roleTag'); if (role) role.style.animation = 'none';
       const ab = document.getElementById('actionButtons'); if (ab) ab.style.display = 'none';
-      hsPingEffects = [];
+      hsPingEffects = []; killEffects = []; ventEffects = []; taskEffects = []; shieldEffects = []; floatTexts = [];
     }
 
     function quitToMenu() {
@@ -14300,13 +14582,16 @@
             for (const npc of npcs) {
               if (npc.hsSeeker || npc.isImpostor) {
                 npc.hsFreeze = false;
-                if (npc.speed < (gameSettings.playerSpeed || 1.0) * gameSettings.seekerSpeed)
-                  npc.speed = (gameSettings.playerSpeed || 1.0) * gameSettings.seekerSpeed * 2.0;
+                // Final hunt: seeker gets a 30% additional speed boost
+                npc.speed = (gameSettings.playerSpeed || 1.0) * gameSettings.seekerSpeed * 2.0 * 1.3;
                 npc.killCooldown = 60;
               }
             }
-            if (isImpostor) player.hsFrozen = false;
-            hideSeekPingTimer = gameSettings.hsPingInterval * 60;
+            if (isImpostor) { player.hsFrozen = false; player.speed *= 1.3; }
+            // During final hunt, ping every 2 seconds (seeker always knows where hiders are)
+            hideSeekPingTimer = 2 * 60;
+            // Hide task bar immediately
+            updateTaskBar();
             // Transition to hunt phase display
             document.getElementById('hsTimerPhase').textContent = isImpostor ? '🎯 HUNT!' : '⏳ SURVIVE!';
             document.getElementById('hsTimerDigits').textContent = gameSettings.finalHideTime;
@@ -14339,22 +14624,26 @@
             document.getElementById('hsTimerDigits').classList.remove('hsTimerPulse');
           }
 
-          // Periodic location pings (show seeker where hiders are)
+          // Location pings — every 2s during final hunt (seeker always knows where hiders are)
           hideSeekPingTimer -= _frameDt;
           if (hideSeekPingTimer <= 0) {
-            hideSeekPingTimer = gameSettings.hsPingInterval * 60;
+            hideSeekPingTimer = 2 * 60; // fixed 2-second interval in final hunt
             // Add ping effects at all alive hider positions (visible to seeker on canvas)
             for (const npc of npcs) {
               if (!npc.isImpostor && npc.alive) {
                 hsPingEffects.push({ x: npc.x + 20, y: npc.y + 25, r: 0, maxR: 60, alpha: 1.0 });
               }
             }
+            // Also ping at player position if player is a hider
+            if (!isImpostor && player.alive) {
+              hsPingEffects.push({ x: player.x + player.w / 2, y: player.y + player.h / 2, r: 0, maxR: 60, alpha: 1.0 });
+            }
             if (!isImpostor) {
-              // Hider gets a warning flash
+              // Hider gets a red warning flash — seeker has eyes on you
               const overlay = document.getElementById('hsPingOverlay');
               overlay.style.display = 'block';
-              overlay.style.background = 'rgba(255,0,0,0.15)';
-              setTimeout(() => { overlay.style.display = 'none'; }, 600);
+              overlay.style.background = 'rgba(255,0,0,0.22)';
+              setTimeout(() => { overlay.style.display = 'none'; }, 500);
             }
           }
 
@@ -16833,6 +17122,7 @@
     }
   </script>
 <div id="killFlashOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#ff0000;opacity:0;pointer-events:none;z-index:45;transition:opacity 0.3s;"></div>
+<div id="sabFlashOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;opacity:0;pointer-events:none;z-index:44;box-shadow:inset 0 0 120px 40px rgba(255,40,0,0);transition:opacity 0.2s;background:radial-gradient(ellipse at center,transparent 40%,rgba(255,40,0,0.0) 100%);"></div>
 
 <!-- MULTIPLAYER OVERLAYS -->
 <div id="mpConnectingOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;
