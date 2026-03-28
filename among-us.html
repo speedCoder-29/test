@@ -1601,7 +1601,7 @@
       skeld: {
         name: 'The Skeld', icon: '\u{1F680}', desc: 'Classic spaceship',
         width: 3200, height: 2000,
-        bgColor: '#070710', wallColor: '#3c3e42', floorColor: 'rgba(195,198,208,0.10)', gridColor: 'rgba(255,255,255,0.025)',
+        bgColor: '#03030a', wallColor: '#52565e', floorColor: 'rgba(200,210,225,0.07)', gridColor: 'rgba(255,255,255,0.04)',
         spawnX: 1450, spawnY: 320,
         emergencyBtn: { x: 1418, y: 342, radius: 22 },
         sabotageFixLocations: {
@@ -3608,6 +3608,17 @@
         }
         if (!tooClose) merged.push(g);
       }
+
+      // Inject a waypoint at the centre of every doorway so A* always routes
+      // exactly through the middle of each opening — prevents diagonal corner-clipping.
+      for (const d of doors) {
+        const dwx = d.x + d.w / 2, dwy = d.y + d.h / 2;
+        let tooClose = false;
+        for (const wp of merged) {
+          if ((wp.x - dwx) ** 2 + (wp.y - dwy) ** 2 < 40 * 40) { tooClose = true; break; }
+        }
+        if (!tooClose) merged.push({ x: dwx, y: dwy, isDoor: true });
+      }
       waypoints = merged;
 
       // Build adjacency list with distances using LOS between nearby waypoints
@@ -3734,10 +3745,10 @@
             ctx.fillRect(fx + 1, fy + 1, f.w, 4);
             drawFloorTiles(fx, fy, f.w, f.h);
             ctx.strokeStyle = selectedMap === 'polus' ? 'rgba(255,255,255,0.15)' :
-                              selectedMap === 'skeld' ? 'rgba(255,255,255,0.07)' :
+                              selectedMap === 'skeld' ? 'rgba(180,200,220,0.18)' :
                               selectedMap === 'mira'  ? 'rgba(80,200,255,0.18)' :
                                                         'rgba(255,255,255,0.04)';
-            ctx.lineWidth = selectedMap === 'polus' ? 2 : selectedMap === 'mira' ? 2 : selectedMap === 'skeld' ? 1.5 : 1;
+            ctx.lineWidth = selectedMap === 'polus' ? 2 : selectedMap === 'mira' ? 2 : selectedMap === 'skeld' ? 2 : 1;
             ctx.strokeRect(fx + 2, fy + 2, f.w - 4, f.h - 4);
             if (selectedMap === 'mira') {
               ctx.strokeStyle = 'rgba(60,160,220,0.08)';
@@ -3749,7 +3760,7 @@
             ctx.fillStyle = selectedMap === 'polus' ? '#f4b8bc' :
                             selectedMap === 'fungle' ? 'rgba(80,120,60,0.06)' :
                             selectedMap === 'mira'   ? '#101e30' :
-                            selectedMap === 'skeld'  ? 'rgba(160,200,240,0.10)' :
+                            selectedMap === 'skeld'  ? '#1e2530' :
                                                        'rgba(150,150,180,0.06)';
             ctx.fillRect(fx, fy, f.w, f.h);
             drawHallwayDetail(fx, fy, f.w, f.h);
@@ -4882,8 +4893,9 @@
         } else {
           // Player is the seeker — apply seeker speed
           player.speed = (gameSettings.playerSpeed || 1.0) * gameSettings.seekerSpeed * 2.0;
-          player.killCooldown = 60;
+          player.killCooldown = gameSettings.seekerKillCooldown * 60;
         }
+        
         // Hider speed boost (+20%) for all non-seeker entities
         if (!isImpostor) player.speed *= 1.2;
         for (const npc of npcs) { if (!npc.hsSeeker && !npc.isImpostor) npc.speed *= 1.2; }
@@ -5005,8 +5017,9 @@
       movingPlatform.rider = null;
 
       // Initial kill cooldown
-      killCooldown = gameSettings.initialKillCooldown * 60;
-      for (const npc of npcs) if (npc.isImpostor) npc.killCooldown = gameSettings.initialKillCooldown * 60;
+      const _initKcd = gameMode === 'hideseek' ? gameSettings.seekerKillCooldown : gameSettings.initialKillCooldown;
+      killCooldown = _initKcd * 60;
+      for (const npc of npcs) if (npc.isImpostor) npc.killCooldown = _initKcd * 60;
 
       initTaskSystem();
       updateTaskBar();
@@ -5827,39 +5840,45 @@
 
       const moved = tryMove(npc, mx, my);
 
-      // Wall separation: accumulate push forces from all nearby walls so NPCs
-      // never graze surfaces and self-center inside corridors
+      // Wall separation: push NPC away from walls to self-centre in corridors and doorways
       {
         let _sx = 0, _sy = 0;
-        const _m = 5;
-        if (isBlockedAt(npc.x - _m, npc.y, npc.w, npc.h)) _sx += 2;
-        if (isBlockedAt(npc.x + _m, npc.y, npc.w, npc.h)) _sx -= 2;
-        if (isBlockedAt(npc.x, npc.y - _m, npc.w, npc.h)) _sy += 2;
-        if (isBlockedAt(npc.x, npc.y + _m, npc.w, npc.h)) _sy -= 2;
+        const _m = 8;
+        if (isBlockedAt(npc.x - _m, npc.y, npc.w, npc.h)) _sx += 3;
+        if (isBlockedAt(npc.x + _m, npc.y, npc.w, npc.h)) _sx -= 3;
+        if (isBlockedAt(npc.x, npc.y - _m, npc.w, npc.h)) _sy += 3;
+        if (isBlockedAt(npc.x, npc.y + _m, npc.w, npc.h)) _sy -= 3;
+        if (_sx !== 0 || _sy !== 0) tryMove(npc, _sx, _sy);
+        // Second pass with tighter probe to fine-tune centre in narrow openings
+        _sx = 0; _sy = 0;
+        const _m2 = 4;
+        if (isBlockedAt(npc.x - _m2, npc.y, npc.w, npc.h)) _sx += 2;
+        if (isBlockedAt(npc.x + _m2, npc.y, npc.w, npc.h)) _sx -= 2;
+        if (isBlockedAt(npc.x, npc.y - _m2, npc.w, npc.h)) _sy += 2;
+        if (isBlockedAt(npc.x, npc.y + _m2, npc.w, npc.h)) _sy -= 2;
         if (_sx !== 0 || _sy !== 0) tryMove(npc, _sx, _sy);
       }
 
       // Stuck detection
       if (!moved || (Math.abs(npc.x - npc.lastX) < 0.5 && Math.abs(npc.y - npc.lastY) < 0.5)) {
         npc.stuckTimer++;
-        if (npc.stuckTimer > 8) {
-          // Check for a nearby door and steer through it
+        if (npc.stuckTimer > 4) {
+          // Look for the nearest door within 220px and steer through its centre
           const npcCX = npc.x + npc.w / 2, npcCY = npc.y + npc.h / 2;
-          let bestDoor = null, bestDist = 100;
+          let bestDoor = null, bestDist = 220;
           for (const d of doors) {
             const dcx = d.x + d.w / 2, dcy = d.y + d.h / 2;
             const dd = Math.hypot(npcCX - dcx, npcCY - dcy);
             if (dd < bestDist) { bestDoor = d; bestDist = dd; }
           }
           if (bestDoor) {
-            // Steer directly through the door centre
             const dcx = bestDoor.x + bestDoor.w / 2, dcy = bestDoor.y + bestDoor.h / 2;
             const ddx = dcx - npcCX, ddy = dcy - npcCY;
             const dd = Math.hypot(ddx, ddy) || 1;
-            tryMove(npc, (ddx / dd) * npc.speed * 2, (ddy / dd) * npc.speed * 2);
+            tryMove(npc, (ddx / dd) * npc.speed * 2.5, (ddy / dd) * npc.speed * 2.5);
           } else {
             // No nearby door — try both perpendicular directions
-            const sign = (Math.floor(npc.stuckTimer / 15) % 2 === 0) ? 1 : -1;
+            const sign = (Math.floor(npc.stuckTimer / 10) % 2 === 0) ? 1 : -1;
             const perpX = -my * sign;
             const perpY = mx * sign;
             if (!tryMove(npc, perpX * 2, perpY * 2)) {
@@ -5922,10 +5941,12 @@
         const tdx = tx - (npc._navTx || tx), tdy = ty - (npc._navTy || ty);
         if (tdx * tdx + tdy * tdy > 90 * 90) npc.navPath = null; // target moved too far
       }
+      // Recalculate more often when near a door (every 12 frames instead of 45)
+      const _nearDoor = doors.some(d => Math.hypot(cx2 - (d.x + d.w/2), cy2 - (d.y + d.h/2)) < 120);
       if (!npc.navPath || npc.navRecalc-- <= 0) {
         npc.navPath = waypointAStar(cx2, cy2, tx, ty) || findPath(cx2, cy2, tx, ty);
         npc.navIndex = 0;
-        npc.navRecalc = 45;
+        npc.navRecalc = _nearDoor ? 12 : 45;
         npc._navTx = tx; npc._navTy = ty;
       }
 
@@ -5933,9 +5954,10 @@
         const wp = npc.navPath[npc.navIndex];
 
         // Lookahead corner blend: when within 52px of the current waypoint and a next
-        // waypoint exists, start curving toward it to produce smooth arcs at intersections
+        // waypoint exists, start curving toward it to produce smooth arcs at intersections.
+        // Disabled for door waypoints — NPCs must pass exactly through doorway centres.
         let _targetX = wp.x, _targetY = wp.y;
-        if (npc.navIndex + 1 < npc.navPath.length) {
+        if (!wp.isDoor && npc.navIndex + 1 < npc.navPath.length) {
           const _dWp = Math.hypot(wp.x - npc.x, wp.y - npc.y);
           if (_dWp < 52) {
             const _blend = 1 - _dWp / 52;
@@ -5973,19 +5995,16 @@
 
     // Crewmate AI
     function updateCrewmateAI(npc) {
-      // H&S: hiders flee from seeker (both hide phase and final seek phase)
-      if (gameMode === 'hideseek' && (hsHidePhase || finalHide)) {
-        // If in vent: tick timer and exit when done
+      // H&S: hiders always run from seeker at all times
+      if (gameMode === 'hideseek') {
+        // If in vent: tick timer then exit at the vent farthest from seeker
         if (npc.inVent) {
           npc.hsVentTimer = (npc.hsVentTimer || 0) - 1;
           if (npc.hsVentTimer <= 0) {
-            // Exit at a random other vent
-            const exitVents = vents.filter(v => Math.hypot(v.x - npc.x, v.y - npc.y) > 80);
-            if (exitVents.length > 0) {
-              const ev = exitVents[Math.floor(Math.random() * exitVents.length)];
-              npc.x = ev.x; npc.y = ev.y;
-              spawnVentEffect(ev.x, ev.y);
-            }
+            const _sk = npcs.find(n => n.isImpostor && n.alive) || (isImpostor && player.alive ? player : null);
+            let _exits = vents.filter(v => Math.hypot(v.x - npc.x, v.y - npc.y) > 80);
+            if (_sk && _exits.length > 1) _exits.sort((a, b) => Math.hypot(b.x - _sk.x, b.y - _sk.y) - Math.hypot(a.x - _sk.x, a.y - _sk.y));
+            if (_exits.length > 0) { npc.x = _exits[0].x; npc.y = _exits[0].y; spawnVentEffect(_exits[0].x, _exits[0].y); }
             npc.inVent = false;
           }
           return;
@@ -5997,29 +6016,31 @@
         const closestSeekerDist = Math.min(seekerDist, playerSeekerDist);
         const closestSeeker = seekerDist <= playerSeekerDist ? seeker : player;
 
-        // Try to vent-escape if seeker is very close and vent uses remain
-        if (closestSeekerDist < 160 && closestSeeker && (npc.hsVentUses || 0) > 0 && gameSettings.hiderVentUses > 0) {
-          const nearVent = vents.reduce((best, v) => {
-            const d = Math.hypot(v.x - npc.x, v.y - npc.y);
-            return (!best || d < best.d) ? { v, d } : best;
-          }, null);
-          if (nearVent && nearVent.d < 90) {
-            npc.inVent = true;
-            npc.x = nearVent.v.x; npc.y = nearVent.v.y;
-            npc.hsVentTimer = gameSettings.hiderVentDuration * 60;
-            npc.hsVentUses--;
-            spawnVentEffect(nearVent.v.x, nearVent.v.y);
-            return;
+        if (closestSeeker) {
+          // Vent-escape when seeker is very close
+          if (closestSeekerDist < 180 && (npc.hsVentUses || 0) > 0 && gameSettings.hiderVentUses > 0) {
+            const nearVent = vents.reduce((best, v) => {
+              const d = Math.hypot(v.x - npc.x, v.y - npc.y);
+              return (!best || d < best.d) ? { v, d } : best;
+            }, null);
+            if (nearVent && nearVent.d < 90) {
+              npc.inVent = true;
+              npc.x = nearVent.v.x; npc.y = nearVent.v.y;
+              npc.hsVentTimer = gameSettings.hiderVentDuration * 60;
+              npc.hsVentUses--;
+              spawnVentEffect(nearVent.v.x, nearVent.v.y);
+              return;
+            }
           }
-        }
 
-        // Flee away from seeker when nearby
-        if (closestSeekerDist < 320 && closestSeeker) {
+          // Always flee — more aggressive the closer the seeker is
           const fleeAngle = Math.atan2(npc.y - closestSeeker.y, npc.x - closestSeeker.x);
-          npc.targetX = Math.max(50, Math.min(MAP_W - 50, npc.x + Math.cos(fleeAngle) * 380));
-          npc.targetY = Math.max(50, Math.min(MAP_H - 50, npc.y + Math.sin(fleeAngle) * 380));
+          const jitter = (Math.random() - 0.5) * 0.5;
+          const fleeDist = closestSeekerDist < 150 ? 600 : closestSeekerDist < 350 ? 420 : 260;
+          npc.targetX = Math.max(60, Math.min(MAP_W - 60, npc.x + Math.cos(fleeAngle + jitter) * fleeDist));
+          npc.targetY = Math.max(60, Math.min(MAP_H - 60, npc.y + Math.sin(fleeAngle + jitter) * fleeDist));
           npc.state = AI_STATE.FLEEING;
-          npc.stateTimer = 50;
+          npc.stateTimer = 60;
           moveToward(npc, npc.targetX, npc.targetY);
           return;
         }
@@ -6666,15 +6687,20 @@
         }
         if (npcVictim.role === 'noisemaker') triggerNoisemakerAlert(npcVictim);
         notifyWitnessesOfKill(impostor.name, impostor.x, impostor.y, npcVictim.name);
-        impostor.killCooldown = 600;
+        impostor.killCooldown = (gameMode === 'hideseek' ? gameSettings.seekerKillCooldown : 10) * 60;
         if (gameSettings.killFlash && dist(player, npcVictim) < 300) {
           const flashEl = document.getElementById('killFlashOverlay');
           if (flashEl) { flashEl.style.opacity = '0.5'; setTimeout(() => { flashEl.style.opacity = '0'; }, 300); }
         }
 
-        const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length + (!isImpostor && player.alive ? 1 : 0);
-        const aliveImpostors = npcs.filter(n => n.alive && n.isImpostor).length + (player.alive && isImpostor ? 1 : 0);
-        if (gameMode !== 'hideseek' && aliveImpostors >= aliveCrewmates) endGame(true);
+        if (gameMode === 'hideseek') {
+          const aliveHiders = npcs.filter(n => !n.isImpostor && n.alive).length + (!isImpostor && player.alive && !isGhost ? 1 : 0);
+          if (aliveHiders === 0 && !gameOver) { updateHsHiderIcons(); endGameHS(true); }
+        } else {
+          const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length + (!isImpostor && player.alive ? 1 : 0);
+          const aliveImpostors = npcs.filter(n => n.alive && n.isImpostor).length + (player.alive && isImpostor ? 1 : 0);
+          if (aliveImpostors >= aliveCrewmates) endGame(true);
+        }
       }
       // Queue a post-kill sabotage after a short delay to create chaos/cover (not in H&S)
       if (gameMode !== 'hideseek' && !sabotage.active && sabotage.cooldown === 0) {
@@ -7630,7 +7656,7 @@
                 deadPets.push({x: npc.x + 10, y: npc.y + npc.h, petType: npc.pet, color: npc.color});
               }
               playSfx('kill');
-              killCooldown = gameSettings.killCooldown * 60;
+              killCooldown = (gameMode === 'hideseek' ? gameSettings.seekerKillCooldown : gameSettings.killCooldown) * 60;
               killFlash = 15;
               notifyWitnessesOfKill((abilityActive && shiftTarget) ? shiftTarget.name : player.name, player.x, player.y, npc.name);
               const aliveImps = npcs.filter(n => n.alive && n.isImpostor).length;
@@ -7664,12 +7690,17 @@
             if (npc.role === 'noisemaker') triggerNoisemakerAlert(npc);
             playSfx('kill');
             mpPublishEvent('kill', npc.mpId || null, { victimName: npc.name, victimColor: npc.color });
-            killCooldown = gameSettings.killCooldown * 60;
+            killCooldown = (gameMode === 'hideseek' ? gameSettings.seekerKillCooldown : gameSettings.killCooldown) * 60;
             killFlash = 15;
             notifyWitnessesOfKill((abilityActive && shiftTarget) ? shiftTarget.name : player.name, player.x, player.y, npc.name);
-            const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length;
-            const aliveImpostors = npcs.filter(n => n.alive && n.isImpostor).length + 1;
-            if (gameMode !== 'hideseek' && aliveImpostors >= aliveCrewmates) endGame(true);
+            if (gameMode === 'hideseek') {
+              const aliveHiders = npcs.filter(n => !n.isImpostor && n.alive).length;
+              if (aliveHiders === 0 && !gameOver) { updateHsHiderIcons(); endGameHS(true); }
+            } else {
+              const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length;
+              const aliveImpostors = npcs.filter(n => n.alive && n.isImpostor).length + 1;
+              if (aliveImpostors >= aliveCrewmates) endGame(true);
+            }
             break;
           }
         }
@@ -9280,20 +9311,20 @@
     // ====== TEXTURE & DECORATION SYSTEM ======
     const roomFloorColors = {
       // Color-coded per official Skeld map image:
-      'Cafeteria':'#b4ad9e',    // light gray-beige checkered tile (Skeld) / overridden per map in drawRoomDecor
-      'Weapons':'#6a5e4a',      // tan/beige command room
-      'Navigation':'#1c2232',   // dark navy cockpit
-      'O2':'#263a2c',           // dark green life support
-      'Admin':'#3a2020',        // dark reddish command room
-      'Shields':'#1e1e3c',      // deep dark-blue energy room
-      'Communications':'#1e2c30', // dark teal radio room
-      'Storage':'#6a4820',      // orange-brown cargo hold
-      'Electrical':'#28261a',   // dark industrial (yellow tint)
-      'Lower Engine':'#202830', // dark teal-gray engine
-      'Reactor':'#26163a',      // deep purple reactor
-      'Security':'#1c2028',     // dark monitoring room
-      'Upper Engine':'#202830', // dark teal-gray engine
-      'MedBay':'#1e3038',       // sterile dark blue-teal medical
+      'Cafeteria':'#a8a090',    // warm light grey tile (center hub)
+      'Weapons':'#4e4438',      // dark tan command console
+      'Navigation':'#0e1626',   // deep navy cockpit
+      'O2':'#182a1e',           // dark forest green life support
+      'Admin':'#281a14',        // dark warm brown-red command
+      'Shields':'#101424',      // very deep blue energy room
+      'Communications':'#141e24', // near-black teal radio room
+      'Storage':'#4a3018',      // rich dark brown cargo hold
+      'Electrical':'#1a1810',   // dark charcoal-yellow industrial
+      'Lower Engine':'#141c24', // deep steel-blue engine
+      'Reactor':'#1e0e30',      // deep indigo-purple reactor
+      'Security':'#0e1018',     // near-black monitoring room
+      'Upper Engine':'#141c24', // deep steel-blue engine
+      'MedBay':'#101c28',       // dark cerulean medical bay
       'Launchpad':'#1e2030','Office':'#1a2240','Greenhouse':'#0a3030',
       'Locker Room':'#252530','Laboratory':'#141828','Balcony':'#252a35',
       'Decontamination':'#0a1428','Dropship':'#cc1111',
@@ -9307,19 +9338,31 @@
     };
 
     function drawFloorTiles(x, y, w, h) {
-      ctx.strokeStyle = 'rgba(255,255,255,0.035)';
+      const tileSize = selectedMap === 'skeld' ? 32 : 40;
+      const lineAlpha = selectedMap === 'skeld' ? 0.055 : 0.035;
+      ctx.strokeStyle = `rgba(255,255,255,${lineAlpha})`;
       ctx.lineWidth = 1;
-      for (let tx = 0; tx < w; tx += 40) {
+      for (let tx = 0; tx < w; tx += tileSize) {
         ctx.beginPath(); ctx.moveTo(x + tx, y); ctx.lineTo(x + tx, y + h); ctx.stroke();
       }
-      for (let ty = 0; ty < h; ty += 40) {
+      for (let ty = 0; ty < h; ty += tileSize) {
         ctx.beginPath(); ctx.moveTo(x, y + ty); ctx.lineTo(x + w, y + ty); ctx.stroke();
       }
-      // Subtle rivet dots at intersections
-      ctx.fillStyle = 'rgba(255,255,255,0.04)';
-      for (let tx = 40; tx < w; tx += 80) {
-        for (let ty = 40; ty < h; ty += 80) {
+      // Rivet bolts at tile corners
+      ctx.fillStyle = selectedMap === 'skeld' ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.04)';
+      for (let tx = tileSize; tx < w; tx += tileSize * 2) {
+        for (let ty = tileSize; ty < h; ty += tileSize * 2) {
           ctx.fillRect(x + tx - 1, y + ty - 1, 2, 2);
+        }
+      }
+      // Skeld: subtle alternate-tile shading for depth
+      if (selectedMap === 'skeld') {
+        ctx.fillStyle = 'rgba(0,0,0,0.06)';
+        for (let tx = 0; tx < w; tx += tileSize * 2) {
+          for (let ty = 0; ty < h; ty += tileSize * 2) {
+            ctx.fillRect(x + tx, y + ty, tileSize, tileSize);
+            ctx.fillRect(x + tx + tileSize, y + ty + tileSize, tileSize, tileSize);
+          }
         }
       }
     }
@@ -9363,7 +9406,7 @@
         // Glowing edge strips (like ship corridor lighting)
         const stripColor = selectedMap === 'mira' ? 'rgba(80,180,255,0.08)' :
                            selectedMap === 'airship' ? 'rgba(255,180,80,0.07)' :
-                           'rgba(120,160,255,0.07)';
+                           'rgba(100,180,220,0.14)';
         ctx.fillStyle = stripColor;
         if (horiz) {
           ctx.fillRect(x, y, w, 4);
@@ -9789,6 +9832,34 @@
           for (let px = 80; px < w; px += 80) ctx.fillRect(x+px, y+1, 1, h-2);
         } else {
           for (let py = 80; py < h; py += 80) ctx.fillRect(x+1, y+py, w-2, 1);
+        }
+        return;
+      }
+      // Skeld: polished steel panels with bright top edge and bolt details
+      if (selectedMap === 'skeld') {
+        ctx.fillStyle = 'rgba(220,228,240,0.18)';
+        if (w > h) { ctx.fillRect(x, y, w, 2); } else { ctx.fillRect(x, y, 2, h); }
+        ctx.fillStyle = 'rgba(0,0,0,0.40)';
+        if (w > h) { ctx.fillRect(x, y + h - 2, w, 2); } else { ctx.fillRect(x + w - 2, y, 2, h); }
+        // Panel seam lines
+        ctx.fillStyle = 'rgba(0,0,0,0.18)';
+        if (w > h) {
+          for (let px = 64; px < w; px += 64) ctx.fillRect(x + px, y + 2, 1, h - 4);
+        } else {
+          for (let py = 64; py < h; py += 64) ctx.fillRect(x + 2, y + py, w - 4, 1);
+        }
+        // Bolt heads at seam ends
+        ctx.fillStyle = 'rgba(200,210,225,0.22)';
+        if (w > h && h >= 8) {
+          for (let px = 64; px < w; px += 64) {
+            ctx.fillRect(x + px - 1, y + 2, 2, 2);
+            ctx.fillRect(x + px - 1, y + h - 4, 2, 2);
+          }
+        } else if (w <= h && w >= 8) {
+          for (let py = 64; py < h; py += 64) {
+            ctx.fillRect(x + 2, y + py - 1, 2, 2);
+            ctx.fillRect(x + w - 4, y + py - 1, 2, 2);
+          }
         }
         return;
       }
@@ -13892,17 +13963,16 @@
 
     function drawEnvironmentBG(ox, oy) {
       if (selectedMap === 'skeld' || selectedMap === 'airship') {
-        // Background stars in space
-        ctx.fillStyle = 'rgba(255,255,255,0.12)';
-        for (let i = 0; i < 80; i++) {
+        // Stars — varied sizes and brightness
+        for (let i = 0; i < 160; i++) {
           const sx = (i * 347 + 123) % MAP_W, sy = (i * 271 + 456) % MAP_H;
-          const sz = (i % 3 === 0) ? 2 : 1;
+          const bright = i % 7 === 0 ? 0.55 : i % 3 === 0 ? 0.22 : 0.10;
+          const sz = i % 7 === 0 ? 2 : 1;
+          ctx.fillStyle = `rgba(210,225,255,${bright})`;
           ctx.fillRect(sx - ox, sy - oy, sz, sz);
         }
-        // Skeld: fill entire ship body as dark grey so structure matches reference image
+        // Skeld: fill entire ship body with steel-grey hull colour
         if (selectedMap === 'skeld') {
-          ctx.fillStyle = '#3c3e42';
-          ctx.beginPath();
           const hull = [
             [60,130],[260,130],[260,80],[944,80],[944,50],[1828,50],[1828,80],
             [2242,80],[2242,50],[2576,50],[2576,250],[2760,250],[2760,468],
@@ -13911,13 +13981,34 @@
             [1828,1608],[1828,1638],[944,1638],[944,1668],[260,1608],[260,1538],
             [60,1538],[60,1228],[30,1228],[30,394],[60,394],[60,210]
           ];
+          // Base hull fill
+          ctx.fillStyle = '#3e4148';
+          ctx.beginPath();
           ctx.moveTo(hull[0][0] - ox, hull[0][1] - oy);
           for (let i = 1; i < hull.length; i++) ctx.lineTo(hull[i][0] - ox, hull[i][1] - oy);
           ctx.closePath();
           ctx.fill();
-          // Subtle ship body edge glow
-          ctx.strokeStyle = 'rgba(100,110,130,0.4)';
-          ctx.lineWidth = 2;
+          // Inner shadow gradient — centre of ship is slightly lighter
+          const hullCX = 1540 - ox, hullCY = 860 - oy;
+          const hullGrad = ctx.createRadialGradient(hullCX, hullCY, 200, hullCX, hullCY, 1600);
+          hullGrad.addColorStop(0, 'rgba(255,255,255,0.06)');
+          hullGrad.addColorStop(1, 'rgba(0,0,0,0.18)');
+          ctx.fillStyle = hullGrad;
+          ctx.beginPath();
+          ctx.moveTo(hull[0][0] - ox, hull[0][1] - oy);
+          for (let i = 1; i < hull.length; i++) ctx.lineTo(hull[i][0] - ox, hull[i][1] - oy);
+          ctx.closePath();
+          ctx.fill();
+          // Hull outline — bright outer edge + dark inner shadow
+          ctx.strokeStyle = 'rgba(160,170,185,0.55)';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(hull[0][0] - ox, hull[0][1] - oy);
+          for (let i = 1; i < hull.length; i++) ctx.lineTo(hull[i][0] - ox, hull[i][1] - oy);
+          ctx.closePath();
+          ctx.stroke();
+          ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+          ctx.lineWidth = 6;
           ctx.beginPath();
           ctx.moveTo(hull[0][0] - ox, hull[0][1] - oy);
           for (let i = 1; i < hull.length; i++) ctx.lineTo(hull[i][0] - ox, hull[i][1] - oy);
