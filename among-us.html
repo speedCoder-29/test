@@ -169,7 +169,10 @@
     .tli.done .tli-dot { background: #3ddc84; }
     .tli.active .tli-dot { background: #ffd700; animation: tliBlink 0.6s ease-in-out infinite; }
     @keyframes tliBlink { 0%,100%{opacity:1} 50%{opacity:0.4} }
-    .tli-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tli-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+    .tli-room { font-size: 9px; color: rgba(255,255,255,0.38); white-space: nowrap; flex-shrink: 0; margin-left: 4px; }
+    .tli.done .tli-room { color: rgba(61,220,132,0.5); }
+    .tli.active .tli-room { color: rgba(255,215,0,0.6); }
     #roleRevealOverlay {
       position: fixed; inset: 0; z-index: 95; display: none;
       align-items: center; justify-content: center; flex-direction: column;
@@ -935,6 +938,66 @@
     .mp-status-dot.connected    { background:#4ecdc4; }
     .mp-status-dot.disconnected { background:#888; }
     .mp-status-dot.error        { background:#ff4444; }
+
+    /* ===== AUTH / ACCOUNT STYLES ===== */
+    #authBar {
+      width:100%; padding:8px 12px; margin-bottom:14px;
+      background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+      border-radius:8px; display:flex; align-items:center; gap:10px; box-sizing:border-box;
+    }
+    #authBar.logged-in { background:rgba(61,220,132,0.08); border-color:rgba(61,220,132,0.25); }
+    #authBarUser { flex:1; font-size:13px; color:#aaa; }
+    #authBarUser .au-name { color:#3ddc84; font-weight:bold; }
+    #authBarSave {
+      padding:5px 12px; border-radius:6px; border:1px solid rgba(61,220,132,0.4);
+      background:rgba(61,220,132,0.1); color:#3ddc84; font-size:12px; cursor:pointer;
+      white-space:nowrap; transition:background 0.15s; display:none;
+    }
+    #authBarSave:hover { background:rgba(61,220,132,0.25); }
+    #authBarBtn {
+      padding:5px 14px; border-radius:6px; border:1px solid rgba(255,255,255,0.22);
+      background:rgba(255,255,255,0.07); color:#ddd; font-size:12px; cursor:pointer;
+      white-space:nowrap; transition:background 0.15s;
+    }
+    #authBarBtn:hover { background:rgba(255,255,255,0.16); }
+    #authModal {
+      display:none; position:fixed; inset:0; z-index:9999;
+      background:rgba(0,0,0,0.72); align-items:center; justify-content:center;
+    }
+    #authModal.open { display:flex; }
+    #authModalBox {
+      background:#13151f; border:1px solid rgba(255,255,255,0.14); border-radius:14px;
+      padding:28px 26px; width:310px; max-width:92vw; position:relative;
+      box-shadow:0 20px 60px rgba(0,0,0,0.65);
+    }
+    #authModalClose {
+      position:absolute; top:10px; right:14px; background:none; border:none;
+      color:#666; font-size:22px; cursor:pointer; line-height:1;
+    }
+    #authModalClose:hover { color:#fff; }
+    #authModalTitle { font-size:19px; font-weight:bold; color:#fff; margin-bottom:16px; text-align:center; }
+    .auth-tabs { display:flex; margin-bottom:18px; border-radius:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.12); }
+    .auth-tab {
+      flex:1; padding:8px; text-align:center; cursor:pointer; font-size:14px;
+      background:rgba(255,255,255,0.04); color:#888; transition:background 0.15s, color 0.15s;
+    }
+    .auth-tab.active { background:rgba(197,17,17,0.28); color:#fff; font-weight:bold; }
+    .auth-field { margin-bottom:13px; }
+    .auth-field label { display:block; font-size:11px; color:#777; margin-bottom:4px; letter-spacing:0.5px; text-transform:uppercase; }
+    .auth-field input {
+      width:100%; padding:9px 11px; box-sizing:border-box;
+      background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.14);
+      border-radius:7px; color:#fff; font-size:14px; outline:none; transition:border-color 0.15s;
+    }
+    .auth-field input:focus { border-color:#c51111; box-shadow:0 0 8px rgba(197,17,17,0.28); }
+    #authModalError { color:#ff6b6b; font-size:12px; margin-bottom:10px; min-height:16px; text-align:center; }
+    #authSubmitBtn {
+      width:100%; padding:10px; background:linear-gradient(135deg,#c51111,#9b0d0d);
+      border:none; border-radius:8px; color:#fff; font-size:15px; font-weight:bold;
+      cursor:pointer; transition:opacity 0.15s; letter-spacing:0.5px;
+    }
+    #authSubmitBtn:hover { opacity:0.85; }
+    #authGuestNote { text-align:center; margin-top:11px; font-size:11px; color:#444; }
   </style>
 </head>
 <body>
@@ -946,6 +1009,13 @@
     <p class="tagline">Complete tasks or find the impostor!</p>
 
     <div id="startContent">
+
+    <!-- Account bar -->
+    <div id="authBar">
+      <div id="authBarUser">Not signed in <span style="color:#555;font-size:11px;">— progress won't be saved</span></div>
+      <button id="authBarSave" onclick="auSaveProfile()">💾 Save</button>
+      <button id="authBarBtn" onclick="showAuthModal()">Log In / Sign Up</button>
+    </div>
 
     <!-- Row 1: Mode + Map side by side -->
     <div id="modeMapRow">
@@ -1016,10 +1086,10 @@
                  border:none;border-radius:8px;cursor:pointer;font-weight:bold;font-size:14px;
                  margin-bottom:8px;width:100%;">Create Lobby</button>
         <div style="display:flex;gap:8px;margin-bottom:8px;">
-          <input id="mpCodeInput" type="text" maxlength="6" placeholder="Enter 6-char code"
-            style="flex:1;padding:8px 12px;font-size:14px;background:rgba(255,255,255,0.1);
-                   border:1px solid #555;border-radius:6px;color:#fff;text-transform:uppercase;
-                   letter-spacing:2px;outline:none;" oninput="this.value=this.value.toUpperCase()">
+          <input id="mpCodeInput" type="text" placeholder="Paste invite link or lobby ID"
+            style="flex:1;padding:8px 12px;font-size:13px;background:rgba(255,255,255,0.1);
+                   border:1px solid #555;border-radius:6px;color:#fff;
+                   outline:none;">
           <button onclick="mpJoinLobby()"
             style="padding:8px 16px;background:rgba(78,205,196,0.15);border:2px solid #4ecdc4;
                    border-radius:6px;color:#4ecdc4;font-weight:bold;cursor:pointer;font-size:14px;">
@@ -1051,6 +1121,29 @@
     </div><!-- /#startContent -->
   </div>
 
+  <!-- Auth Modal -->
+  <div id="authModal">
+    <div id="authModalBox">
+      <button id="authModalClose" onclick="hideAuthModal()">&#215;</button>
+      <div id="authModalTitle">Account</div>
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="authTabLogin" onclick="auSwitchTab('login')">Log In</div>
+        <div class="auth-tab" id="authTabSignup" onclick="auSwitchTab('signup')">Sign Up</div>
+      </div>
+      <div class="auth-field">
+        <label>Username</label>
+        <input type="text" id="authUser" placeholder="your username" maxlength="20" autocomplete="username">
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="authPass" placeholder="password" autocomplete="current-password">
+      </div>
+      <div id="authModalError"></div>
+      <button id="authSubmitBtn" onclick="auSubmit()">Log In</button>
+      <div id="authGuestNote">Saved locally on this device.</div>
+    </div>
+  </div>
+
   <div id="taskBar"><div id="taskBarLabel">TASKS</div><div id="taskBarTrack"><div id="taskFill"></div><div id="taskText">0 / 8</div></div></div>
   <div id="taskListPanel" style="display:none;"><div id="taskListHeader">Tasks</div><div id="taskListItems"></div></div>
   <div id="roleTag"></div>
@@ -1076,6 +1169,22 @@
   <div id="ventHint"></div>
   <div id="abilityHUD"></div>
   <div id="vitalsPanel"><h3>VITALS</h3><div id="vitalsList"></div></div>
+  <div id="detectiveNotesPanel" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:80;background:#0d1520;border:2px solid #ffd700;border-radius:12px;padding:16px;min-width:300px;max-width:340px;max-height:80vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,0.7);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="color:#ffd700;font-size:15px;font-weight:bold;letter-spacing:1px;">📋 DETECTIVE NOTES</div>
+      <button onclick="toggleDetectiveNotes()" style="background:none;border:none;color:#888;font-size:18px;cursor:pointer;line-height:1;">&#215;</button>
+    </div>
+    <div id="detectiveNotesPanelInner"></div>
+  </div>
+  <div id="detectiveToast" style="display:block;position:fixed;bottom:180px;left:50%;transform:translateX(-50%);background:rgba(13,21,32,0.92);border:1px solid #ffd700;border-radius:8px;padding:7px 16px;color:#ffd700;font-size:13px;font-weight:bold;z-index:90;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;"></div>
+  <div id="shiftMenuOverlay" onclick="closeShiftMenu()" style="display:none;position:fixed;inset:0;z-index:84;background:rgba(0,0,0,0.45);"></div>
+  <div id="shiftMenu" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:85;background:#0a0d1a;border:2px solid #ff6b6b;border-radius:14px;padding:18px 20px;min-width:320px;max-width:400px;max-height:80vh;overflow-y:auto;box-shadow:0 10px 50px rgba(200,60,60,0.4);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div style="color:#ff6b6b;font-size:15px;font-weight:bold;letter-spacing:1px;">🎭 SHAPESHIFT — Select Target</div>
+      <button onclick="closeShiftMenu()" style="background:none;border:none;color:#888;font-size:18px;cursor:pointer;line-height:1;">&#215;</button>
+    </div>
+    <div id="shiftMenuList" style="display:flex;flex-direction:column;gap:8px;"></div>
+  </div>
   <div id="noisemakerAlert"></div>
   <div id="ghostMsg">YOU DIED — You are now a ghost!<br><span style="font-size:15px;font-weight:normal;color:#aaa">You can still complete tasks. Press WASD to move.</span></div>
   <div id="dangerMeter"><div class="danger-label">⚠ SEEKER NEARBY</div><div id="dangerMeterBar" style="width:0%"></div></div>
@@ -1572,6 +1681,165 @@
       skinPicker.appendChild(sw);
     });
 
+    // ===== AUTH / PROFILE SYSTEM =====
+    let auCurrentUser = null;
+    let auTabMode = 'login';
+
+    function auSimpleHash(str) {
+      let h = 0x811c9dc5;
+      for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = (h * 0x01000193) >>> 0; }
+      return h.toString(16);
+    }
+    function auGetAccounts() { try { return JSON.parse(localStorage.getItem('au_accounts') || '{}'); } catch { return {}; } }
+    function auSetAccounts(obj) { localStorage.setItem('au_accounts', JSON.stringify(obj)); }
+    function auGetSession() { try { return JSON.parse(localStorage.getItem('au_session') || 'null'); } catch { return null; } }
+    function auSetSession(data) { localStorage.setItem('au_session', data ? JSON.stringify(data) : 'null'); }
+
+    function auUpdateBar() {
+      const bar = document.getElementById('authBar');
+      const userEl = document.getElementById('authBarUser');
+      const saveBtn = document.getElementById('authBarSave');
+      const loginBtn = document.getElementById('authBarBtn');
+      if (!bar) return;
+      if (auCurrentUser) {
+        bar.classList.add('logged-in');
+        userEl.innerHTML = '<span class="au-name">' + auCurrentUser.username + '</span> <span style="color:#5a9;font-size:11px;">· signed in</span>';
+        saveBtn.style.display = 'inline-block';
+        loginBtn.textContent = 'Sign Out';
+        loginBtn.onclick = auLogout;
+      } else {
+        bar.classList.remove('logged-in');
+        userEl.innerHTML = 'Not signed in <span style="color:#555;font-size:11px;">— progress won\'t be saved</span>';
+        saveBtn.style.display = 'none';
+        loginBtn.textContent = 'Log In / Sign Up';
+        loginBtn.onclick = showAuthModal;
+      }
+    }
+
+    function auGetProfile() {
+      return {
+        name: document.getElementById('nameInput').value.trim() || 'Player',
+        colorIndex: selectedColor,
+        hat: selectedHat,
+        pet: selectedPet,
+        skin: typeof selectedSkin !== 'undefined' ? selectedSkin : 'none'
+      };
+    }
+
+    function auApplyProfile(profile) {
+      if (!profile) return;
+      if (profile.name) document.getElementById('nameInput').value = profile.name;
+      if (typeof profile.colorIndex === 'number') {
+        selectedColor = profile.colorIndex;
+        document.querySelectorAll('.color-swatch').forEach((s, i) => s.classList.toggle('selected', i === profile.colorIndex));
+      }
+      if (profile.hat) {
+        selectedHat = profile.hat;
+        document.querySelectorAll('.hat-swatch').forEach(s => s.classList.toggle('selected', s.title === profile.hat));
+      }
+      if (profile.pet) {
+        selectedPet = profile.pet;
+        document.querySelectorAll('#petPicker .pet-swatch').forEach(s => s.classList.toggle('selected', s.title === profile.pet));
+      }
+      try {
+        if (profile.skin) {
+          selectedSkin = profile.skin;
+          document.querySelectorAll('#skinPicker .pet-swatch').forEach(s => s.classList.toggle('selected', s.title === profile.skin));
+        }
+      } catch(e) { /* selectedSkin may not be declared yet; it will be set at game init */ }
+    }
+
+    function auSaveProfile() {
+      if (!auCurrentUser) return;
+      const profile = auGetProfile();
+      const accounts = auGetAccounts();
+      auCurrentUser.profile = profile;
+      if (accounts[auCurrentUser.username]) {
+        accounts[auCurrentUser.username].profile = profile;
+        auSetAccounts(accounts);
+      }
+      auSetSession(auCurrentUser);
+      const btn = document.getElementById('authBarSave');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Saved';
+      setTimeout(() => { if (btn) btn.textContent = orig; }, 1500);
+    }
+
+    function auLogout() {
+      auCurrentUser = null;
+      auSetSession(null);
+      auUpdateBar();
+    }
+
+    function auLogin(username, password) {
+      if (!username) return 'Enter your username.';
+      if (!password) return 'Enter your password.';
+      const accounts = auGetAccounts();
+      const acc = accounts[username];
+      if (!acc) return 'No account found. Sign up first.';
+      if (acc.passwordHash !== auSimpleHash(password)) return 'Incorrect password.';
+      auCurrentUser = { username, profile: acc.profile || {} };
+      auSetSession(auCurrentUser);
+      auApplyProfile(auCurrentUser.profile);
+      auUpdateBar();
+      return null;
+    }
+
+    function auSignup(username, password) {
+      if (!username || username.length < 2) return 'Username must be at least 2 characters.';
+      if (!password || password.length < 4) return 'Password must be at least 4 characters.';
+      const accounts = auGetAccounts();
+      if (accounts[username]) return 'Username already taken.';
+      const profile = auGetProfile();
+      accounts[username] = { passwordHash: auSimpleHash(password), profile };
+      auSetAccounts(accounts);
+      auCurrentUser = { username, profile };
+      auSetSession(auCurrentUser);
+      auUpdateBar();
+      return null;
+    }
+
+    function auSwitchTab(tab) {
+      auTabMode = tab;
+      document.getElementById('authTabLogin').classList.toggle('active', tab === 'login');
+      document.getElementById('authTabSignup').classList.toggle('active', tab === 'signup');
+      document.getElementById('authSubmitBtn').textContent = tab === 'login' ? 'Log In' : 'Sign Up';
+      document.getElementById('authModalError').textContent = '';
+    }
+
+    function auSubmit() {
+      const username = document.getElementById('authUser').value.trim();
+      const password = document.getElementById('authPass').value;
+      const errEl = document.getElementById('authModalError');
+      const err = auTabMode === 'login' ? auLogin(username, password) : auSignup(username, password);
+      if (err) { errEl.textContent = err; return; }
+      hideAuthModal();
+    }
+
+    function showAuthModal() {
+      document.getElementById('authModal').classList.add('open');
+      document.getElementById('authUser').value = '';
+      document.getElementById('authPass').value = '';
+      document.getElementById('authModalError').textContent = '';
+      auSwitchTab('login');
+      setTimeout(() => { const u = document.getElementById('authUser'); if (u) u.focus(); }, 50);
+    }
+    function hideAuthModal() { document.getElementById('authModal').classList.remove('open'); }
+
+    document.getElementById('authPass').addEventListener('keydown', e => { if (e.key === 'Enter') auSubmit(); });
+    document.getElementById('authUser').addEventListener('keydown', e => { if (e.key === 'Enter') auSubmit(); });
+    document.getElementById('authModal').addEventListener('click', function(e) { if (e.target === this) hideAuthModal(); });
+
+    // Restore session on page load
+    (function() {
+      const session = auGetSession();
+      if (session && session.username) {
+        auCurrentUser = session;
+        auApplyProfile(session.profile);
+      }
+      auUpdateBar();
+    })();
+
     // Mode selector
     function selectMode(mode) {
       gameMode = mode;
@@ -1605,10 +1873,10 @@
         spawnX: 1450, spawnY: 320,
         emergencyBtn: { x: 1418, y: 342, radius: 22 },
         sabotageFixLocations: {
-          lights:  { x: 700, y: 1115 },
-          o2:      [{ x: 2050, y: 770 }, { x: 1590, y: 825 }],
-          reactor: [{ x: 120, y: 600 }, { x: 120, y: 960 }],
-          comms:   { x: 1912, y: 1560 },
+          lights:  { x: 585, y: 1100 },                              // Breaker panel, left wall of Electrical
+          o2:      [{ x: 1985, y: 655 }, { x: 2215, y: 810 }],      // Both inside O2 room (left & right consoles)
+          reactor: [{ x: 118, y: 548 }, { x: 118, y: 978 }],        // Reactor hand-pads top & bottom
+          comms:   { x: 1912, y: 1565 },
         },
         walls: (function() {
           const w = [];
@@ -1683,20 +1951,20 @@
           w.push({ x: 244, y: 394, w: 16, h: 306 });   // right wall top (y:394-700, gap y:700-780 for corridor door)
           w.push({ x: 244, y: 780, w: 16, h: 446 });   // right wall bottom (y:780-1226)
           // --- UE-LE vertical corridor walls ---
-          w.push({ x: 380, y: 394, w: 16, h: 166 });   // corridor right wall top (y:394-560, stops at Security top)
-          w.push({ x: 380, y: 860, w: 16, h: 350 });   // corridor right wall bottom (y:860-1210, starts after Security bottom wall)
+          w.push({ x: 380, y: 394, w: 16, h: 176 });   // corridor right wall top (y:394-570, stops at Security top)
+          w.push({ x: 380, y: 836, w: 16, h: 374 });   // corridor right wall bottom (y:836-1210, starts after Security bottom wall)
           w.push({ x: 16, y: 394, w: 140, h: 16 });   // Reactor top wall left (x:16-156, west of UE)
           w.push({ x: 16, y: 1226, w: 140, h: 16 });  // Reactor bottom wall left (x:16-156, west of LE)
 
           // --- Security (door into UE-LE corridor at x:380, gap y:700-780) ---
-          // Top & bottom walls
-          w.push({ x: 380, y: 560, w: 232, h: 16 });   // top wall (y:560-576)
-          w.push({ x: 380, y: 844, w: 232, h: 16 });   // bottom wall
-          // Left wall (y:576-844, door gap y:700-780)
-          w.push({ x: 380, y: 576, w: 16, h: 124 });   // left top (y:576-700)
-          w.push({ x: 380, y: 780, w: 16, h: 64 });    // left bottom (y:780-844)
-          // Right wall
-          w.push({ x: 596, y: 560, w: 16, h: 300 });   // right wall (y:560-860)
+          // Top & bottom walls — wider (x:660) and shorter (y:820)
+          w.push({ x: 380, y: 570, w: 296, h: 16 });   // top wall (y:570-586)
+          w.push({ x: 380, y: 820, w: 296, h: 16 });   // bottom wall (y:820-836)
+          // Left wall (y:586-820, door gap y:700-780)
+          w.push({ x: 380, y: 586, w: 16, h: 114 });   // left top (y:586-700)
+          w.push({ x: 380, y: 780, w: 16, h: 40 });    // left bottom (y:780-820)
+          // Right wall — wider room (interior x:396-660)
+          w.push({ x: 660, y: 570, w: 16, h: 266 });   // right wall (y:570-836)
 
           // --- MedBay (BELOW top corridor — top open to corridor at y:280) ---
           // Top wall: none — corridor at y:200-280 feeds directly into MedBay top
@@ -1709,20 +1977,20 @@
 
           // --- Cafeteria (octagonal: chamfered corners via angled wall pieces) ---
           w.push({ x: 970, y: 96,  w: 16, h: 104 });   // left top (y:96-200, gap y:200-280 for MedBay→Cafeteria)
-          w.push({ x: 970, y: 280, w: 16, h: 292 });   // left bottom (y:280-572, fills corner gap)
+          w.push({ x: 970, y: 280, w: 16, h: 320 });   // left bottom (y:280-600, fills corner gap)
           w.push({ x: 970, y: 96,  w: 880, h: 16 });   // top wall
           w.push({ x: 1834, y: 96, w: 16, h: 104 });   // right top (y:96-200, gap y:200-280 for Cafeteria→Weapons)
-          w.push({ x: 1834, y: 280, w: 16, h: 292 });  // right bottom (y:280-572, fills corner gap)
+          w.push({ x: 1834, y: 280, w: 16, h: 320 });  // right bottom (y:280-600, fills corner gap)
           // Bottom walls: central corridor gap x:1264-1380
-          w.push({ x: 970,  y: 572, w: 294, h: 16 }); // bottom-left (x:970-1264)
-          w.push({ x: 1380, y: 572, w: 470, h: 16 }); // bottom-right (x:1380-1850)
+          w.push({ x: 970,  y: 600, w: 294, h: 16 }); // bottom-left (x:970-1264)
+          w.push({ x: 1380, y: 600, w: 470, h: 16 }); // bottom-right (x:1380-1850)
 
           // --- Weapons ---
           w.push({ x: 2050, y: 96,  w: 16, h: 104 });  // left top (y:96-200, gap y:200-280 for Cafeteria→Weapons)
-          w.push({ x: 2050, y: 280, w: 16, h: 190 });  // left bottom (y:280-470)
+          w.push({ x: 2050, y: 280, w: 16, h: 226 });  // left bottom (y:280-506)
           w.push({ x: 2050, y: 96,  w: 200, h: 16 }); // top
-          w.push({ x: 2050, y: 454, w: 180, h: 16 }); // bottom left (gap for W→O2)
-          w.push({ x: 2310, y: 454, w: 160, h: 16 }); // bottom right (x:2310-2470, gap x:2470+ for W→Nav)
+          w.push({ x: 2050, y: 490, w: 180, h: 16 }); // bottom left (gap for W→O2)
+          w.push({ x: 2310, y: 490, w: 160, h: 16 }); // bottom right (x:2310-2470, gap x:2470+ for W→Nav)
 
           // --- O2 ---
           w.push({ x: 1920, y: 580, w: 16, h: 120 });  // left top (y:580-700, door gap y:700-780)
@@ -1741,23 +2009,23 @@
           // --- Admin (left gap y:700-780 for south connector entry; right gap y:700-780 for Admin→O2) ---
           w.push({ x: 1380, y: 660, w: 16, h: 40 });   // left top (y:660-700)
           w.push({ x: 1380, y: 780, w: 16, h: 210 });  // left bottom (y:780-990, gap y:700-780)
-          w.push({ x: 1380, y: 660, w: 420, h: 16 });  // top
-          w.push({ x: 1784, y: 660, w: 16, h: 40 });   // right top (y:660-700)
-          w.push({ x: 1784, y: 780, w: 16, h: 210 });   // right bottom (y:780-990, gap y:700-780 for O2)
-          w.push({ x: 1380, y: 974, w: 420, h: 16 });  // bottom
+          w.push({ x: 1380, y: 660, w: 476, h: 16 });  // top (wider to x:1856)
+          w.push({ x: 1840, y: 660, w: 16, h: 40 });   // right top (y:660-700, moved to x:1840)
+          w.push({ x: 1840, y: 780, w: 16, h: 210 });  // right bottom (y:780-990, gap y:700-780 for O2)
+          w.push({ x: 1380, y: 974, w: 476, h: 16 });  // bottom (wider to x:1856)
 
           // --- Electrical (ABOVE LE-Storage corridor — bottom at y:1290 opens to corridor below) ---
           w.push({ x: 520, y: 924, w: 16, h: 366 });   // left wall (y:924-1290, solid — entry from south only)
-          w.push({ x: 520, y: 924, w: 384, h: 16 });   // top wall (x:520-904, full span, no gap)
-          // (top gap x:580-740 closed — no corridor connects above Electrical)
-          w.push({ x: 904, y: 924, w: 16, h: 366 });   // right (y:924-1290)
+          w.push({ x: 520, y: 924, w: 440, h: 16 });   // top wall (x:520-960, wider span)
+          // (top gap closed — no corridor connects above Electrical)
+          w.push({ x: 960, y: 924, w: 16, h: 366 });   // right (y:924-1290, extended to x:960)
           w.push({ x: 520, y: 1290, w: 130, h: 16 });  // bottom left (x:520-650)
-          w.push({ x: 730, y: 1290, w: 190, h: 16 });  // bottom right (x:730-920)
+          w.push({ x: 730, y: 1290, w: 246, h: 16 });  // bottom right (x:730-976, matches new right wall)
           // gap x:650-730 = Electrical south door into LE→Storage corridor
 
           // --- LE→Storage bottom corridor (below Electrical, y:1290-1380) ---
           w.push({ x: 414, y: 1274, w: 106, h: 16 }); // top wall left (x:414-520, left of Electrical)
-          w.push({ x: 904, y: 1274, w: 132, h: 16 }); // top wall right (x:904-1036, right of Electrical)
+          w.push({ x: 976, y: 1274, w: 60, h: 16 });  // top wall right (x:976-1036, right of new Electrical)
           w.push({ x: 414, y: 1380, w: 622, h: 16 }); // bottom wall (x:414-1036, full span)
 
           // --- Storage ---
@@ -1775,12 +2043,12 @@
           w.push({ x: 2084, y: 1370, w: 16, h: 380 }); // right wall (y:1370-1750)
           w.push({ x: 1724, y: 1750, w: 376, h: 16 }); // bottom wall
 
-          // --- Shields ---
-          w.push({ x: 2180, y: 1100, w: 16, h: 140 }); // left top (door gap y:1240-1330)
-          w.push({ x: 2180, y: 1330, w: 16, h: 180 }); // left bottom
-          w.push({ x: 2180, y: 1100, w: 248, h: 16 }); // top left (x:2180-2428)
+          // --- Shields (wider: left wall moved to x:2134) ---
+          w.push({ x: 2134, y: 1100, w: 16, h: 140 }); // left top (door gap y:1240-1330)
+          w.push({ x: 2134, y: 1330, w: 16, h: 180 }); // left bottom
+          w.push({ x: 2134, y: 1100, w: 294, h: 16 }); // top left (x:2134-2428)
           w.push({ x: 2524, y: 1100, w: 56,  h: 16 }); // top right (x:2524-2580)
-          w.push({ x: 2180, y: 1494, w: 400, h: 16 }); // bottom
+          w.push({ x: 2134, y: 1494, w: 426, h: 16 }); // bottom
 
           // ============ HALLWAY CORRIDOR WALLS ============
           // 16px walls placed OUTSIDE corridor bounds (inner edge = corridor edge)
@@ -1812,13 +2080,13 @@
 
           // --- Horizontal corridor y:700-780 removed (Security now directly adjacent to UE-LE corridor) ---
 
-          // --- Admin → O2 corridor (x:1784-1920, y:700-780) ---
-          w.push({ x: 1784, y: 684, w: 136, h: 16 }); // top
-          w.push({ x: 1784, y: 780, w: 136, h: 16 }); // bottom (shares with Admin right bottom)
+          // --- Admin → O2 corridor (x:1840-1920, y:700-780) ---
+          w.push({ x: 1840, y: 684, w: 80, h: 16 }); // top
+          w.push({ x: 1840, y: 780, w: 80, h: 16 }); // bottom (shares with Admin right bottom)
 
-          // --- Central corridor (x:1264-1380, y:572-1116 — Cafeteria south → beside Admin → Storage top) ---
-          w.push({ x: 1248, y: 572, w: 16, h: 528 }); // left wall (y:572-1100, full corridor span)
-          w.push({ x: 1380, y: 572, w: 16, h: 88  }); // right wall above Admin (y:572-660)
+          // --- Central corridor (x:1264-1380, y:600-1116 — Cafeteria south → beside Admin → Storage top) ---
+          w.push({ x: 1248, y: 600, w: 16, h: 500 }); // left wall (y:600-1100, full corridor span)
+          w.push({ x: 1380, y: 600, w: 16, h: 60  }); // right wall above Admin (y:600-660)
           w.push({ x: 1380, y: 990, w: 16, h: 110 }); // right wall below Admin (y:990-1100)
 
           // --- O2 → Navigation (x:2284-2550, y:700-780, aligned with Nav door and O2 right door) ---
@@ -1829,85 +2097,109 @@
           w.push({ x: 2412, y: 780, w: 16, h: 336 }); // east corridor left wall (y:780-1116)
           w.push({ x: 2524, y: 780, w: 16, h: 320 }); // east corridor right wall (y:780-1100)
 
-          // --- Weapons → O2 vertical (x:2230-2310, y:454-580) ---
-          w.push({ x: 2214, y: 454, w: 16, h: 126 }); // left
-          w.push({ x: 2310, y: 454, w: 16, h: 126 }); // right
+          // --- Weapons → O2 vertical (x:2230-2310, y:490-580) ---
+          w.push({ x: 2214, y: 490, w: 16, h: 90 }); // left
+          w.push({ x: 2310, y: 490, w: 16, h: 90 }); // right
 
-          // --- Weapons → Navigation upper (x:2470-2550, y:454-550) ---
-          w.push({ x: 2454, y: 454, w: 16, h: 96 }); // left
-          w.push({ x: 2550, y: 454, w: 16, h: 96 }); // right
+          // --- Weapons → Navigation upper (x:2470-2550, y:490-550) ---
+          w.push({ x: 2454, y: 490, w: 16, h: 60 }); // left
+          w.push({ x: 2550, y: 490, w: 16, h: 60 }); // right
 
           // (Admin→Storage vertical replaced by central corridor — see above)
 
-          // --- Storage → Shields corridor (x:1524-2180, y:1280-1370) — Comms hangs below ---
-          w.push({ x: 1524, y: 1264, w: 656, h: 16 }); // top (full span to Shields left)
+          // --- Storage → Shields corridor (x:1524-2134, y:1280-1370) — Comms hangs below ---
+          w.push({ x: 1524, y: 1264, w: 610, h: 16 }); // top (full span to Shields left at x:2134)
           w.push({ x: 1524, y: 1370, w: 216, h: 16 }); // bottom left (x:1524-1740, left of Comms entry)
-          w.push({ x: 2084, y: 1370, w: 96, h: 16 });  // bottom right (x:2084-2180, right of Comms entry)
+          w.push({ x: 2084, y: 1370, w: 50, h: 16 });  // bottom right (x:2084-2134, right of Comms entry)
 
 
           // ============ ROOM OBSTACLES (furniture/equipment) — obj:true skips shadow raycasts ============
 
-          // --- Cafeteria: 5 round tables ---
-          w.push({ x: 1151, y: 197, w: 50, h: 50, obj: true });
-          w.push({ x: 1505, y: 197, w: 50, h: 50, obj: true });
-          w.push({ x: 1117, y: 381, w: 50, h: 50, obj: true });
-          w.push({ x: 1557, y: 381, w: 50, h: 50, obj: true });
-          w.push({ x: 1333, y: 464, w: 50, h: 50, obj: true });
+          // --- Cafeteria: 5 round tables (2 back, 2 middle, 1 front-center) ---
+          w.push({ x: 1148, y: 194, w: 54, h: 54, obj: true });  // back-left
+          w.push({ x: 1502, y: 194, w: 54, h: 54, obj: true });  // back-right
+          w.push({ x: 1114, y: 378, w: 54, h: 54, obj: true });  // mid-left
+          w.push({ x: 1554, y: 378, w: 54, h: 54, obj: true });  // mid-right
+          w.push({ x: 1330, y: 462, w: 54, h: 54, obj: true });  // front-center
+          // Cafeteria trash bin (bottom-left, near empty garbage task)
+          w.push({ x: 1040, y: 410, w: 28, h: 28, obj: true });
 
-          // --- Reactor: Large reactor core (centered in room, clear of door gap) ---
-          w.push({ x: 90, y: 760, w: 80, h: 80, obj: true });  // reactor core center
-          // Reactor support pillars
-          w.push({ x: 60,  y: 550, w: 24, h: 24, obj: true });
-          w.push({ x: 140, y: 550, w: 24, h: 24, obj: true });
-          w.push({ x: 60,  y: 930, w: 24, h: 24, obj: true });
-          w.push({ x: 140, y: 930, w: 24, h: 24, obj: true });
+          // --- Reactor: Core + hand-scanner pads at sabotage fix positions ---
+          w.push({ x: 62, y: 758, w: 84, h: 84, obj: true });    // reactor core (glowing center)
+          // Hand-scanner pads (match sabotage fix positions exactly)
+          w.push({ x: 98, y: 538, w: 40, h: 18, obj: true });    // north hand-pad
+          w.push({ x: 98, y: 968, w: 40, h: 18, obj: true });    // south hand-pad
+          // Support pillars (4 corners around core)
+          w.push({ x: 54,  y: 620, w: 22, h: 22, obj: true });
+          w.push({ x: 160, y: 620, w: 22, h: 22, obj: true });
+          w.push({ x: 54,  y: 900, w: 22, h: 22, obj: true });
+          w.push({ x: 160, y: 900, w: 22, h: 22, obj: true });
 
-          // --- Admin: Map/admin table ---
-          w.push({ x: 1510, y: 770, w: 110, h: 60, obj: true });
+          // --- Admin: Large map/admin table (center of wider room) ---
+          w.push({ x: 1504, y: 746, w: 168, h: 84, obj: true });
+          // Swipe card reader (left entrance wall)
+          w.push({ x: 1398, y: 750, w: 16, h: 40, obj: true });
 
-          // --- Storage: Crates and boxes ---
-          w.push({ x: 1080, y: 1250, w: 45, h: 35, obj: true });
-          w.push({ x: 1080, y: 1450, w: 50, h: 40, obj: true });
-          w.push({ x: 1240, y: 1350, w: 40, h: 50, obj: true });
-          w.push({ x: 1380, y: 1250, w: 45, h: 40, obj: true });
-          w.push({ x: 1400, y: 1480, w: 55, h: 40, obj: true });
-          w.push({ x: 1200, y: 1520, w: 40, h: 35, obj: true });
+          // --- Storage: Crates and fuel canisters ---
+          w.push({ x: 1058, y: 1148, w: 48, h: 38, obj: true });  // crate top-left
+          w.push({ x: 1058, y: 1448, w: 52, h: 42, obj: true });  // crate bottom-left
+          w.push({ x: 1238, y: 1348, w: 44, h: 52, obj: true });  // crate center
+          w.push({ x: 1378, y: 1148, w: 48, h: 42, obj: true });  // crate top-right
+          w.push({ x: 1398, y: 1478, w: 58, h: 42, obj: true });  // crate bottom-right
+          w.push({ x: 1198, y: 1518, w: 42, h: 38, obj: true });  // small crate
+          w.push({ x: 1448, y: 1288, w: 38, h: 60, obj: true });  // fuel canister stack
 
-          // --- Electrical: Equipment racks and panels ---
-          w.push({ x: 580, y: 990, w: 16, h: 120, obj: true });
-          w.push({ x: 700, y: 960, w: 80, h: 16,  obj: true });
-          w.push({ x: 820, y: 1040, w: 16, h: 100, obj: true });
-          w.push({ x: 620, y: 1190, w: 60, h: 16,  obj: true });
-          w.push({ x: 760, y: 1220, w: 80, h: 16,  obj: true });
+          // --- Electrical: Breaker panel (left wall) + equipment racks ---
+          w.push({ x: 538, y: 1048, w: 18, h: 130, obj: true }); // MAIN breaker panel (left wall, matches lights fix)
+          w.push({ x: 568, y: 978, w: 80, h: 18, obj: true });   // top equipment rail
+          w.push({ x: 878, y: 1038, w: 18, h: 108, obj: true }); // right rack (aligned with extended right wall)
+          w.push({ x: 618, y: 1188, w: 64, h: 18, obj: true });  // bottom-left panel
+          w.push({ x: 758, y: 1218, w: 84, h: 18, obj: true });  // bottom-right panel
+          w.push({ x: 700, y: 1060, w: 60, h: 50, obj: true });  // center console
 
-          // --- MedBay: Scanner bed ---
-          w.push({ x: 660, y: 380, w: 60, h: 80, obj: true });
+          // --- MedBay: Med scanner (large circular bed, center-left) ---
+          w.push({ x: 622, y: 356, w: 80, h: 90, obj: true });
+          // Sample analysis station (right side)
+          w.push({ x: 762, y: 370, w: 50, h: 40, obj: true });
 
-          // --- Weapons: Asteroid turret seat ---
-          w.push({ x: 2300, y: 200, w: 55, h: 55, obj: true });
+          // --- Weapons: Asteroid turret + platform ---
+          w.push({ x: 2154, y: 170, w: 100, h: 70, obj: true }); // turret platform
+          w.push({ x: 2290, y: 160, w: 60, h: 60, obj: true });  // turret seat/console
 
-          // --- Navigation: Steering console and screens ---
-          w.push({ x: 2730, y: 690, w: 80, h: 16, obj: true });
-          w.push({ x: 2820, y: 730, w: 40, h: 50, obj: true });
+          // --- Navigation: Right-wall console bank + steering wheel ---
+          w.push({ x: 2956, y: 638, w: 18, h: 220, obj: true }); // right-wall console bank
+          w.push({ x: 2726, y: 688, w: 84, h: 18, obj: true });  // upper steering console
+          w.push({ x: 2812, y: 720, w: 44, h: 56, obj: true });  // main steering screen
+          w.push({ x: 2726, y: 848, w: 84, h: 18, obj: true });  // lower navigation console
 
-          // --- Security: Camera monitor desk ---
-          w.push({ x: 440, y: 660, w: 70, h: 50, obj: true });
+          // --- Security: Camera monitor bank (2 screens) ---
+          w.push({ x: 402, y: 648, w: 76, h: 54, obj: true });   // left monitor
+          w.push({ x: 492, y: 648, w: 64, h: 44, obj: true });   // right monitor
 
-          // --- O2: Plant shelves and filter equipment ---
-          w.push({ x: 2000, y: 650, w: 50, h: 50, obj: true });
-          w.push({ x: 2150, y: 750, w: 40, h: 40, obj: true });
+          // --- O2: Plant tanks (3) + filter machine ---
+          w.push({ x: 1958, y: 638, w: 52, h: 52, obj: true });  // plant tank left
+          w.push({ x: 2040, y: 638, w: 52, h: 52, obj: true });  // plant tank center
+          w.push({ x: 2122, y: 638, w: 52, h: 52, obj: true });  // plant tank right
+          w.push({ x: 2190, y: 738, w: 60, h: 60, obj: true });  // O2 filter machine (right-center)
 
-          // --- Communications: Radio console ---
-          w.push({ x: 1860, y: 1520, w: 70, h: 40, obj: true });
+          // --- Communications: Radio + upload terminal ---
+          w.push({ x: 1748, y: 1468, w: 18, h: 170, obj: true }); // left equipment rack
+          w.push({ x: 1858, y: 1510, w: 74, h: 44, obj: true });  // main radio console
+          w.push({ x: 1990, y: 1480, w: 60, h: 60, obj: true });  // upload terminal
+          w.push({ x: 2020, y: 1598, w: 50, h: 40, obj: true });  // secondary console
 
-          // --- Shields: Shield generator ---
-          w.push({ x: 2340, y: 1260, w: 50, h: 50, obj: true });
+          // --- Shields: Two shield generators (left + right) ---
+          w.push({ x: 2182, y: 1248, w: 56, h: 56, obj: true }); // left generator (aligned with wider left wall)
+          w.push({ x: 2434, y: 1328, w: 56, h: 56, obj: true }); // right generator
+          w.push({ x: 2318, y: 1418, w: 80, h: 40, obj: true }); // shield control panel
 
-          // --- Upper Engine: Engine block ---
-          w.push({ x: 230, y: 200, w: 80, h: 60, obj: true });
+          // --- Upper Engine: Engine block + output dial ---
+          w.push({ x: 162, y: 194, w: 86, h: 64, obj: true });   // engine block
+          w.push({ x: 290, y: 216, w: 48, h: 36, obj: true });   // output dial console
 
-          // --- Lower Engine: Engine block ---
-          w.push({ x: 230, y: 1370, w: 80, h: 60, obj: true });
+          // --- Lower Engine: Engine block + output dial ---
+          w.push({ x: 162, y: 1368, w: 86, h: 64, obj: true });  // engine block
+          w.push({ x: 290, y: 1390, w: 48, h: 36, obj: true });  // output dial console
 
           return w;
         })(),
@@ -1916,150 +2208,158 @@
           { name: 'Weapons',       x: 2305, y: 283 },
           { name: 'Navigation',    x: 2806, y: 750 },
           { name: 'O2',            x: 2110, y: 750 },
-          { name: 'Admin',         x: 1590, y: 825 },
-          { name: 'Shields',       x: 2370, y: 1305 },
+          { name: 'Admin',         x: 1618, y: 825 },
+          { name: 'Shields',       x: 2347, y: 1305 },
           { name: 'Communications',x: 1912, y: 1560 },
           { name: 'Storage',       x: 1280, y: 1365 },
-          { name: 'Electrical',    x: 720,  y: 1115 },
+          { name: 'Electrical',    x: 748,  y: 1115 },
           { name: 'Lower Engine',  x: 285,  y: 1367 },
           { name: 'Reactor',       x: 130,  y: 810 },
-          { name: 'Security',      x: 488,  y: 710 },
+          { name: 'Security',      x: 520,  y: 700 },
           { name: 'Upper Engine',  x: 285,  y: 270 },
           { name: 'MedBay',        x: 700,  y: 440 },
         ],
         extraLabels: [
-          { name: 'HALLWAY', x: 960, y: 740 },
-          { name: 'HALLWAY', x: 2480, y: 950 },
+          { name: 'HALLWAY', x: 700,  y: 240  },  // Top corridor (UE → MedBay → Cafeteria)
+          { name: 'HALLWAY', x: 320,  y: 710  },  // Left corridor (UE ↔ LE vertical)
+          { name: 'HALLWAY', x: 1310, y: 760  },  // Central corridor (Cafeteria → Admin)
+          { name: 'HALLWAY', x: 2480, y: 880  },  // East corridor (O2/Nav → Shields)
+          { name: 'HALLWAY', x: 1900, y: 240  },  // Upper-right corridor (Cafeteria → Weapons)
+          { name: 'HALLWAY', x: 720,  y: 1335 },  // Lower corridor (LE → Storage/Electrical)
+          { name: 'HALLWAY', x: 1820, y: 1335 },  // Storage → Shields corridor
         ],
         floors: [
           // Rooms
-          { x: 986, y: 112, w: 864, h: 460 },   // 0: Cafeteria (LARGE)
-          { x: 2066, y: 112, w: 478, h: 342 },   // 1: Weapons
+          { x: 986, y: 112, w: 864, h: 488 },   // 0: Cafeteria (LARGE, taller)
+          { x: 2066, y: 112, w: 478, h: 378 },   // 1: Weapons (taller)
           { x: 2566, y: 566, w: 480, h: 368 },   // 2: Navigation (nose)
           { x: 1936, y: 596, w: 348, h: 308 },   // 3: O2
-          { x: 1396, y: 676, w: 388, h: 298 },   // 4: Admin
-          { x: 2196, y: 1116, w: 348, h: 378 },  // 5: Shields
+          { x: 1396, y: 676, w: 444, h: 298 },   // 4: Admin (wider)
+          { x: 2150, y: 1116, w: 394, h: 378 },  // 5: Shields (wider)
           { x: 1740, y: 1370, w: 344, h: 380 },  // 6: Communications (BELOW corridor)
           { x: 1036, y: 1116, w: 488, h: 498 },  // 7: Storage (LARGE)
-          { x: 536, y: 940, w: 368, h: 350 },    // 8: Electrical (ABOVE corridor)
+          { x: 536, y: 940, w: 424, h: 350 },    // 8: Electrical (wider, ABOVE corridor)
           { x: 156, y: 1226, w: 258, h: 282 },   // 9: Lower Engine
           { x: 16, y: 394, w: 228, h: 832 },     // 10: Reactor (tall, x:16-244, y:394-1226)
           { x: 244, y: 700, w: 16, h: 80 },      // Reactor door connector (fills gap for walkGrid)
-          { x: 380, y: 576, w: 216, h: 268 },    // 11: Security (adjacent to UE-LE corridor)
+          { x: 380, y: 586, w: 280, h: 234 },    // 11: Security (wider, adjacent to UE-LE corridor)
           { x: 156, y: 146, w: 258, h: 248 },    // 12: Upper Engine
           { x: 536, y: 280, w: 328, h: 320 },    // 13: MedBay (BELOW top corridor)
           // Hallways connecting rooms
           { x: 414, y: 200, w: 572, h: 80 },     // Top horizontal corridor UE→Caf (above MedBay)
-          { x: 1524, y: 1280, w: 656, h: 90 },    // Storage→Shields corridor (covers Comms top + Shields left)
+          { x: 1524, y: 1280, w: 610, h: 90 },    // Storage→Shields corridor (to Shields left at x:2134)
           { x: 1834, y: 200, w: 216, h: 80 },    // Cafeteria -> Weapons
           { x: 260, y: 394, w: 120, h: 832 },    // UE-LE main vertical corridor (Reactor left, Security right)
           // Central corridor: Cafeteria south → beside Admin → Storage top
-          { x: 1264, y: 572, w: 116, h: 544 },   // Central corridor (x:1264-1380, y:572-1116)
-          { x: 1680, y: 700, w: 240, h: 80 },    // Admin/O2 hallway (x:1680-1920, connects Admin right to O2 left)
+          { x: 1264, y: 600, w: 116, h: 516 },   // Central corridor (x:1264-1380, y:600-1116)
+          { x: 1680, y: 700, w: 256, h: 80 },    // Admin/O2 hallway (x:1680-1936, extends to O2 inner edge)
           { x: 2284, y: 700, w: 266, h: 80 },    // O2 -> Navigation (aligned with Nav door y:700-780 and O2 right door)
-          { x: 2230, y: 454, w: 80, h: 126 },    // Weapons -> O2 connector
-          { x: 2470, y: 454, w: 80, h: 96 },     // Weapons -> Nav upper connector
+          { x: 2230, y: 490, w: 80, h: 90 },     // Weapons -> O2 connector
+          { x: 2470, y: 490, w: 80, h: 60 },     // Weapons -> Nav upper connector
           { x: 2428, y: 780, w: 96, h: 336 },     // East vertical corridor (O2/Nav → Shields north, y:780-1116)
           { x: 414, y: 1290, w: 622, h: 90  },   // LE→Storage bottom corridor (x:414-1036, passes below Electrical)
         ],
         tasks: [
           // Cafeteria (floor x:986-1850, y:112-572, center 1418,342)
-          { x: 1100, y: 200, name: 'Download Data',    room: 'Cafeteria' },
-          { x: 1500, y: 220, name: 'Fix Wiring',        room: 'Cafeteria' },
-          { x: 1730, y: 200, name: 'Upload Data',       room: 'Cafeteria' },
-          { x: 1100, y: 420, name: 'Empty Garbage',     room: 'Cafeteria' },
-          { x: 1420, y: 450, name: 'Fix Wiring',        room: 'Cafeteria' },
+          { x: 1040, y: 200, name: 'Download Data',      room: 'Cafeteria' },
+          { x: 1800, y: 200, name: 'Upload Data',        room: 'Cafeteria' },
+          { x: 1420, y: 168, name: 'Fix Wiring',         room: 'Cafeteria' },
+          { x: 1038, y: 430, name: 'Empty Garbage',      room: 'Cafeteria' },  // near trash bin (bottom-left)
+          { x: 1420, y: 520, name: 'Fix Wiring',         room: 'Cafeteria' },
           // Weapons (floor x:2066-2544, y:112-454, center 2305,283)
-          { x: 2150, y: 200, name: 'Clear Asteroids',   room: 'Weapons', visual: true },
-          { x: 2380, y: 200, name: 'Download Data',     room: 'Weapons' },
-          { x: 2460, y: 350, name: 'Accept Diverted Power', room: 'Weapons' },
+          { x: 2200, y: 200, name: 'Clear Asteroids',    room: 'Weapons', visual: true },  // turret
+          { x: 2450, y: 160, name: 'Download Data',      room: 'Weapons' },
+          { x: 2480, y: 340, name: 'Accept Diverted Power', room: 'Weapons' },
           // Navigation (floor x:2566-3046, y:566-934, center 2806,750)
-          { x: 2650, y: 640, name: 'Chart Course',      room: 'Navigation' },
-          { x: 2900, y: 640, name: 'Fix Wiring',        room: 'Navigation' },
-          { x: 2650, y: 840, name: 'Stabilize Steering',room: 'Navigation' },
-          { x: 2900, y: 840, name: 'Download Data',     room: 'Navigation' },
-          { x: 2780, y: 750, name: 'Accept Diverted Power', room: 'Navigation' },
+          { x: 2620, y: 640, name: 'Chart Course',       room: 'Navigation' },
+          { x: 2940, y: 640, name: 'Fix Wiring',         room: 'Navigation' },
+          { x: 2620, y: 840, name: 'Stabilize Steering', room: 'Navigation' },
+          { x: 2940, y: 840, name: 'Download Data',      room: 'Navigation' },
+          { x: 2780, y: 745, name: 'Accept Diverted Power', room: 'Navigation' },
           // O2 (floor x:1936-2284, y:596-904, center 2110,750)
-          { x: 2000, y: 660, name: 'Clean O2 Filter',   room: 'O2' },
-          { x: 2180, y: 660, name: 'Water Plants',       room: 'O2' },
-          { x: 2000, y: 820, name: 'Fix Wiring',         room: 'O2' },
-          { x: 2180, y: 820, name: 'Download Data',      room: 'O2' },
+          { x: 1960, y: 648, name: 'Clean O2 Filter',    room: 'O2' },   // left plant tank
+          { x: 2128, y: 648, name: 'Water Plants',        room: 'O2' },   // right plant tank
+          { x: 1960, y: 820, name: 'Fix Wiring',          room: 'O2' },
+          { x: 2180, y: 820, name: 'Download Data',       room: 'O2' },
           // Admin (floor x:1396-1784, y:676-974, center 1590,825)
-          { x: 1470, y: 750, name: 'Swipe Card',         room: 'Admin' },
-          { x: 1680, y: 750, name: 'Upload Data',        room: 'Admin' },
-          { x: 1470, y: 900, name: 'Fix Wiring',         room: 'Admin' },
-          { x: 1680, y: 900, name: 'Accept Diverted Power', room: 'Admin' },
+          { x: 1400, y: 760, name: 'Swipe Card',          room: 'Admin' },  // at entrance card reader
+          { x: 1608, y: 750, name: 'Upload Data',         room: 'Admin' },  // on admin table (centred)
+          { x: 1470, y: 900, name: 'Fix Wiring',          room: 'Admin' },
+          { x: 1700, y: 900, name: 'Accept Diverted Power', room: 'Admin' },
           // Shields (floor x:2196-2544, y:1116-1494, center 2370,1305)
-          { x: 2260, y: 1200, name: 'Prime Shields',     room: 'Shields', visual: true },
-          { x: 2460, y: 1200, name: 'Fix Wiring',        room: 'Shields' },
-          { x: 2260, y: 1400, name: 'Calibrate Distributor', room: 'Shields' },
-          { x: 2460, y: 1400, name: 'Download Data',     room: 'Shields' },
+          { x: 2240, y: 1250, name: 'Prime Shields',      room: 'Shields', visual: true },  // left generator
+          { x: 2450, y: 1200, name: 'Fix Wiring',         room: 'Shields' },
+          { x: 2320, y: 1430, name: 'Calibrate Distributor', room: 'Shields' }, // control panel
+          { x: 2460, y: 1380, name: 'Download Data',      room: 'Shields' },
           // Communications (floor x:1740-2084, y:1370-1750, center 1912,1560)
-          { x: 1820, y: 1450, name: 'Download Data',     room: 'Communications' },
-          { x: 1990, y: 1450, name: 'Fix Wiring',        room: 'Communications' },
-          { x: 1820, y: 1630, name: 'Restore Comms',     room: 'Communications' },
-          { x: 1990, y: 1630, name: 'Upload Data',       room: 'Communications' },
+          { x: 1780, y: 1450, name: 'Download Data',      room: 'Communications' },
+          { x: 1980, y: 1460, name: 'Fix Wiring',         room: 'Communications' },
+          { x: 1860, y: 1560, name: 'Restore Comms',      room: 'Communications' },
+          { x: 1990, y: 1620, name: 'Upload Data',        room: 'Communications' },
+          { x: 1800, y: 1650, name: 'Accept Diverted Power', room: 'Communications' },
           // Storage (floor x:1036-1524, y:1116-1614, center 1280,1365)
-          { x: 1100, y: 1200, name: 'Fuel Engines',      room: 'Storage' },
-          { x: 1380, y: 1200, name: 'Empty Garbage',     room: 'Storage' },
-          { x: 1100, y: 1450, name: 'Fix Wiring',        room: 'Storage' },
-          { x: 1380, y: 1450, name: 'Download Data',     room: 'Storage' },
+          { x: 1070, y: 1190, name: 'Fuel Engines',       room: 'Storage' },  // fuel canisters top-left
+          { x: 1460, y: 1310, name: 'Fuel Engines',       room: 'Storage' },  // second fuel stack
+          { x: 1400, y: 1190, name: 'Empty Garbage',      room: 'Storage' },
+          { x: 1100, y: 1470, name: 'Fix Wiring',         room: 'Storage' },
+          { x: 1390, y: 1460, name: 'Download Data',      room: 'Storage' },
           // Electrical (floor x:536-904, y:940-1290, center 720,1115)
-          { x: 600,  y: 1010, name: 'Fix Wiring',        room: 'Electrical' },
-          { x: 800,  y: 1010, name: 'Divert Power',      room: 'Electrical' },
-          { x: 600,  y: 1200, name: 'Calibrate Distributor', room: 'Electrical' },
-          { x: 800,  y: 1200, name: 'Download Data',     room: 'Electrical' },
+          { x: 548, y: 1080,  name: 'Fix Wiring',         room: 'Electrical' },  // near breaker panel
+          { x: 830, y: 1010,  name: 'Divert Power',       room: 'Electrical' },
+          { x: 700, y: 1080,  name: 'Calibrate Distributor', room: 'Electrical' },
+          { x: 830, y: 1210,  name: 'Download Data',      room: 'Electrical' },
           // Lower Engine (floor x:156-414, y:1226-1508, center 285,1367)
-          { x: 200, y: 1300, name: 'Fuel Engines',       room: 'Lower Engine' },
-          { x: 340, y: 1300, name: 'Align Engine Output',room: 'Lower Engine' },
-          { x: 200, y: 1430, name: 'Fix Wiring',         room: 'Lower Engine' },
+          { x: 196, y: 1296,  name: 'Fuel Engines',       room: 'Lower Engine' },
+          { x: 340, y: 1296,  name: 'Align Engine Output',room: 'Lower Engine' },
+          { x: 196, y: 1428,  name: 'Fix Wiring',         room: 'Lower Engine' },
           // Upper Engine (floor x:156-414, y:146-394, center 285,270)
-          { x: 200, y: 200,  name: 'Fuel Engines',       room: 'Upper Engine' },
-          { x: 340, y: 200,  name: 'Align Engine Output',room: 'Upper Engine' },
-          { x: 200, y: 340,  name: 'Fix Wiring',         room: 'Upper Engine' },
+          { x: 196, y: 196,   name: 'Fuel Engines',       room: 'Upper Engine' },
+          { x: 340, y: 196,   name: 'Align Engine Output',room: 'Upper Engine' },
+          { x: 196, y: 336,   name: 'Fix Wiring',         room: 'Upper Engine' },
           // Reactor (floor x:16-244, y:394-1226, center 130,810)
-          { x: 60,  y: 540,  name: 'Start Reactor',      room: 'Reactor', visual: true },
-          { x: 60,  y: 750,  name: 'Unlock Manifolds',   room: 'Reactor' },
-          { x: 60,  y: 960,  name: 'Fix Wiring',         room: 'Reactor' },
-          { x: 60,  y: 1150, name: 'Reset Breakers',     room: 'Reactor' },
+          { x: 118, y: 548,   name: 'Start Reactor',      room: 'Reactor', visual: true },  // north hand-pad
+          { x: 118, y: 978,   name: 'Start Reactor',      room: 'Reactor', visual: true },  // south hand-pad
+          { x: 56,  y: 760,   name: 'Unlock Manifolds',   room: 'Reactor' },
+          { x: 56,  y: 960,   name: 'Fix Wiring',         room: 'Reactor' },
+          { x: 56,  y: 1148,  name: 'Reset Breakers',     room: 'Reactor' },
           // Security (floor x:380-596, y:576-844, center 488,710)
-          { x: 430, y: 640,  name: 'View Camera',        room: 'Security' },
-          { x: 520, y: 780,  name: 'Fix Wiring',         room: 'Security' },
+          { x: 412, y: 650,   name: 'View Camera',        room: 'Security' },  // left monitor
+          { x: 510, y: 648,   name: 'Fix Wiring',         room: 'Security' },  // right monitor
           // MedBay (floor x:536-864, y:280-600, center 700,440)
-          { x: 600, y: 340,  name: 'Submit Scan',        room: 'MedBay', visual: true },
-          { x: 760, y: 340,  name: 'Inspect Sample',     room: 'MedBay' },
-          { x: 600, y: 500,  name: 'Fix Wiring',         room: 'MedBay' },
-          { x: 760, y: 500,  name: 'Download Data',      room: 'MedBay' },
+          { x: 632, y: 356,   name: 'Submit Scan',        room: 'MedBay', visual: true },  // scanner
+          { x: 764, y: 366,   name: 'Inspect Sample',     room: 'MedBay' },  // sample station
+          { x: 600, y: 510,   name: 'Fix Wiring',         room: 'MedBay' },
+          { x: 762, y: 510,   name: 'Download Data',      room: 'MedBay' },
         ],
         vents: [
-          // Official Skeld vent network:
+          // Official Skeld vent network (positions tuned to real game layout):
           // Reactor north(0) <-> Upper Engine(1)
-          { x: 160, y: 530, partner: 1 },   // 0: Reactor north
-          { x: 300, y: 340, partner: 0 },   // 1: Upper Engine
+          { x: 172, y: 542, partner: 1 },   // 0: Reactor north (upper area of Reactor)
+          { x: 284, y: 330, partner: 0 },   // 1: Upper Engine (center of UE room)
           // Reactor south(2) <-> Lower Engine(3)
-          { x: 160, y: 880, partner: 3 },   // 2: Reactor south
-          { x: 300, y: 1440, partner: 2 },  // 3: Lower Engine
-          // Electrical(4) <-> MedBay(5) <-> Security(6) (3-way)
-          { x: 650, y: 1110, partner: 5 },  // 4: Electrical
-          { x: 750, y: 460, partner: 6 },   // 5: MedBay
-          { x: 440, y: 720, partner: 4 },   // 6: Security
-          // Admin(7) <-> Cafeteria(8) <-> Hallway(9) (3-way)
-          { x: 1500, y: 900, partner: 8 },  // 7: Admin
-          { x: 1350, y: 200, partner: 9 },  // 8: Cafeteria
-          { x: 2100, y: 900, partner: 7 },  // 9: Hallway (between Shields/Nav corridor)
+          { x: 172, y: 972, partner: 3 },   // 2: Reactor south (lower area of Reactor)
+          { x: 284, y: 1430, partner: 2 },  // 3: Lower Engine (center of LE room)
+          // Electrical(4) <-> MedBay(5) <-> Security(6) (3-way ring)
+          { x: 624, y: 1248, partner: 5 },  // 4: Electrical (bottom-left of room)
+          { x: 804, y: 432, partner: 6 },   // 5: MedBay (right-center of room)
+          { x: 478, y: 718, partner: 4 },   // 6: Security (center of room)
+          // Admin(7) <-> Cafeteria(8) <-> Hallway(9) (3-way ring)
+          { x: 1530, y: 928, partner: 8 },  // 7: Admin (bottom-center of Admin room)
+          { x: 1104, y: 482, partner: 9 },  // 8: Cafeteria (bottom-left of Cafeteria, near south corridor)
+          { x: 2462, y: 898, partner: 7 },  // 9: Hallway (east vertical corridor, between O2/Nav and Shields)
           // Navigation north(10) <-> Weapons(11)
-          { x: 2750, y: 680, partner: 11 }, // 10: Navigation north
-          { x: 2350, y: 380, partner: 10 }, // 11: Weapons
+          { x: 2718, y: 658, partner: 11 }, // 10: Navigation north (upper-left of Nav)
+          { x: 2378, y: 342, partner: 10 }, // 11: Weapons (center of Weapons room)
           // Navigation south(12) <-> Shields(13)
-          { x: 2750, y: 900, partner: 13 }, // 12: Navigation south
-          { x: 2380, y: 1400, partner: 12 },// 13: Shields
+          { x: 2718, y: 872, partner: 13 }, // 12: Navigation south (lower-left of Nav)
+          { x: 2334, y: 1382, partner: 12 },// 13: Shields (left-center of Shields room)
         ],
         doors: [
           // Official Skeld door layout:
           // Cafeteria: 3 doors (left exit to MedBay hall, right exit to Weapons hall, south to Admin)
           { x: 970, y: 200, w: 16, h: 80, room: 'Cafeteria', dir: 'v' },      // left exit (matches gap y:200-280)
           { x: 1834, y: 200, w: 16, h: 80, room: 'Cafeteria', dir: 'v' },     // right exit (matches gap y:200-280)
-          { x: 1264, y: 572, w: 116, h: 16, room: 'Cafeteria', dir: 'h' },    // south to central corridor
+          { x: 1264, y: 600, w: 116, h: 16, room: 'Cafeteria', dir: 'h' },    // south to central corridor
           // Upper Engine: 2 doors (east to MedBay hall, south to reactor corridor)
           { x: 414, y: 240, w: 16, h: 80, room: 'Upper Engine', dir: 'v' },    // east exit (matches wall gap y:240-320)
           { x: 260, y: 394, w: 70, h: 16, room: 'Upper Engine', dir: 'h' },    // south exit
@@ -2117,41 +2417,46 @@
           [11,21],[21,15],[7,20],
           [0,22],[1,22],[2,22],[7,22],[6,22],
         ],
-        // Official 4 CCTV camera locations matching the real Skeld map
+        // Official 4 CCTV camera locations (mounted positions on ship, viewed from Security)
         cameras: [
-          { x: 730, y: 470, name: 'Camera 3' },    // Upper corridor near MedBay/Security hallway
-          { x: 160, y: 710, name: 'Camera 4' },    // Inside Reactor room
-          { x: 510, y: 640, name: 'Camera 2' },    // Central corridor (Security→Admin hallway)
-          { x: 2195, y: 455, name: 'Camera 1' },   // East hallway (Weapons→O2 corridor)
+          { x: 650, y: 238, name: 'Camera 1' },    // Top hallway (UE exit → MedBay/Cafeteria corridor)
+          { x: 326, y: 706, name: 'Camera 2' },    // UE-LE vertical corridor (left hallway)
+          { x: 1304, y: 738, name: 'Camera 3' },   // Central corridor (Cafeteria south → Admin north)
+          { x: 2228, y: 460, name: 'Camera 4' },   // Weapons→O2 vertical connector hallway
         ],
         // Exterior ship features for visual rendering
         exteriorFeatures: {
-          // Two red energy cannons mounted top-right (Weapons room)
+          // Two energy cannons top-right (Weapons room exterior, above hull top wall)
           cannons: [
-            { x: 2500, y: 30, angle: -0.3 },
-            { x: 2550, y: 20, angle: -0.2 },
+            { x: 2340, y: 28, angle: -0.25 },
+            { x: 2480, y: 18, angle: -0.15 },
           ],
-          // Two shield generators bottom-right (Shields room)
+          // Four shield emitter domes on bottom-right hull (Shields room exterior)
           shieldDomes: [
-            { x: 2450, y: 1580 },
-            { x: 2550, y: 1580 },
+            { x: 2280, y: 1578 },
+            { x: 2380, y: 1586 },
+            { x: 2480, y: 1578 },
+            { x: 2560, y: 1570 },
           ],
-          // Communication antennas near Comms
+          // Communication dish + two antennas near Comms bottom
           antennas: [
-            { x: 1900, y: 1620 },
-            { x: 1950, y: 1640 },
-            { x: 2000, y: 1620 },
+            { x: 1850, y: 1636 },
+            { x: 1920, y: 1648 },
+            { x: 1990, y: 1640 },
+            { x: 2060, y: 1632 },
           ],
-          // Five thrusters at the rear (behind engines)
+          // Six thrusters at the rear (3 pairs: UE, Center, LE)
           thrusters: [
-            { x: 40, y: 220 }, { x: 40, y: 280 }, // Upper engine thrusters
-            { x: 40, y: 700 },                      // Center thruster
-            { x: 40, y: 1320 }, { x: 40, y: 1380 }, // Lower engine thrusters
+            { x: 38, y: 198 }, { x: 38, y: 250 },   // Upper engine pair
+            { x: 38, y: 668 }, { x: 38, y: 728 },   // Center pair (Reactor exhaust)
+            { x: 38, y: 1298 }, { x: 38, y: 1358 }, // Lower engine pair
           ],
-          // Garbage disposal chute (Storage)
-          garbageChute: { x: 1100, y: 1640 },
-          // Dropship bay
-          dropshipBay: { x: 1400, y: 1640 },
+          // Garbage disposal chute (Storage bottom-left)
+          garbageChute: { x: 1060, y: 1642 },
+          // Emergency dropship bay (below Cafeteria/Storage)
+          dropshipBay: { x: 1418, y: 1650 },
+          // Navigation fin (ship nose tip, right side)
+          navFin: { x: 3080, y: 760 },
         },
       },
       // ========== MIRA HQ ==========
@@ -3814,10 +4119,14 @@
     let abilityCooldown = 0;
     let abilityTimer = 0;
     let abilityActive = false;
-    let shiftTarget = null;        // shapeshifter: { color, name }
+    let shiftTarget = null;        // shapeshifter: { color, name, hat, pet, skin }
+    let shiftMenuOpen = false;
     let poisonTraps = [];          // viper: [{ x, y, triggered }]
     let noisemakerAlertTimer = 0;
-    let detectiveScanActive = false;
+    let detectiveNotes = [];       // Array of case files
+    let detectiveNotesOpen = false;
+    let detectiveActiveCase = 0;   // Index of currently viewed case
+    let detectiveInterrogate = 0;  // Cooldown for interrogate (30fps units)
     let vitalsOpen = false;
 
     const ROLE_COLORS = {
@@ -3857,14 +4166,14 @@
       impostor:       'Kill crewmates and sabotage the ship before they complete all tasks.',
       shapeshifter:   'Disguise yourself as any crewmate to confuse witnesses.',
       phantom:        'Turn invisible to stalk and eliminate targets unseen.',
-      viper:          'Leave poison traps to silently eliminate crewmates.',
+      viper:          'Kill with Acid — bodies dissolve over time, removing all evidence.',
       crewmate:       'Complete all tasks to win. Stay alive and vote out the impostors.',
       engineer:       'Use vents to travel across the ship quickly.',
       scientist:      'Check the vitals monitor to track who is still alive.',
-      detective:      'Scan dead bodies to learn clues about the killer.',
+      detective:      'Document kills in your Notes. Interrogate suspects to find the killer.',
       noisemaker:     'Alert the crew when you are killed.',
       guardian_angel: 'Protect one crewmate from being killed.',
-      tracker:        'Ping a crewmate\'s location for 30 seconds.',
+      tracker:        'Track a nearby player on your map. See their location for 30 seconds.',
       sheriff:        'You can shoot — but if you shoot a crewmate, you die instead.',
       jester:         'Get voted out to win. The crew thinks you\'re the impostor.',
     };
@@ -3929,6 +4238,11 @@
 
     // Skin cosmetic
     let selectedSkin = 'none';
+    // Apply saved skin from auth session (selectedSkin declared here, too late for IIFE)
+    if (auCurrentUser && auCurrentUser.profile && auCurrentUser.profile.skin) {
+      selectedSkin = auCurrentUser.profile.skin;
+      document.querySelectorAll('#skinPicker .pet-swatch').forEach(s => s.classList.toggle('selected', s.title === selectedSkin));
+    }
     let witnessedVisualTasks = new Set(); // NPCs player observed doing visual tasks
     let inVent = false; // is player inside a vent
 
@@ -3957,6 +4271,7 @@
     let hsPingEffects = [];      // [{x,y,r,maxR,alpha}] visual ping ripples on canvas
     let _dustMotes = [];         // ambient floating dust motes [{wx,wy,vx,vy,phase,r}]
     let killEffects = [];        // blood splatter particles [{x,y,vx,vy,r,alpha,color}]
+    let phantomSmokeEffects = []; // phantom vanish/appear smoke [{x,y,vx,vy,r,alpha,color,fixed}]
     let ventEffects = [];        // vent ripple rings [{x,y,r,alpha}]
     let taskEffects = [];        // task-complete sparkles [{x,y,vx,vy,r,alpha,color}]
     let shieldEffects = [];      // shield-absorb rings [{x,y,r,alpha}]
@@ -3970,6 +4285,37 @@
           vx: Math.cos(_a) * _s, vy: Math.sin(_a) * _s - 0.8,
           r: 1.5 + Math.random() * 3, alpha: 0.85 + Math.random() * 0.15,
           color: _i < 12 ? (_i < 8 ? '#cc0000' : '#880000') : victimColor });
+      }
+    }
+
+    function spawnAcidEffect(wx, wy) {
+      // Green acid splash particles (Viper kill)
+      for (let _i = 0; _i < 22; _i++) {
+        const _a = Math.random() * Math.PI * 2;
+        const _s = 1.5 + Math.random() * 5;
+        killEffects.push({ x: wx, y: wy,
+          vx: Math.cos(_a) * _s, vy: Math.sin(_a) * _s - 1.2,
+          r: 1.5 + Math.random() * 3.5, alpha: 0.9,
+          color: _i < 14 ? '#22dd44' : _i < 19 ? '#44ff77' : '#88ffaa' });
+      }
+    }
+
+    function spawnPhantomSmoke(wx, wy, color, fixed) {
+      // Colored smoke burst for phantom vanish/appear
+      // fixed=true: smoke stays at spawn position (vanish); fixed=false: smoke spawns then drifts (appear)
+      for (let _i = 0; _i < 28; _i++) {
+        const _a = Math.random() * Math.PI * 2;
+        const _s = fixed ? (0.3 + Math.random() * 1.2) : (0.8 + Math.random() * 2.5);
+        phantomSmokeEffects.push({
+          x: wx + (Math.random() - 0.5) * 20,
+          y: wy + (Math.random() - 0.5) * 20,
+          vx: Math.cos(_a) * _s * 0.4,
+          vy: -0.6 - Math.random() * 1.4,   // rises upward
+          r: 5 + Math.random() * 9,
+          alpha: 0.55 + Math.random() * 0.3,
+          color,
+          fixed: !!fixed,
+        });
       }
     }
 
@@ -4029,88 +4375,220 @@
     let dropshipHint = '';
 
     // =====================================================
-    // ===== MULTIPLAYER MODULE (Firebase RTDB) =====
-    // =====================================================
-    //
-    // HOW TO ENABLE MULTIPLAYER:
-    //   1. Go to https://console.firebase.google.com/ and create a free project
-    //   2. Add a Web App, copy the firebaseConfig object
-    //   3. Enable Realtime Database (start in test mode or use the rules below)
-    //   4. Enable Anonymous Authentication (Authentication > Sign-in method)
-    //   5. Replace null below with your config object
-    //   6. Paste these Realtime Database security rules:
-    //      { "rules": { "lobbies": { "$c": { ".read": "auth != null", ".write": "auth != null" } } } }
-    //
-    const FIREBASE_CONFIG = null;
-    /* ---- Paste your config here to enable multiplayer, e.g.: ----
-    const FIREBASE_CONFIG = {
-      apiKey:            "AIza...",
-      authDomain:        "your-project.firebaseapp.com",
-      databaseURL:       "https://your-project-default-rtdb.firebaseio.com",
-      projectId:         "your-project",
-      storageBucket:     "your-project.appspot.com",
-      messagingSenderId: "...",
-      appId:             "..."
-    };
-    */
+    // ===== MULTIPLAYER MODULE (PeerJS WebRTC — zero config, auto-connects) =====
+    // =========================================================================
+    // Uses PeerJS free public signaling (peerjs.com) + WebRTC P2P data channels.
+    // No Firebase, no server, no setup needed.
+    // Flow: page loads → auto-creates lobby → URL gets ?lobby=ID → share URL.
+    // Anyone who opens the URL auto-joins as a client.
 
     // --- MP runtime state ---
-    let mpApp = null, mpDb = null, mpAuth = null;
-    let mpUserId      = null;
-    let mpLobbyCode   = null;
+    let mpPeer        = null;   // PeerJS instance
+    let mpHostConn    = null;   // Connection to host (clients only)
+    let mpClientConns = {};     // {peerId: DataConnection} (host only)
+    let mpUserId      = null;   // Our PeerJS peer ID
+    let mpLobbyCode   = null;   // Host peer ID = lobby code
     let mpIsHost      = false;
     let mpEnabled     = false;
-    let mpPlayers     = {};      // {[uid]: playerRecord} from Firebase
+    let mpPlayers     = {};     // {[peerId]: playerRecord}
     let mpLobbyMeta   = null;
     let mpPosThrottle = 0;
-    let mpUnsubMeta   = null, mpUnsubPlayers = null;
-    let mpUnsubEvents = null, mpUnsubGame    = null;
+    // Legacy stubs — kept so any remaining references don't crash
+    let mpDb = null, mpApp = null, mpAuth = null;
+    let mpUnsubMeta = null, mpUnsubPlayers = null;
+    let mpUnsubEvents = null, mpUnsubGame = null;
     let mpLastEventKey = null;
 
-    // --- Dynamic SDK loader ---
+    // --- Load PeerJS SDK and initialise ---
     function mpBootstrap() {
-      if (!FIREBASE_CONFIG) {
-        mpShowToast('Set FIREBASE_CONFIG in the source to enable multiplayer.');
-        return;
-      }
-      if (mpApp) return;
-      const sdks = [
-        'https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js',
-        'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js',
-        'https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js',
-      ];
-      let loaded = 0;
-      sdks.forEach(src => {
-        const s = document.createElement('script');
-        s.src = src;
-        s.onload = () => { if (++loaded === sdks.length) mpInitFirebase(); };
-        s.onerror = () => mpShowToast('Failed to load Firebase SDK. Check internet connection.');
-        document.head.appendChild(s);
-      });
-      mpUpdateStatus('Loading Firebase SDK…');
+      if (mpEnabled || mpPeer) return;
+      if (typeof Peer !== 'undefined') { _mpInitPeer(); return; }
+      mpUpdateStatus('Loading network…');
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js';
+      s.onload  = _mpInitPeer;
+      s.onerror = () => mpUpdateStatus('<span class="mp-status-dot error"></span>Network load failed');
+      document.head.appendChild(s);
     }
 
-    function mpInitFirebase() {
-      try {
-        mpApp  = firebase.initializeApp(FIREBASE_CONFIG);
-        mpDb   = firebase.database();
-        mpAuth = firebase.auth();
-        mpUpdateStatus('Signing in…');
-        mpAuth.signInAnonymously().then(cred => {
-          mpUserId  = cred.user.uid;
-          mpEnabled = true;
-          mpUpdateStatus('<span class="mp-status-dot connected"></span>Ready — create or join a lobby');
-          // Auto-join from URL ?lobby=CODE
-          const urlCode = new URLSearchParams(window.location.search).get('lobby');
-          if (urlCode && urlCode.length === 6) {
-            document.getElementById('mpPanel').style.display = 'block';
-            document.getElementById('mpCodeInput').value = urlCode.toUpperCase();
-            mpJoinLobby();
-          }
-        }).catch(e => mpShowToast('Auth failed: ' + e.message));
-      } catch(e) {
-        mpShowToast('Firebase init failed: ' + e.message);
+    function _mpInitPeer() {
+      mpUpdateStatus('Connecting…');
+      const peer = new Peer({ debug: 0 });
+
+      peer.on('open', id => {
+        mpPeer    = peer;
+        mpUserId  = id;
+        mpEnabled = true;
+        // Check URL for ?lobby=PEERID
+        const urlCode = new URLSearchParams(window.location.search).get('lobby');
+        if (urlCode && urlCode !== id) {
+          // Auto-join someone else's lobby
+          document.getElementById('mpPanel').style.display = 'block';
+          _mpConnectToHost(urlCode);
+        } else {
+          // Become host (fresh page or own lobby URL after reload)
+          _mpBecomeHost();
+        }
+      });
+
+      peer.on('connection', conn => { if (mpIsHost) _mpHandleNewClient(conn); });
+
+      peer.on('disconnected', () => { try { peer.reconnect(); } catch(e){} });
+
+      peer.on('error', err => {
+        if (err.type === 'peer-unavailable') {
+          // Host not found — become host ourselves
+          mpShowToast('Lobby not found — creating a new one…');
+          _mpBecomeHost();
+        } else {
+          mpUpdateStatus('<span class="mp-status-dot error"></span>Error: ' + err.type);
+        }
+      });
+    }
+
+    // --- Become host: set URL, register self, show lobby UI ---
+    function _mpBecomeHost() {
+      mpIsHost    = true;
+      mpLobbyCode = mpUserId;
+      const url = new URL(window.location.href);
+      url.searchParams.set('lobby', mpLobbyCode);
+      history.replaceState(null, '', url.toString());
+      const name = (document.getElementById('nameInput') || {}).value || '';
+      mpPlayers[mpUserId] = mpBuildPlayerRecord(name.trim() || 'Player', true);
+      _mpShowLobbyUI();
+      mpRenderPlayerList();
+      mpUpdateLobbyBar();
+      mpUpdateStatus('<span class="mp-status-dot connected"></span>Lobby ready — share the invite link!');
+    }
+
+    // --- Connect to an existing host ---
+    function _mpConnectToHost(hostId) {
+      mpLobbyCode = hostId;
+      mpIsHost    = false;
+      mpShowConnecting('Joining lobby…', '');
+      const conn = mpPeer.connect(hostId, { reliable: true, serialization: 'json' });
+      mpHostConn  = conn;
+
+      conn.on('open', () => {
+        mpHideConnecting();
+        const name = (document.getElementById('nameInput') || {}).value || '';
+        conn.send({ type: 'join', player: mpBuildPlayerRecord(name.trim() || 'Player', false) });
+        _mpShowLobbyUI();
+        mpUpdateStatus('<span class="mp-status-dot connected"></span>Joined lobby!');
+        mpShowToast('Joined lobby!');
+      });
+
+      conn.on('data', data => _mpHandleHostMsg(data));
+
+      conn.on('close', () => { mpShowToast('Disconnected from host.'); mpLeaveLobby(); });
+
+      conn.on('error', err => {
+        mpHideConnecting();
+        mpShowToast('Connection failed: ' + (err.message || err.type || err));
+      });
+    }
+
+    // --- Host: handle new incoming client connection ---
+    function _mpHandleNewClient(conn) {
+      const peerId = conn.peer;
+      mpClientConns[peerId] = conn;
+
+      conn.on('open', () => {
+        // Send current player list immediately
+        conn.send({ type: 'playerList', players: mpPlayers });
+      });
+
+      conn.on('data', data => _mpHandleClientMsg(peerId, data));
+
+      conn.on('close', () => {
+        delete mpClientConns[peerId];
+        delete mpPlayers[peerId];
+        _mpBroadcast({ type: 'leave', id: peerId });
+        mpRenderPlayerList();
+        mpUpdateLobbyBar();
+      });
+    }
+
+    // --- Host: process message from a client ---
+    function _mpHandleClientMsg(fromId, data) {
+      if (data.type === 'join') {
+        const p = data.player; p.id = fromId;
+        mpPlayers[fromId] = p;
+        _mpBroadcast({ type: 'playerList', players: mpPlayers });
+        mpRenderPlayerList();
+        mpUpdateLobbyBar();
+      } else if (data.type === 'pos' || data.type === 'dropPos') {
+        if (mpPlayers[fromId]) { mpPlayers[fromId].x = data.x; mpPlayers[fromId].y = data.y; }
+        _mpBroadcast(data, fromId);   // relay to all other clients
+      } else if (data.type === 'event') {
+        mpHandleEvent(data.event);
+        _mpBroadcast(data, fromId);
       }
+    }
+
+    // --- Client: process message from host ---
+    function _mpHandleHostMsg(data) {
+      if (data.type === 'playerList') {
+        mpPlayers = data.players;
+        mpRenderPlayerList(); mpUpdateLobbyBar();
+      } else if (data.type === 'leave') {
+        delete mpPlayers[data.id];
+        mpRenderPlayerList(); mpUpdateLobbyBar();
+      } else if (data.type === 'pos') {
+        if (data.id && data.id !== mpUserId) {
+          const npc = npcs.find(n => n.mpId === data.id);
+          if (npc) { npc.x = data.x; npc.y = data.y; }
+          if (mpPlayers[data.id]) { mpPlayers[data.id].x = data.x; mpPlayers[data.id].y = data.y; }
+        }
+      } else if (data.type === 'dropPos') {
+        if (data.id && data.id !== mpUserId && mpPlayers[data.id]) {
+          mpPlayers[data.id].x = data.x; mpPlayers[data.id].y = data.y;
+        }
+      } else if (data.type === 'gameStart') {
+        // Apply role assignments
+        const roles = data.roles || {};
+        Object.entries(roles).forEach(([id, r]) => {
+          if (mpPlayers[id]) { mpPlayers[id].isImpostor = r.isImpostor; mpPlayers[id].role = r.role; }
+        });
+        const myRole = roles[mpUserId];
+        if (myRole) {
+          isImpostor = !!myRole.isImpostor;
+          playerRole = myRole.role;
+          if (mpPlayers[mpUserId]) { mpPlayers[mpUserId].isImpostor = isImpostor; mpPlayers[mpUserId].role = playerRole; }
+        }
+        if (data.map)      selectedMap = data.map;
+        if (data.mode)     gameMode    = data.mode;
+        if (data.settings) Object.assign(gameSettings, data.settings);
+        mpSyncNPCsFromPlayers();
+        mpHandleCountdown({ map: data.map, mode: data.mode, settings: data.settings });
+      } else if (data.type === 'event') {
+        mpHandleEvent(data.event);
+      } else if (data.type === 'settings') {
+        if (data.map)      selectedMap = data.map;
+        if (data.mode)     gameMode    = data.mode;
+        if (data.settings) Object.assign(gameSettings, data.settings);
+      }
+    }
+
+    // --- Broadcast to all clients (optionally excluding one) ---
+    function _mpBroadcast(data, excludeId) {
+      Object.entries(mpClientConns).forEach(([id, conn]) => {
+        if (id !== excludeId && conn.open) { try { conn.send(data); } catch(e){} }
+      });
+    }
+
+    // --- Show lobby UI (hide create/join, show lobby info) ---
+    function _mpShowLobbyUI() {
+      const lobbyInfo = document.getElementById('mpLobbyInfo');
+      const createBtn = document.getElementById('mpCreateBtn');
+      const joinRow   = document.getElementById('mpCodeInput') && document.getElementById('mpCodeInput').parentElement;
+      if (lobbyInfo) lobbyInfo.style.display = 'block';
+      if (createBtn) createBtn.style.display = 'none';
+      if (joinRow)   joinRow.style.display   = 'none';
+      // Show first 8 chars of UUID as readable code
+      const display = mpLobbyCode ? mpLobbyCode.replace(/-/g,'').substring(0,8).toUpperCase() : '';
+      const codeEl  = document.getElementById('mpLobbyCode');
+      if (codeEl) codeEl.textContent = display;
     }
 
     // --- UI helpers ---
@@ -4118,7 +4596,7 @@
       const panel = document.getElementById('mpPanel');
       const open  = panel.style.display !== 'none';
       panel.style.display = open ? 'none' : 'block';
-      if (!open && !mpApp) mpBootstrap();
+      if (!open && !mpEnabled) mpBootstrap();
     }
 
     function mpUpdateStatus(html) {
@@ -4144,7 +4622,6 @@
       document.getElementById('mpConnectingOverlay').style.display = 'none';
     }
 
-    // --- Code generator (no ambiguous chars) ---
     function mpGenCode() {
       const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
       let code = '';
@@ -4152,60 +4629,23 @@
       return code;
     }
 
-    // --- Create lobby ---
+    // --- Create lobby (lobby already exists; button now copies link) ---
     async function mpCreateLobby() {
       if (!mpEnabled) { mpBootstrap(); return; }
-      const name = document.getElementById('nameInput').value.trim() || 'Player';
-      const code = mpGenCode();
-      mpShowConnecting('Creating lobby…', 'Code: ' + code);
-      const meta = {
-        code, host: mpUserId, status: 'waiting',
-        map: selectedMap, mode: gameMode,
-        settings: JSON.parse(JSON.stringify(gameSettings)),
-        createdAt: Date.now(), countdownAt: null,
-      };
-      const me = mpBuildPlayerRecord(name, true);
-      try {
-        await mpDb.ref('lobbies/' + code).set({ meta, players: { [mpUserId]: me } });
-        mpLobbyCode = code;
-        mpIsHost    = true;
-        mpHideConnecting();
-        mpEnterLobby(code);
-        mpShowToast('Lobby created! Share code: ' + code);
-      } catch(e) {
-        mpHideConnecting();
-        mpShowToast('Could not create lobby: ' + e.message);
-      }
+      if (!mpIsHost) { mpShowToast('You are in a lobby as a client.'); return; }
+      _mpShowLobbyUI();
+      mpCopyLink();
     }
 
-    // --- Join lobby ---
+    // --- Join lobby (manual: paste lobby ID or invite URL) ---
     async function mpJoinLobby() {
       if (!mpEnabled) { mpBootstrap(); return; }
-      const code = (document.getElementById('mpCodeInput').value || '').trim().toUpperCase();
-      if (code.length !== 6) { mpShowToast('Enter a 6-character code.'); return; }
-      mpShowConnecting('Joining lobby…', 'Code: ' + code);
-      try {
-        const snap = await mpDb.ref('lobbies/' + code).once('value');
-        if (!snap.exists()) { mpHideConnecting(); mpShowToast('Lobby not found: ' + code); return; }
-        const d = snap.val();
-        if (d.meta.status !== 'waiting') { mpHideConnecting(); mpShowToast('That game has already started.'); return; }
-        if (Object.keys(d.players || {}).length >= 15) { mpHideConnecting(); mpShowToast('Lobby is full.'); return; }
-        // Sync host's map/mode/settings
-        selectedMap = d.meta.map;
-        gameMode    = d.meta.mode;
-        Object.assign(gameSettings, d.meta.settings || {});
-        const name = document.getElementById('nameInput').value.trim() || 'Player';
-        const me   = mpBuildPlayerRecord(name, false);
-        await mpDb.ref('lobbies/' + code + '/players/' + mpUserId).set(me);
-        mpLobbyCode = code;
-        mpIsHost    = false;
-        mpHideConnecting();
-        mpEnterLobby(code);
-        mpShowToast('Joined lobby ' + code + '!');
-      } catch(e) {
-        mpHideConnecting();
-        mpShowToast('Could not join: ' + e.message);
-      }
+      let raw = (document.getElementById('mpCodeInput').value || '').trim();
+      // Support pasting a full invite URL
+      if (raw.includes('?lobby=')) raw = new URL(raw).searchParams.get('lobby');
+      if (!raw) { mpShowToast('Paste an invite link or lobby ID.'); return; }
+      if (mpHostConn && mpHostConn.open) { mpShowToast('Already connected to a lobby.'); return; }
+      _mpConnectToHost(raw);
     }
 
     function mpBuildPlayerRecord(name, isHost) {
@@ -4219,42 +4659,7 @@
       };
     }
 
-    // --- Enter lobby (after create or join) ---
-    function mpEnterLobby(code) {
-      document.getElementById('mpLobbyInfo').style.display = 'block';
-      document.getElementById('mpCreateBtn').style.display = 'none';
-      const joinRow = document.getElementById('mpCodeInput').parentElement;
-      if (joinRow) joinRow.style.display = 'none';
-      document.getElementById('mpLobbyCode').textContent = code;
-
-      // Subscribe to player list
-      mpUnsubPlayers = mpDb.ref('lobbies/' + code + '/players');
-      mpUnsubPlayers.on('value', snap => {
-        mpPlayers = snap.val() || {};
-        mpRenderPlayerList();
-        mpUpdateLobbyBar();
-      });
-
-      // Subscribe to meta (status, settings changes from host)
-      mpUnsubMeta = mpDb.ref('lobbies/' + code + '/meta');
-      mpUnsubMeta.on('value', snap => {
-        const meta = snap.val();
-        if (!meta) return;
-        mpLobbyMeta = meta;
-        if (!mpIsHost) {
-          selectedMap = meta.map;
-          gameMode    = meta.mode;
-          Object.assign(gameSettings, meta.settings || {});
-        }
-        if (meta.status === 'countdown') mpHandleCountdown(meta);
-      });
-
-      // Presence: mark offline on disconnect
-      mpDb.ref('lobbies/' + code + '/players/' + mpUserId + '/lastSeen')
-        .onDisconnect().set(0);
-    }
-
-    // --- Render player list in start-screen panel ---
+    // --- Render player list ---
     function mpRenderPlayerList() {
       const el = document.getElementById('mpPlayerList');
       if (!el) return;
@@ -4271,14 +4676,14 @@
         el.appendChild(row);
       });
       const count = entries.length;
-      mpUpdateStatus(`<span class="mp-status-dot connected"></span>Lobby <b>${mpLobbyCode}</b> · ${count} player${count !== 1 ? 's' : ''}`);
+      mpUpdateStatus(`<span class="mp-status-dot connected"></span>${count} player${count !== 1 ? 's' : ''} connected`);
     }
 
     // --- Copy invite link ---
     function mpCopyLink() {
       const url = window.location.origin + window.location.pathname + '?lobby=' + mpLobbyCode;
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(url).then(() => mpShowToast('Link copied! Share it with friends.'));
+        navigator.clipboard.writeText(url).then(() => mpShowToast('Invite link copied! Share it to play together.'));
       } else {
         prompt('Copy this invite link:', url);
       }
@@ -4287,46 +4692,49 @@
     // --- Leave lobby ---
     function mpLeaveLobby() {
       if (!mpLobbyCode) return;
-      mpDb.ref('lobbies/' + mpLobbyCode + '/players/' + mpUserId).remove();
-      if (mpIsHost) mpDb.ref('lobbies/' + mpLobbyCode + '/meta/status').set('closed');
-      mpDetach();
+      if (mpIsHost) {
+        _mpBroadcast({ type: 'event', event: { type: 'hostLeft', actorId: mpUserId } });
+        Object.values(mpClientConns).forEach(c => { try { c.close(); } catch(e){} });
+        mpClientConns = {};
+      } else if (mpHostConn) {
+        try { mpHostConn.close(); } catch(e){}
+        mpHostConn = null;
+      }
       mpLobbyCode = null; mpIsHost = false; mpPlayers = {}; mpLobbyMeta = null;
       document.getElementById('mpLobbyInfo').style.display = 'none';
       document.getElementById('mpCreateBtn').style.display = 'block';
-      const jr = document.getElementById('mpCodeInput').parentElement;
+      const jr = document.getElementById('mpCodeInput') && document.getElementById('mpCodeInput').parentElement;
       if (jr) jr.style.display = 'flex';
-      mpUpdateStatus('<span class="mp-status-dot disconnected"></span>Left lobby — solo mode active');
+      mpUpdateStatus('<span class="mp-status-dot disconnected"></span>Left lobby — solo mode');
       document.getElementById('mpLobbyBar').style.display = 'none';
+      // Remove lobby param from URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete('lobby');
+      history.replaceState(null, '', url.toString());
+      // Re-init as new host
+      if (mpPeer && !mpPeer.destroyed) _mpBecomeHost();
     }
 
-    function mpDetach() {
-      if (mpUnsubPlayers) { mpUnsubPlayers.off(); mpUnsubPlayers = null; }
-      if (mpUnsubMeta)    { mpUnsubMeta.off();    mpUnsubMeta    = null; }
-      if (mpUnsubEvents)  { mpUnsubEvents.off();  mpUnsubEvents  = null; }
-      if (mpUnsubGame)    { mpUnsubGame.off();     mpUnsubGame    = null; }
-    }
+    function mpDetach() {} // no-op (PeerJS has no persistent listeners)
 
-    // --- Lobby bar shown in dropship ---
+    // --- Lobby bar (shown during dropship) ---
     function mpUpdateLobbyBar() {
       const bar = document.getElementById('mpLobbyBar');
       if (!mpLobbyCode || !bar) return;
       const count = Object.keys(mpPlayers).length;
       bar.style.display = 'block';
       document.getElementById('mpLobbyBarText').textContent =
-        'Lobby: ' + mpLobbyCode + '  ·  Players: ' + count +
-        (mpIsHost ? '  ·  You are HOST' : '');
+        'Players: ' + count + (mpIsHost ? '  ·  You are HOST' : '');
     }
 
-    // --- Host: push settings changes to Firebase ---
+    // --- Host: push settings to all clients ---
     function mpPushSettings() {
-      if (!mpIsHost || !mpLobbyCode || !mpDb) return;
-      mpDb.ref('lobbies/' + mpLobbyCode + '/meta').update({
-        map: selectedMap, mode: gameMode,
-        settings: JSON.parse(JSON.stringify(gameSettings)),
-      });
+      if (!mpIsHost || !mpLobbyCode) return;
+      _mpBroadcast({ type: 'settings', map: selectedMap, mode: gameMode,
+        settings: JSON.parse(JSON.stringify(gameSettings)) });
     }
 
-    // --- Host: trigger game start ---
+    // --- Host: assign roles and start game ---
     async function mpHostStartGame() {
       if (!mpIsHost || !mpLobbyCode) return;
       const playerIds = Object.keys(mpPlayers);
@@ -4334,24 +4742,27 @@
         gameMode === 'hideseek' ? 1 : gameSettings.impostors,
         Math.floor(playerIds.length / 2)
       );
-      const shuffled  = [...playerIds].sort(() => Math.random() - 0.5);
-      const updates   = {};
+      const shuffled = [...playerIds].sort(() => Math.random() - 0.5);
+      const roles    = {};
       shuffled.forEach((id, idx) => {
         const isImp = idx < impCount;
-        updates['lobbies/' + mpLobbyCode + '/players/' + id + '/isImpostor'] = isImp;
-        updates['lobbies/' + mpLobbyCode + '/players/' + id + '/role']       = isImp ? 'impostor' : 'crewmate';
-        updates['lobbies/' + mpLobbyCode + '/players/' + id + '/alive']      = true;
+        roles[id] = { isImpostor: isImp, role: isImp ? 'impostor' : 'crewmate' };
+        if (mpPlayers[id]) { mpPlayers[id].isImpostor = isImp; mpPlayers[id].role = roles[id].role; }
       });
-      updates['lobbies/' + mpLobbyCode + '/meta/settings']    = JSON.parse(JSON.stringify(gameSettings));
-      updates['lobbies/' + mpLobbyCode + '/meta/map']         = selectedMap;
-      updates['lobbies/' + mpLobbyCode + '/meta/mode']        = gameMode;
-      updates['lobbies/' + mpLobbyCode + '/meta/countdownAt'] = Date.now();
-      updates['lobbies/' + mpLobbyCode + '/meta/status']      = 'countdown';
-      await mpDb.ref().update(updates);
-      // Host also starts locally (triggered by meta listener below)
+      // Apply to self
+      const myRole = roles[mpUserId];
+      if (myRole) {
+        isImpostor = !!myRole.isImpostor;
+        playerRole = myRole.role;
+      }
+      // Tell all clients
+      _mpBroadcast({ type: 'gameStart', roles, map: selectedMap, mode: gameMode,
+        settings: JSON.parse(JSON.stringify(gameSettings)) });
+      // Host starts locally
+      mpHandleCountdown({ map: selectedMap, mode: gameMode, settings: gameSettings });
     }
 
-    // --- All clients: countdown triggered by Firebase meta status ---
+    // --- Trigger game countdown (host or client) ---
     function mpHandleCountdown(meta) {
       if (!gameStarted) {
         document.getElementById('startScreen').style.display = 'none';
@@ -4360,20 +4771,17 @@
         requestAnimationFrame(gameLoop);
       }
       if (!mpIsHost) {
-        selectedMap = meta.map;
-        gameMode    = meta.mode;
-        Object.assign(gameSettings, meta.settings || {});
+        if (meta.map)      selectedMap = meta.map;
+        if (meta.mode)     gameMode    = meta.mode;
+        if (meta.settings) Object.assign(gameSettings, meta.settings || {});
       }
       dropshipCountdown       = 3;
       dropshipCountdownFrames = 60;
     }
 
-    // --- Called at end of init() to integrate MP with game state ---
+    // --- Called when game world starts (apply role, sync NPCs) ---
     function mpOnGameStart() {
       if (!mpLobbyCode) return;
-      if (mpIsHost) mpDb.ref('lobbies/' + mpLobbyCode + '/meta/status').set('ingame');
-
-      // Apply role from Firebase
       const me = mpPlayers[mpUserId];
       if (me) {
         isImpostor        = !!me.isImpostor;
@@ -4381,36 +4789,11 @@
         player.isImpostor = isImpostor;
         player.role       = playerRole;
       }
-
-      // Subscribe to events (only new ones after we connect)
-      mpLastEventKey = null;
-      const evRef = mpDb.ref('lobbies/' + mpLobbyCode + '/events').limitToLast(1);
-      evRef.once('value', snap => {
-        snap.forEach(child => { mpLastEventKey = child.key; });
-        mpUnsubEvents = mpDb.ref('lobbies/' + mpLobbyCode + '/events');
-        mpUnsubEvents.on('child_added', mpHandleEvent);
-      });
-
-      // Subscribe to remote positions
-      mpUnsubGame = mpDb.ref('lobbies/' + mpLobbyCode + '/gameState/players');
-      mpUnsubGame.on('value', snap => {
-        const states = snap.val() || {};
-        Object.entries(states).forEach(([id, st]) => {
-          if (id === mpUserId) return;
-          const npc = npcs.find(n => n.mpId === id);
-          if (!npc) return;
-          npc.x = st.x; npc.y = st.y;
-          if (st.alive === false && npc.alive) {
-            npc.alive = false;
-            deadBodies.push({ x: npc.x, y: npc.y, color: npc.color, name: npc.name });
-          }
-        });
-      });
-
+      mpSyncNPCsFromPlayers();
       mpPosThrottle = 0;
     }
 
-    // --- Map remote players onto NPCs ---
+    // --- Map remote players onto NPC slots ---
     function mpSyncNPCsFromPlayers() {
       if (!mpLobbyCode) return;
       const remotes = Object.values(mpPlayers).filter(p => p.id !== mpUserId);
@@ -4425,24 +4808,27 @@
       });
     }
 
-    // --- Position broadcast (throttled ~10fps) ---
+    // --- Position broadcast (throttled ~10 fps) ---
     function mpBroadcastPosition() {
       if (!mpLobbyCode || !gameStarted || dropshipPhase || gameOver) return;
       if (++mpPosThrottle < 6) return;
       mpPosThrottle = 0;
-      mpDb.ref('lobbies/' + mpLobbyCode + '/gameState/players/' + mpUserId).update({
-        x: Math.round(player.x), y: Math.round(player.y), alive: player.alive, t: Date.now(),
-      });
+      const msg = { type: 'pos', id: mpUserId,
+        x: Math.round(player.x), y: Math.round(player.y), alive: !!player.alive, t: Date.now() };
+      if (mpIsHost) { _mpBroadcast(msg); }
+      else if (mpHostConn && mpHostConn.open) { try { mpHostConn.send(msg); } catch(e){} }
     }
 
-    // --- Dropship lobby position broadcast ---
+    // --- Dropship position broadcast ---
     function mpBroadcastDropshipPos() {
       if (!mpLobbyCode || !dropshipPhase || !dropshipPlayer) return;
       if (++mpPosThrottle < 6) return;
       mpPosThrottle = 0;
-      mpDb.ref('lobbies/' + mpLobbyCode + '/players/' + mpUserId).update({
-        x: Math.round(dropshipPlayer.x), y: Math.round(dropshipPlayer.y), lastSeen: Date.now(),
-      });
+      const msg = { type: 'dropPos', id: mpUserId,
+        x: Math.round(dropshipPlayer.x), y: Math.round(dropshipPlayer.y) };
+      if (mpPlayers[mpUserId]) { mpPlayers[mpUserId].x = msg.x; mpPlayers[mpUserId].y = msg.y; }
+      if (mpIsHost) { _mpBroadcast(msg); }
+      else if (mpHostConn && mpHostConn.open) { try { mpHostConn.send(msg); } catch(e){} }
     }
 
     // --- Get remote players for dropship rendering ---
@@ -4451,20 +4837,16 @@
       return Object.values(mpPlayers).filter(p => p.id !== mpUserId);
     }
 
-    // --- Broadcast a game event ---
+    // --- Publish a game event ---
     function mpPublishEvent(type, targetId, data) {
-      if (!mpLobbyCode || !mpDb) return;
-      mpDb.ref('lobbies/' + mpLobbyCode + '/events').push({
-        type, actorId: mpUserId, targetId: targetId || null, data: data || null, ts: Date.now(),
-      });
+      if (!mpLobbyCode) return;
+      const ev = { type, actorId: mpUserId, targetId: targetId || null, data: data || null, ts: Date.now() };
+      if (mpIsHost) { _mpBroadcast({ type: 'event', event: ev }); }
+      else if (mpHostConn && mpHostConn.open) { try { mpHostConn.send({ type: 'event', event: ev }); } catch(e){} }
     }
 
-    // --- Handle incoming game event from Firebase ---
-    function mpHandleEvent(snap) {
-      if (!snap) return;
-      if (mpLastEventKey && snap.key <= mpLastEventKey) return;
-      mpLastEventKey = snap.key;
-      const ev = snap.val();
+    // --- Handle an incoming game event object ---
+    function mpHandleEvent(ev) {
       if (!ev || ev.actorId === mpUserId) return;
       switch (ev.type) {
         case 'kill': {
@@ -4493,6 +4875,10 @@
           else                      endGame(!!d.impostorWins);
           break;
         }
+        case 'hostLeft': {
+          mpShowToast('Host left the game.');
+          break;
+        }
       }
     }
 
@@ -4500,7 +4886,13 @@
     function mpPublishGameOver(mode, payload) {
       if (!mpIsHost || !mpLobbyCode) return;
       mpPublishEvent('gameover', null, { mode, ...payload });
-      mpDb.ref('lobbies/' + mpLobbyCode + '/meta/status').set('gameover');
+    }
+
+    // Auto-connect on page load (no button click needed)
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', mpBootstrap);
+    } else {
+      setTimeout(mpBootstrap, 0);
     }
 
     // ===================================================
@@ -4657,6 +5049,7 @@
       roleEngineer: true,
       roleScientist: true,
       roleDetective: true,
+      detectiveSuspectsPerCase: 4,   // max suspects per case
       roleNoisemaker: true,
       roleGuardianAngel: true,
       roleTracker: true,
@@ -4808,7 +5201,8 @@
 
       // Assign special roles
       const enabledImpRoles = ['shapeshifter','phantom','viper'].filter(r => gameSettings['role' + r[0].toUpperCase() + r.slice(1)]);
-      const enabledCrewRoles = ['engineer','scientist','detective','noisemaker','guardian_angel','tracker','sheriff'].filter(r => {
+      // guardian_angel is NOT a starting role — it is acquired upon death (if enabled)
+      const enabledCrewRoles = ['engineer','scientist','detective','noisemaker','tracker','sheriff'].filter(r => {
         const key = 'role' + r.split('_').map(w => w[0].toUpperCase() + w.slice(1)).join('');
         return gameSettings[key] !== false;
       });
@@ -4833,8 +5227,12 @@
 
       // Reset ability state
       abilityCooldown = 0; abilityTimer = 0; abilityActive = false;
-      shiftTarget = null; poisonTraps = []; noisemakerAlertTimer = 0;
-      detectiveScanActive = false; vitalsOpen = false;
+      shiftTarget = null; shiftMenuOpen = false; poisonTraps = []; noisemakerAlertTimer = 0;
+      document.getElementById('shiftMenu').style.display = 'none';
+      document.getElementById('shiftMenuOverlay').style.display = 'none';
+      detectiveNotes = []; detectiveNotesOpen = false; detectiveActiveCase = 0; detectiveInterrogate = 0;
+      document.getElementById('detectiveNotesPanel').style.display = 'none';
+      vitalsOpen = false;
       document.getElementById('vitalsPanel').style.display = 'none';
       document.getElementById('noisemakerAlert').style.display = 'none';
 
@@ -4852,7 +5250,7 @@
       document.getElementById('hsHiderIcons').style.display = 'none';
       document.getElementById('hsShieldBtn').style.display = 'none';
       document.getElementById('hsGhostPanel').style.display = 'none';
-      hsPingEffects = []; killEffects = []; ventEffects = []; taskEffects = []; shieldEffects = []; floatTexts = [];
+      hsPingEffects = []; killEffects = []; ventEffects = []; taskEffects = []; shieldEffects = []; floatTexts = []; phantomSmokeEffects = [];
 
       // Assign NPC hats and pets randomly
       const hatKeys = HATS.slice(1); // exclude 'none'
@@ -4907,7 +5305,7 @@
         finalHide = false;
         hsHidePhase = false;
         hideSeekPingTimer = 0;
-        hsPingEffects = []; killEffects = []; ventEffects = []; taskEffects = []; shieldEffects = []; floatTexts = [];
+        hsPingEffects = []; killEffects = []; ventEffects = []; taskEffects = []; shieldEffects = []; floatTexts = []; phantomSmokeEffects = [];
         hsInitialFreezeTimer = gameSettings.hideSeekHideTime * 60;
         hsReleaseTimer = 10 * 60; // seeker frozen for first 10 seconds of hide time
         hsHidePhase = true;
@@ -5043,7 +5441,7 @@
         case 'phantom':         doPhantom();     break;
         case 'viper':           doViper();        break;
         case 'scientist':       doToggleVitals(); break;
-        case 'detective':       doDetectiveScan(); break;
+        case 'detective':       toggleDetectiveNotes(); break;
         case 'engineer':        doEngineerVent(); break;
         case 'guardian_angel':  doGuardianAngel(); break;
         case 'tracker':         doTracker(); break;
@@ -5052,17 +5450,59 @@
 
     function doShapeshift() {
       if (abilityCooldown > 0 || abilityActive) return;
-      let nearest = null, nearDist = 250;
-      for (const npc of npcs) {
-        if (!npc.alive) continue;
-        const d = dist(player, npc);
-        if (d < nearDist) { nearDist = d; nearest = npc; }
+      if (shiftMenuOpen) { closeShiftMenu(); return; }
+      openShiftMenu();
+    }
+
+    function openShiftMenu() {
+      const livingNpcs = npcs.filter(n => n.alive && !n.isImpostor);
+      if (livingNpcs.length === 0) return;
+      shiftMenuOpen = true;
+      document.getElementById('shiftMenuOverlay').style.display = 'block';
+      const menu = document.getElementById('shiftMenu');
+      const list = document.getElementById('shiftMenuList');
+      list.innerHTML = '';
+      for (const npc of livingNpcs) {
+        const card = document.createElement('div');
+        card.style.cssText = 'display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,107,107,0.3);border-radius:9px;cursor:pointer;transition:background 0.15s;';
+        card.onmouseenter = () => card.style.background = 'rgba(255,107,107,0.15)';
+        card.onmouseleave = () => card.style.background = 'rgba(255,255,255,0.05)';
+        // Color dot
+        const dot = document.createElement('div');
+        dot.style.cssText = `width:22px;height:22px;border-radius:50%;background:${npc.color};flex-shrink:0;border:2px solid rgba(255,255,255,0.2);`;
+        // Info
+        const info = document.createElement('div');
+        info.style.cssText = 'flex:1;';
+        const nameEl = document.createElement('div');
+        nameEl.style.cssText = 'color:#eee;font-size:13px;font-weight:bold;';
+        nameEl.textContent = npc.name;
+        const detailEl = document.createElement('div');
+        detailEl.style.cssText = 'color:#888;font-size:11px;margin-top:2px;';
+        const hatLabel = npc.hat && npc.hat !== 'none' ? (HAT_ICONS[npc.hat] || npc.hat) : '';
+        const petLabel = npc.pet && npc.pet !== 'none' ? (PET_ICONS[npc.pet] || npc.pet) : '';
+        detailEl.textContent = [hatLabel, petLabel].filter(Boolean).join(' ') || 'No cosmetics';
+        info.appendChild(nameEl);
+        info.appendChild(detailEl);
+        card.appendChild(dot);
+        card.appendChild(info);
+        card.onclick = () => selectShiftTarget(npc);
+        list.appendChild(card);
       }
-      if (!nearest) return;
-      shiftTarget = { color: nearest.color, name: nearest.name };
+      menu.style.display = 'block';
+    }
+
+    function closeShiftMenu() {
+      shiftMenuOpen = false;
+      document.getElementById('shiftMenu').style.display = 'none';
+      document.getElementById('shiftMenuOverlay').style.display = 'none';
+    }
+
+    function selectShiftTarget(npc) {
+      closeShiftMenu();
+      shiftTarget = { color: npc.color, name: npc.name, hat: npc.hat || 'none', pet: npc.pet || 'none', skin: npc.skin || 'none' };
       abilityActive = true;
-      abilityTimer = 900;   // 15s
-      abilityCooldown = 900 + 1800; // resets after shift ends
+      abilityTimer = 900;        // 15s shifted
+      abilityCooldown = 900 + 1800; // 30s cooldown after shift ends
       // Leave evidence marker
       shifterEvidence.push({ x: player.x + player.w/2, y: player.y + player.h/2, timer: 300, maxTimer: 300 });
     }
@@ -5083,8 +5523,23 @@
     }
 
     function doTracker() {
-      if (abilityCooldown > 0 || abilityActive) return;
-      let nearest = null, nearDist = 99999;
+      // Comms sabotage disables tracking
+      if (sabotage.active && sabotage.type === 'comms') return;
+
+      // Untrack if already tracking
+      if (trackerTarget && trackerTimer > 0) {
+        trackerTarget = null;
+        trackerTimer = 0;
+        abilityActive = false;
+        abilityCooldown = 1800; // 30s cooldown after untracking
+        return;
+      }
+
+      if (abilityCooldown > 0) return;
+
+      // Must be near a player to track
+      const TRACK_RANGE = 120;
+      let nearest = null, nearDist = TRACK_RANGE;
       for (const npc of npcs) {
         if (!npc.alive) continue;
         const d = dist(player, npc);
@@ -5092,23 +5547,33 @@
       }
       if (!nearest) return;
       trackerTarget = nearest;
-      trackerTimer = 1800; // 30s * 60fps
+      trackerTimer = 1800; // 30s tracking duration
       abilityActive = true;
       abilityTimer = 1800;
-      abilityCooldown = 1800 + 1800; // 30s cooldown after
+      abilityCooldown = 1800 + 1800;
     }
 
     function doPhantom() {
-      if (abilityCooldown > 0 || abilityActive) return;
-      abilityActive = true;
-      abilityTimer = 600;   // 10s
-      abilityCooldown = 600 + 1500;
+      if (abilityCooldown > 0) return;
+      const _cx = player.x + player.w / 2;
+      const _cy = player.y + player.h / 2;
+      if (abilityActive) {
+        // Appear — reappear with smoke at current position
+        abilityActive = false;
+        abilityTimer = 0;
+        abilityCooldown = 1500; // 25s cooldown after appearing
+        spawnPhantomSmoke(_cx, _cy, player.color, false);
+      } else {
+        // Vanish — smoke stays at vanish position
+        abilityActive = true;
+        abilityTimer = 900;   // 15s max vanish duration
+        abilityCooldown = 900 + 1500;
+        spawnPhantomSmoke(_cx, _cy, player.color, true);
+      }
     }
 
     function doViper() {
-      if (abilityCooldown > 0) return;
-      poisonTraps.push({ x: player.x + player.w / 2, y: player.y + player.h / 2, triggered: false });
-      abilityCooldown = 1200; // 20s
+      // Acid replaces Kill — no separate F-key ability; Space bar handles the acid kill
     }
 
     function doToggleVitals() {
@@ -5131,11 +5596,107 @@
       }
     }
 
-    function doDetectiveScan() {
-      if (abilityCooldown > 0 || detectiveScanActive) return;
-      detectiveScanActive = true;
-      abilityTimer = 300;   // 5s
-      abilityCooldown = 300 + 1200;
+    function toggleDetectiveNotes() {
+      if (playerRole !== 'detective') return;
+      detectiveNotesOpen = !detectiveNotesOpen;
+      const panel = document.getElementById('detectiveNotesPanel');
+      panel.style.display = detectiveNotesOpen ? 'block' : 'none';
+      if (detectiveNotesOpen) renderDetectiveNotes();
+    }
+
+    function doInterrogate() {
+      if (playerRole !== 'detective' || detectiveInterrogate > 0) return;
+      if (detectiveNotes.length === 0) { showDetectiveToast('No active cases.'); return; }
+      // Find nearest living player at very close range (~35px)
+      let nearest = null, nearDist = 38;
+      for (const npc of npcs) {
+        if (!npc.alive) continue;
+        const d = dist(player, npc);
+        if (d < nearDist) { nearDist = d; nearest = npc; }
+      }
+      if (!nearest) { showDetectiveToast('Get closer to a suspect.'); return; }
+      // Use active case (or last case by default)
+      const caseIdx = Math.max(0, Math.min(detectiveActiveCase, detectiveNotes.length - 1));
+      const c = detectiveNotes[caseIdx];
+      if (!c) return;
+      const maxSuspects = gameSettings.detectiveSuspectsPerCase || 4;
+      if (c.suspects.length >= maxSuspects) { showDetectiveToast('Max suspects reached for this case.'); return; }
+      // Don't add the same suspect twice to this case
+      if (c.suspects.some(s => s.name === nearest.name)) { showDetectiveToast(nearest.name + ' already interrogated.'); return; }
+      const suspectRoom = getEntityRoom(nearest) || 'Unknown';
+      c.suspects.push({ name: nearest.name, color: nearest.color, room: suspectRoom });
+      detectiveInterrogate = 900; // 15s cooldown
+      showDetectiveToast('Interrogated ' + nearest.name + ' — ' + suspectRoom);
+      if (detectiveNotesOpen) renderDetectiveNotes();
+    }
+
+    function showDetectiveToast(msg) {
+      const t = document.getElementById('detectiveToast');
+      if (!t) return;
+      t.textContent = msg;
+      t.style.opacity = '1';
+      clearTimeout(t._to);
+      t._to = setTimeout(() => { t.style.opacity = '0'; }, 2200);
+    }
+
+    function addDetectiveCase(victimName, victimColor, location, killerType) {
+      if (playerRole !== 'detective') return;
+      // Don't duplicate cases for the same victim
+      if (detectiveNotes.some(c => c.victimName === victimName && !c.closed)) return;
+      detectiveNotes.push({ victimName, victimColor, location: location || 'Unknown', killerType: killerType || 'IMPOSTOR?', suspects: [] });
+      detectiveActiveCase = detectiveNotes.length - 1;
+      showDetectiveToast('📋 New case: ' + victimName);
+      if (detectiveNotesOpen) renderDetectiveNotes();
+    }
+
+    function renderDetectiveNotes() {
+      const panel = document.getElementById('detectiveNotesPanel');
+      if (!panel) return;
+      if (detectiveNotes.length === 0) {
+        panel.innerHTML = '<div style="color:#aaa;font-size:13px;padding:10px;">No cases yet. Bodies will be logged automatically.</div>';
+        return;
+      }
+      const c = detectiveNotes[Math.max(0, Math.min(detectiveActiveCase, detectiveNotes.length - 1))];
+      let html = '';
+      // Case navigation
+      if (detectiveNotes.length > 1) {
+        html += '<div style="display:flex;gap:6px;margin-bottom:10px;align-items:center;">';
+        html += '<button onclick="if(detectiveActiveCase>0){detectiveActiveCase--;renderDetectiveNotes();}" style="background:rgba(255,255,255,0.1);border:1px solid #555;color:#fff;padding:3px 8px;border-radius:4px;cursor:pointer;">&#8249;</button>';
+        html += '<span style="flex:1;text-align:center;font-size:12px;color:#aaa;">Case ' + (detectiveActiveCase+1) + ' / ' + detectiveNotes.length + '</span>';
+        html += '<button onclick="if(detectiveActiveCase<detectiveNotes.length-1){detectiveActiveCase++;renderDetectiveNotes();}" style="background:rgba(255,255,255,0.1);border:1px solid #555;color:#fff;padding:3px 8px;border-radius:4px;cursor:pointer;">&#8250;</button>';
+        html += '</div>';
+      }
+      // Victim info
+      html += '<div style="display:flex;gap:10px;margin-bottom:10px;">';
+      html += '<div style="flex:1;">';
+      html += '<div style="font-size:10px;color:#888;letter-spacing:1px;margin-bottom:3px;">VICTIM</div>';
+      html += '<div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:50%;background:' + c.victimColor + ';flex-shrink:0;"></div><span style="color:#fff;font-size:14px;font-weight:bold;">' + c.victimName + '</span></div>';
+      html += '<div style="margin-top:6px;font-size:10px;color:#888;">FOUND DEAD</div>';
+      html += '<div style="font-size:12px;color:#ddd;background:rgba(255,255,255,0.07);padding:4px 8px;border-radius:4px;margin-top:2px;">' + c.location + '</div>';
+      html += '</div>';
+      html += '<div style="flex:1;">';
+      html += '<div style="font-size:10px;color:#888;letter-spacing:1px;margin-bottom:3px;">KILLER</div>';
+      html += '<div style="font-size:13px;color:#ff9090;font-weight:bold;background:rgba(255,100,100,0.1);padding:4px 8px;border-radius:4px;">' + c.killerType + '</div>';
+      html += '</div>';
+      html += '</div>';
+      // Suspects
+      html += '<div style="font-size:10px;color:#888;letter-spacing:1px;margin-bottom:5px;">SUSPECTS — LOCATIONS AT TIME OF DEATH</div>';
+      const maxSuspects = gameSettings.detectiveSuspectsPerCase || 4;
+      for (let i = 0; i < maxSuspects; i++) {
+        const s = c.suspects[i];
+        if (s) {
+          html += '<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:rgba(255,255,255,0.06);border-radius:6px;margin-bottom:4px;">';
+          html += '<span style="color:#888;font-size:11px;min-width:14px;">' + (i+1) + ':</span>';
+          html += '<div style="width:10px;height:10px;border-radius:50%;background:' + s.color + ';flex-shrink:0;"></div>';
+          html += '<span style="color:#fff;font-size:12px;flex:1;">' + s.name + '</span>';
+          html += '<span style="color:#aaa;font-size:11px;">' + s.room + '</span>';
+          html += '</div>';
+        } else {
+          html += '<div style="padding:5px 8px;background:rgba(255,255,255,0.03);border-radius:6px;margin-bottom:4px;color:#444;font-size:12px;">SUSPECT ' + (i+1) + '?</div>';
+        }
+      }
+      const inner = document.getElementById('detectiveNotesPanelInner');
+      if (inner) inner.innerHTML = html;
     }
 
     function doEngineerVent() {
@@ -5433,10 +5994,11 @@
         tc.strokeRect(wx(w.x), wy(w.y), w.w * sc, w.h * sc);
       }
 
-      // Task markers
+      // Task markers — only show tasks assigned to the player
+      const _mapTaskList = (player && player.taskList && player.taskList.length) ? player.taskList : taskLocations;
       const showTodo = _taskMapFilter !== 'done';
       const showDone = _taskMapFilter !== 'todo';
-      for (const t of taskLocations) {
+      for (const t of _mapTaskList) {
         if (t.done  && !showDone) continue;
         if (!t.done && !showTodo) continue;
         const tx = wx(t.x + 8), ty = wy(t.y + 17);
@@ -5538,7 +6100,8 @@
         useIcon.textContent = '🔀'; useLbl.textContent = 'TRAVEL';
       } else {
         useIcon.textContent = '🔧'; useLbl.textContent = 'USE';
-        for (const task of taskLocations) {
+        const _useTasks = (player.taskList && player.taskList.length) ? player.taskList : taskLocations;
+        for (const task of (isImpostor ? [] : _useTasks)) {
           if (!task.done && dist(player, task) < 60) { canUse = true; break; }
         }
         if (!canUse && selectedMap === 'skeld' && dist(player, SECURITY_MONITOR) < 70) canUse = true;
@@ -5642,6 +6205,40 @@
         text = `[F/V] Use Vent`;
       } else if (playerRole === 'noisemaker') {
         text = `NOISEMAKER — alerts on death`;
+      } else if (playerRole === 'viper') {
+        text = `VIPER — [SPACE] Acid (dissolves body)`;
+      } else if (playerRole === 'detective') {
+        text = detectiveNotes.length > 0
+          ? `[F] Notes (${detectiveNotes.length} case${detectiveNotes.length !== 1 ? 's' : ''})`
+          : `[F] Notes — no cases yet`;
+      } else if (playerRole === 'tracker') {
+        if (sabotage.active && sabotage.type === 'comms') {
+          text = `📡 COMMS SABOTAGED — Tracker disabled`;
+        } else if (trackerTarget && trackerTimer > 0) {
+          text = `📍 Tracking ${trackerTarget.name} — ${Math.ceil(trackerTimer / 60)}s left  [F] Untrack`;
+        } else if (abilityCooldown > 0) {
+          text = `[F] Track — cooldown ${Math.ceil(abilityCooldown / 60)}s`;
+        } else {
+          text = `[F] Track — approach a player`;
+        }
+      } else if (playerRole === 'phantom') {
+        if (abilityActive) {
+          text = `👻 VANISHED — ${Math.ceil(abilityTimer / 60)}s left  [F] Appear`;
+        } else if (abilityCooldown > 0) {
+          text = `[F] Vanish — cooldown ${Math.ceil(abilityCooldown / 60)}s`;
+        } else {
+          text = `[F] Vanish — READY`;
+        }
+      } else if (playerRole === 'shapeshifter') {
+        if (abilityActive && shiftTarget) {
+          text = `🎭 SHIFTED as ${shiftTarget.name} — ${Math.ceil(abilityTimer / 60)}s left`;
+        } else if (abilityCooldown > 0) {
+          text = `[F] Shapeshift — cooldown ${Math.ceil(abilityCooldown / 60)}s`;
+        } else if (shiftMenuOpen) {
+          text = `🎭 Select a player to shift into...`;
+        } else {
+          text = `[F] Shapeshift — READY`;
+        }
       } else if (abilityCooldown > 0 && !abilityActive) {
         text = `[F] ${ROLE_LABELS[playerRole]} — cooldown ${Math.ceil(abilityCooldown / 60)}s`;
       } else if (abilityActive) {
@@ -5668,7 +6265,8 @@
         const isActive = currentPlayerTask === task;
         const div = document.createElement('div');
         div.className = 'tli' + (task.done ? ' done' : isActive ? ' active' : '');
-        div.innerHTML = '<div class="tli-dot"></div><span class="tli-name">' + task.name + '</span>';
+        const roomLabel = task.room ? '<span class="tli-room">' + task.room + '</span>' : '';
+        div.innerHTML = '<div class="tli-dot"></div><span class="tli-name">' + task.name + '</span>' + roomLabel;
         items.appendChild(div);
       }
     }
@@ -6652,8 +7250,24 @@
         playSfx('kill');
         killFlash = 20;
         if (!isImpostor) {
-          // Crewmate becomes ghost instead of ending game
+          // Crewmate becomes ghost — or Guardian Angel if that role is enabled
           isGhost = true;
+          if (gameSettings.roleGuardianAngel && gameMode !== 'hideseek') {
+            playerRole = 'guardian_angel';
+            player.role = 'guardian_angel';
+            abilityCooldown = 0; abilityTimer = 0; abilityActive = false;
+            // Show Guardian Angel role reveal
+            setTimeout(() => {
+              const ov = document.getElementById('roleRevealOverlay'), c = document.getElementById('roleRevealCard');
+              document.getElementById('roleRevealName').textContent = 'GUARDIAN ANGEL';
+              document.getElementById('roleRevealDesc').textContent = 'Protect living crewmates with your ability.';
+              c.style.color = '#ffffff';
+              ov.style.display = 'flex'; ov.style.animation = 'none'; c.style.animation = 'none';
+              ov.offsetHeight;
+              ov.style.animation = 'roleOverlayFade 4.2s forwards'; c.style.animation = 'roleCardPop 4.2s forwards';
+              setTimeout(() => { ov.style.display = 'none'; }, 4300);
+            }, 600);
+          }
           const msg = document.getElementById('ghostMsg');
           msg.style.display = 'block';
           setTimeout(() => { msg.style.display = 'none'; }, 3500);
@@ -6679,11 +7293,22 @@
           return;
         }
         npcVictim.alive = false;
-        deadBodies.push({ x: npcVictim.x, y: npcVictim.y, color: npcVictim.color, name: npcVictim.name });
+        const _nvb = { x: npcVictim.x, y: npcVictim.y, color: npcVictim.color, name: npcVictim.name };
+        _nvb.killerType = impostor.role === 'shapeshifter' ? 'SHAPESHIFTER' : impostor.role === 'phantom' ? 'PHANTOM' : impostor.role === 'viper' ? 'VIPER' : 'IMPOSTOR';
+        if (impostor.role === 'viper' && gameSettings.viperDissolveTime > 0) {
+          _nvb.dissolveTimer = gameSettings.viperDissolveTime * 60;
+          _nvb.dissolveMax   = gameSettings.viperDissolveTime * 60;
+        }
+        deadBodies.push(_nvb);
         spawnKillEffect(npcVictim.x + npcVictim.w / 2, npcVictim.y + npcVictim.h / 2, npcVictim.color);
-        // Pet stays at death location
+        if (impostor.role === 'viper') spawnAcidEffect(npcVictim.x + npcVictim.w / 2, npcVictim.y + npcVictim.h / 2);
+        // Pet stays at death location (dissolves with body for Viper)
         if (npcVictim.pet && npcVictim.pet !== 'none') {
-          deadPets.push({x: npcVictim.x + 10, y: npcVictim.y + npcVictim.h, petType: npcVictim.pet, color: npcVictim.color});
+          const _ndp = {x: npcVictim.x + 10, y: npcVictim.y + npcVictim.h, petType: npcVictim.pet, color: npcVictim.color};
+          if (impostor.role === 'viper' && gameSettings.viperDissolveTime > 0) {
+            _ndp.dissolveTimer = gameSettings.viperDissolveTime * 60; _ndp.dissolveMax = gameSettings.viperDissolveTime * 60;
+          }
+          deadPets.push(_ndp);
         }
         if (npcVictim.role === 'noisemaker') triggerNoisemakerAlert(npcVictim);
         notifyWitnessesOfKill(impostor.name, impostor.x, impostor.y, npcVictim.name);
@@ -7099,6 +7724,8 @@
 
     function fixSabotage() {
       if (!sabotage.active) return false;
+      // Phantom cannot fix sabotages while vanished
+      if (playerRole === 'phantom' && abilityActive) return false;
       const stations = getSabFixStations();
       if (!stations.length) return false;
 
@@ -7273,7 +7900,8 @@
       if (!player.alive && !isGhost) return;
       if (gameMode === 'hideseek' && player.hsFrozen) return; // seeker frozen during countdown
       if (inVent) return; // can't move while in vent
-      if (playerDoingTask && !isGhost) { updatePlayerTask(); return; }
+      // Crewmate ghosts (and Guardian Angels) can still do tasks; impostor ghosts cannot
+      if (playerDoingTask && (!isGhost || !isImpostor)) { updatePlayerTask(); return; }
       let dx = 0, dy = 0;
       if (keys['w'] || keys['arrowup']) dy = -player.speed;
       if (keys['s'] || keys['arrowdown']) dy = player.speed;
@@ -7309,13 +7937,24 @@
       if (abilityActive) {
         abilityTimer--;
         if (abilityTimer <= 0) {
+          // Phantom: vanish expired — force appear with smoke
+          if (playerRole === 'phantom') {
+            spawnPhantomSmoke(player.x + player.w / 2, player.y + player.h / 2, player.color, false);
+          }
           abilityActive = false;
           if (playerRole === 'shapeshifter') shiftTarget = null;
-          if (playerRole === 'detective') detectiveScanActive = false;
         }
       }
-      // Tracker timer
-      if (trackerTimer > 0) trackerTimer--;
+      // Tracker timer — comms sabotage immediately clears tracking
+      if (playerRole === 'tracker' && trackerTarget && sabotage.active && sabotage.type === 'comms') {
+        trackerTarget = null; trackerTimer = 0; abilityActive = false;
+      }
+      if (trackerTimer > 0) {
+        trackerTimer--;
+        if (trackerTimer <= 0) { trackerTarget = null; abilityActive = false; }
+      }
+      // Detective interrogate cooldown
+      if (detectiveInterrogate > 0) detectiveInterrogate--;
       // Player protection timer
       if (player.protectionTimer > 0) player.protectionTimer--;
       // Shifter evidence fade
@@ -7330,6 +7969,16 @@
         _kp.vy += 0.14 * _frameDt; _kp.vx *= 0.97;
         _kp.alpha -= 0.022 * _frameDt;
         if (_kp.alpha <= 0) killEffects.splice(i, 1);
+      }
+      // Phantom smoke
+      for (let i = phantomSmokeEffects.length - 1; i >= 0; i--) {
+        const _ps = phantomSmokeEffects[i];
+        if (!_ps.fixed) { _ps.x += _ps.vx * _frameDt; }
+        _ps.y += _ps.vy * _frameDt;
+        _ps.vy *= 0.97;   // slow deceleration
+        _ps.r += 0.18 * _frameDt; // smoke expands
+        _ps.alpha -= 0.010 * _frameDt;
+        if (_ps.alpha <= 0) phantomSmokeEffects.splice(i, 1);
       }
       // Vent ripples
       for (let i = ventEffects.length - 1; i >= 0; i--) {
@@ -7372,37 +8021,18 @@
         if (npc.protectionTimer > 0) npc.protectionTimer--;
       }
 
-      // Viper: check traps
-      for (const trap of poisonTraps) {
-        if (trap.triggered) continue;
-        for (const npc of npcs) {
-          if (!npc.alive || npc.isImpostor) continue;
-          if (dist({ x: trap.x, y: trap.y }, npc) < 40) {
-            trap.triggered = true;
-            npc.poisoned = true;
-            npc.poisonTimer = 480; // 8s
-          }
-        }
-      }
-      for (const npc of npcs) {
-        if (!npc.poisoned || !npc.alive) continue;
-        npc.poisonTimer--;
-        if (npc.poisonTimer <= 0) {
-          npc.alive = false;
-          const body = { x: npc.x, y: npc.y, color: npc.color, name: npc.name };
-          if (gameSettings.viperDissolveTime > 0) body.dissolveTimer = gameSettings.viperDissolveTime * 60;
-          deadBodies.push(body);
-          const ac = npcs.filter(n => n.alive && !n.isImpostor).length;
-          const ai = npcs.filter(n => n.alive && n.isImpostor).length + 1;
-          if (ai >= ac) endGame(true);
-        }
-      }
-
-      // Viper body dissolve
+      // Viper: dissolve bodies and their pets over time
       for (let bi = deadBodies.length - 1; bi >= 0; bi--) {
-        if (deadBodies[bi].dissolveTimer === undefined) continue;
-        deadBodies[bi].dissolveTimer--;
-        if (deadBodies[bi].dissolveTimer <= 0) deadBodies.splice(bi, 1);
+        const _db = deadBodies[bi];
+        if (_db.dissolveTimer === undefined) continue;
+        _db.dissolveTimer--;
+        if (_db.dissolveTimer <= 0) deadBodies.splice(bi, 1);
+      }
+      for (let pi = deadPets.length - 1; pi >= 0; pi--) {
+        const _dp2 = deadPets[pi];
+        if (_dp2.dissolveTimer === undefined) continue;
+        _dp2.dissolveTimer--;
+        if (_dp2.dissolveTimer <= 0) deadPets.splice(pi, 1);
       }
 
       // Noisemaker alert countdown
@@ -7470,10 +8100,16 @@
           const nearVent = getNearbyVent();
           if (nearVent && !inVent) { ventHint.textContent = 'Press V/F - Enter Vent (Engineer)'; ventHint.style.display = 'block'; }
         }
-        // Detective scan hint
-        if (playerRole === 'detective' && abilityCooldown <= 0 && !detectiveScanActive)
-          ventHint.textContent = 'Press F - Detective Scan (5s)';
-        if (playerRole === 'detective') ventHint.style.display = 'block';
+        // Detective notes/interrogate hint
+        if (playerRole === 'detective') {
+          const nearSuspect = npcs.find(n => n.alive && dist(player, n) < 38);
+          if (nearSuspect && detectiveInterrogate <= 0 && detectiveNotes.length > 0) {
+            ventHint.textContent = 'Press F - Interrogate ' + nearSuspect.name;
+          } else {
+            ventHint.textContent = 'F - Notes' + (detectiveNotes.length > 0 ? ' (' + detectiveNotes.length + ' case' + (detectiveNotes.length !== 1 ? 's' : '') + ')' : '');
+          }
+          ventHint.style.display = 'block';
+        }
         // Scientist hint
         if (playerRole === 'scientist')
           ventHint.textContent = 'Press F - ' + (vitalsOpen ? 'Close Vitals' : 'Open Vitals');
@@ -7562,10 +8198,31 @@
           ventHint.style.display = 'block';
         }
 
+        // Tracker hint
+        if (playerRole === 'tracker') {
+          if (trackerTarget && trackerTimer > 0) {
+            ventHint.textContent = 'Press F - Untrack ' + trackerTarget.name + ' (' + Math.ceil(trackerTimer / 60) + 's left)';
+            ventHint.style.display = 'block';
+          } else if (abilityCooldown <= 0 && !(sabotage.active && sabotage.type === 'comms')) {
+            const nearForTrack = npcs.find(n => n.alive && dist(player, n) < 120);
+            if (nearForTrack) {
+              ventHint.textContent = 'Press F - Track ' + nearForTrack.name;
+              ventHint.style.display = 'block';
+            }
+          } else if (sabotage.active && sabotage.type === 'comms') {
+            ventHint.textContent = 'Tracker disabled — Comms Sabotaged';
+            ventHint.style.display = 'block';
+          }
+        }
+
         // Shapeshifter hint
         if (playerRole === 'shapeshifter' && !abilityActive && abilityCooldown <= 0) {
-          const nearNpc = npcs.find(n => n.alive && dist(player, n) < 250);
-          if (nearNpc) { ventHint.textContent = 'Press F - Shapeshift into ' + nearNpc.name; ventHint.style.display = 'block'; }
+          ventHint.textContent = 'Press F - Shapeshift (select target)';
+          ventHint.style.display = 'block';
+        }
+        if (playerRole === 'shapeshifter' && abilityActive) {
+          ventHint.textContent = 'Shifted into ' + (shiftTarget ? shiftTarget.name : '?');
+          ventHint.style.display = 'block';
         }
 
         if (killCooldown > 0) {
@@ -7575,7 +8232,7 @@
           cdDisplay.style.display = 'none';
           for (const npc of npcs) {
             if (npc.alive && !npc.isImpostor && dist(player, npc) < 60) {
-              hint.textContent = 'Press SPACE - Kill ' + npc.name;
+              hint.textContent = (playerRole === 'viper' ? 'Press SPACE - Acid ' : 'Press SPACE - Kill ') + npc.name;
               hint.style.display = 'block';
               break;
             }
@@ -7639,7 +8296,8 @@
     }
 
     function doKill() {
-      if (killCooldown > 0 || inVent) return;
+      if (killCooldown > 0 || inVent || isGhost) return;
+      if (playerRole === 'phantom' && abilityActive) return; // phantom cannot kill while invisible
       const isSheriff = playerRole === 'sheriff' && !isImpostor;
       if (!isImpostor && !isSheriff) return;
       const kDist = gameSettings.killDistance === 'Short' ? 40 : gameSettings.killDistance === 'Long' ? 80 : 60;
@@ -7678,14 +8336,27 @@
             }
             break;
           }
-          // Normal impostor kill
+          // Normal impostor kill (Viper uses Acid — same range, body dissolves)
           if (!npc.isImpostor) {
             npc.alive = false;
-            deadBodies.push({ x: npc.x, y: npc.y, color: npc.color, name: npc.name });
+            const _kb = { x: npc.x, y: npc.y, color: npc.color, name: npc.name };
+            _kb.killerType = playerRole === 'shapeshifter' ? 'SHAPESHIFTER' : playerRole === 'phantom' ? 'PHANTOM' : playerRole === 'viper' ? 'VIPER' : 'IMPOSTOR';
+            if (playerRole === 'viper' && gameSettings.viperDissolveTime > 0) {
+              _kb.dissolveTimer = gameSettings.viperDissolveTime * 60;
+              _kb.dissolveMax   = gameSettings.viperDissolveTime * 60;
+            }
+            deadBodies.push(_kb);
             spawnKillEffect(npc.x + npc.w / 2, npc.y + npc.h / 2, npc.color);
-            // Pet stays at death location
+            // Viper acid splash effect — green particles
+            if (playerRole === 'viper') spawnAcidEffect(npc.x + npc.w / 2, npc.y + npc.h / 2);
+            // Pet stays at death location (dissolves with body for Viper)
             if (npc.pet && npc.pet !== 'none') {
-              deadPets.push({x: npc.x + 10, y: npc.y + npc.h, petType: npc.pet, color: npc.color});
+              const _dp = {x: npc.x + 10, y: npc.y + npc.h, petType: npc.pet, color: npc.color};
+              if (playerRole === 'viper' && gameSettings.viperDissolveTime > 0) {
+                _dp.dissolveTimer = gameSettings.viperDissolveTime * 60;
+                _dp.dissolveMax   = gameSettings.viperDissolveTime * 60;
+              }
+              deadPets.push(_dp);
             }
             if (npc.role === 'noisemaker') triggerNoisemakerAlert(npc);
             playSfx('kill');
@@ -8057,6 +8728,8 @@
       playSfx('meeting');
       // End any active sabotage (critical or not) when a meeting is called
       if (sabotage.active) endSabotage();
+      // Close shift menu if open during a meeting
+      if (shiftMenuOpen) closeShiftMenu();
 
       // Clear dead pets on meeting start
       deadPets = [];
@@ -8075,6 +8748,17 @@
 
       // Mark all bodies as reported so no further reports trigger
       deadBodies.forEach(b => b.reported = true);
+
+      // Detective: auto-log new dead bodies as cases
+      if (playerRole === 'detective') {
+        for (const body of deadBodies) {
+          if (!body.detectiveLogged) {
+            body.detectiveLogged = true;
+            const loc = getRoomAtPoint ? getRoomAtPoint(body.x, body.y) : (getEntityRoom({x: body.x, y: body.y}) || 'Unknown');
+            addDetectiveCase(body.name, body.color, loc, body.killerType || 'IMPOSTOR?');
+          }
+        }
+      }
 
       // Snapshot each NPC's location before teleporting (used in discussion)
       npcs.forEach(n => {
@@ -8426,9 +9110,31 @@
             }
           }, 3000);
         } else {
+          // Crewmate player ejected — becomes Guardian Angel if enabled, otherwise game ends
           playSfx('eject');
           showEjectionAnim(ejected.name, ejected.color, false, remainingImps);
-          setTimeout(() => { voteScreen.style.display = 'none'; inMeeting = false; endGame(true); }, 3000);
+          if (gameSettings.roleGuardianAngel && gameMode !== 'hideseek') {
+            setTimeout(() => {
+              voteScreen.style.display = 'none'; inMeeting = false;
+              isGhost = true;
+              playerRole = 'guardian_angel'; player.role = 'guardian_angel';
+              abilityCooldown = 0; abilityTimer = 0; abilityActive = false;
+              deadBodies = [];
+              npcs.forEach(n => { n.sawBody = false; n.bodyLocation = null; n.completedVisualTasks = []; n.fixingSabotage = false; });
+              witnessedVisualTasks = new Set();
+              // Show Guardian Angel role reveal
+              const ov = document.getElementById('roleRevealOverlay'), c = document.getElementById('roleRevealCard');
+              document.getElementById('roleRevealName').textContent = 'GUARDIAN ANGEL';
+              document.getElementById('roleRevealDesc').textContent = 'Protect living crewmates with your ability.';
+              c.style.color = '#ffffff';
+              ov.style.display = 'flex'; ov.style.animation = 'none'; c.style.animation = 'none';
+              ov.offsetHeight;
+              ov.style.animation = 'roleOverlayFade 4.2s forwards'; c.style.animation = 'roleCardPop 4.2s forwards';
+              setTimeout(() => { ov.style.display = 'none'; }, 4300);
+            }, 3000);
+          } else {
+            setTimeout(() => { voteScreen.style.display = 'none'; inMeeting = false; endGame(true); }, 3000);
+          }
         }
       } else {
         const npc = npcs.find(n => n.name === ejected.name);
@@ -8575,7 +9281,7 @@
       document.getElementById('hsShieldBtn').style.display = 'none';
       document.getElementById('hsGhostPanel').style.display = 'none';
       document.getElementById('hsSeekerMeter').style.display = 'none';
-      hsPingEffects = []; killEffects = []; ventEffects = []; taskEffects = []; shieldEffects = []; floatTexts = [];
+      hsPingEffects = []; killEffects = []; ventEffects = []; taskEffects = []; shieldEffects = []; floatTexts = []; phantomSmokeEffects = [];
       updateHsHiderIcons();
       const title = document.getElementById('winTitle');
       const desc = document.getElementById('winDesc');
@@ -9234,13 +9940,20 @@
       ctx.restore();
     }
 
-    function drawDeadBody(ctx, x, y, color) {
+    function drawDeadBody(ctx, x, y, color, dissolveProgress) {
+      const _dp = dissolveProgress || 0;
       ctx.save();
-      // Blood pool (radial gradient)
+      // Blood pool — replaced by acid for dissolving bodies
       const _bpGrad = ctx.createRadialGradient(x + 15, y + 28, 2, x + 15, y + 28, 20);
-      _bpGrad.addColorStop(0, 'rgba(180,0,0,0.75)');
-      _bpGrad.addColorStop(0.55, 'rgba(110,0,0,0.45)');
-      _bpGrad.addColorStop(1, 'rgba(70,0,0,0)');
+      if (_dp > 0) {
+        _bpGrad.addColorStop(0, 'rgba(30,180,60,0.7)');
+        _bpGrad.addColorStop(0.55, 'rgba(10,110,30,0.45)');
+        _bpGrad.addColorStop(1, 'rgba(0,50,10,0)');
+      } else {
+        _bpGrad.addColorStop(0, 'rgba(180,0,0,0.75)');
+        _bpGrad.addColorStop(0.55, 'rgba(110,0,0,0.45)');
+        _bpGrad.addColorStop(1, 'rgba(70,0,0,0)');
+      }
       ctx.fillStyle = _bpGrad;
       ctx.beginPath();
       ctx.ellipse(x + 15, y + 28, 22, 13, 0.25, 0, Math.PI * 2);
@@ -9304,6 +10017,33 @@
       ctx.moveTo(_ex - 3, _ey - 2); ctx.lineTo(_ex + 1, _ey + 2);
       ctx.moveTo(_ex + 1, _ey - 2); ctx.lineTo(_ex - 3, _ey + 2);
       ctx.stroke();
+
+      // Acid dissolve overlay — green bubbling wash across the body
+      if (_dp > 0) {
+        const _aOv = Math.min(0.82, _dp * 1.1);
+        ctx.globalAlpha = _aOv;
+        // Stage 1 (0-0.35): thin acid coating
+        // Stage 2 (0.35-0.65): flesh eaten, body warps
+        // Stage 3 (0.65+): mostly bone, near-transparent
+        const _acidGrad = ctx.createRadialGradient(x+18, y+20, 1, x+18, y+22, 18);
+        _acidGrad.addColorStop(0, 'rgba(80,255,100,0.6)');
+        _acidGrad.addColorStop(0.6, 'rgba(30,180,50,0.35)');
+        _acidGrad.addColorStop(1, 'rgba(0,80,20,0)');
+        ctx.fillStyle = _acidGrad;
+        ctx.beginPath(); ctx.ellipse(x+18, y+22, 17, 11, 0.1, 0, Math.PI*2); ctx.fill();
+        // Bubble dots
+        if (_dp < 0.75) {
+          ctx.globalAlpha = _aOv * 0.7;
+          ctx.fillStyle = 'rgba(120,255,140,0.8)';
+          const _seed = Math.floor(_dp * 12);
+          for (let _bi = 0; _bi < 5; _bi++) {
+            const _bx = x + 8 + ((_seed * 7 + _bi * 13) % 22);
+            const _by = y + 13 + ((_seed * 5 + _bi * 9) % 14);
+            ctx.beginPath(); ctx.arc(_bx, _by, 1.2 + (_bi%2)*0.8, 0, Math.PI*2); ctx.fill();
+          }
+        }
+        ctx.globalAlpha = 1;
+      }
 
       ctx.restore();
     }
@@ -14427,9 +15167,11 @@
       }
 
       // Tasks — type-specific icons with pulsing glow (hidden during H&S final hunt)
+      // Only show tasks assigned to the player (not every task on the map)
       const _tPulse = 0.55 + 0.45 * Math.sin(Date.now() / 600);
+      const _visibleTasks = (player.taskList && player.taskList.length) ? player.taskList : taskLocations;
       if (gameMode !== 'hideseek' || !finalHide)
-      for (const t of taskLocations) {
+      for (const t of (isImpostor ? [] : _visibleTasks)) {
         const _ttx = t.x - ox, _tty = t.y - oy;
         const _ttype = getTaskType(t.name);
         ctx.save();
@@ -14694,13 +15436,35 @@
         mc.restore();
       }
 
-      // Tracker target
+      // Tracker target — shows in their true color, pulsing ring
       if (playerRole === 'tracker' && trackerTarget && trackerTarget.alive && trackerTimer > 0) {
-        if (Math.floor(frameCount/15)%2 === 0) {
-          mc.fillStyle = '#ff8844';
-          mc.beginPath(); mc.arc(trackerTarget.x*sc, trackerTarget.y*sc, 5, 0, Math.PI*2); mc.fill();
-          mc.strokeStyle = '#fff'; mc.lineWidth = 1; mc.stroke();
-        }
+        const _tx = trackerTarget.x * sc;
+        const _ty = trackerTarget.y * sc;
+        const _pulse = 0.5 + 0.5 * Math.sin(frameCount * 0.15);
+        const _tColor = trackerTarget.color;
+        mc.save();
+        // Outer pulsing ring
+        mc.globalAlpha = 0.35 + 0.35 * _pulse;
+        mc.strokeStyle = _tColor;
+        mc.lineWidth = 1.5;
+        mc.beginPath(); mc.arc(_tx, _ty, 6 + _pulse * 3, 0, Math.PI * 2); mc.stroke();
+        // Inner solid dot
+        mc.globalAlpha = 1;
+        mc.fillStyle = _tColor;
+        mc.shadowColor = _tColor; mc.shadowBlur = 6;
+        mc.beginPath(); mc.arc(_tx, _ty, 4, 0, Math.PI * 2); mc.fill();
+        mc.shadowBlur = 0;
+        mc.restore();
+      }
+
+      // Phantom smoke wisps on minimap (everyone can see them)
+      for (const _ps of phantomSmokeEffects) {
+        mc.save();
+        mc.globalAlpha = Math.max(0, _ps.alpha * 0.7);
+        mc.fillStyle = _ps.color;
+        mc.shadowColor = _ps.color; mc.shadowBlur = 4;
+        mc.beginPath(); mc.arc(_ps.x * sc, _ps.y * sc, Math.max(1.5, _ps.r * sc * 0.35), 0, Math.PI * 2); mc.fill();
+        mc.restore();
       }
 
       // Shifter evidence
@@ -14766,12 +15530,34 @@
       }
 
       for (const body of deadBodies) {
-        // Ground shadow under body
+        // Dissolve progress: 0 = fresh, 1 = fully dissolved (removed before reaching 1)
+        const _dissolveP = (body.dissolveMax && body.dissolveTimer !== undefined)
+          ? 1 - (body.dissolveTimer / body.dissolveMax) : 0;
+        const _bodyAlpha = _dissolveP > 0.6 ? Math.max(0.05, 1 - (_dissolveP - 0.6) / 0.4) : 1;
         ctx.save();
+        ctx.globalAlpha = _bodyAlpha;
+        // Ground shadow under body
         ctx.fillStyle = 'rgba(0,0,0,0.28)';
         ctx.beginPath(); ctx.ellipse(body.x - ox + 16, body.y - oy + 30, 24, 8, 0.15, 0, Math.PI * 2); ctx.fill();
+        // Acid pool (green glow under dissolving body)
+        if (_dissolveP > 0) {
+          const _acidAlpha = Math.min(0.7, _dissolveP * 1.4);
+          const _acidR = 18 + _dissolveP * 10;
+          const _ag = ctx.createRadialGradient(body.x-ox+16, body.y-oy+28, 2, body.x-ox+16, body.y-oy+28, _acidR);
+          _ag.addColorStop(0, 'rgba(50,220,80,'+(_acidAlpha*1.1)+')');
+          _ag.addColorStop(0.5, 'rgba(20,160,40,'+_acidAlpha+')');
+          _ag.addColorStop(1, 'rgba(0,80,10,0)');
+          ctx.fillStyle = _ag;
+          ctx.beginPath(); ctx.ellipse(body.x-ox+16, body.y-oy+28, _acidR, _acidR*0.55, 0.2, 0, Math.PI*2); ctx.fill();
+        }
+        // Body color shifts toward yellow-green bone as it dissolves
+        let _bodyColor = body.color;
+        if (_dissolveP > 0.25) {
+          const _boneT = (_dissolveP - 0.25) / 0.75;
+          _bodyColor = _dissolveP > 0.65 ? `rgba(180,170,120,${_bodyAlpha})` : body.color;
+        }
+        drawDeadBody(ctx, body.x - ox, body.y - oy, _bodyColor, _dissolveP);
         ctx.restore();
-        drawDeadBody(ctx, body.x - ox, body.y - oy, body.color);
       }
 
       // ── Canvas effect animations ──────────────────────────────────────────
@@ -14781,6 +15567,18 @@
         ctx.globalAlpha = Math.max(0, _kp.alpha);
         ctx.fillStyle = _kp.color;
         ctx.beginPath(); ctx.arc(_kp.x - ox, _kp.y - oy, _kp.r, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      }
+      // Phantom smoke clouds
+      for (const _ps of phantomSmokeEffects) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, _ps.alpha);
+        // Radial gradient for soft wispy smoke
+        const _sg = ctx.createRadialGradient(_ps.x - ox, _ps.y - oy, 0, _ps.x - ox, _ps.y - oy, _ps.r);
+        _sg.addColorStop(0, _ps.color);
+        _sg.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = _sg;
+        ctx.beginPath(); ctx.arc(_ps.x - ox, _ps.y - oy, _ps.r, 0, Math.PI * 2); ctx.fill();
         ctx.restore();
       }
       // Vent ripple rings
@@ -14826,23 +15624,7 @@
       }
       // ─────────────────────────────────────────────────────────────────────
 
-      // Poison traps (viper)
-      for (const trap of poisonTraps) {
-        if (trap.triggered) continue;
-        ctx.save();
-        ctx.globalAlpha = 0.6;
-        ctx.fillStyle = '#33ff55';
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-          const angle = (i / 6) * Math.PI * 2 - Math.PI / 2;
-          const tx = trap.x - ox + Math.cos(angle) * 10;
-          const ty = trap.y - oy + Math.sin(angle) * 10;
-          i === 0 ? ctx.moveTo(tx, ty) : ctx.lineTo(tx, ty);
-        }
-        ctx.closePath(); ctx.fill();
-        ctx.globalAlpha = 1;
-        ctx.restore();
-      }
+      // (Viper trap rendering removed — Acid now replaces Kill directly)
 
       // Draw dead pets (stay at death location)
       for (const dp of deadPets) {
@@ -14857,10 +15639,11 @@
           drawPet(ctx, npc.petX - ox, npc.petY - oy, npc.pet);
         }
       }
-      if (selectedPet !== 'none' && (player.alive || isGhost)) {
+      const _drawPet = (playerRole === 'shapeshifter' && abilityActive && shiftTarget) ? shiftTarget.pet : selectedPet;
+      if (_drawPet && _drawPet !== 'none' && (player.alive || isGhost)) {
         const petAlpha = isGhost ? 0.4 : 1;
         ctx.save(); ctx.globalAlpha = petAlpha;
-        drawPet(ctx, (player.petX || player.x) - ox, (player.petY || player.y) - oy, selectedPet);
+        drawPet(ctx, (player.petX || player.x) - ox, (player.petY || player.y) - oy, _drawPet);
         ctx.restore();
       }
 
@@ -14880,8 +15663,8 @@
           }
           // H&S: NPC hider inside a vent — hidden from everyone
           if (npc.inVent) continue;
-          // Detective scan: show "!" over impostors within range
-          const showSuspect = detectiveScanActive && npc.isImpostor && dist(player, npc) < 400;
+          // Detective scan removed — now uses Notes/Interrogate
+          const showSuspect = false;
           // Ground shadow
           ctx.save();
           ctx.fillStyle = 'rgba(0,0,0,0.22)';
@@ -15031,9 +15814,11 @@
       }
 
       if ((player.alive || isGhost) && !inVent) {
-        const drawColor = isGhost ? (isImpostor ? '#ff6666' : '#aaaaff') :
-          (playerRole === 'shapeshifter' && abilityActive && shiftTarget) ? shiftTarget.color : player.color;
-        const drawName  = (playerRole === 'shapeshifter' && abilityActive && shiftTarget) ? shiftTarget.name  : player.name;
+        const _shifted = playerRole === 'shapeshifter' && abilityActive && shiftTarget;
+        const drawColor = isGhost ? (isImpostor ? '#ff6666' : '#aaaaff') : _shifted ? shiftTarget.color : player.color;
+        const drawName  = _shifted ? shiftTarget.name  : player.name;
+        const drawHat   = _shifted ? shiftTarget.hat   : selectedHat;
+        const drawSkin  = _shifted ? shiftTarget.skin  : selectedSkin;
         const drawAlpha = isGhost ? 0.4 : (playerRole === 'phantom' && abilityActive) ? 0.2 : 1;
         const _playerState = playerDoingTask ? AI_STATE.DOING_TASK :
           (player.facingLeft ? 'left' : (player.moving ? AI_STATE.WALKING_RANDOM : AI_STATE.IDLE));
@@ -15045,7 +15830,7 @@
           ctx.restore();
         }
         drawCrewmate(ctx, player.x - ox, player.y - oy, player.w, player.h, drawColor, drawName, true,
-          _playerState, drawAlpha, playerRole, selectedHat, player.protectionTimer, selectedSkin);
+          _playerState, drawAlpha, playerRole, drawHat, player.protectionTimer, drawSkin);
 
         // Final hunt: pulsing red scan ring shows seeker has eyes on player
         if (gameMode === 'hideseek' && finalHide && !isImpostor && !isGhost) {
@@ -15835,7 +16620,7 @@
         addSection('👨‍🚀 Crewmate Roles');
         addToggle('Engineer', 'Can use vents to travel', 'roleEngineer');
         addToggle('Scientist', 'Toggle real-time vitals panel', 'roleScientist');
-        addToggle('Detective', 'Scan area for impostors (20s cooldown)', 'roleDetective');
+        addToggle('Detective', 'Notes & Interrogate — document kills and grill suspects', 'roleDetective');
         addToggle('Noisemaker', 'Broadcasts alert when killed', 'roleNoisemaker');
         addToggle('Guardian Angel', 'Protect a crewmate after death', 'roleGuardianAngel');
         addToggle('Tracker', 'Track a player on minimap', 'roleTracker');
@@ -15876,7 +16661,7 @@
       hide('pauseMenu'); hide('gameOverScreen');
       const role = document.getElementById('roleTag'); if (role) role.style.animation = 'none';
       const ab = document.getElementById('actionButtons'); if (ab) ab.style.display = 'none';
-      hsPingEffects = []; killEffects = []; ventEffects = []; taskEffects = []; shieldEffects = []; floatTexts = [];
+      hsPingEffects = []; killEffects = []; ventEffects = []; taskEffects = []; shieldEffects = []; floatTexts = []; phantomSmokeEffects = [];
     }
 
     function quitToMenu() {
@@ -16372,7 +17157,19 @@
       if (e.key.toLowerCase() === 'v' && (isImpostor || playerRole === 'engineer')) {
         if (inVent) { exitVent(); } else { enterVent(); }
       }
-      if (e.key.toLowerCase() === 'f') { useAbility(); }
+      if (e.key.toLowerCase() === 'f') {
+        if (playerRole === 'detective') {
+          // If near a suspect and cases exist, interrogate; otherwise toggle notes
+          const nearSuspect = npcs.find(n => n.alive && dist(player, n) < 38);
+          if (nearSuspect && detectiveInterrogate <= 0 && detectiveNotes.length > 0) {
+            doInterrogate();
+          } else {
+            useAbility();
+          }
+        } else {
+          useAbility();
+        }
+      }
       if (e.key.toLowerCase() === 'c' && isImpostor) {
         if (!gameSettings.doorsSabotage) return;
         const doorRoom = getNearbyDoorRoom();
