@@ -4402,6 +4402,7 @@
     let mpPosThrottle = 0;
     let mpPingTimes = {};
     let mpPingInterval = null;
+    let _mpStartBtnRect = null; // set each frame by renderDropship when host button is visible
     // Legacy stubs — kept so any remaining references don't crash
     let mpDb = null, mpApp = null, mpAuth = null;
     let mpUnsubMeta = null, mpUnsubPlayers = null;
@@ -4484,6 +4485,18 @@
       }
     }
 
+    // --- Enter the dropship lobby (once per connection, not during active game) ---
+    function _mpEnterDropship() {
+      const ss = document.getElementById('startScreen');
+      if (!ss || ss.style.display === 'none') return; // already in game
+      ss.style.display = 'none';
+      if (!gameStarted) {
+        gameStarted = true;
+        initDropship();
+        requestAnimationFrame(gameLoop);
+      }
+    }
+
     // --- Become host: set URL, register self, show lobby UI ---
     function _mpBecomeHost() {
       mpIsHost    = true;
@@ -4503,6 +4516,8 @@
         if (!mpIsHost || !mpLobbyCode) { clearInterval(mpPingInterval); return; }
         _mpBroadcast({ type: 'ping', t: Date.now() });
       }, 5000);
+      // Auto-enter dropship as the waiting lobby
+      _mpEnterDropship();
     }
 
     // --- Connect to an existing host ---
@@ -4520,6 +4535,8 @@
         _mpShowLobbyUI();
         mpUpdateStatus('<span class="mp-status-dot connected"></span>Joined lobby!');
         mpShowToast('Joined lobby!');
+        // Auto-enter dropship as the waiting lobby
+        _mpEnterDropship();
       });
 
       conn.on('data', data => _mpHandleHostMsg(data));
@@ -4709,7 +4726,7 @@
         id: mpUserId, name,
         color: COLORS[selectedColor].hex, colorIndex: selectedColor,
         hat: selectedHat, pet: selectedPet, skin: selectedSkin,
-        x: 450, y: 370, ready: false, isHost,
+        x: DS.spawnX, y: DS.spawnY, ready: false, isHost,
         alive: true, isImpostor: false, role: 'crewmate',
         lastSeen: Date.now(),
       };
@@ -5007,6 +5024,10 @@
         case 'ready': {
           if (mpPlayers[ev.actorId]) mpPlayers[ev.actorId].ready = !!ev.data.ready;
           mpRenderPlayerList();
+          break;
+        }
+        case 'colorChange': {
+          if (mpPlayers[ev.actorId]) mpPlayers[ev.actorId].color = ev.data.color;
           break;
         }
       }
@@ -16524,6 +16545,9 @@
           sw.classList.add('selected');
           selectedColor = i;
           if (dropshipPlayer) dropshipPlayer.color = c.hex;
+          // Sync color to all MP players
+          if (mpPlayers[mpUserId]) { mpPlayers[mpUserId].color = c.hex; mpPlayers[mpUserId].colorIndex = i; }
+          mpPublishEvent('colorChange', null, { color: c.hex });
         };
         picker.appendChild(sw);
       });
@@ -16957,6 +16981,23 @@
         ctx.fillText(label, cw/2, ch-65);
       }
 
+      // Host "Start Game" button (MP only, shown when lobby is active and game not counting down)
+      if (mpIsHost && mpLobbyCode && dropshipCountdown < 0) {
+        const pc = Object.keys(mpPlayers).length;
+        const btnW = 220, btnH = 42;
+        const bx = cw/2 - btnW/2, by = ch - 58;
+        ctx.fillStyle = 'rgba(17,127,45,0.92)';
+        ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(bx, by, btnW, btnH, 8); else ctx.rect(bx, by, btnW, btnH); ctx.fill();
+        ctx.strokeStyle = '#00cc55'; ctx.lineWidth = 2;
+        ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(bx, by, btnW, btnH, 8); else ctx.rect(bx, by, btnW, btnH); ctx.stroke();
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center';
+        ctx.fillText('START GAME  (' + pc + ' player' + (pc !== 1 ? 's' : '') + ')', cw/2, by + 27);
+        // Store button rect for click detection
+        _mpStartBtnRect = { x: bx, y: by, w: btnW, h: btnH };
+      } else {
+        _mpStartBtnRect = null;
+      }
+
       // Countdown overlay
       if (dropshipCountdown > 0) {
         ctx.fillStyle = 'rgba(0,0,0,0.82)'; ctx.fillRect(0,0,cw,ch);
@@ -17345,6 +17386,17 @@
       gameOver = false;
       initDropship();
       requestAnimationFrame(gameLoop);
+    });
+
+    // Canvas click — handle host Start Game button in dropship
+    canvas.addEventListener('click', (e) => {
+      if (!dropshipPhase || !_mpStartBtnRect) return;
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+      const b = _mpStartBtnRect;
+      if (mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h) {
+        mpHostStartGame();
+      }
     });
 
     // ===== TASK MINI-GAME SYSTEM =====
