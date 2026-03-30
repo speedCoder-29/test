@@ -4411,39 +4411,68 @@
       document.head.appendChild(s);
     }
 
-    function _mpInitPeer() {
-      mpUpdateStatus('Connecting…');
-      const peer = new Peer({ debug: 0 });
+    // Returns a stable daily lobby ID so all visitors share the same lobby
+    function _mpGetPublicLobbyId() {
+      const d = new Date();
+      return 'amgus-' + d.getUTCFullYear()
+        + '-' + String(d.getUTCMonth() + 1).padStart(2, '0')
+        + '-' + String(d.getUTCDate()).padStart(2, '0');
+    }
 
+    // Creates a Peer (customId optional), wires reconnect, calls onOpen(peer,id) or onError(err)
+    function _mpOpenPeer(customId, onOpen, onError) {
+      const peer = customId ? new Peer(customId, { debug: 0 }) : new Peer({ debug: 0 });
       peer.on('open', id => {
-        mpPeer    = peer;
-        mpUserId  = id;
-        mpEnabled = true;
-        // Check URL for ?lobby=PEERID
-        const urlCode = new URLSearchParams(window.location.search).get('lobby');
-        if (urlCode && urlCode !== id) {
-          // Auto-join someone else's lobby
-          document.getElementById('mpPanel').style.display = 'block';
-          _mpConnectToHost(urlCode);
-        } else {
-          // Become host (fresh page or own lobby URL after reload)
-          _mpBecomeHost();
-        }
+        mpPeer = peer; mpUserId = id; mpEnabled = true;
+        peer.on('connection', conn => { if (mpIsHost) _mpHandleNewClient(conn); });
+        peer.on('disconnected', () => { try { peer.reconnect(); } catch(e){} });
+        onOpen(peer, id);
       });
+      peer.on('error', err => { if (onError) onError(err); });
+    }
 
-      peer.on('connection', conn => { if (mpIsHost) _mpHandleNewClient(conn); });
-
-      peer.on('disconnected', () => { try { peer.reconnect(); } catch(e){} });
-
-      peer.on('error', err => {
-        if (err.type === 'peer-unavailable') {
-          // Host not found — become host ourselves
-          mpShowToast('Lobby not found — creating a new one…');
-          _mpBecomeHost();
+    // Try to claim the fixed daily ID as host; if taken, join as client
+    function _mpJoinPublicLobby() {
+      const fixedId = _mpGetPublicLobbyId();
+      mpUpdateStatus('Finding lobby...');
+      _mpOpenPeer(fixedId, () => {
+        _mpBecomeHost();
+      }, err => {
+        if (err.type === 'unavailable-id') {
+          // Someone else is already host today — join them
+          _mpOpenPeer(null, () => {
+            _mpConnectToHost(fixedId);
+          }, e => {
+            if (e.type === 'peer-unavailable') setTimeout(_mpJoinPublicLobby, 1500);
+            else mpUpdateStatus('<span class="mp-status-dot error"></span>Error: ' + e.type);
+          });
+        } else if (err.type === 'peer-unavailable') {
+          setTimeout(_mpJoinPublicLobby, 1500);
         } else {
           mpUpdateStatus('<span class="mp-status-dot error"></span>Error: ' + err.type);
         }
       });
+    }
+
+    function _mpInitPeer() {
+      mpUpdateStatus('Connecting...');
+      const urlCode = new URLSearchParams(window.location.search).get('lobby');
+      if (urlCode) {
+        // Explicit lobby link — join or re-host that specific lobby
+        _mpOpenPeer(null, (peer, id) => {
+          if (urlCode !== id) {
+            document.getElementById('mpPanel').style.display = 'block';
+            _mpConnectToHost(urlCode);
+          } else {
+            _mpBecomeHost();
+          }
+        }, err => {
+          if (err.type === 'peer-unavailable') _mpJoinPublicLobby();
+          else mpUpdateStatus('<span class="mp-status-dot error"></span>Error: ' + err.type);
+        });
+      } else {
+        _mpJoinPublicLobby();
+      }
     }
 
     // --- Become host: set URL, register self, show lobby UI ---
