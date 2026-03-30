@@ -2144,8 +2144,7 @@
 
           // --- Admin: Large map/admin table (center of wider room) ---
           w.push({ x: 1504, y: 746, w: 168, h: 84, obj: true });
-          // Swipe card reader (left entrance wall)
-          w.push({ x: 1398, y: 750, w: 16, h: 40, obj: true });
+          // (swipe card reader removed — was only 18px from left wall, blocking NPC passage)
 
           // --- Storage: Crates and fuel canisters ---
           w.push({ x: 1058, y: 1148, w: 48, h: 38, obj: true });  // crate top-left
@@ -5256,6 +5255,7 @@
         companionTarget: null,
         panicTimer: 0,
         speechBubble: null,  // { text, timer } for witness reactions
+        chatCooldown: 300 + Math.floor(Math.random() * 600), // ticks before next idle chat
         idleTimer: 0,
         stuckTimer: 0,
         fixingSabotage: false,
@@ -7501,6 +7501,36 @@
       }, 2000);
     }
 
+    // Idle / ambient NPC speech lines
+    const IDLE_CHAT_LINES = [
+      // General idle
+      () => 'Has anyone checked the cameras?',
+      () => 'Something feels off today...',
+      () => 'Stay safe everyone.',
+      () => "I don't trust anyone right now.",
+      () => 'Keep your comms open.',
+      () => 'Did you hear that?',
+      () => 'Everyone stick together!',
+      () => 'This ship gives me the creeps.',
+      () => "I'm keeping my eye on everyone.",
+      () => 'The reactor was making weird noises...',
+    ];
+    const TASK_CHAT_LINES = [
+      () => 'Almost done with my tasks.',
+      () => 'Just fixing up some wires.',
+      () => 'Routine maintenance. Nothing to see.',
+      () => 'The O2 filters needed a clean.',
+      () => 'Uploading the data now...',
+      () => 'Card reader is acting up again.',
+    ];
+    const IMPOSTOR_IDLE_LINES = [
+      () => "I've been in Electrical the whole time.",
+      () => 'Totally doing tasks. Yep.',
+      () => 'Who else was in Admin just now?',
+      () => "I saw someone by the vents... sketchy.",
+      () => "Nothing suspicious here, move along.",
+    ];
+
     const WITNESS_LINES = [
       n => `${n} just killed someone!`,
       n => `I SAW THAT! It was ${n}!`,
@@ -7555,6 +7585,30 @@
         if (npc.speechBubble) {
           npc.speechBubble.timer--;
           if (npc.speechBubble.timer <= 0) npc.speechBubble = null;
+        }
+        if (npc.alive && !npc.speechBubble) {
+          npc.chatCooldown--;
+          if (npc.chatCooldown <= 0) {
+            // Reset cooldown (2–5 seconds)
+            npc.chatCooldown = 120 + Math.floor(Math.random() * 180);
+            // Only chat during calm states, not while panicking / reporting / voting
+            const calmState = npc.state === AI_STATE.IDLE ||
+                              npc.state === AI_STATE.FOLLOWING ||
+                              npc.state === AI_STATE.WALKING_TO_TASK ||
+                              npc.state === AI_STATE.DOING_TASK ||
+                              npc.state === AI_STATE.WALKING_RANDOM;
+            if (calmState && !gameOver && !inMeeting) {
+              let lines;
+              if (npc.isImpostor) {
+                lines = IMPOSTOR_IDLE_LINES;
+              } else if ((npc.state === AI_STATE.DOING_TASK || npc.state === AI_STATE.WALKING_TO_TASK) && Math.random() < 0.5) {
+                lines = TASK_CHAT_LINES;
+              } else {
+                lines = IDLE_CHAT_LINES;
+              }
+              npc.speechBubble = { text: lines[Math.floor(Math.random() * lines.length)](), timer: 210 };
+            }
+          }
         }
         if (!npc.alive) continue;
         if (npc.isImpostor) {
@@ -7651,22 +7705,58 @@
       return best;
     }
 
-    // BFS buffers — allocated once and reused to avoid per-call GC pressure
-    let _bfsVisited = null, _bfsParent = null, _bfsQueue = null, _bfsTotal = 0;
+    // A* buffers — allocated once and reused to avoid per-call GC pressure
+    let _astarParent = null, _astarG = null, _astarClosed = null;
+    let _heapIdx = null, _heapF = null, _heapSize = 0, _astarTotal = 0;
+
+    function _heapPush(idx, f) {
+      let i = _heapSize++;
+      _heapIdx[i] = idx; _heapF[i] = f | 0;
+      while (i > 0) {
+        const p = (i - 1) >> 1;
+        if (_heapF[p] <= _heapF[i]) break;
+        let t = _heapIdx[p]; _heapIdx[p] = _heapIdx[i]; _heapIdx[i] = t;
+        t = _heapF[p]; _heapF[p] = _heapF[i]; _heapF[i] = t;
+        i = p;
+      }
+    }
+
+    function _heapPop() {
+      const top = _heapIdx[0];
+      _heapSize--;
+      if (_heapSize > 0) {
+        _heapIdx[0] = _heapIdx[_heapSize]; _heapF[0] = _heapF[_heapSize];
+        let i = 0;
+        for (;;) {
+          let s = i, l = 2*i+1, r = 2*i+2;
+          if (l < _heapSize && _heapF[l] < _heapF[s]) s = l;
+          if (r < _heapSize && _heapF[r] < _heapF[s]) s = r;
+          if (s === i) break;
+          let t = _heapIdx[s]; _heapIdx[s] = _heapIdx[i]; _heapIdx[i] = t;
+          t = _heapF[s]; _heapF[s] = _heapF[i]; _heapF[i] = t;
+          i = s;
+        }
+      }
+      return top;
+    }
 
     function findPath(fromX, fromY, toX, toY) {
       if (!walkGrid) return null;
 
       const total = gridW * gridH;
-      if (_bfsTotal !== total) {
+      if (_astarTotal !== total) {
         // (Re)allocate only when grid size changes (map switch)
-        _bfsVisited = new Uint8Array(total);
-        _bfsParent  = new Int32Array(total);
-        _bfsQueue   = new Int32Array(total);
-        _bfsTotal   = total;
+        _astarParent = new Int32Array(total);
+        _astarG      = new Int32Array(total);
+        _astarClosed = new Uint8Array(total);
+        _heapIdx     = new Int32Array(total * 2);
+        _heapF       = new Int32Array(total * 2);
+        _astarTotal  = total;
       }
-      _bfsVisited.fill(0);
-      _bfsParent.fill(-1);
+      _astarG.fill(0x7fffffff);
+      _astarParent.fill(-1);
+      _astarClosed.fill(0);
+      _heapSize = 0;
 
       // Find nearest walkable grid cell to a world position
       function nearestWalkable(wx, wy) {
@@ -7690,35 +7780,46 @@
       const endIdx   = nearestWalkable(toX, toY);
       if (startIdx === endIdx) return null;
 
-      // Use pre-allocated buffers (reset above via .fill)
-      const visited = _bfsVisited;
-      const parent  = _bfsParent;
-      const queue   = _bfsQueue;
-      let qHead = 0, qTail = 0;
+      // Octile-distance heuristic (consistent, admissible)
+      const ex = endIdx % gridW, ey = (endIdx / gridW) | 0;
+      function heuristic(idx) {
+        const dx = Math.abs(idx % gridW - ex);
+        const dy = Math.abs(((idx / gridW) | 0) - ey);
+        return ((dx + dy - (dx < dy ? dx : dy) * 0.586) * 10) | 0;
+      }
 
-      queue[qTail++] = startIdx;
-      visited[startIdx] = 1;
+      _astarG[startIdx] = 0;
+      _heapPush(startIdx, heuristic(startIdx));
 
-      const DIRS = [[0,-1],[0,1],[-1,0],[1,0],[-1,-1],[1,-1],[-1,1],[1,1]];
+      // Cost: 10 for cardinal, 14 for diagonal (≈ 10√2)
+      const DDX = [0,0,-1,1,-1,1,-1,1];
+      const DDY = [-1,1,0,0,-1,-1,1,1];
+      const DCOST = [10,10,10,10,14,14,14,14];
       let found = false;
 
-      outer: while (qHead < qTail) {
-        const cur = queue[qHead++];
-        const cy = Math.floor(cur / gridW);
+      while (_heapSize > 0) {
+        const cur = _heapPop();
+        if (_astarClosed[cur]) continue;
+        _astarClosed[cur] = 1;
+        if (cur === endIdx) { found = true; break; }
+        const cy = (cur / gridW) | 0;
         const cx = cur % gridW;
-        for (const [ddx, ddy] of DIRS) {
-          const nx = cx + ddx, ny = cy + ddy;
+        const gCur = _astarG[cur];
+        for (let d = 0; d < 8; d++) {
+          const nx = cx + DDX[d], ny = cy + DDY[d];
           if (nx < 0 || nx >= gridW || ny < 0 || ny >= gridH) continue;
           const nIdx = ny * gridW + nx;
-          if (visited[nIdx] || !walkGrid[nIdx]) continue;
+          if (_astarClosed[nIdx] || !walkGrid[nIdx]) continue;
           // No diagonal corner-cutting through walls
-          if (ddx !== 0 && ddy !== 0) {
-            if (!walkGrid[cy * gridW + (cx + ddx)] || !walkGrid[(cy + ddy) * gridW + cx]) continue;
+          if (d >= 4) {
+            if (!walkGrid[cy * gridW + (cx + DDX[d])] || !walkGrid[(cy + DDY[d]) * gridW + cx]) continue;
           }
-          visited[nIdx] = 1;
-          parent[nIdx] = cur;
-          queue[qTail++] = nIdx;
-          if (nIdx === endIdx) { found = true; break outer; }
+          const tentG = gCur + DCOST[d];
+          if (tentG < _astarG[nIdx]) {
+            _astarG[nIdx] = tentG;
+            _astarParent[nIdx] = cur;
+            _heapPush(nIdx, tentG + heuristic(nIdx));
+          }
         }
       }
 
@@ -7727,9 +7828,9 @@
       // Reconstruct path (cell centers, excluding start cell)
       const raw = [];
       let node = endIdx;
-      while (node !== startIdx && parent[node] >= 0) {
-        raw.push({ x: (node % gridW + 0.5) * GRID_SIZE, y: (Math.floor(node / gridW) + 0.5) * GRID_SIZE });
-        node = parent[node];
+      while (node !== startIdx && _astarParent[node] >= 0) {
+        raw.push({ x: (node % gridW + 0.5) * GRID_SIZE, y: (((node / gridW) | 0) + 0.5) * GRID_SIZE });
+        node = _astarParent[node];
       }
       raw.reverse();
       if (raw.length === 0) return null;
