@@ -237,10 +237,15 @@
     #roleRevealOverlay {
       position: fixed; inset: 0; z-index: 95; display: none;
       align-items: center; justify-content: center; flex-direction: column;
-      pointer-events: none; background: rgba(0,0,0,0);
+      pointer-events: auto; cursor: pointer; background: rgba(0,0,0,0);
       transition: background 0.35s;
     }
     #roleRevealOverlay.rr-active { background: rgba(0,0,0,0.9); }
+    #rrSkipHint {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      color: rgba(255,255,255,0.3); font-size: 13px; font-weight: 500;
+      letter-spacing: 2px; text-transform: uppercase; pointer-events: none;
+    }
 
     /* Phase 1 — big team name, no card background */
     #rrPhase1 {
@@ -1384,6 +1389,7 @@
       <div id="rrRoleName">CREWMATE</div>
       <div id="rrRoleDesc"></div>
     </div>
+    <div id="rrSkipHint">Click to continue</div>
   </div>
   <div id="interactHint"></div>
   <div id="killCooldown"></div>
@@ -6404,6 +6410,19 @@
       document.getElementById('rrRoleDesc').textContent = roleDesc;
       p2.style.boxShadow = `0 0 80px ${roleColor}55, 0 8px 60px rgba(0,0,0,0.9)`;
 
+      // Dismiss helper — can be called by timer or click
+      let _rrDone = false;
+      const _rrTimers = [];
+      function _dismissReveal() {
+        if (_rrDone) return;
+        _rrDone = true;
+        _rrTimers.forEach(t => clearTimeout(t));
+        overlay.removeEventListener('click', _dismissReveal);
+        overlay.style.display = 'none';
+        overlay.classList.remove('rr-active');
+        p1.style.display = 'none'; p2.style.display = 'none';
+      }
+
       // Show overlay + phase 1
       p1.style.display = 'none'; p2.style.display = 'none';
       overlay.style.display = 'flex';
@@ -6413,20 +6432,20 @@
       p1.style.animation = 'none'; p1.offsetHeight;
       p1.style.animation = 'rrP1In 2.4s forwards';
 
+      // Click anywhere to dismiss
+      overlay.addEventListener('click', _dismissReveal);
+
       // Swap to phase 2
-      setTimeout(() => {
+      _rrTimers.push(setTimeout(() => {
+        if (_rrDone) return;
         p1.style.display = 'none';
         p2.style.display = 'block';
         p2.style.animation = 'none'; p2.offsetHeight;
         p2.style.animation = 'rrP2In 3.5s forwards';
-      }, 2200);
+      }, 2200));
 
-      // Hide everything
-      setTimeout(() => {
-        overlay.style.display = 'none';
-        overlay.classList.remove('rr-active');
-        p1.style.display = 'none'; p2.style.display = 'none';
-      }, 5900);
+      // Auto-dismiss after full duration
+      _rrTimers.push(setTimeout(_dismissReveal, 5900));
     }
 
     function triggerNoisemakerAlert(npc) {
