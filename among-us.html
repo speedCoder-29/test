@@ -169,6 +169,10 @@
     .tli.done .tli-dot { background: #3ddc84; }
     .tli.active .tli-dot { background: #ffd700; animation: tliBlink 0.6s ease-in-out infinite; }
     @keyframes tliBlink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    @keyframes killFeedSlide { from { opacity:0; transform:translateX(24px); } to { opacity:1; transform:translateX(0); } }
+    #killFeed { position:fixed; top:56px; right:16px; z-index:22; pointer-events:none; display:flex; flex-direction:column; gap:5px; align-items:flex-end; }
+    .kf-entry { background:rgba(0,0,0,0.82); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:5px 10px; font-size:12px; font-weight:bold; color:#fff; display:flex; align-items:center; gap:6px; animation:killFeedSlide 0.2s both; transition:opacity 0.4s; white-space:nowrap; }
+    .kf-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
     .tli-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
     .tli-room { font-size: 9px; color: rgba(255,255,255,0.38); white-space: nowrap; flex-shrink: 0; margin-left: 4px; }
     .tli.done .tli-room { color: rgba(61,220,132,0.5); }
@@ -521,6 +525,18 @@
     }
     .preset-btn:hover { transform: scale(1.05); }
     .sett-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 4px 0; }
+    .sett-group { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 3px 0; margin-bottom: 2px; }
+    .sett-section { margin-top: 20px !important; margin-bottom: 4px !important; }
+    .sett-section:first-child { margin-top: 4px !important; }
+    .sett-tabs { display:flex; gap:6px; margin-bottom:12px; flex-shrink:0; }
+    .sett-tab { flex:1; padding:9px 4px; border-radius:8px; border:1px solid #3a3a4a; background:rgba(255,255,255,0.04); color:#888; cursor:pointer; font-size:12px; font-weight:bold; letter-spacing:1.5px; transition:all 0.15s; text-transform:uppercase; }
+    .sett-tab:hover { background:rgba(255,255,255,0.1); color:#ccc; }
+    .sett-tab.active { background:linear-gradient(135deg,#ffd700,#cc9900); color:#000; border-color:#ffd700; }
+    .role-cfg { display:flex; gap:10px; padding:4px 10px 10px; }
+    .role-cfg-item { flex:1; background:rgba(255,255,255,0.04); border-radius:7px; padding:6px 8px; display:flex; flex-direction:column; align-items:center; gap:4px; }
+    .role-cfg-lbl { color:#888; font-size:10px; letter-spacing:1px; text-transform:uppercase; }
+    .role-cfg-ctrl { display:flex; align-items:center; gap:4px; }
+    .role-cfg-val { color:#ffd700; font-weight:bold; font-size:13px; min-width:32px; text-align:center; }
     #settingsStartBtn {
       margin-top: 14px; padding: 13px; width: 100%;
       background: linear-gradient(135deg, #117f2d, #0d6122);
@@ -1000,6 +1016,75 @@
     }
     #authSubmitBtn:hover { opacity:0.85; }
     #authGuestNote { text-align:center; margin-top:11px; font-size:11px; color:#444; }
+
+    /* ── Home page panels ── */
+    #homePanel, #createPanel, #joinPanel {
+      display: flex; flex-direction: column; align-items: center;
+      width: 100%; max-width: 640px;
+    }
+    #homePanel { gap: 0; }
+    .back-btn {
+      align-self: flex-start; margin-bottom: 18px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 8px; color: #999; padding: 7px 16px; cursor: pointer;
+      font-size: 13px; font-weight: bold; letter-spacing: 0.5px; font-family: inherit;
+      transition: background 0.15s, color 0.15s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.13); color: #fff; }
+    #homeCards { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 480px; margin-top: 4px; }
+    .home-card {
+      padding: 22px 24px; border-radius: 14px; cursor: pointer;
+      display: flex; align-items: center; gap: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: transform 0.15s, box-shadow 0.15s;
+      animation: fadeUp 0.4s both;
+    }
+    .home-card:nth-child(2) { animation-delay: 0.07s; }
+    .home-card:hover { transform: translateY(-3px) scale(1.012); }
+    #homeCardCreate {
+      background: linear-gradient(135deg, rgba(197,17,17,0.22), rgba(60,0,0,0.45));
+      border-color: rgba(197,17,17,0.4);
+      box-shadow: 0 4px 20px rgba(197,17,17,0.12);
+    }
+    #homeCardCreate:hover { box-shadow: 0 6px 30px rgba(197,17,17,0.28); }
+    #homeCardJoin {
+      background: linear-gradient(135deg, rgba(78,205,196,0.15), rgba(10,60,60,0.45));
+      border-color: rgba(78,205,196,0.32);
+      box-shadow: 0 4px 20px rgba(78,205,196,0.08);
+    }
+    #homeCardJoin:hover { box-shadow: 0 6px 30px rgba(78,205,196,0.22); }
+    .home-card-icon { font-size: 38px; flex-shrink: 0; line-height: 1; }
+    .home-card-body { display: flex; flex-direction: column; gap: 3px; }
+    .home-card-title { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
+    .home-card-desc { font-size: 13px; color: #888; }
+    /* Join panel */
+    #joinContent { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 420px; }
+    #joinNameInput {
+      padding: 11px 20px; font-size: 17px; font-weight: 700;
+      border: 2px solid rgba(255,255,255,0.2); border-radius: 8px;
+      background: rgba(255,255,255,0.08); color: #fff; text-align: center;
+      width: 100%; outline: none; margin-bottom: 12px;
+      letter-spacing: 1px; font-family: inherit;
+    }
+    #joinNameInput:focus { border-color: #4ecdc4; box-shadow: 0 0 12px rgba(78,205,196,0.28); }
+    #joinNameInput::placeholder { color: rgba(255,255,255,0.3); }
+    #joinCodeInput {
+      padding: 16px 20px; font-size: 20px; font-weight: 700; letter-spacing: 4px;
+      border: 2px solid rgba(78,205,196,0.4); border-radius: 10px;
+      background: rgba(78,205,196,0.07); color: #fff; text-align: center;
+      width: 100%; outline: none; font-family: monospace; margin-top: 14px;
+    }
+    #joinCodeInput:focus { border-color: #4ecdc4; box-shadow: 0 0 18px rgba(78,205,196,0.3); }
+    #joinCodeInput::placeholder { font-family: inherit; font-size: 14px; letter-spacing: 0px; font-weight: 400; color: rgba(255,255,255,0.25); }
+    #joinBtn {
+      margin-top: 18px; padding: 14px; font-size: 20px; font-weight: 800;
+      letter-spacing: 3px; background: linear-gradient(135deg, #4ecdc4, #2aa8a0);
+      color: #000; border: none; border-radius: 12px; cursor: pointer;
+      box-shadow: 0 0 20px rgba(78,205,196,0.35); transition: transform 0.15s, box-shadow 0.15s;
+      text-transform: uppercase; font-family: inherit; width: 100%;
+    }
+    #joinBtn:hover { transform: translateY(-2px); box-shadow: 0 4px 28px rgba(78,205,196,0.55); }
+    #joinStatus { color: #888; font-size: 13px; margin-top: 10px; min-height: 18px; text-align: center; }
   </style>
 </head>
 <body>
@@ -1010,122 +1095,135 @@
     <h1>AMONG US</h1>
     <p class="tagline">Complete tasks or find the impostor!</p>
 
-    <div id="startContent">
-
-    <!-- Account bar -->
-    <div id="authBar">
-      <div id="authBarUser">Not signed in <span style="color:#555;font-size:11px;">— progress won't be saved</span></div>
-      <button id="authBarSave" onclick="auSaveProfile()">💾 Save</button>
-      <button id="authBarBtn" onclick="showAuthModal()">Log In / Sign Up</button>
-    </div>
-
-    <!-- Row 1: Mode + Map side by side -->
-    <div id="modeMapRow">
-      <div>
-        <p class="ss-label">Mode</p>
-        <div class="mode-select" id="modeSelect" style="margin-bottom:0;">
-          <div class="mode-card selected" id="modeClassic" onclick="selectMode('classic')">
-            <div class="mode-icon">🚀</div>
-            <div class="mode-name">Classic</div>
-            <div class="mode-desc">Find the impostor</div>
+    <!-- ══ HOME PANEL ══ -->
+    <div id="homePanel">
+      <div id="authBar">
+        <div id="authBarUser">Not signed in <span style="color:#555;font-size:11px;">— progress won't be saved</span></div>
+        <button id="authBarSave" onclick="auSaveProfile()">💾 Save</button>
+        <button id="authBarBtn" onclick="showAuthModal()">Log In / Sign Up</button>
+      </div>
+      <div id="homeCards">
+        <div class="home-card" id="homeCardCreate" onclick="showPanel('createPanel')">
+          <div class="home-card-icon">🎮</div>
+          <div class="home-card-body">
+            <div class="home-card-title">Create Game</div>
+            <div class="home-card-desc">Set up a new game, solo or with friends</div>
           </div>
-          <div class="mode-card" id="modeHideSeek" onclick="selectMode('hideseek')">
-            <div class="mode-icon">👁️</div>
-            <div class="mode-name">Hide n Seek</div>
-            <div class="mode-desc">Run from the seeker</div>
+        </div>
+        <div class="home-card" id="homeCardJoin" onclick="showPanel('joinPanel')">
+          <div class="home-card-icon">🌐</div>
+          <div class="home-card-body">
+            <div class="home-card-title">Join Game</div>
+            <div class="home-card-desc">Enter a lobby code to join a friend's game</div>
           </div>
         </div>
       </div>
-      <div>
-        <p class="ss-label">Map</p>
-        <div class="map-select" id="mapSelect" style="margin-bottom:0;"></div>
-      </div>
     </div>
 
-    <!-- Row 2: Name input -->
-    <input type="text" id="nameInput" placeholder="Enter your name" maxlength="12">
+    <!-- ══ CREATE GAME PANEL ══ -->
+    <div id="createPanel" style="display:none;">
+      <button class="back-btn" onclick="showPanel('homePanel')">← Back</button>
 
-    <!-- Row 3: Color picker -->
-    <p class="ss-label">Color</p>
-    <div class="color-picker" id="colorPicker"></div>
-
-    <!-- Row 4: Cosmetics collapsible -->
-    <button id="cosmeticsToggleBtn" onclick="document.getElementById('cosmeticsPanel').style.display=document.getElementById('cosmeticsPanel').style.display==='none'?'block':'none'">🎨 Customize — hat / pet / skin</button>
-    <div id="cosmeticsPanel" style="display:none;">
-      <p class="ss-label">Hat</p>
-      <div class="hat-picker" id="hatPicker"></div>
-      <p class="ss-label">Pet</p>
-      <div class="pet-picker" id="petPicker"></div>
-      <p class="ss-label">Skin</p>
-      <div class="pet-picker" id="skinPicker"></div>
-    </div>
-
-    <!-- Row 5: AI config -->
-    <div id="aiConfigSection">
-      <button id="aiConfigToggle" onclick="toggleAIConfig()">🤖 AI Players — 0 configured</button>
-      <div id="aiConfigPanel">
-        <div id="aiPlayerRows"></div>
-        <button id="addAIPlayerBtn" onclick="addAIPlayer()">+ Add AI Player</button>
-        <p class="ai-section-note">AI players use real LLM APIs to chat and vote during meetings. Up to 9 AI players. API keys are never sent anywhere except directly to the provider.</p>
-      </div>
-    </div>
-
-    <!-- MULTIPLAYER PANEL (optional — collapsed by default) -->
-    <div id="mpSection" style="width:100%;margin-bottom:12px;">
-      <button id="mpToggleBtn" onclick="toggleMPSection()"
-        style="background:rgba(78,205,196,0.12);border:2px solid #4ecdc4;border-radius:8px;
-               color:#4ecdc4;font-size:14px;padding:8px 20px;cursor:pointer;width:100%;
-               font-weight:bold;letter-spacing:1px;transition:background 0.15s;">
-        🌐 Multiplayer (optional)
-      </button>
-      <div id="mpPanel" style="display:none;background:rgba(0,0,0,0.6);border:1px solid #2a4a4a;
-           border-radius:0 0 10px 10px;padding:14px 16px;text-align:center;">
-        <div id="mpStatus" style="color:#888;font-size:12px;margin-bottom:10px;">
-          Not connected — Solo mode active
-        </div>
-        <button id="mpCreateBtn" onclick="mpCreateLobby()"
-          style="padding:9px 22px;background:linear-gradient(135deg,#117f2d,#0d6122);color:#fff;
-                 border:none;border-radius:8px;cursor:pointer;font-weight:bold;font-size:14px;
-                 margin-bottom:8px;width:100%;">Create Lobby</button>
-        <div style="display:flex;gap:8px;margin-bottom:8px;">
-          <input id="mpCodeInput" type="text" placeholder="Paste invite link or lobby ID"
-            style="flex:1;padding:8px 12px;font-size:13px;background:rgba(255,255,255,0.1);
-                   border:1px solid #555;border-radius:6px;color:#fff;
-                   outline:none;">
-          <button onclick="mpJoinLobby()"
-            style="padding:8px 16px;background:rgba(78,205,196,0.15);border:2px solid #4ecdc4;
-                   border-radius:6px;color:#4ecdc4;font-weight:bold;cursor:pointer;font-size:14px;">
-            Join
-          </button>
-        </div>
-        <div id="mpLobbyInfo" style="display:none;">
-          <div style="background:rgba(78,205,196,0.08);border:1px solid #4ecdc4;border-radius:8px;
-                      padding:10px;margin-bottom:8px;">
-            <div style="color:#4ecdc4;font-size:11px;letter-spacing:1px;margin-bottom:4px;">LOBBY CODE</div>
-            <div id="mpLobbyCode" style="color:#fff;font-size:30px;font-weight:bold;letter-spacing:6px;font-family:monospace;"></div>
-            <button onclick="mpCopyLink()"
-              style="background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 10px;
-                     border-radius:4px;cursor:pointer;margin-top:4px;">📋 Copy invite link</button>
+      <!-- Mode + Map -->
+      <div id="modeMapRow">
+        <div>
+          <p class="ss-label">Mode</p>
+          <div class="mode-select" id="modeSelect" style="margin-bottom:0;">
+            <div class="mode-card selected" id="modeClassic" onclick="selectMode('classic')">
+              <div class="mode-icon">🚀</div>
+              <div class="mode-name">Classic</div>
+              <div class="mode-desc">Find the impostor</div>
+            </div>
+            <div class="mode-card" id="modeHideSeek" onclick="selectMode('hideseek')">
+              <div class="mode-icon">👁️</div>
+              <div class="mode-name">Hide n Seek</div>
+              <div class="mode-desc">Run from the seeker</div>
+            </div>
           </div>
-          <div id="mpPlayerList" style="text-align:left;max-height:130px;overflow-y:auto;margin-bottom:8px;font-size:13px;"></div>
-          <button id="mpReadyBtn" onclick="mpToggleReady()"
-            style="padding:6px 18px;background:rgba(17,127,45,0.2);border:1px solid #117f2d;
-                   border-radius:6px;color:#4ecdc4;cursor:pointer;font-size:12px;width:100%;margin-bottom:6px;">
-            ✓ Ready
-          </button>
-          <button onclick="mpLeaveLobby()"
-            style="padding:6px 18px;background:rgba(197,17,17,0.2);border:1px solid #c51111;
-                   border-radius:6px;color:#ff7777;cursor:pointer;font-size:12px;width:100%;">
-            Leave Lobby
-          </button>
+        </div>
+        <div>
+          <p class="ss-label">Map</p>
+          <div class="map-select" id="mapSelect" style="margin-bottom:0;"></div>
         </div>
       </div>
+
+      <input type="text" id="nameInput" placeholder="Enter your name" maxlength="12">
+      <p class="ss-label">Color</p>
+      <div class="color-picker" id="colorPicker"></div>
+
+      <button id="cosmeticsToggleBtn" onclick="document.getElementById('cosmeticsPanel').style.display=document.getElementById('cosmeticsPanel').style.display==='none'?'block':'none'">🎨 Customize — hat / pet / skin</button>
+      <div id="cosmeticsPanel" style="display:none;">
+        <p class="ss-label">Hat</p>
+        <div class="hat-picker" id="hatPicker"></div>
+        <p class="ss-label">Pet</p>
+        <div class="pet-picker" id="petPicker"></div>
+        <p class="ss-label">Skin</p>
+        <div class="pet-picker" id="skinPicker"></div>
+      </div>
+
+      <div id="aiConfigSection">
+        <button id="aiConfigToggle" onclick="toggleAIConfig()">🤖 AI Players — 0 configured</button>
+        <div id="aiConfigPanel">
+          <div id="aiPlayerRows"></div>
+          <button id="addAIPlayerBtn" onclick="addAIPlayer()">+ Add AI Player</button>
+          <p class="ai-section-note">AI players use real LLM APIs to chat and vote during meetings. Up to 9 AI players. API keys are never sent anywhere except directly to the provider.</p>
+        </div>
+      </div>
+
+      <!-- Multiplayer (host lobby) -->
+      <div id="mpSection" style="width:100%;margin-bottom:12px;">
+        <button id="mpToggleBtn" onclick="toggleMPSection()"
+          style="background:rgba(78,205,196,0.12);border:2px solid #4ecdc4;border-radius:8px;
+                 color:#4ecdc4;font-size:14px;padding:8px 20px;cursor:pointer;width:100%;
+                 font-weight:bold;letter-spacing:1px;transition:background 0.15s;">
+          🌐 Multiplayer (optional)
+        </button>
+        <div id="mpPanel" style="display:none;background:rgba(0,0,0,0.6);border:1px solid #2a4a4a;
+             border-radius:0 0 10px 10px;padding:14px 16px;text-align:center;">
+          <div id="mpStatus" style="color:#888;font-size:12px;margin-bottom:10px;">Not connected — Solo mode active</div>
+          <button id="mpCreateBtn" onclick="mpCreateLobby()"
+            style="padding:9px 22px;background:linear-gradient(135deg,#117f2d,#0d6122);color:#fff;
+                   border:none;border-radius:8px;cursor:pointer;font-weight:bold;font-size:14px;
+                   margin-bottom:8px;width:100%;">Create Lobby</button>
+          <div style="display:flex;gap:8px;margin-bottom:8px;">
+            <input id="mpCodeInput" type="text" placeholder="Paste invite link or lobby ID"
+              style="flex:1;padding:8px 12px;font-size:13px;background:rgba(255,255,255,0.1);
+                     border:1px solid #555;border-radius:6px;color:#fff;outline:none;">
+            <button onclick="mpJoinLobby()"
+              style="padding:8px 16px;background:rgba(78,205,196,0.15);border:2px solid #4ecdc4;
+                     border-radius:6px;color:#4ecdc4;font-weight:bold;cursor:pointer;font-size:14px;">Join</button>
+          </div>
+          <div id="mpLobbyInfo" style="display:none;">
+            <div style="background:rgba(78,205,196,0.08);border:1px solid #4ecdc4;border-radius:8px;padding:10px;margin-bottom:8px;">
+              <div style="color:#4ecdc4;font-size:11px;letter-spacing:1px;margin-bottom:4px;">LOBBY CODE</div>
+              <div id="mpLobbyCode" style="color:#fff;font-size:30px;font-weight:bold;letter-spacing:6px;font-family:monospace;"></div>
+              <button onclick="mpCopyLink()" style="background:none;border:1px solid #555;color:#aaa;font-size:11px;padding:3px 10px;border-radius:4px;cursor:pointer;margin-top:4px;">📋 Copy invite link</button>
+            </div>
+            <div id="mpPlayerList" style="text-align:left;max-height:130px;overflow-y:auto;margin-bottom:8px;font-size:13px;"></div>
+            <button id="mpReadyBtn" onclick="mpToggleReady()"
+              style="padding:6px 18px;background:rgba(17,127,45,0.2);border:1px solid #117f2d;border-radius:6px;color:#4ecdc4;cursor:pointer;font-size:12px;width:100%;margin-bottom:6px;">✓ Ready</button>
+            <button onclick="mpLeaveLobby()"
+              style="padding:6px 18px;background:rgba(197,17,17,0.2);border:1px solid #c51111;border-radius:6px;color:#ff7777;cursor:pointer;font-size:12px;width:100%;">Leave Lobby</button>
+          </div>
+        </div>
+      </div>
+
+      <button id="startBtn">PLAY</button>
+      <p class="controls-info">WASD / arrows &nbsp;·&nbsp; E interact &nbsp;·&nbsp; R report &nbsp;·&nbsp; Space kill &nbsp;·&nbsp; V vent &nbsp;·&nbsp; Q sabotage</p>
     </div>
 
-    <button id="startBtn">PLAY</button>
-    <p class="controls-info">WASD / arrows &nbsp;·&nbsp; E interact &nbsp;·&nbsp; R report &nbsp;·&nbsp; Space kill &nbsp;·&nbsp; V vent &nbsp;·&nbsp; Q sabotage</p>
-
-    </div><!-- /#startContent -->
+    <!-- ══ JOIN GAME PANEL ══ -->
+    <div id="joinPanel" style="display:none;">
+      <button class="back-btn" onclick="showPanel('homePanel')">← Back</button>
+      <div id="joinContent">
+        <input type="text" id="joinNameInput" placeholder="Enter your name" maxlength="12">
+        <p class="ss-label">Color</p>
+        <div class="color-picker" id="joinColorPicker"></div>
+        <input type="text" id="joinCodeInput" placeholder="Lobby code or invite link" maxlength="80" autocomplete="off" spellcheck="false">
+        <button id="joinBtn" onclick="doJoinGame()">JOIN GAME →</button>
+        <div id="joinStatus"></div>
+      </div>
+    </div>
   </div>
 
   <!-- Auth Modal -->
@@ -1307,6 +1405,10 @@
   <div id="settingsPanel">
     <div class="settings-inner">
       <h2>GAME SETTINGS</h2>
+      <div class="sett-tabs">
+        <button class="sett-tab active" id="settTab-gameplay" onclick="switchSettingsTab('gameplay')">⚙️ Gameplay</button>
+        <button class="sett-tab" id="settTab-roles" onclick="switchSettingsTab('roles')">🎭 Roles</button>
+      </div>
       <div id="settingsContent"></div>
       <button id="settingsStartBtn" onclick="startFromSettings()">START ▶</button>
     </div>
@@ -1823,6 +1925,48 @@
       hideAuthModal();
     }
 
+    // ── Home panel navigation ──
+    function showPanel(panelId) {
+      ['homePanel', 'createPanel', 'joinPanel'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = (id === panelId) ? 'flex' : 'none';
+      });
+      if (panelId === 'joinPanel') {
+        const main = document.getElementById('nameInput');
+        const join = document.getElementById('joinNameInput');
+        if (join && main && !join.value) join.value = main.value;
+        _buildJoinColorPicker();
+        document.getElementById('joinStatus').textContent = '';
+      }
+    }
+
+    function _buildJoinColorPicker() {
+      const picker = document.getElementById('joinColorPicker');
+      if (!picker || typeof COLORS === 'undefined') return;
+      picker.innerHTML = '';
+      COLORS.forEach((c, i) => {
+        const sw = document.createElement('div');
+        sw.className = 'color-swatch' + (i === selectedColor ? ' selected' : '');
+        sw.style.background = c.hex;
+        sw.onclick = () => { selectedColor = i; _buildJoinColorPicker(); };
+        picker.appendChild(sw);
+      });
+    }
+
+    function doJoinGame() {
+      const nameEl  = document.getElementById('joinNameInput');
+      const codeEl  = document.getElementById('joinCodeInput');
+      const statusEl = document.getElementById('joinStatus');
+      const name = (nameEl?.value || '').trim();
+      if (!name) { statusEl.textContent = 'Please enter your name.'; nameEl?.focus(); return; }
+      const code = (codeEl?.value || '').trim();
+      if (!code) { statusEl.textContent = 'Please enter a lobby code.'; codeEl?.focus(); return; }
+      document.getElementById('nameInput').value = name;
+      document.getElementById('mpCodeInput').value = code;
+      statusEl.textContent = 'Connecting…';
+      mpJoinLobby();
+    }
+
     function showAuthModal() {
       document.getElementById('authModal').classList.add('open');
       document.getElementById('authUser').value = '';
@@ -1877,8 +2021,8 @@
         name: 'The Skeld', icon: '\u{1F680}', desc: 'Classic spaceship',
         width: 3200, height: 2000,
         bgColor: '#03030a', wallColor: '#52565e', floorColor: 'rgba(200,210,225,0.07)', gridColor: 'rgba(255,255,255,0.04)',
-        spawnX: 1450, spawnY: 320,
-        emergencyBtn: { x: 1418, y: 342, radius: 22 },
+        spawnX: 1400, spawnY: 210,
+        emergencyBtn: { x: 1400, y: 390, radius: 22 },
         sabotageFixLocations: {
           lights:  { x: 585, y: 1100 },                              // Breaker panel, left wall of Electrical
           o2:      [{ x: 1985, y: 655 }, { x: 2215, y: 810 }],      // Both inside O2 room (left & right consoles)
@@ -1939,24 +2083,24 @@
           // --- Upper Engine ---
           w.push({ x: 140, y: 130, w: 16, h: 70 });    // left inner
           w.push({ x: 140, y: 130, w: 120, h: 16 });   // top inner
-          w.push({ x: 414, y: 96,  w: 16, h: 104 });   // right top (to door gap y:200, full corridor overlap)
-          w.push({ x: 414, y: 320, w: 16, h: 74 });    // right bottom (y:320-394, to UE floor bottom)
+          w.push({ x: 414, y: 96,  w: 16, h: 104 });   // right top (y:96-200, door gap y:200-280)
+          w.push({ x: 414, y: 280, w: 16, h: 114 });   // right bottom (y:280-394, wall continues after corridor)
           w.push({ x: 140, y: 394, w: 120, h: 16 });   // bottom left
           w.push({ x: 380, y: 394, w: 34,  h: 16 });   // bottom right (x:380-414, gap now spans x:260-380 matching corridor)
 
           // --- Lower Engine ---
           w.push({ x: 140, y: 1210, w: 120, h: 16 });  // top left
           w.push({ x: 380, y: 1210, w: 34,  h: 16 });  // top right (x:380-414, gap now spans x:260-380 matching corridor)
-          w.push({ x: 414, y: 1210, w: 16, h: 100 });  // right top (to door gap y:1310)
-          w.push({ x: 414, y: 1374, w: 16, h: 150 });  // right bottom
+          w.push({ x: 414, y: 1210, w: 16, h: 80  });  // right top (y:1210-1290, door gap y:1290-1380)
+          w.push({ x: 414, y: 1380, w: 16, h: 144 });  // right bottom (y:1380-1524)
           w.push({ x: 140, y: 1522, w: 16, h: 70 });   // left inner
           w.push({ x: 140, y: 1508, w: 120, h: 16 });  // bottom inner
 
-          // --- Reactor (exits: UE south door gap top x:260-330, LE north door gap bottom x:260-330) ---
+          // --- Reactor (wider — right wall moved from x:244 to x:310, ~66px wider interior) ---
           w.push({ x: 60,  y: 378, w: 16, h: 60 });    // top-left step
           // Right wall — gap y:700-780 for corridor door
-          w.push({ x: 244, y: 394, w: 16, h: 306 });   // right wall top (y:394-700, gap y:700-780 for corridor door)
-          w.push({ x: 244, y: 780, w: 16, h: 446 });   // right wall bottom (y:780-1226)
+          w.push({ x: 310, y: 394, w: 16, h: 306 });   // right wall top (y:394-700, gap y:700-780 for corridor door)
+          w.push({ x: 310, y: 780, w: 16, h: 446 });   // right wall bottom (y:780-1226)
           // --- UE-LE vertical corridor walls ---
           w.push({ x: 380, y: 394, w: 16, h: 176 });   // corridor right wall top (y:394-570, stops at Security top)
           w.push({ x: 380, y: 836, w: 16, h: 374 });   // corridor right wall bottom (y:836-1210, starts after Security bottom wall)
@@ -1982,15 +2126,38 @@
           // Bottom wall
           w.push({ x: 520, y: 600, w: 360, h: 16 });   // bottom (y:600-616)
 
-          // --- Cafeteria (octagonal: chamfered corners via angled wall pieces) ---
-          w.push({ x: 970, y: 96,  w: 16, h: 104 });   // left top (y:96-200, gap y:200-280 for MedBay→Cafeteria)
-          w.push({ x: 970, y: 280, w: 16, h: 320 });   // left bottom (y:280-600, fills corner gap)
-          w.push({ x: 970, y: 96,  w: 880, h: 16 });   // top wall
-          w.push({ x: 1834, y: 96, w: 16, h: 104 });   // right top (y:96-200, gap y:200-280 for Cafeteria→Weapons)
-          w.push({ x: 1834, y: 280, w: 16, h: 320 });  // right bottom (y:280-600, fills corner gap)
-          // Bottom walls: central corridor gap x:1264-1380
-          w.push({ x: 970,  y: 600, w: 294, h: 16 }); // bottom-left (x:970-1264)
-          w.push({ x: 1380, y: 600, w: 470, h: 16 }); // bottom-right (x:1380-1850)
+          // --- Cafeteria (larger octagonal room — 4-step chamfered corners, 64px diagonal each) ---
+          // Top wall (raised to y:20, full width)
+          w.push({ x: 970, y: 20, w: 880, h: 16 });
+          // Top-left chamfer (staircase stepping right+down, 4 × 16px)
+          w.push({ x: 970, y: 36, w: 64, h: 16 });
+          w.push({ x: 970, y: 52, w: 48, h: 16 });
+          w.push({ x: 970, y: 68, w: 32, h: 16 });
+          w.push({ x: 970, y: 84, w: 16, h: 16 });
+          // Left wall (split for door gap y:200-280)
+          w.push({ x: 970, y: 100, w: 16, h: 100 });   // top (y:100-200)
+          w.push({ x: 970, y: 280, w: 16, h: 256 });   // bottom (y:280-536)
+          // Bottom-left chamfer
+          w.push({ x: 970, y: 536, w: 16, h: 16 });
+          w.push({ x: 970, y: 552, w: 32, h: 16 });
+          w.push({ x: 970, y: 568, w: 48, h: 16 });
+          w.push({ x: 970, y: 584, w: 64, h: 16 });
+          // Bottom walls (central corridor gap x:1264-1380)
+          w.push({ x: 1034, y: 600, w: 230, h: 16 }); // bottom-left (x:1034-1264)
+          w.push({ x: 1380, y: 600, w: 406, h: 16 }); // bottom-right (x:1380-1786)
+          // Bottom-right chamfer
+          w.push({ x: 1786, y: 584, w: 64, h: 16 });
+          w.push({ x: 1802, y: 568, w: 48, h: 16 });
+          w.push({ x: 1818, y: 552, w: 32, h: 16 });
+          w.push({ x: 1834, y: 536, w: 16, h: 16 });
+          // Right wall (split for door gap y:200-280)
+          w.push({ x: 1834, y: 280, w: 16, h: 256 });  // bottom (y:280-536)
+          w.push({ x: 1834, y: 100, w: 16, h: 100 });  // top (y:100-200)
+          // Top-right chamfer
+          w.push({ x: 1834, y: 84, w: 16, h: 16 });
+          w.push({ x: 1818, y: 68, w: 32, h: 16 });
+          w.push({ x: 1802, y: 52, w: 48, h: 16 });
+          w.push({ x: 1786, y: 36, w: 64, h: 16 });
 
           // --- Weapons ---
           w.push({ x: 2050, y: 96,  w: 16, h: 104 });  // left top (y:96-200, gap y:200-280 for Cafeteria→Weapons)
@@ -2002,10 +2169,10 @@
           // --- O2 ---
           w.push({ x: 1920, y: 580, w: 16, h: 120 });  // left top (y:580-700, door gap y:700-780)
           w.push({ x: 1920, y: 780, w: 16, h: 140 });  // left bottom (y:780-920)
-          w.push({ x: 1920, y: 580, w: 310, h: 16 }); // top (x:1920-2230, gap x:2230-2284 for W→O2)
-          w.push({ x: 2284, y: 580, w: 16, h: 120 }); // right top (door gap y:700-780)
-          w.push({ x: 2284, y: 780, w: 16, h: 140 }); // right bottom (y:780-920)
-          w.push({ x: 1920, y: 904, w: 380, h: 16 }); // bottom
+          w.push({ x: 1920, y: 580, w: 310, h: 16 }); // top (x:1920-2230, gap x:2230-2310 aligned to W→O2 connector)
+          w.push({ x: 2310, y: 580, w: 16, h: 120 }); // right top (door gap y:700-780)
+          w.push({ x: 2310, y: 780, w: 16, h: 140 }); // right bottom (y:780-920)
+          w.push({ x: 1920, y: 904, w: 406, h: 16 }); // bottom (x:1920-2326, matches wider right wall)
 
           // --- Navigation ---
           w.push({ x: 2550, y: 550, w: 16, h: 150 });  // left top (door gap y:700-780)
@@ -2051,8 +2218,8 @@
           w.push({ x: 1724, y: 1750, w: 376, h: 16 }); // bottom wall
 
           // --- Shields (wider: left wall moved to x:2134) ---
-          w.push({ x: 2134, y: 1100, w: 16, h: 140 }); // left top (door gap y:1240-1330)
-          w.push({ x: 2134, y: 1330, w: 16, h: 180 }); // left bottom
+          w.push({ x: 2134, y: 1100, w: 16, h: 180 }); // left top (y:1100-1280, door gap y:1280-1370)
+          w.push({ x: 2134, y: 1370, w: 16, h: 124 }); // left bottom (y:1370-1494)
           w.push({ x: 2134, y: 1100, w: 294, h: 16 }); // top left (x:2134-2428)
           w.push({ x: 2524, y: 1100, w: 56,  h: 16 }); // top right (x:2524-2580)
           w.push({ x: 2134, y: 1494, w: 426, h: 16 }); // bottom
@@ -2096,9 +2263,9 @@
           w.push({ x: 1380, y: 600, w: 16, h: 60  }); // right wall above Admin (y:600-660)
           w.push({ x: 1380, y: 990, w: 16, h: 110 }); // right wall below Admin (y:990-1100)
 
-          // --- O2 → Navigation (x:2284-2550, y:700-780, aligned with Nav door and O2 right door) ---
-          w.push({ x: 2284, y: 684, w: 266, h: 16 }); // top
-          w.push({ x: 2284, y: 780, w: 144, h: 16 }); // bottom left (x:2284-2428)
+          // --- O2 → Navigation (x:2310-2550, y:700-780, aligned with Nav door and O2 right door) ---
+          w.push({ x: 2310, y: 684, w: 160, h: 16 }); // top left (x:2310-2470, gap x:2470-2550 for W→Nav connector exit)
+          w.push({ x: 2310, y: 780, w: 118, h: 16 }); // bottom left (x:2310-2428)
           w.push({ x: 2524, y: 780, w: 26,  h: 16 }); // bottom right (x:2524-2550)
           // East vertical corridor walls (x:2428-2524, y:780-1116 — connects O2/Nav corridor bottom to Shields)
           w.push({ x: 2412, y: 780, w: 16, h: 336 }); // east corridor left wall (y:780-1116)
@@ -2108,9 +2275,9 @@
           w.push({ x: 2214, y: 490, w: 16, h: 90 }); // left
           w.push({ x: 2310, y: 490, w: 16, h: 90 }); // right
 
-          // --- Weapons → Navigation upper (x:2470-2550, y:490-550) ---
-          w.push({ x: 2454, y: 490, w: 16, h: 60 }); // left
-          w.push({ x: 2550, y: 490, w: 16, h: 60 }); // right
+          // --- Weapons → Navigation upper (x:2470-2550, y:490-700 — connects to O2→Nav corridor) ---
+          w.push({ x: 2454, y: 490, w: 16, h: 210 }); // left (y:490-700, meets O2→Nav corridor top)
+          w.push({ x: 2550, y: 490, w: 16, h: 60  }); // right top (y:490-550, Nav left wall takes over below)
 
           // (Admin→Storage vertical replaced by central corridor — see above)
 
@@ -2122,14 +2289,15 @@
 
           // ============ ROOM OBSTACLES (furniture/equipment) — obj:true skips shadow raycasts ============
 
-          // --- Cafeteria: 5 round tables (2 back, 2 middle, 1 front-center) ---
-          w.push({ x: 1148, y: 194, w: 54, h: 54, obj: true });  // back-left
-          w.push({ x: 1502, y: 194, w: 54, h: 54, obj: true });  // back-right
-          w.push({ x: 1114, y: 378, w: 54, h: 54, obj: true });  // mid-left
-          w.push({ x: 1554, y: 378, w: 54, h: 54, obj: true });  // mid-right
-          w.push({ x: 1330, y: 462, w: 54, h: 54, obj: true });  // front-center
-          // Cafeteria trash bin (bottom-left, near empty garbage task)
-          w.push({ x: 1040, y: 410, w: 28, h: 28, obj: true });
+          // --- Cafeteria: 6 round tables spread across larger octagonal room ---
+          w.push({ x: 1100, y: 130, w: 54, h: 54, obj: true });  // back-left
+          w.push({ x: 1590, y: 130, w: 54, h: 54, obj: true });  // back-right
+          w.push({ x: 1340, y: 130, w: 54, h: 54, obj: true });  // back-center
+          w.push({ x: 1060, y: 320, w: 54, h: 54, obj: true });  // mid-left
+          w.push({ x: 1640, y: 320, w: 54, h: 54, obj: true });  // mid-right
+          w.push({ x: 1320, y: 490, w: 54, h: 54, obj: true });  // front-center
+          // Cafeteria trash bin (bottom-left corner)
+          w.push({ x: 1010, y: 450, w: 28, h: 28, obj: true });
 
           // --- Reactor: Core + hand-scanner pads at sabotage fix positions ---
           w.push({ x: 62, y: 758, w: 84, h: 84, obj: true });    // reactor core (glowing center)
@@ -2146,14 +2314,14 @@
           w.push({ x: 1504, y: 746, w: 168, h: 84, obj: true });
           // (swipe card reader removed — was only 18px from left wall, blocking NPC passage)
 
-          // --- Storage: Crates and fuel canisters ---
-          w.push({ x: 1058, y: 1148, w: 48, h: 38, obj: true });  // crate top-left
-          w.push({ x: 1058, y: 1448, w: 52, h: 42, obj: true });  // crate bottom-left
-          w.push({ x: 1238, y: 1348, w: 44, h: 52, obj: true });  // crate center
-          w.push({ x: 1378, y: 1148, w: 48, h: 42, obj: true });  // crate top-right
-          w.push({ x: 1398, y: 1478, w: 58, h: 42, obj: true });  // crate bottom-right
-          w.push({ x: 1198, y: 1518, w: 42, h: 38, obj: true });  // small crate
-          w.push({ x: 1448, y: 1288, w: 38, h: 60, obj: true });  // fuel canister stack
+          // --- Storage: Crates and fuel canisters — clustered in room center (~1280,1365) ---
+          w.push({ x: 1170, y: 1300, w: 48, h: 38, obj: true });  // cluster left-top
+          w.push({ x: 1170, y: 1360, w: 48, h: 38, obj: true });  // cluster left-bottom
+          w.push({ x: 1240, y: 1270, w: 44, h: 52, obj: true });  // cluster center-top
+          w.push({ x: 1245, y: 1380, w: 44, h: 52, obj: true });  // cluster center-bottom
+          w.push({ x: 1325, y: 1305, w: 48, h: 42, obj: true });  // cluster right-top
+          w.push({ x: 1325, y: 1375, w: 42, h: 38, obj: true });  // cluster right-bottom
+          w.push({ x: 1240, y: 1450, w: 80, h: 40, obj: true });  // fuel canister stack (front)
 
           // --- Electrical: Breaker panel (left wall) + equipment racks ---
           w.push({ x: 538, y: 1048, w: 18, h: 130, obj: true }); // MAIN breaker panel (left wall, matches lights fix)
@@ -2185,8 +2353,8 @@
           // --- O2: Plant tanks (3) + filter machine ---
           w.push({ x: 1958, y: 638, w: 52, h: 52, obj: true });  // plant tank left
           w.push({ x: 2040, y: 638, w: 52, h: 52, obj: true });  // plant tank center
-          w.push({ x: 2122, y: 638, w: 52, h: 52, obj: true });  // plant tank right
-          w.push({ x: 2190, y: 738, w: 60, h: 60, obj: true });  // O2 filter machine (right-center)
+          w.push({ x: 1958, y: 800, w: 52, h: 52, obj: true });  // plant tank right (moved left, below door gap)
+          w.push({ x: 2040, y: 800, w: 60, h: 60, obj: true });  // O2 filter machine (moved left, below door gap)
 
           // --- Communications: Radio + upload terminal ---
           w.push({ x: 1748, y: 1468, w: 18, h: 170, obj: true }); // left equipment rack
@@ -2239,7 +2407,7 @@
           { x: 986, y: 112, w: 864, h: 488 },   // 0: Cafeteria (LARGE, taller)
           { x: 2066, y: 112, w: 478, h: 378 },   // 1: Weapons (taller)
           { x: 2566, y: 566, w: 480, h: 368 },   // 2: Navigation (nose)
-          { x: 1936, y: 596, w: 348, h: 308 },   // 3: O2
+          { x: 1936, y: 596, w: 374, h: 308 },   // 3: O2
           { x: 1396, y: 676, w: 444, h: 298 },   // 4: Admin (wider)
           { x: 2150, y: 1116, w: 394, h: 378 },  // 5: Shields (wider)
           { x: 1740, y: 1370, w: 344, h: 380 },  // 6: Communications (BELOW corridor)
@@ -2259,9 +2427,9 @@
           // Central corridor: Cafeteria south → beside Admin → Storage top
           { x: 1264, y: 600, w: 116, h: 516 },   // Central corridor (x:1264-1380, y:600-1116)
           { x: 1680, y: 700, w: 256, h: 80 },    // Admin/O2 hallway (x:1680-1936, extends to O2 inner edge)
-          { x: 2284, y: 700, w: 266, h: 80 },    // O2 -> Navigation (aligned with Nav door y:700-780 and O2 right door)
+          { x: 2310, y: 700, w: 240, h: 80 },    // O2 -> Navigation (aligned with Nav door y:700-780 and O2 right door)
           { x: 2230, y: 490, w: 80, h: 90 },     // Weapons -> O2 connector
-          { x: 2470, y: 490, w: 80, h: 60 },     // Weapons -> Nav upper connector
+          { x: 2470, y: 490, w: 80, h: 210 },    // Weapons -> Nav upper connector (full height to O2→Nav corridor)
           { x: 2428, y: 780, w: 96, h: 336 },     // East vertical corridor (O2/Nav → Shields north, y:780-1116)
           { x: 414, y: 1290, w: 622, h: 90  },   // LE→Storage bottom corridor (x:414-1036, passes below Electrical)
         ],
@@ -2282,7 +2450,7 @@
           { x: 2620, y: 840, name: 'Stabilize Steering', room: 'Navigation' },
           { x: 2940, y: 840, name: 'Download Data',      room: 'Navigation' },
           { x: 2780, y: 745, name: 'Accept Diverted Power', room: 'Navigation' },
-          // O2 (floor x:1936-2284, y:596-904, center 2110,750)
+          // O2 (floor x:1936-2310, y:596-904, center 2110,750)
           { x: 1960, y: 648, name: 'Clean O2 Filter',    room: 'O2' },   // left plant tank
           { x: 2128, y: 648, name: 'Water Plants',        room: 'O2' },   // right plant tank
           { x: 1960, y: 820, name: 'Fix Wiring',          room: 'O2' },
@@ -2338,27 +2506,27 @@
           { x: 762, y: 510,   name: 'Download Data',      room: 'MedBay' },
         ],
         vents: [
-          // Official Skeld vent network (positions tuned to real game layout):
+          // Official Skeld vent network — all positioned in open floor space away from furniture/walls
           // Reactor north(0) <-> Upper Engine(1)
-          { x: 172, y: 542, partner: 1 },   // 0: Reactor north (upper area of Reactor)
-          { x: 284, y: 330, partner: 0 },   // 1: Upper Engine (center of UE room)
+          { x: 230, y: 600, partner: 1 },   // 0: Reactor north — right-center, clear of hand-pads & core
+          { x: 200, y: 320, partner: 0 },   // 1: Upper Engine — left-center, clear of engine block & dial
           // Reactor south(2) <-> Lower Engine(3)
-          { x: 172, y: 972, partner: 3 },   // 2: Reactor south (lower area of Reactor)
-          { x: 284, y: 1430, partner: 2 },  // 3: Lower Engine (center of LE room)
+          { x: 230, y: 1040, partner: 3 },  // 2: Reactor south — right-center, clear of south hand-pad
+          { x: 200, y: 1290, partner: 2 },  // 3: Lower Engine — upper-center, above engine block & dial
           // Electrical(4) <-> MedBay(5) <-> Security(6) (3-way ring)
-          { x: 624, y: 1248, partner: 5 },  // 4: Electrical (bottom-left of room)
-          { x: 804, y: 432, partner: 6 },   // 5: MedBay (right-center of room)
-          { x: 478, y: 718, partner: 4 },   // 6: Security (center of room)
+          { x: 720, y: 1200, partner: 5 },  // 4: Electrical — center, between bottom panels (clear gap)
+          { x: 740, y: 520, partner: 6 },   // 5: MedBay — lower-right open area, clear of scanner & station
+          { x: 560, y: 760, partner: 4 },   // 6: Security — lower-right, below monitors
           // Admin(7) <-> Cafeteria(8) <-> Hallway(9) (3-way ring)
-          { x: 1530, y: 928, partner: 8 },  // 7: Admin (bottom-center of Admin room)
-          { x: 1104, y: 482, partner: 9 },  // 8: Cafeteria (bottom-left of Cafeteria, near south corridor)
-          { x: 2462, y: 898, partner: 7 },  // 9: Hallway (east vertical corridor, between O2/Nav and Shields)
+          { x: 1450, y: 928, partner: 8 },  // 7: Admin — left-center, clear of admin table x-range
+          { x: 1104, y: 482, partner: 9 },  // 8: Cafeteria — bottom-left open area
+          { x: 2462, y: 898, partner: 7 },  // 9: Hallway — east vertical corridor center
           // Navigation north(10) <-> Weapons(11)
-          { x: 2718, y: 658, partner: 11 }, // 10: Navigation north (upper-left of Nav)
-          { x: 2378, y: 342, partner: 10 }, // 11: Weapons (center of Weapons room)
+          { x: 2660, y: 660, partner: 11 }, // 10: Navigation north — left-center, clear of upper console
+          { x: 2378, y: 342, partner: 10 }, // 11: Weapons — center-right open area
           // Navigation south(12) <-> Shields(13)
-          { x: 2718, y: 872, partner: 13 }, // 12: Navigation south (lower-left of Nav)
-          { x: 2334, y: 1382, partner: 12 },// 13: Shields (left-center of Shields room)
+          { x: 2660, y: 870, partner: 13 }, // 12: Navigation south — left-center, clear of lower console
+          { x: 2334, y: 1382, partner: 12 },// 13: Shields — left-center open area
         ],
         doors: [
           // Official Skeld door layout:
@@ -2367,14 +2535,14 @@
           { x: 1834, y: 200, w: 16, h: 80, room: 'Cafeteria', dir: 'v' },     // right exit (matches gap y:200-280)
           { x: 1264, y: 600, w: 116, h: 16, room: 'Cafeteria', dir: 'h' },    // south to central corridor
           // Upper Engine: 2 doors (east to MedBay hall, south to reactor corridor)
-          { x: 414, y: 240, w: 16, h: 80, room: 'Upper Engine', dir: 'v' },    // east exit (matches wall gap y:240-320)
+          { x: 414, y: 200, w: 16, h: 80, room: 'Upper Engine', dir: 'v' },    // east exit (matches corridor y:200-280)
           { x: 260, y: 394, w: 70, h: 16, room: 'Upper Engine', dir: 'h' },    // south exit
           // Lower Engine: 2 doors (east to Electrical hall, north to reactor corridor)
-          { x: 414, y: 1310, w: 16, h: 64, room: 'Lower Engine', dir: 'v' },   // east exit (wall gap y:1310-1374)
+          { x: 414, y: 1290, w: 16, h: 90, room: 'Lower Engine', dir: 'v' },   // east exit (matches corridor y:1290-1380)
           { x: 260, y: 1210, w: 70, h: 16, room: 'Lower Engine', dir: 'h' },   // north exit
           // MedBay: accessible from top corridor only (left wall is now solid)
           // Reactor: east exit to UE-LE corridor
-          { x: 244, y: 700, w: 16, h: 80, room: 'Reactor', dir: 'v' },   // east exit to UE-LE corridor
+          { x: 310, y: 700, w: 16, h: 80, room: 'Reactor', dir: 'v' },   // east exit to UE-LE corridor
           // Security: 1 door (east exit to corridor)
           { x: 380, y: 700, w: 16, h: 80, room: 'Security', dir: 'v' },        // west entry (left wall at x:380)
           // Electrical: 1 door (south exit to LE-Storage corridor — left wall is now solid)
@@ -2385,11 +2553,12 @@
           { x: 1264, y: 1100, w: 116, h: 16, room: 'Storage', dir: 'h' },      // top exit to central corridor
           // O2: 2 doors (left/west from Admin corridor, right/east to Navigation corridor)
           { x: 1920, y: 700, w: 16, h: 80, room: 'O2', dir: 'v' },             // west exit (matches O2 left wall gap)
-          { x: 2284, y: 700, w: 16, h: 80, room: 'O2', dir: 'v' },             // east exit (matches O2 right wall gap)
+          { x: 2310, y: 700, w: 16, h: 80, room: 'O2', dir: 'v' },             // east exit (matches O2 right wall gap)
           // Navigation: 1 door (west exit)
           { x: 2550, y: 700, w: 16, h: 80, room: 'Navigation', dir: 'v' },     // west exit
-          // Shields: north door (east corridor entrance)
+          // Shields: north door (east corridor entrance) + west door (Storage corridor)
           { x: 2428, y: 1100, w: 96, h: 16, room: 'Shields', dir: 'h' },       // north exit to east corridor
+          { x: 2134, y: 1280, w: 16, h: 90, room: 'Shields', dir: 'v' },       // west entry from Storage corridor
         ],
         waypoints: [
           { x: 280, y: 250, room: 'Upper Engine' },  // 0
@@ -2514,7 +2683,8 @@
 
           // === Laboratory x:1240-1900, y:200-760 ===
           w.push({ x: 1240,y: 200, w: 660,h: 16  }); // top
-          w.push({ x: 1240,y: 200, w: 16, h: 560 }); // left y:200-760
+          w.push({ x: 1240,y: 200, w: 16, h: 300 }); // left-top y:200-500 (door gap y:500-660 to Y-horiz corridor)
+          w.push({ x: 1240,y: 660, w: 16, h: 100 }); // left-bottom y:660-760
           w.push({ x: 1240,y: 760, w: 660,h: 16  }); // bottom
           w.push({ x: 1900,y: 200, w: 16, h: 280 }); // right-top    y:200-480
           w.push({ x: 1900,y: 680, w: 16, h: 80  }); // right-bottom y:680-760
@@ -4276,12 +4446,25 @@
     let hsSeekTimer = 0;         // countdown for final seek phase
     let hsPingEffects = [];      // [{x,y,r,maxR,alpha}] visual ping ripples on canvas
     let _dustMotes = [];         // ambient floating dust motes [{wx,wy,vx,vy,phase,r}]
+    let footstepDust = [];       // footstep dust puffs [{x,y,vx,vy,r,alpha}]
     let killEffects = [];        // blood splatter particles [{x,y,vx,vy,r,alpha,color}]
     let phantomSmokeEffects = []; // phantom vanish/appear smoke [{x,y,vx,vy,r,alpha,color,fixed}]
     let ventEffects = [];        // vent ripple rings [{x,y,r,alpha}]
     let taskEffects = [];        // task-complete sparkles [{x,y,vx,vy,r,alpha,color}]
     let shieldEffects = [];      // shield-absorb rings [{x,y,r,alpha}]
     let floatTexts = [];         // floating text labels [{x,y,vy,text,color,alpha,timer}]
+
+    function addKillFeed(killerName, killerColor, victimName) {
+      if (!killerName || !victimName) return;
+      const feed = document.getElementById('killFeed');
+      if (!feed) return;
+      const el = document.createElement('div');
+      el.className = 'kf-entry';
+      el.innerHTML = `<span class="kf-dot" style="background:${killerColor||'#fff'}"></span><span style="color:${killerColor||'#fff'}">${killerName}</span><span style="color:#666;font-size:10px;margin:0 3px">☠</span><span style="color:#ff7777">${victimName}</span>`;
+      feed.appendChild(el);
+      setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 400); }, 3800);
+      while (feed.children.length > 5) feed.firstChild.remove();
+    }
 
     function spawnKillEffect(wx, wy, victimColor) {
       for (let _i = 0; _i < 16; _i++) {
@@ -4401,7 +4584,8 @@
     let mpPosThrottle = 0;
     let mpPingTimes = {};
     let mpPingInterval = null;
-    let _mpStartBtnRect = null; // set each frame by renderDropship when host button is visible
+    let _mpStartBtnRect = null;   // set each frame by renderDropship when start button is visible
+    let _mpLobbyCodeRect = null;  // set each frame by renderDropship when lobby code is visible
     // Legacy stubs — kept so any remaining references don't crash
     let mpDb = null, mpApp = null, mpAuth = null;
     let mpUnsubMeta = null, mpUnsubPlayers = null;
@@ -4707,6 +4891,7 @@
       if (!mpIsHost) { mpShowToast('You are in a lobby as a client.'); return; }
       _mpShowLobbyUI();
       mpCopyLink();
+      _mpEnterDropship(); // host enters dropship immediately as the lobby waiting area
     }
 
     // --- Join lobby (manual: paste lobby ID or invite URL) ---
@@ -5234,6 +5419,21 @@
       votingTime: 120,             // seconds to vote before auto-skip
       taskbarMode: 'Always',       // 'Always', 'Meetings', 'Never'
       soundEnabled: true,
+      // Ability durations (seconds)
+      shapeshifterDuration: 15,
+      phantomDuration: 15,
+      guardianAngelProtection: 30,
+      trackerDuration: 30,
+      // Per-role max player counts
+      shapeshifterMax: 2, phantomMax: 2, viperMax: 2,
+      engineerMax: 3, scientistMax: 3, detectiveMax: 2,
+      noisemakerMax: 2, guardianAngelMax: 2, trackerMax: 2, sheriffMax: 2,
+      jesterMax: 1,
+      // Per-role chance weights (1–10 relative probability)
+      shapeshifterChance: 5, phantomChance: 5, viperChance: 5,
+      engineerChance: 5, scientistChance: 5, detectiveChance: 5,
+      noisemakerChance: 5, guardianAngelChance: 5, trackerChance: 5, sheriffChance: 5,
+      jesterChance: 5,
     };
 
     function createNPC(x, y, color, name, isImp) {
@@ -5256,6 +5456,7 @@
         panicTimer: 0,
         speechBubble: null,  // { text, timer } for witness reactions
         chatCooldown: 300 + Math.floor(Math.random() * 600), // ticks before next idle chat
+        sheriffKillCooldown: 180,  // frames before sheriff NPC can attempt a kill
         idleTimer: 0,
         stuckTimer: 0,
         fixingSabotage: false,
@@ -5357,22 +5558,42 @@
         const key = 'role' + r.split('_').map(w => w[0].toUpperCase() + w.slice(1)).join('');
         return gameSettings[key] !== false;
       });
+      function _roleKey(r) { return r.split('_').map((w,i) => i ? w[0].toUpperCase()+w.slice(1) : w).join(''); }
+      const _roleCounts = {};
       function pickRole(imp) {
         const pool = imp ? enabledImpRoles : enabledCrewRoles;
-        return pool.length ? pool[Math.floor(Math.random() * pool.length)] : (imp ? 'impostor' : 'crewmate');
+        if (!pool.length) return imp ? 'impostor' : 'crewmate';
+        const weighted = [];
+        for (const r of pool) {
+          const k = _roleKey(r);
+          const maxC = gameSettings[k+'Max'] ?? 3;
+          const weight = gameSettings[k+'Chance'] ?? 5;
+          if ((_roleCounts[r] || 0) < maxC) {
+            for (let _wi = 0; _wi < weight; _wi++) weighted.push(r);
+          }
+        }
+        if (!weighted.length) return imp ? 'impostor' : 'crewmate';
+        const picked = weighted[Math.floor(Math.random() * weighted.length)];
+        _roleCounts[picked] = (_roleCounts[picked] || 0) + 1;
+        return picked;
       }
       playerRole = gameSettings.forcedPlayerRole !== 'random'
         ? gameSettings.forcedPlayerRole
         : pickRole(isImpostor);
       player.role = playerRole;
+      if (playerRole && playerRole !== 'crewmate' && playerRole !== 'impostor')
+        _roleCounts[playerRole] = (_roleCounts[playerRole] || 0) + 1;
       for (const npc of npcs) npc.role = pickRole(npc.isImpostor);
 
-      // Assign Jester role to one random crewmate NPC (neutral role)
-      if (gameSettings.roleJester && playerRole !== 'jester') {
-        const jesterCandidates = npcs.filter(n => !n.isImpostor && n.role !== 'sheriff');
-        if (jesterCandidates.length > 0) {
-          const jNpc = jesterCandidates[Math.floor(Math.random() * jesterCandidates.length)];
-          jNpc.role = 'jester';
+      // Assign Jester role to random crewmate NPC(s) (neutral role)
+      if (gameSettings.roleJester) {
+        const maxJesters = gameSettings.jesterMax ?? 1;
+        let jesterCount = playerRole === 'jester' ? 1 : 0;
+        const jCandidates = npcs.filter(n => !n.isImpostor && n.role !== 'sheriff' && n.role !== 'jester');
+        while (jesterCount < maxJesters && jCandidates.length > 0) {
+          const idx = Math.floor(Math.random() * jCandidates.length);
+          jCandidates.splice(idx, 1)[0].role = 'jester';
+          jesterCount++;
         }
       }
 
@@ -5652,8 +5873,8 @@
       closeShiftMenu();
       shiftTarget = { color: npc.color, name: npc.name, hat: npc.hat || 'none', pet: npc.pet || 'none', skin: npc.skin || 'none' };
       abilityActive = true;
-      abilityTimer = 900;        // 15s shifted
-      abilityCooldown = 900 + 1800; // 30s cooldown after shift ends
+      abilityTimer = (gameSettings.shapeshifterDuration || 15) * 60;
+      abilityCooldown = abilityTimer + 1800; // 30s cooldown after shift ends
       // Leave evidence marker
       shifterEvidence.push({ x: player.x + player.w/2, y: player.y + player.h/2, timer: 300, maxTimer: 300 });
     }
@@ -5669,7 +5890,7 @@
       }
       if (!nearest) return;
       nearest.protectedBy = player.name;
-      nearest.protectionTimer = 1800; // 30s
+      nearest.protectionTimer = (gameSettings.guardianAngelProtection || 30) * 60;
       abilityCooldown = 3600; // 60s
     }
 
@@ -5698,10 +5919,11 @@
       }
       if (!nearest) return;
       trackerTarget = nearest;
-      trackerTimer = 1800; // 30s tracking duration
+      const _trackFrames = (gameSettings.trackerDuration || 30) * 60;
+      trackerTimer = _trackFrames;
       abilityActive = true;
-      abilityTimer = 1800;
-      abilityCooldown = 1800 + 1800;
+      abilityTimer = _trackFrames;
+      abilityCooldown = _trackFrames + 1800;
     }
 
     function doPhantom() {
@@ -5717,8 +5939,8 @@
       } else {
         // Vanish — smoke stays at vanish position
         abilityActive = true;
-        abilityTimer = 900;   // 15s max vanish duration
-        abilityCooldown = 900 + 1500;
+        abilityTimer = (gameSettings.phantomDuration || 15) * 60;
+        abilityCooldown = abilityTimer + 1500;
         spawnPhantomSmoke(_cx, _cy, player.color, true);
       }
     }
@@ -6234,6 +6456,27 @@
       const panel = document.getElementById('actionButtons');
       const voteVisible = document.getElementById('voteScreen').style.display !== 'none';
       const reportVisible = document.getElementById('reportScreen').style.display !== 'none';
+
+      // Guardian Angel ghost: show only the Protect ability button
+      if (isGhost && playerRole === 'guardian_angel' && gameStarted && !gameOver && !voteVisible && !reportVisible) {
+        panel.style.display = 'flex';
+        ['btn-use', 'btn-report', 'btn-kill', 'btn-vent', 'btn-sabotage', 'btn-sabmap'].forEach(id => {
+          const el = document.getElementById(id); if (el) el.style.display = 'none';
+        });
+        const _ab = document.getElementById('btn-ability');
+        _ab.style.display = '';
+        _ab.style.borderColor = ROLE_COLORS['guardian_angel'];
+        document.getElementById('btn-ability-icon').textContent = '🛡️';
+        const lbl = document.getElementById('btn-ability-lbl');
+        const cd = document.getElementById('btn-ability-cd');
+        if (abilityCooldown > 0) {
+          lbl.textContent = 'PROTECT'; cd.textContent = Math.ceil(abilityCooldown / 60) + 's'; _ab.disabled = true;
+        } else {
+          lbl.textContent = 'PROTECT'; cd.textContent = 'READY'; _ab.disabled = false;
+        }
+        return;
+      }
+
       if (!gameStarted || gameOver || playerDoingTask || !player || !player.alive || voteVisible || reportVisible) {
         panel.style.display = 'none';
         closeSabSubMenu();
@@ -6318,21 +6561,31 @@
         closeSabSubMenu();
       }
 
-      // ABILITY — special roles
+      // ABILITY — special roles (viper excluded: its ability IS the kill button, no separate F action)
       const btnAbility = document.getElementById('btn-ability');
       const abilityIconEl = document.getElementById('btn-ability-icon');
       const abilityLblEl = document.getElementById('btn-ability-lbl');
       const abilityCdEl = document.getElementById('btn-ability-cd');
-      const specialRoles = ['shapeshifter', 'phantom', 'viper', 'scientist', 'detective', 'noisemaker'];
+      const specialRoles = ['shapeshifter', 'phantom', 'scientist', 'detective', 'noisemaker', 'tracker'];
       if (specialRoles.includes(playerRole)) {
         btnAbility.style.display = '';
-        const icons = { shapeshifter: '🎭', phantom: '👻', viper: '☠️', scientist: '📋', detective: '🔎', noisemaker: '🔔' };
+        const icons = { shapeshifter: '🎭', phantom: '👻', scientist: '📋', detective: '🔎', noisemaker: '🔔', tracker: '📍' };
         abilityIconEl.textContent = icons[playerRole] || '✨';
         btnAbility.style.borderColor = ROLE_COLORS[playerRole] || '#44aaff';
         if (playerRole === 'noisemaker') {
           abilityLblEl.textContent = 'PASSIVE'; abilityCdEl.textContent = ''; btnAbility.disabled = true;
         } else if (playerRole === 'scientist') {
           abilityLblEl.textContent = vitalsOpen ? 'CLOSE' : 'VITALS'; abilityCdEl.textContent = ''; btnAbility.disabled = false;
+        } else if (playerRole === 'tracker') {
+          if (sabotage.active && sabotage.type === 'comms') {
+            abilityLblEl.textContent = 'BLOCKED'; abilityCdEl.textContent = ''; btnAbility.disabled = true;
+          } else if (trackerTarget && trackerTimer > 0) {
+            abilityLblEl.textContent = 'UNTRACK'; abilityCdEl.textContent = Math.ceil(trackerTimer / 60) + 's'; btnAbility.disabled = false;
+          } else if (abilityCooldown > 0) {
+            abilityLblEl.textContent = 'TRACK'; abilityCdEl.textContent = Math.ceil(abilityCooldown / 60) + 's'; btnAbility.disabled = true;
+          } else {
+            abilityLblEl.textContent = 'TRACK'; abilityCdEl.textContent = 'READY'; btnAbility.disabled = false;
+          }
         } else if (abilityActive) {
           abilityLblEl.textContent = 'ACTIVE'; abilityCdEl.textContent = Math.ceil(abilityTimer / 60) + 's'; btnAbility.disabled = true;
         } else if (abilityCooldown > 0) {
@@ -6357,7 +6610,7 @@
       } else if (playerRole === 'noisemaker') {
         text = `NOISEMAKER — alerts on death`;
       } else if (playerRole === 'viper') {
-        text = `VIPER — [SPACE] Acid (dissolves body)`;
+        text = `VIPER — Kill button uses Acid (body dissolves)`;
       } else if (playerRole === 'detective') {
         text = detectiveNotes.length > 0
           ? `[F] Notes (${detectiveNotes.length} case${detectiveNotes.length !== 1 ? 's' : ''})`
@@ -6389,6 +6642,12 @@
           text = `🎭 Select a player to shift into...`;
         } else {
           text = `[F] Shapeshift — READY`;
+        }
+      } else if (playerRole === 'guardian_angel') {
+        if (abilityCooldown > 0) {
+          text = `🛡️ GUARDIAN ANGEL — Protect cooldown ${Math.ceil(abilityCooldown / 60)}s`;
+        } else {
+          text = `🛡️ GUARDIAN ANGEL — [F] Protect a crewmate`;
         }
       } else if (abilityCooldown > 0 && !abilityActive) {
         text = `[F] ${ROLE_LABELS[playerRole]} — cooldown ${Math.ceil(abilityCooldown / 60)}s`;
@@ -6831,6 +7090,29 @@
           else sabotage.fixProgress = Math.min(100, sabotage.fixProgress + 0.5);
           if (sabotage.fixProgress >= 100 && (sabStations2.length < 2 || sabotage.fixProgressB >= 100)) endSabotage();
           if (!sabotage.active) npc.fixingSabotage = false;
+        }
+      }
+
+      // Sheriff NPC: can kill impostor NPCs nearby (announces role, dies if misfire)
+      if (npc.role === 'sheriff' && !inMeeting && !gameOver && gameMode !== 'hideseek') {
+        if (npc.sheriffKillCooldown > 0) {
+          npc.sheriffKillCooldown--;
+        } else {
+          const kRange = 65;
+          const impTarget = npcs.find(n => n.alive && n.isImpostor && !n.inVent && dist(npc, n) < kRange
+            && hasLineOfSight(npc.x + 16, npc.y + 20, n.x + 16, n.y + 20, 4, 4));
+          if (impTarget) {
+            impTarget.alive = false;
+            deadBodies.push({ x: impTarget.x, y: impTarget.y, color: impTarget.color, name: impTarget.name });
+            spawnKillEffect(impTarget.x + impTarget.w / 2, impTarget.y + impTarget.h / 2, impTarget.color);
+            playSfx('kill');
+            npc.sheriffKillCooldown = 300;
+            npc.speechBubble = { text: "I'm the Sheriff! " + impTarget.name + " was the Impostor!", timer: 300 };
+            notifyWitnessesOfKill(npc.name, npc.x, npc.y, impTarget.name);
+            if (npcs.filter(n => n.alive && n.isImpostor).length === 0) endGame(false);
+            if (typeof mpEnabled !== 'undefined' && mpEnabled)
+              mpPublishEvent('kill', impTarget.mpId || null, { victimName: impTarget.name, victimColor: impTarget.color, x: Math.round(impTarget.x), y: Math.round(impTarget.y) });
+          }
         }
       }
 
@@ -7397,6 +7679,7 @@
         player.alive = false;
         deadBodies.push({ x: player.x, y: player.y, color: player.color, name: player.name });
         spawnKillEffect(player.x + player.w / 2, player.y + player.h / 2, player.color);
+        addKillFeed(impostor.name, impostor.color, player.name);
         if (playerRole === 'noisemaker') triggerNoisemakerAlert(player);
         playSfx('kill');
         killFlash = 20;
@@ -7452,6 +7735,7 @@
         }
         deadBodies.push(_nvb);
         spawnKillEffect(npcVictim.x + npcVictim.w / 2, npcVictim.y + npcVictim.h / 2, npcVictim.color);
+        addKillFeed(impostor.name, impostor.color, npcVictim.name);
         if (impostor.role === 'viper') spawnAcidEffect(npcVictim.x + npcVictim.w / 2, npcVictim.y + npcVictim.h / 2);
         // Pet stays at death location (dissolves with body for Viper)
         if (npcVictim.pet && npcVictim.pet !== 'none') {
@@ -8172,6 +8456,10 @@
           player.y += dy;
         } else {
           tryMove(player, dx, dy);
+          // Footstep dust puffs
+          if (!isGhost && frameCount % 8 === 0) {
+            footstepDust.push({ x: player.x + player.w/2 + (Math.random()-0.5)*10, y: player.y + player.h - 2, vx: (Math.random()-0.5)*0.6, vy: -Math.random()*0.5, r: 1.5 + Math.random()*2, alpha: 0.3 });
+          }
           // Wall separation: gently push player away from walls they're grazing
           let _psx = 0, _psy = 0;
           const _pm = 5;
@@ -8255,6 +8543,13 @@
         shieldEffects[i].alpha -= 0.05 * _frameDt;
         if (shieldEffects[i].alpha <= 0) shieldEffects.splice(i, 1);
       }
+      // Footstep dust
+      for (let i = footstepDust.length - 1; i >= 0; i--) {
+        const _fd = footstepDust[i];
+        _fd.x += _fd.vx * _frameDt; _fd.y += _fd.vy * _frameDt;
+        _fd.r += 0.1 * _frameDt; _fd.alpha -= 0.028 * _frameDt;
+        if (_fd.alpha <= 0) footstepDust.splice(i, 1);
+      }
       // Floating texts
       for (let i = floatTexts.length - 1; i >= 0; i--) {
         const _ft = floatTexts[i];
@@ -8276,19 +8571,7 @@
         if (npc.protectionTimer > 0) npc.protectionTimer--;
       }
 
-      // Viper: dissolve bodies and their pets over time
-      for (let bi = deadBodies.length - 1; bi >= 0; bi--) {
-        const _db = deadBodies[bi];
-        if (_db.dissolveTimer === undefined) continue;
-        _db.dissolveTimer--;
-        if (_db.dissolveTimer <= 0) deadBodies.splice(bi, 1);
-      }
-      for (let pi = deadPets.length - 1; pi >= 0; pi--) {
-        const _dp2 = deadPets[pi];
-        if (_dp2.dissolveTimer === undefined) continue;
-        _dp2.dissolveTimer--;
-        if (_dp2.dissolveTimer <= 0) deadPets.splice(pi, 1);
-      }
+      // (dissolve bodies moved to game loop — runs even during meetings/vent/task)
 
       // Noisemaker alert countdown
       if (noisemakerAlertTimer > 0) {
@@ -8569,8 +8852,10 @@
                 deadPets.push({x: npc.x + 10, y: npc.y + npc.h, petType: npc.pet, color: npc.color});
               }
               playSfx('kill');
+              addKillFeed(player.name, player.color, npc.name);
               killCooldown = (gameMode === 'hideseek' ? gameSettings.seekerKillCooldown : gameSettings.killCooldown) * 60;
               killFlash = 15;
+              showDetectiveToast('🔫 SHERIFF! ' + npc.name + ' was an Impostor!');
               notifyWitnessesOfKill((abilityActive && shiftTarget) ? shiftTarget.name : player.name, player.x, player.y, npc.name);
               const aliveImps = npcs.filter(n => n.alive && n.isImpostor).length;
               if (aliveImps === 0 && !isImpostor) endGame(false);
@@ -8580,7 +8865,9 @@
               deadBodies.push({ x: player.x, y: player.y, color: player.color, name: player.name });
               spawnKillEffect(player.x + player.w / 2, player.y + player.h / 2, player.color);
               playSfx('kill');
+              addKillFeed(npc.name, npc.color, player.name);
               killFlash = 20;
+              showDetectiveToast('💀 You shot an innocent! The Sheriff is dead!');
               isGhost = true;
               const msg = document.getElementById('ghostMsg');
               msg.style.display = 'block';
@@ -8615,6 +8902,7 @@
             }
             if (npc.role === 'noisemaker') triggerNoisemakerAlert(npc);
             playSfx('kill');
+            addKillFeed((abilityActive && shiftTarget) ? shiftTarget.name : player.name, player.color, npc.name);
             mpPublishEvent('kill', npc.mpId || null, { victimName: npc.name, victimColor: npc.color, x: Math.round(npc.x), y: Math.round(npc.y) });
             killCooldown = (gameMode === 'hideseek' ? gameSettings.seekerKillCooldown : gameSettings.killCooldown) * 60;
             killFlash = 15;
@@ -15055,6 +15343,168 @@
       }
     }
 
+    function drawTaskIcon(x, y, name, col, alpha) {
+      const s = 8;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = col; ctx.fillStyle = col;
+      ctx.lineWidth = 1.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      switch (name) {
+        case 'Download Data':
+          ctx.beginPath(); ctx.moveTo(x,y-s*.7); ctx.lineTo(x,y+s*.7); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x-s*.5,y+s*.2); ctx.lineTo(x,y+s*.7); ctx.lineTo(x+s*.5,y+s*.2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(x,y-s*.7,s*.18,0,Math.PI*2); ctx.fill(); break;
+        case 'Upload Data':
+          ctx.beginPath(); ctx.moveTo(x,y+s*.7); ctx.lineTo(x,y-s*.7); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x-s*.5,y-s*.2); ctx.lineTo(x,y-s*.7); ctx.lineTo(x+s*.5,y-s*.2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(x,y+s*.7,s*.18,0,Math.PI*2); ctx.fill(); break;
+        case 'Fix Wiring': case 'Reset Breakers': case 'Divert Power': case 'Accept Diverted Power':
+          ctx.beginPath(); ctx.moveTo(x+s*.2,y-s*.9); ctx.lineTo(x-s*.35,y); ctx.lineTo(x+s*.1,y); ctx.lineTo(x-s*.2,y+s*.9); ctx.lineTo(x+s*.35,y); ctx.lineTo(x-s*.1,y); ctx.closePath(); ctx.fill(); break;
+        case 'Recharge Battery': {
+          const bw=s*1.2,bh=s*.7;
+          ctx.strokeRect(x-bw/2,y-bh/2,bw,bh); ctx.fillRect(x+bw/2,y-bh/4,s*.18,bh/2);
+          ctx.fillRect(x-bw/2+s*.15,y-bh/2+s*.15,bw*.5,bh-s*.3); break; }
+        case 'Clean O2 Filter': case 'Clean Filter': case 'Collect Water':
+          ctx.beginPath(); ctx.moveTo(x,y-s*.9); ctx.bezierCurveTo(x+s*.8,y,x+s*.6,y+s*.6,x,y+s*.8); ctx.bezierCurveTo(x-s*.6,y+s*.6,x-s*.8,y,x,y-s*.9); ctx.fill(); break;
+        case 'Water Plants': case 'Fertilize Plants': case 'Study Flora': case 'Collect Mushrooms':
+          if (name==='Collect Mushrooms') {
+            ctx.beginPath(); ctx.moveTo(x-s*.7,y+s*.1); ctx.bezierCurveTo(x-s*.7,y-s*.7,x+s*.7,y-s*.7,x+s*.7,y+s*.1); ctx.closePath(); ctx.fill();
+            ctx.fillRect(x-s*.2,y+s*.1,s*.4,s*.65); break;
+          }
+          ctx.beginPath(); ctx.moveTo(x,y+s*.8); ctx.bezierCurveTo(x-s*.8,y,x-s*.8,y-s*.8,x,y-s*.6); ctx.bezierCurveTo(x+s*.8,y-s*.8,x+s*.8,y,x,y+s*.8); ctx.fill();
+          ctx.beginPath(); ctx.moveTo(x,y+s*.8); ctx.lineTo(x,y-s*.2); ctx.globalAlpha=alpha*.5; ctx.stroke(); break;
+        case 'Empty Garbage':
+          ctx.beginPath(); ctx.moveTo(x-s*.5,y-s*.4); ctx.lineTo(x-s*.6,y+s*.75); ctx.lineTo(x+s*.6,y+s*.75); ctx.lineTo(x+s*.5,y-s*.4); ctx.closePath(); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x-s*.75,y-s*.4); ctx.lineTo(x+s*.75,y-s*.4); ctx.stroke();
+          ctx.beginPath(); ctx.arc(x,y-s*.55,s*.2,Math.PI,0); ctx.stroke(); break;
+        case 'Chart Course':
+          ctx.beginPath(); ctx.arc(x,y,s*.8,0,Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x,y-s*.8); ctx.lineTo(x-s*.25,y+s*.2); ctx.lineTo(x+s*.25,y+s*.2); ctx.closePath(); ctx.fill();
+          ctx.globalAlpha=alpha*.35; ctx.beginPath(); ctx.moveTo(x,y+s*.8); ctx.lineTo(x-s*.25,y-s*.2); ctx.lineTo(x+s*.25,y-s*.2); ctx.closePath(); ctx.fill(); break;
+        case 'Stabilize Steering':
+          ctx.beginPath(); ctx.arc(x,y,s*.8,0,Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(x,y,s*.22,0,Math.PI*2); ctx.fill();
+          for(let i=0;i<3;i++){const a=i*Math.PI*2/3-Math.PI/2;ctx.beginPath();ctx.moveTo(x+Math.cos(a)*s*.22,y+Math.sin(a)*s*.22);ctx.lineTo(x+Math.cos(a)*s*.8,y+Math.sin(a)*s*.8);ctx.stroke();} break;
+        case 'Clear Asteroids':
+          ctx.beginPath(); ctx.arc(x,y,s*.7,0,Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(x,y,s*.28,0,Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.moveTo(x-s,y); ctx.lineTo(x-s*.7,y); ctx.moveTo(x+s*.7,y); ctx.lineTo(x+s,y); ctx.moveTo(x,y-s); ctx.lineTo(x,y-s*.7); ctx.moveTo(x,y+s*.7); ctx.lineTo(x,y+s); ctx.stroke(); break;
+        case 'Submit Scan':
+          ctx.beginPath(); ctx.arc(x,y-s*.4,s*.28,0,Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.moveTo(x-s*.35,y-s*.12); ctx.lineTo(x-s*.5,y+s*.7); ctx.lineTo(x+s*.5,y+s*.7); ctx.lineTo(x+s*.35,y-s*.12); ctx.stroke(); break;
+        case 'Inspect Sample': case 'Collect Samples': case 'Sort Samples': case 'Store Samples':
+          ctx.beginPath(); ctx.moveTo(x-s*.22,y-s*.8); ctx.lineTo(x-s*.22,y+s*.3); ctx.arc(x,y+s*.3,s*.22,Math.PI,0); ctx.lineTo(x+s*.22,y-s*.8); ctx.stroke();
+          ctx.fillRect(x-s*.18,y+s*.1,s*.36,s*.2); break;
+        case 'Inspect Core': case 'Start Reactor':
+          ctx.beginPath(); ctx.arc(x,y,s*.22,0,Math.PI*2); ctx.fill();
+          for(let i=0;i<3;i++){ctx.save();ctx.translate(x,y);ctx.rotate(i*Math.PI/3);ctx.beginPath();ctx.ellipse(0,0,s*.8,s*.32,0,0,Math.PI*2);ctx.stroke();ctx.restore();} break;
+        case 'Prime Shields':
+          ctx.beginPath(); ctx.moveTo(x,y-s*.9); ctx.lineTo(x+s*.7,y-s*.5); ctx.lineTo(x+s*.7,y+s*.15); ctx.bezierCurveTo(x+s*.7,y+s*.6,x,y+s*.95,x,y+s*.95); ctx.bezierCurveTo(x-s*.7,y+s*.6,x-s*.7,y+s*.15,x-s*.7,y+s*.15); ctx.lineTo(x-s*.7,y-s*.5); ctx.closePath(); ctx.stroke(); break;
+        case 'Swipe Card': {
+          const cw=s*1.3,ch=s*.85;
+          ctx.strokeRect(x-cw/2,y-ch/2,cw,ch); ctx.fillRect(x-cw/2,y-ch/6,cw,ch/3); break; }
+        case 'Enter ID Code':
+          for(let r=0;r<3;r++) for(let c=0;c<3;c++){ctx.beginPath();ctx.arc(x+(c-1)*s*.55,y+(r-1)*s*.55,s*.12,0,Math.PI*2);ctx.fill();} break;
+        case 'Unlock Safe': case 'Unlock Manifolds':
+          ctx.beginPath(); ctx.arc(x,y-s*.15,s*.38,Math.PI,0); ctx.stroke();
+          ctx.strokeRect(x-s*.42,y-s*.08,s*.84,s*.65);
+          ctx.beginPath(); ctx.arc(x,y+s*.18,s*.12,0,Math.PI*2); ctx.fill(); break;
+        case 'Align Engine Output': case 'Calibrate Distributor': {
+          const teeth=6;
+          ctx.beginPath();
+          for(let i=0;i<teeth*2;i++){const a=i*Math.PI/teeth,r=i%2===0?s*.85:s*.58;i===0?ctx.moveTo(x+Math.cos(a)*r,y+Math.sin(a)*r):ctx.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);}
+          ctx.closePath(); ctx.stroke(); ctx.beginPath(); ctx.arc(x,y,s*.28,0,Math.PI*2); ctx.fill(); break; }
+        case 'Align Telescope': case 'View Balcony':
+          ctx.save(); ctx.translate(x,y); ctx.rotate(-Math.PI/4);
+          ctx.strokeRect(-s*.2,-s*.75,s*.4,s*.9); ctx.beginPath(); ctx.arc(0,-s*.75,s*.25,0,Math.PI*2); ctx.fill();
+          ctx.restore(); break;
+        case 'Fuel Canisters': case 'Fill Canisters': case 'Fuel Engines':
+          ctx.beginPath(); ctx.moveTo(x,y-s*.85); ctx.bezierCurveTo(x+s*.7,y-s*.1,x+s*.7,y+s*.3,x,y+s*.85); ctx.bezierCurveTo(x-s*.7,y+s*.3,x-s*.7,y-s*.1,x,y-s*.85); ctx.closePath(); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x-s*.15,y-s*.85); ctx.lineTo(x,y-s*1.1); ctx.lineTo(x+s*.15,y-s*.85); ctx.stroke(); break;
+        case 'Run Diagnostics': case 'Process Data': {
+          const bars=[[.28,.4],[.6,.8],[.88,.55]],base=y+s*.7;
+          for(const[xf,hf]of bars){const bx=x-s*.8+xf*s*1.6,bh=hf*s*1.3;ctx.fillRect(bx-s*.2,base-bh,s*.38,bh);}
+          ctx.beginPath(); ctx.moveTo(x-s*.9,base); ctx.lineTo(x+s*.9,base); ctx.stroke(); break; }
+        case 'Assemble Artifact': case 'Sort Artifacts': case 'Store Artifacts': case 'Polish Ruby': case 'Mine Gems':
+          ctx.beginPath(); ctx.moveTo(x,y-s*.9); ctx.lineTo(x+s*.65,y-s*.2); ctx.lineTo(x,y+s*.9); ctx.lineTo(x-s*.65,y-s*.2); ctx.closePath(); ctx.stroke();
+          ctx.globalAlpha=alpha*.5; ctx.beginPath(); ctx.moveTo(x-s*.65,y-s*.2); ctx.lineTo(x,y-s*.2); ctx.lineTo(x+s*.65,y-s*.2); ctx.moveTo(x-s*.28,y-s*.2); ctx.lineTo(x,y+s*.9); ctx.moveTo(x+s*.28,y-s*.2); ctx.lineTo(x,y+s*.9); ctx.stroke(); break;
+        case 'Haul Ore': case 'Precision Drilling': case 'Drill':
+          ctx.save(); ctx.translate(x,y); ctx.rotate(Math.PI/4);
+          ctx.fillRect(-s*.14,-s*.85,s*.28,s*1.45);
+          ctx.beginPath(); ctx.moveTo(-s*.5,-s*.5); ctx.lineTo(s*.5,-s*.5); ctx.lineTo(s*.2,-s*.85); ctx.lineTo(-s*.5,-s*.5); ctx.fill(); ctx.restore(); break;
+        case 'Catch Fish':
+          ctx.beginPath(); ctx.moveTo(x+s*.8,y); ctx.bezierCurveTo(x+s*.2,y-s*.4,x-s*.6,y-s*.5,x-s*.8,y); ctx.bezierCurveTo(x-s*.6,y+s*.5,x+s*.2,y+s*.4,x+s*.8,y); ctx.fill();
+          ctx.beginPath(); ctx.moveTo(x+s*.8,y); ctx.lineTo(x+s*1.1,y-s*.4); ctx.lineTo(x+s*1.1,y+s*.4); ctx.closePath(); ctx.fill(); break;
+        case 'Grill Steak': case 'Roast Marshmallow': case 'Tend Fire':
+          ctx.beginPath(); ctx.moveTo(x,y+s*.8); ctx.bezierCurveTo(x-s*.7,y+s*.3,x-s*.5,y-s*.3,x-s*.2,y-s*.6); ctx.bezierCurveTo(x-s*.1,y-s*.1,x+s*.2,y-s*.4,x,y-s*.9); ctx.bezierCurveTo(x+s*.5,y-s*.3,x+s*.7,y+s*.3,x,y+s*.8); ctx.fill(); break;
+        case 'Buy Beverage':
+          ctx.beginPath(); ctx.moveTo(x-s*.5,y-s*.65); ctx.lineTo(x-s*.6,y+s*.7); ctx.lineTo(x+s*.6,y+s*.7); ctx.lineTo(x+s*.5,y-s*.65); ctx.closePath(); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x+s*.2,y-s*.65); ctx.lineTo(x+s*.45,y-s*1.15); ctx.stroke(); break;
+        case 'Wash Dishes': case 'Replace Soap': case 'Fix Shower':
+          ctx.beginPath(); ctx.arc(x,y-s*.2,s*.5,0,Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(x+s*.5,y+s*.4,s*.24,0,Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(x-s*.4,y+s*.5,s*.17,0,Math.PI*2); ctx.stroke(); break;
+        case 'Replace UV Bulb':
+          ctx.beginPath(); ctx.arc(x,y-s*.22,s*.52,0,Math.PI*1.3); ctx.lineTo(x-s*.3,y+s*.5); ctx.stroke();
+          ctx.beginPath(); ctx.arc(x,y-s*.22,s*.52,Math.PI*1.7,Math.PI*2); ctx.lineTo(x+s*.3,y+s*.5); ctx.stroke();
+          ctx.strokeRect(x-s*.3,y+s*.5,s*.6,s*.28); break;
+        case 'Start Fans':
+          for(let i=0;i<3;i++){ctx.save();ctx.translate(x,y);ctx.rotate(i*Math.PI*2/3);ctx.beginPath();ctx.ellipse(s*.35,0,s*.5,s*.2,0,0,Math.PI*2);ctx.fill();ctx.restore();}
+          ctx.beginPath(); ctx.arc(x,y,s*.2,0,Math.PI*2); ctx.fillStyle='rgba(0,0,0,0.5)'; ctx.fill(); break;
+        case 'Prep Launch':
+          ctx.beginPath(); ctx.moveTo(x,y-s*.9); ctx.bezierCurveTo(x+s*.4,y-s*.4,x+s*.4,y+s*.15,x+s*.25,y+s*.4); ctx.lineTo(x-s*.25,y+s*.4); ctx.bezierCurveTo(x-s*.4,y+s*.15,x-s*.4,y-s*.4,x,y-s*.9); ctx.fill();
+          ctx.beginPath(); ctx.moveTo(x+s*.25,y+s*.3); ctx.lineTo(x+s*.6,y+s*.8); ctx.lineTo(x-s*.6,y+s*.8); ctx.lineTo(x-s*.25,y+s*.3); ctx.stroke();
+          ctx.beginPath(); ctx.arc(x,y-s*.2,s*.18,0,Math.PI*2); ctx.fillStyle='rgba(0,0,0,0.45)'; ctx.fill(); break;
+        case 'Restore Comms':
+          ctx.beginPath(); ctx.arc(x-s*.15,y+s*.2,s*.65,-Math.PI*.9,-Math.PI*.1); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x-s*.15,y+s*.2); ctx.lineTo(x+s*.4,y-s*.55); ctx.stroke();
+          for(let i=1;i<=2;i++){ctx.globalAlpha=alpha*(.45/i);ctx.beginPath();ctx.arc(x+s*.4,y-s*.55,s*.3*i,-Math.PI*.75,-Math.PI*.1);ctx.stroke();} break;
+        case 'Make Bed': case 'Clean Dorm':
+          ctx.strokeRect(x-s*.8,y-s*.4,s*1.6,s*1.0);
+          ctx.fillRect(x-s*.65,y-s*.25,s*.6,s*.55);
+          ctx.globalAlpha=alpha*.5; ctx.beginPath(); ctx.moveTo(x-s*.8,y+s*.15); ctx.lineTo(x+s*.8,y+s*.15); ctx.stroke(); break;
+        case 'View Camera': case 'View Cameras':
+          ctx.strokeRect(x-s*.9,y-s*.55,s*1.8,s*1.1);
+          ctx.beginPath(); ctx.arc(x,y,s*.62,0,Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(x,y,s*.3,0,Math.PI*2); ctx.fill(); break;
+        case 'Scan Horizon':
+          ctx.beginPath(); ctx.ellipse(x,y,s*.7,s*.45,0,0,Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(x,y,s*.24,0,Math.PI*2); ctx.fill(); break;
+        case 'Put Away Pistols':
+          ctx.beginPath(); ctx.moveTo(x-s*.8,y+s*.2); ctx.lineTo(x+s*.8,y+s*.2); ctx.lineTo(x+s*.8,y-s*.05); ctx.lineTo(x+s*.1,y-s*.3); ctx.lineTo(x+s*.1,y-s*.65); ctx.lineTo(x-s*.1,y-s*.65); ctx.lineTo(x-s*.1,y-s*.1); ctx.lineTo(x-s*.8,y-s*.1); ctx.closePath(); ctx.fill(); break;
+        case 'Scan Highlands':
+          ctx.beginPath(); ctx.moveTo(x-s*.9,y+s*.7); ctx.lineTo(x-s*.2,y-s*.8); ctx.lineTo(x+s*.3,y-s*.1); ctx.lineTo(x+s*.9,y+s*.7); ctx.closePath(); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x-s*.2,y-s*.8); ctx.lineTo(x-s*.45,y-s*.35); ctx.lineTo(x+s*.1,y-s*.35); ctx.closePath(); ctx.fill(); break;
+        case 'Measure Humidity':
+          ctx.beginPath(); ctx.arc(x,y+s*.6,s*.28,0,Math.PI*2); ctx.fill();
+          ctx.strokeRect(x-s*.14,y-s*.8,s*.28,s*.78); ctx.fillRect(x-s*.11,y-s*.18,s*.22,s*.68); break;
+        case 'Pick Up Towels':
+          for(let i=0;i<3;i++){ctx.strokeRect(x-s*.6,y-s*.45+i*s*.45,s*1.2,s*.3);} break;
+        case 'Dress Mannequin':
+          ctx.beginPath(); ctx.moveTo(x-s*.3,y-s*.7); ctx.lineTo(x-s*.8,y-s*.3); ctx.lineTo(x-s*.6,y-s*.3); ctx.lineTo(x-s*.6,y+s*.7); ctx.lineTo(x+s*.6,y+s*.7); ctx.lineTo(x+s*.6,y-s*.3); ctx.lineTo(x+s*.8,y-s*.3); ctx.lineTo(x+s*.3,y-s*.7); ctx.lineTo(x+s*.15,y-s*.42); ctx.lineTo(x-s*.15,y-s*.42); ctx.closePath(); ctx.stroke(); break;
+        case 'Replace Water Jug':
+          ctx.beginPath(); ctx.moveTo(x-s*.1,y-s*.9); ctx.lineTo(x+s*.1,y-s*.9); ctx.lineTo(x+s*.3,y-s*.6); ctx.lineTo(x+s*.55,y-s*.38); ctx.lineTo(x+s*.55,y+s*.7); ctx.lineTo(x-s*.55,y+s*.7); ctx.lineTo(x-s*.55,y-s*.38); ctx.lineTo(x-s*.3,y-s*.6); ctx.closePath(); ctx.stroke();
+          ctx.beginPath(); ctx.arc(x+s*.75,y,s*.25,-Math.PI*.5,Math.PI*.5); ctx.stroke(); break;
+        case 'Clean Table':
+          ctx.beginPath();
+          for(let i=0;i<8;i++){const a=i*Math.PI*.25,r=i%2===0?s*.85:s*.42;i===0?ctx.moveTo(x+Math.cos(a)*r,y+Math.sin(a)*r):ctx.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);}
+          ctx.closePath(); ctx.fill(); break;
+        case 'Clean MedBay': case 'Clean Boiler': case 'Clean Armory': case 'Clean Engine':
+          ctx.save(); ctx.translate(x,y); ctx.rotate(Math.PI/6);
+          ctx.beginPath(); ctx.moveTo(0,-s*.85); ctx.lineTo(0,s*.35); ctx.stroke();
+          ctx.fillRect(-s*.5,s*.35,s,s*.45); ctx.restore(); break;
+        default: {
+          // Fallback: lightning for power tasks, gear for mechanical, star for others
+          if (/power|wir|electric/i.test(name)) {
+            ctx.beginPath(); ctx.moveTo(x+s*.2,y-s*.9); ctx.lineTo(x-s*.35,y); ctx.lineTo(x+s*.1,y); ctx.lineTo(x-s*.2,y+s*.9); ctx.lineTo(x+s*.35,y); ctx.lineTo(x-s*.1,y); ctx.closePath(); ctx.fill();
+          } else {
+            ctx.font=`bold ${s*1.8}px Arial`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('★',x,y);
+          }
+        }
+      }
+      ctx.restore();
+    }
+
     function drawMap(ox, oy) {
       // Static pre-rendered map: bg, terrain, environment (stars/hull/clouds/mushrooms), floors, walls.
       // Built lazily on first drawMap() call (inside RAF) so loadMap() doesn't block the click handler.
@@ -15208,6 +15658,18 @@
       // Vents (enhanced with shadow and depth)
       for (const v of vents) {
         const vx = v.x - ox - 20, vy = v.y - oy - 12;
+        // Impostor: subtle pulsing purple glow on all vents
+        if ((isImpostor || playerRole === 'engineer') && !isGhost) {
+          const _vp = 0.35 + 0.35 * Math.sin(Date.now() / 350 + v.x * 0.005);
+          ctx.save();
+          ctx.globalAlpha = _vp * (isImpostor ? 0.5 : 0.3);
+          ctx.shadowColor = isImpostor ? '#cc44ff' : '#44aaff';
+          ctx.shadowBlur = 14;
+          ctx.strokeStyle = isImpostor ? 'rgba(180,80,255,0.7)' : 'rgba(60,160,255,0.5)';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(vx - 3, vy - 3, 46, 30);
+          ctx.restore();
+        }
         // Engineer: blue glow on nearby vent
         if (!isImpostor && playerRole === 'engineer' && !inVent && dist(player, v) < 50) {
           ctx.save();
@@ -15446,6 +15908,18 @@
           const _tisVisual = t.visual;
           const _tc = _tisVisual ? '#cc66ff' : (_ttype === 'common' ? '#c87eff' : _ttype === 'long' ? '#ff9944' : '#ffe140');
           const _tcAlpha = isImpostor ? 0.04 : 0.12;
+          // Proximity interaction glow: bright ring when player is close enough to interact
+          if (!isImpostor) {
+            const _tpd = Math.hypot(t.x - (player.x + player.w/2), t.y - (player.y + player.h/2));
+            if (_tpd < 60) {
+              const _tpf = Math.max(0, 1 - _tpd / 60);
+              ctx.globalAlpha = _tpf * 0.5;
+              ctx.shadowColor = _tc; ctx.shadowBlur = 18;
+              ctx.strokeStyle = _tc; ctx.lineWidth = 2;
+              ctx.beginPath(); ctx.arc(_ttx, _tty, 18 + _tPulse * 4, 0, Math.PI * 2); ctx.stroke();
+              ctx.shadowBlur = 0;
+            }
+          }
           // Outer glow ring (pulsing)
           ctx.globalAlpha = _tPulse * (isImpostor ? 0.07 : 0.18);
           ctx.fillStyle = _tc;
@@ -15459,12 +15933,8 @@
           ctx.strokeStyle = _tc;
           ctx.lineWidth = 1.5;
           ctx.beginPath(); ctx.arc(_ttx, _tty, 14, 0, Math.PI * 2); ctx.stroke();
-          // Icon label
-          ctx.globalAlpha = isImpostor ? 0.2 : 0.95;
-          ctx.fillStyle = isImpostor ? _tc : '#fff';
-          ctx.font = `bold 13px Arial`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-          const _tsym = _tisVisual ? '★' : _ttype === 'common' ? '★' : _ttype === 'long' ? '⚙' : '⚡';
-          ctx.fillText(_tsym, _ttx, _tty);
+          // Task-specific icon
+          drawTaskIcon(_ttx, _tty, t.name, isImpostor ? _tc : '#fff', isImpostor ? 0.2 : 0.9);
           // Proximity label: show task name when player is close
           if (!isImpostor) {
             const _tDist = Math.hypot(t.x - (player.x + player.w / 2), t.y - (player.y + player.h / 2));
@@ -15866,6 +16336,14 @@
         ctx.beginPath(); ctx.arc(_sr.x - ox, _sr.y - oy, _sr.r, 0, Math.PI * 2); ctx.stroke();
         ctx.restore();
       }
+      // Footstep dust puffs
+      for (const _fd of footstepDust) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, _fd.alpha);
+        ctx.fillStyle = 'rgba(210,205,190,1)';
+        ctx.beginPath(); ctx.arc(_fd.x - ox, _fd.y - oy, _fd.r, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      }
       // Floating text labels
       for (const _ft of floatTexts) {
         ctx.save();
@@ -15951,16 +16429,19 @@
             const bw = Math.min(maxWidth + pad * 2, Math.max(...lines.map(l => ctx.measureText(l).width)) + pad * 2);
             const bh = lines.length * lineH + pad * 2;
             const rx = bx - bw / 2, ry = by - bh - 10;
+            // Bubble border color by role
+            const _roleColors = { impostor:'#ff4444', shapeshifter:'#ff6644', phantom:'#cc44ff', viper:'#44ff88', engineer:'#44aaff', scientist:'#44ffcc', detective:'#ffdd44', guardian_angel:'#ccccff', tracker:'#ff9944', sheriff:'#ffcc44', noisemaker:'#88ff44', jester:'#ff44cc' };
+            const _bubbleColor = npc.isImpostor ? (_roleColors[npc.role] || '#ff4444') : (_roleColors[npc.role] || '#888888');
             // Bubble background
             ctx.fillStyle = '#1a1a2e';
-            ctx.strokeStyle = '#ff4444';
+            ctx.strokeStyle = _bubbleColor;
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.roundRect(rx, ry, bw, bh, 6);
             ctx.fill(); ctx.stroke();
             // Tail
             ctx.fillStyle = '#1a1a2e';
-            ctx.strokeStyle = '#ff4444';
+            ctx.strokeStyle = _bubbleColor;
             ctx.beginPath();
             ctx.moveTo(bx - 6, ry + bh);
             ctx.lineTo(bx, ry + bh + 10);
@@ -16294,6 +16775,17 @@
       }
       // ── End navigation arrows ─────────────────────────────────────────────
 
+      // Sabotage atmosphere: red vignette pulse while sabotage is active
+      if (sabotage && sabotage.active && !inMeeting) {
+        const _sabPulse = 0.5 + 0.5 * Math.sin(Date.now() / 600);
+        const _sabColor = sabotage.type === 'o2' ? 'rgba(80,255,80,' : sabotage.type === 'reactor' ? 'rgba(255,160,0,' : 'rgba(255,30,30,';
+        const _sabGrad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, canvas.width*0.25, canvas.width/2, canvas.height/2, canvas.width*0.75);
+        _sabGrad.addColorStop(0, 'rgba(0,0,0,0)');
+        _sabGrad.addColorStop(1, _sabColor + (0.12 + _sabPulse * 0.1) + ')');
+        ctx.fillStyle = _sabGrad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
       // Ghost overlay tint
       if (isGhost) {
         ctx.fillStyle = isImpostor ? 'rgba(80,0,0,0.12)' : 'rgba(100,100,180,0.10)';
@@ -16306,14 +16798,34 @@
 
       // In-vent overlay
       if (inVent) {
-        ctx.fillStyle = 'rgba(0,0,0,0.6)';
+        ctx.fillStyle = 'rgba(0,0,0,0.65)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#aaa';
-        ctx.font = 'bold 24px Arial';
+        // Vent slat bars across the whole screen
+        ctx.save();
+        ctx.globalAlpha = 0.55;
+        ctx.fillStyle = '#2a2a2a';
+        const _slotH = Math.floor(canvas.height / 10);
+        for (let _si = 0; _si < 10; _si++) {
+          ctx.fillRect(0, _si * _slotH * 1.1, canvas.width, _slotH * 0.55);
+        }
+        // Subtle highlight on each slat
+        ctx.globalAlpha = 0.12;
+        ctx.fillStyle = '#aaaacc';
+        for (let _si = 0; _si < 10; _si++) {
+          ctx.fillRect(0, _si * _slotH * 1.1, canvas.width, 2);
+        }
+        ctx.restore();
+        ctx.save();
         ctx.textAlign = 'center';
-        ctx.fillText('HIDING IN VENT', canvas.width / 2, canvas.height / 2 - 20);
-        ctx.font = '16px Arial';
-        ctx.fillText('V = Exit | E = Travel', canvas.width / 2, canvas.height / 2 + 15);
+        ctx.shadowColor = '#44ccff'; ctx.shadowBlur = 16;
+        ctx.fillStyle = '#88ddff';
+        ctx.font = 'bold 22px Arial';
+        ctx.fillText('HIDING IN VENT', canvas.width / 2, canvas.height / 2 - 18);
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = 'rgba(180,220,255,0.75)';
+        ctx.font = '14px Arial';
+        ctx.fillText('V = Exit   |   E = Travel to connected vent', canvas.width / 2, canvas.height / 2 + 14);
+        ctx.restore();
       }
 
       // Kill flash effect
@@ -16703,20 +17215,24 @@
         '🔊 Audio': '#44aaff',
       };
 
+      function hexToRgb(hex) {
+        const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+        return `${r},${g},${b}`;
+      }
+
+      let _grp = null;
       function addSection(label) {
+        const color = sectionColors[label] || '#7a8a9a';
         const s = document.createElement('div');
         s.className = 'sett-section';
-        const color = sectionColors[label] || '#7a8a9a';
         s.style.cssText = `background:rgba(${hexToRgb(color)},0.1);border-left:3px solid ${color};`;
         const icon = label.split(' ')[0];
         const text = label.slice(icon.length + 1);
         s.innerHTML = `<span class="sett-section-icon">${icon}</span><span class="sett-section-text" style="color:${color}">${text}</span>`;
         content.appendChild(s);
-      }
-
-      function hexToRgb(hex) {
-        const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
-        return `${r},${g},${b}`;
+        _grp = document.createElement('div');
+        _grp.className = 'sett-group';
+        content.appendChild(_grp);
       }
 
       function addToggle(label, hint, key) {
@@ -16727,7 +17243,7 @@
             <button class="sett-opt${gameSettings[key] ? ' on' : ''}">ON</button>
             <button class="sett-opt${!gameSettings[key] ? ' on' : ''}">OFF</button>
           </div>`;
-        content.appendChild(row);
+        (_grp || content).appendChild(row);
         const [onBtn, offBtn] = row.querySelectorAll('.sett-opt');
         onBtn.onclick  = () => { gameSettings[key] = true;  buildSettingsUI(); };
         offBtn.onclick = () => { gameSettings[key] = false; buildSettingsUI(); };
@@ -16744,7 +17260,7 @@
             <span class="sett-val">${display}</span>
             <button class="sett-adj">+</button>
           </div>`;
-        content.appendChild(row);
+        (_grp || content).appendChild(row);
         const btns = row.querySelectorAll('.sett-adj');
         btns[0].onclick = () => { if (idx > 0) { gameSettings[key] = steps[idx - 1]; buildSettingsUI(); } };
         btns[1].onclick = () => { if (idx < steps.length - 1) { gameSettings[key] = steps[idx + 1]; buildSettingsUI(); } };
@@ -16756,7 +17272,7 @@
         const optsHtml = options.map((o,i) => `<button class="sett-opt${gameSettings[key] === o ? ' on' : ''}">${(labels&&labels[i])||o}</button>`).join('');
         row.innerHTML = `<div><div class="sett-label">${label}</div>${hint ? `<div class="sett-hint">${hint}</div>` : ''}</div>
           <div class="sett-ctrl">${optsHtml}</div>`;
-        content.appendChild(row);
+        (_grp || content).appendChild(row);
         row.querySelectorAll('.sett-opt').forEach((btn, i) => {
           btn.onclick = () => { gameSettings[key] = options[i]; buildSettingsUI(); };
         });
@@ -16865,32 +17381,173 @@
         addStep('Force Role', 'Choose your role instead of random', 'forcedPlayerRole',
           ['random','crewmate','engineer','scientist','detective','noisemaker','guardian_angel','tracker','sheriff','jester','impostor','shapeshifter','phantom','viper'],
           v => v === 'random' ? '🎲 Random' : (ROLE_LABELS[v] || v.toUpperCase()));
-
-        addSection('👹 Impostor Roles');
-        addToggle('Shapeshifter', 'Disguise as another player for 15s', 'roleShapeshifter');
-        addToggle('Phantom', 'Turn invisible for 10s — untargetable', 'rolePhantom');
-        addToggle('Viper', 'Place poison traps (8s kill delay)', 'roleViper');
-        addStep('Viper Body Dissolve', 'Seconds for viper kill body to fade (0 = never)', 'viperDissolveTime',
-          [0, 5, 10, 15, 20, 30, 45, 60], v => v === 0 ? 'Never' : v + 's');
-
-        addSection('🌿 Neutral Roles');
-        addToggle('Jester', 'Wins if voted out — acts suspicious', 'roleJester');
-
-        addSection('👨‍🚀 Crewmate Roles');
-        addToggle('Engineer', 'Can use vents to travel', 'roleEngineer');
-        addToggle('Scientist', 'Toggle real-time vitals panel', 'roleScientist');
-        addToggle('Detective', 'Notes & Interrogate — document kills and grill suspects', 'roleDetective');
-        addToggle('Noisemaker', 'Broadcasts alert when killed', 'roleNoisemaker');
-        addToggle('Guardian Angel', 'Protect a crewmate after death', 'roleGuardianAngel');
-        addToggle('Tracker', 'Track a player on minimap', 'roleTracker');
-        addToggle('Sheriff', 'Can kill — dies if shoots crewmate', 'roleSheriff');
       }
 
       addSection('🔊 Audio');
       addToggle('Sound Effects', 'Synthesized in-game sounds', 'soundEnabled');
     }
 
+    function buildRolesTab() {
+      const content = document.getElementById('settingsContent');
+      content.innerHTML = '';
+
+      const sectionColors = {
+        '👹 Impostor Roles': '#ff4444',
+        '🌿 Neutral Roles': '#ff69b4',
+        '👨‍🚀 Crewmate Roles': '#4ecdc4',
+      };
+      function hexToRgb(hex) {
+        const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+        return `${r},${g},${b}`;
+      }
+      let _grp = null;
+      function addSection(label) {
+        const color = sectionColors[label] || '#7a8a9a';
+        const s = document.createElement('div');
+        s.className = 'sett-section';
+        s.style.cssText = `background:rgba(${hexToRgb(color)},0.1);border-left:3px solid ${color};`;
+        const icon = label.split(' ')[0];
+        const text = label.slice(icon.length + 1);
+        s.innerHTML = `<span class="sett-section-icon">${icon}</span><span class="sett-section-text" style="color:${color}">${text}</span>`;
+        content.appendChild(s);
+        _grp = document.createElement('div');
+        _grp.className = 'sett-group';
+        content.appendChild(_grp);
+      }
+      function addRoleConfig(label, hint, toggleKey, maxKey, chanceKey, durationKey, durationLabel) {
+        const enabled = gameSettings[toggleKey];
+        // Header row: name + hint + ON/OFF
+        const hdr = document.createElement('div');
+        hdr.className = 'sett-row';
+        hdr.innerHTML = `<div><div class="sett-label">${label}</div>${hint ? `<div class="sett-hint">${hint}</div>` : ''}</div>
+          <div class="sett-ctrl">
+            <button class="sett-opt${enabled ? ' on' : ''}">ON</button>
+            <button class="sett-opt${!enabled ? ' on' : ''}">OFF</button>
+          </div>`;
+        (_grp || content).appendChild(hdr);
+        const [onBtn, offBtn] = hdr.querySelectorAll('.sett-opt');
+        onBtn.onclick  = () => { gameSettings[toggleKey] = true;  buildRolesTab(); };
+        offBtn.onclick = () => { gameSettings[toggleKey] = false; buildRolesTab(); };
+        if (!enabled) return;
+        // Config row: Max Count + Chance + optional Duration
+        const cfg = document.createElement('div');
+        cfg.className = 'role-cfg';
+        const maxSteps = [1,2,3,4,5,6,7,8,9,10];
+        const chanceSteps = [1,2,3,4,5,6,7,8,9,10];
+        const maxIdx = maxSteps.indexOf(gameSettings[maxKey]);
+        const chIdx = chanceSteps.indexOf(gameSettings[chanceKey]);
+        let durHTML = '';
+        if (durationKey) {
+          const durSteps = [5,10,15,20,25,30,45,60];
+          const durIdx = durSteps.indexOf(gameSettings[durationKey]);
+          durHTML = `<div class="role-cfg-item">
+            <span class="role-cfg-lbl">${durationLabel||'Duration'}</span>
+            <div class="role-cfg-ctrl">
+              <button class="sett-adj" data-dur="-">−</button>
+              <span class="role-cfg-val" id="${durationKey}_val">${gameSettings[durationKey]}s</span>
+              <button class="sett-adj" data-dur="+">+</button>
+            </div>
+          </div>`;
+        }
+        cfg.innerHTML = `
+          <div class="role-cfg-item">
+            <span class="role-cfg-lbl">Max Count</span>
+            <div class="role-cfg-ctrl">
+              <button class="sett-adj" data-max="-">−</button>
+              <span class="role-cfg-val" id="${maxKey}_val">${gameSettings[maxKey]}</span>
+              <button class="sett-adj" data-max="+">+</button>
+            </div>
+          </div>
+          <div class="role-cfg-item">
+            <span class="role-cfg-lbl">Chance</span>
+            <div class="role-cfg-ctrl">
+              <button class="sett-adj" data-ch="-">−</button>
+              <span class="role-cfg-val" id="${chanceKey}_val">${gameSettings[chanceKey]}</span>
+              <button class="sett-adj" data-ch="+">+</button>
+            </div>
+          </div>${durHTML}`;
+        (_grp || content).appendChild(cfg);
+        // Wire max count
+        cfg.querySelector('[data-max="-"]').onclick = () => { const i = maxSteps.indexOf(gameSettings[maxKey]); if (i > 0) { gameSettings[maxKey] = maxSteps[i-1]; buildRolesTab(); } };
+        cfg.querySelector('[data-max="+"]').onclick = () => { const i = maxSteps.indexOf(gameSettings[maxKey]); if (i < maxSteps.length-1) { gameSettings[maxKey] = maxSteps[i+1]; buildRolesTab(); } };
+        // Wire chance
+        cfg.querySelector('[data-ch="-"]').onclick = () => { const i = chanceSteps.indexOf(gameSettings[chanceKey]); if (i > 0) { gameSettings[chanceKey] = chanceSteps[i-1]; buildRolesTab(); } };
+        cfg.querySelector('[data-ch="+"]').onclick = () => { const i = chanceSteps.indexOf(gameSettings[chanceKey]); if (i < chanceSteps.length-1) { gameSettings[chanceKey] = chanceSteps[i+1]; buildRolesTab(); } };
+        // Wire duration if present
+        if (durationKey) {
+          const durSteps = [5,10,15,20,25,30,45,60];
+          cfg.querySelector('[data-dur="-"]').onclick = () => { const i = durSteps.indexOf(gameSettings[durationKey]); if (i > 0) { gameSettings[durationKey] = durSteps[i-1]; buildRolesTab(); } };
+          cfg.querySelector('[data-dur="+"]').onclick = () => { const i = durSteps.indexOf(gameSettings[durationKey]); if (i < durSteps.length-1) { gameSettings[durationKey] = durSteps[i+1]; buildRolesTab(); } };
+        }
+      }
+
+      addSection('👹 Impostor Roles');
+      addRoleConfig('Shapeshifter', 'Disguise as another player', 'roleShapeshifter', 'shapeshifterMax', 'shapeshifterChance', 'shapeshifterDuration', 'Shift Time');
+      addRoleConfig('Phantom', 'Turn invisible — untargetable', 'rolePhantom', 'phantomMax', 'phantomChance', 'phantomDuration', 'Vanish Time');
+      addRoleConfig('Viper', 'Place poison traps (8s kill delay)', 'roleViper', 'viperMax', 'viperChance', null, null);
+      // Viper dissolve time sub-row (inline, always shown when viper enabled)
+      if (gameSettings.roleViper) {
+        const viperRow = document.createElement('div');
+        viperRow.className = 'sett-row';
+        const vdIdx = [0,5,10,15,20,30,45,60].indexOf(gameSettings.viperDissolveTime);
+        viperRow.innerHTML = `<div><div class="sett-label" style="padding-left:10px">↳ Body Dissolve</div><div class="sett-hint" style="padding-left:10px">Seconds before viper-kill body fades (0 = never)</div></div>
+          <div class="sett-ctrl">
+            <button class="sett-adj">−</button>
+            <span class="sett-val">${gameSettings.viperDissolveTime === 0 ? 'Never' : gameSettings.viperDissolveTime+'s'}</span>
+            <button class="sett-adj">+</button>
+          </div>`;
+        (_grp || content).appendChild(viperRow);
+        const vdSteps = [0,5,10,15,20,30,45,60];
+        const vdBtns = viperRow.querySelectorAll('.sett-adj');
+        vdBtns[0].onclick = () => { const i = vdSteps.indexOf(gameSettings.viperDissolveTime); if (i > 0) { gameSettings.viperDissolveTime = vdSteps[i-1]; buildRolesTab(); } };
+        vdBtns[1].onclick = () => { const i = vdSteps.indexOf(gameSettings.viperDissolveTime); if (i < vdSteps.length-1) { gameSettings.viperDissolveTime = vdSteps[i+1]; buildRolesTab(); } };
+      }
+
+      addSection('🌿 Neutral Roles');
+      addRoleConfig('Jester', 'Wins if voted out — acts suspicious', 'roleJester', 'jesterMax', 'jesterChance', null, null);
+
+      addSection('👨‍🚀 Crewmate Roles');
+      addRoleConfig('Engineer', 'Can use vents to travel', 'roleEngineer', 'engineerMax', 'engineerChance', null, null);
+      addRoleConfig('Scientist', 'Toggle real-time vitals panel', 'roleScientist', 'scientistMax', 'scientistChance', null, null);
+      addRoleConfig('Detective', 'Notes & Interrogate suspects', 'roleDetective', 'detectiveMax', 'detectiveChance', null, null);
+      if (gameSettings.roleDetective) {
+        const dsRow = document.createElement('div');
+        dsRow.className = 'sett-row';
+        const dsSteps = [2,3,4,5,6,8];
+        const dsIdx = dsSteps.indexOf(gameSettings.detectiveSuspectsPerCase);
+        dsRow.innerHTML = `<div><div class="sett-label" style="padding-left:10px">↳ Suspects Per Case</div><div class="sett-hint" style="padding-left:10px">Max suspects shown per detective case</div></div>
+          <div class="sett-ctrl">
+            <button class="sett-adj">−</button>
+            <span class="sett-val">${gameSettings.detectiveSuspectsPerCase}</span>
+            <button class="sett-adj">+</button>
+          </div>`;
+        (_grp || content).appendChild(dsRow);
+        const dsBtns = dsRow.querySelectorAll('.sett-adj');
+        dsBtns[0].onclick = () => { const i = dsSteps.indexOf(gameSettings.detectiveSuspectsPerCase); if (i > 0) { gameSettings.detectiveSuspectsPerCase = dsSteps[i-1]; buildRolesTab(); } };
+        dsBtns[1].onclick = () => { const i = dsSteps.indexOf(gameSettings.detectiveSuspectsPerCase); if (i < dsSteps.length-1) { gameSettings.detectiveSuspectsPerCase = dsSteps[i+1]; buildRolesTab(); } };
+      }
+      addRoleConfig('Noisemaker', 'Broadcasts alert when killed', 'roleNoisemaker', 'noisemakerMax', 'noisemakerChance', null, null);
+      addRoleConfig('Guardian Angel', 'Protect a crewmate after death', 'roleGuardianAngel', 'guardianAngelMax', 'guardianAngelChance', 'guardianAngelProtection', 'Protect Time');
+      addRoleConfig('Tracker', 'Track a player on minimap', 'roleTracker', 'trackerMax', 'trackerChance', 'trackerDuration', 'Track Time');
+      addRoleConfig('Sheriff', 'Can kill — dies if shoots crewmate', 'roleSheriff', 'sheriffMax', 'sheriffChance', null, null);
+    }
+
+    let _settingsTab = 'gameplay';
+
+    function switchSettingsTab(tab) {
+      _settingsTab = tab;
+      document.querySelectorAll('.sett-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.id === 'settTab-' + tab);
+      });
+      if (tab === 'roles') buildRolesTab();
+      else buildSettingsUI();
+    }
+
     function openSettings() {
+      _settingsTab = 'gameplay';
+      document.querySelectorAll('.sett-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.id === 'settTab-gameplay');
+      });
       buildSettingsUI();
       document.getElementById('settingsPanel').style.display = 'flex';
     }
@@ -17067,33 +17724,97 @@
       drawCrewmate(ctx, p.x-ox, p.y-oy, p.w, p.h, p.color, p.name, true, null);
       ctx.restore();
 
-      // HUD
-      ctx.fillStyle = 'rgba(0,0,0,0.65)'; ctx.fillRect(0,0,cw,52);
-      ctx.fillStyle = '#fff'; ctx.font = 'bold 22px Arial'; ctx.textAlign = 'center';
-      ctx.fillText('DROPSHIP LOBBY', cw/2, 30);
-      ctx.fillStyle = '#888'; ctx.font = '13px Arial';
-      ctx.fillText('WASD to move  \u2022  E to interact', cw/2, 48);
+      // HUD top bar
+      ctx.fillStyle = 'rgba(0,0,0,0.72)'; ctx.fillRect(0,0,cw,52);
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'center';
+      ctx.fillText('LOBBY', cw/2, 28);
+      ctx.fillStyle = '#666'; ctx.font = '12px Arial';
+      ctx.fillText('WASD \u2022 move    E \u2022 interact', cw/2, 46);
+
+      // Lobby panel (right side) — shown whenever in an MP lobby
+      if (mpLobbyCode && dropshipCountdown < 0) {
+        const players = Object.entries(mpPlayers);
+        const panW = 188, panX = cw - panW - 10, panY = 60;
+        const panH = 68 + players.length * 26 + (mpIsHost ? 0 : 24);
+        // Panel background
+        ctx.save();
+        ctx.fillStyle = 'rgba(0,0,0,0.78)';
+        ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(panX, panY, panW, panH, 9); else ctx.rect(panX, panY, panW, panH); ctx.fill();
+        ctx.strokeStyle = 'rgba(78,205,196,0.35)'; ctx.lineWidth = 1;
+        ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(panX, panY, panW, panH, 9); else ctx.rect(panX, panY, panW, panH); ctx.stroke();
+        // Lobby code
+        const display = mpLobbyCode.replace(/-/g,'').substring(0,8).toUpperCase();
+        ctx.fillStyle = '#888'; ctx.font = 'bold 9px Arial'; ctx.textAlign = 'left'; ctx.letterSpacing = '1px';
+        ctx.fillText('LOBBY CODE', panX+12, panY+16);
+        ctx.letterSpacing = '0px';
+        ctx.fillStyle = '#ffd700'; ctx.font = 'bold 15px monospace';
+        ctx.fillText(display, panX+12, panY+32);
+        // Copy hint
+        ctx.fillStyle = '#555'; ctx.font = '10px Arial';
+        ctx.fillText('click to copy', panX+12, panY+46);
+        // Divider
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(panX+8, panY+52); ctx.lineTo(panX+panW-8, panY+52); ctx.stroke();
+        // Players header
+        ctx.fillStyle = '#888'; ctx.font = 'bold 9px Arial'; ctx.letterSpacing = '1px';
+        ctx.fillText('PLAYERS  ' + players.length, panX+12, panY+64);
+        ctx.letterSpacing = '0px';
+        // Player rows
+        players.forEach(([pid, p], i) => {
+          const ry = panY + 78 + i * 26;
+          const isThisHost = (pid === mpLobbyCode);
+          // Color circle
+          ctx.beginPath(); ctx.arc(panX+18, ry, 7, 0, Math.PI*2);
+          ctx.fillStyle = p.color || '#888'; ctx.fill();
+          ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1; ctx.stroke();
+          // Name
+          ctx.fillStyle = pid === mpUserId ? '#fff' : '#ccc';
+          ctx.font = (pid === mpUserId ? 'bold ' : '') + '12px Arial';
+          ctx.textAlign = 'left';
+          const label = (p.name || 'Player').substring(0, 13) + (pid === mpUserId ? ' ★' : '');
+          ctx.fillText(label, panX+30, ry+4);
+          // Host badge
+          if (isThisHost) {
+            ctx.fillStyle = '#ffd700'; ctx.font = 'bold 9px Arial';
+            ctx.textAlign = 'right';
+            ctx.fillText('HOST', panX+panW-8, ry+4);
+          }
+        });
+        // Waiting text for non-hosts
+        if (!mpIsHost) {
+          ctx.fillStyle = '#555'; ctx.font = '10px Arial'; ctx.textAlign = 'center';
+          ctx.fillText('Waiting for host to start\u2026', panX + panW/2, panY + panH - 6);
+        }
+        ctx.restore();
+        // Click-to-copy hitbox stored alongside start btn
+        _mpLobbyCodeRect = { x: panX, y: panY, w: panW, h: 50, code: display };
+      } else {
+        _mpLobbyCodeRect = null;
+      }
 
       // Interaction hint bar
       if (!dropshipWardrobeOpen && dropshipCountdown < 0 && dropshipHint) {
-        const label = dropshipHint === 'laptop' ? 'Press E \u2014 Game Settings' : 'Press E \u2014 Change Appearance';
-        ctx.fillStyle = 'rgba(0,0,0,0.8)'; ctx.fillRect(cw/2-155, ch-90, 310, 36);
-        ctx.fillStyle = '#ffd700'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
+        const label = dropshipHint === 'laptop' ? 'Press E \u2014 Settings' : 'Press E \u2014 Change Appearance';
+        ctx.fillStyle = 'rgba(0,0,0,0.82)'; ctx.fillRect(cw/2-140, ch-88, 280, 34);
+        ctx.fillStyle = '#ffd700'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center';
         ctx.fillText(label, cw/2, ch-65);
       }
 
-      // Host "Start Game" button (MP only, shown when lobby is active and game not counting down)
-      if (mpIsHost && mpLobbyCode && dropshipCountdown < 0) {
-        const pc = Object.keys(mpPlayers).length;
-        const btnW = 220, btnH = 42;
-        const bx = cw/2 - btnW/2, by = ch - 58;
+      // START GAME button — host (MP) or any player (solo)
+      if (dropshipCountdown < 0 && (mpIsHost && mpLobbyCode || !mpLobbyCode)) {
+        const pc = mpLobbyCode ? Object.keys(mpPlayers).length : 1;
+        const label = mpLobbyCode
+          ? 'START GAME  \u2014  ' + pc + ' player' + (pc !== 1 ? 's' : '')
+          : 'START GAME';
+        const btnW = 240, btnH = 44;
+        const bx = mpLobbyCode ? cw/2 - btnW/2 : cw/2 - btnW/2;
+        const by = ch - 62;
         ctx.fillStyle = 'rgba(17,127,45,0.92)';
-        ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(bx, by, btnW, btnH, 8); else ctx.rect(bx, by, btnW, btnH); ctx.fill();
-        ctx.strokeStyle = '#00cc55'; ctx.lineWidth = 2;
-        ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(bx, by, btnW, btnH, 8); else ctx.rect(bx, by, btnW, btnH); ctx.stroke();
+        ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(bx, by, btnW, btnH, 9); else ctx.rect(bx, by, btnW, btnH); ctx.fill();
+        ctx.strokeStyle = '#00dd55'; ctx.lineWidth = 2;
+        ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(bx, by, btnW, btnH, 9); else ctx.rect(bx, by, btnW, btnH); ctx.stroke();
         ctx.fillStyle = '#fff'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center';
-        ctx.fillText('START GAME  (' + pc + ' player' + (pc !== 1 ? 's' : '') + ')', cw/2, by + 27);
-        // Store button rect for click detection
+        ctx.fillText(label, cw/2, by + 28);
         _mpStartBtnRect = { x: bx, y: by, w: btnW, h: btnH };
       } else {
         _mpStartBtnRect = null;
@@ -17101,8 +17822,8 @@
 
       // Countdown overlay
       if (dropshipCountdown > 0) {
-        ctx.fillStyle = 'rgba(0,0,0,0.82)'; ctx.fillRect(0,0,cw,ch);
-        ctx.fillStyle = '#4ecdc4'; ctx.font = 'bold 30px Arial'; ctx.textAlign = 'center';
+        ctx.fillStyle = 'rgba(0,0,0,0.85)'; ctx.fillRect(0,0,cw,ch);
+        ctx.fillStyle = '#4ecdc4'; ctx.font = 'bold 28px Arial'; ctx.textAlign = 'center';
         ctx.fillText('LAUNCHING\u2026', cw/2, ch/2-55);
         ctx.fillStyle = '#fff'; ctx.font = 'bold 110px Arial';
         ctx.fillText(dropshipCountdown, cw/2, ch/2+45);
@@ -17125,6 +17846,20 @@
         requestAnimationFrame(gameLoop);
         return;
       }
+      // Viper: dissolve bodies — runs every frame regardless of meeting/vent/task state
+      for (let _bi = deadBodies.length - 1; _bi >= 0; _bi--) {
+        const _db = deadBodies[_bi];
+        if (_db.dissolveTimer === undefined) continue;
+        _db.dissolveTimer--;
+        if (_db.dissolveTimer <= 0) deadBodies.splice(_bi, 1);
+      }
+      for (let _pi = deadPets.length - 1; _pi >= 0; _pi--) {
+        const _dp2 = deadPets[_pi];
+        if (_dp2.dissolveTimer === undefined) continue;
+        _dp2.dissolveTimer--;
+        if (_dp2.dissolveTimer <= 0) deadPets.splice(_pi, 1);
+      }
+
       // Block game loop until airship spawn is chosen
       if (!airshipSpawnSelected && selectedMap === 'airship') {
         render();
@@ -17489,14 +18224,26 @@
       requestAnimationFrame(gameLoop);
     });
 
-    // Canvas click — handle host Start Game button in dropship
+    // Canvas click — dropship button handling
     canvas.addEventListener('click', (e) => {
-      if (!dropshipPhase || !_mpStartBtnRect) return;
+      if (!dropshipPhase) return;
       const rect = canvas.getBoundingClientRect();
       const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-      const b = _mpStartBtnRect;
-      if (mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h) {
-        mpHostStartGame();
+      // START GAME button
+      if (_mpStartBtnRect) {
+        const b = _mpStartBtnRect;
+        if (mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h) {
+          if (mpLobbyCode && mpIsHost) mpHostStartGame();
+          else if (!mpLobbyCode) { dropshipCountdown = 3; dropshipCountdownFrames = 60; }
+          return;
+        }
+      }
+      // Lobby code panel — click to copy
+      if (_mpLobbyCodeRect) {
+        const c = _mpLobbyCodeRect;
+        if (mx >= c.x && mx <= c.x + c.w && my >= c.y && my <= c.y + c.h) {
+          mpCopyLink();
+        }
       }
     });
 
@@ -19829,6 +20576,7 @@
     }
   </script>
 <div id="killFlashOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#ff0000;opacity:0;pointer-events:none;z-index:45;transition:opacity 0.3s;"></div>
+<div id="killFeed"></div>
 <div id="sabFlashOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;opacity:0;pointer-events:none;z-index:44;box-shadow:inset 0 0 120px 40px rgba(255,40,0,0);transition:opacity 0.2s;background:radial-gradient(ellipse at center,transparent 40%,rgba(255,40,0,0.0) 100%);"></div>
 
 <!-- MULTIPLAYER OVERLAYS -->
