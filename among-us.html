@@ -14,7 +14,19 @@
       background: radial-gradient(ellipse at 20% 50%, #1a0a2e 0%, #0d0d1f 50%, #000 100%);
       display: flex; flex-direction: column;
       justify-content: flex-start; align-items: center; color: #fff; z-index: 100;
-      overflow-y: auto; padding: 20px 16px 30px;
+      overflow-y: auto; overflow-x: hidden; padding: 20px 16px 30px;
+    }
+    #startScreen::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(80,40,160,0.15) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 30%, rgba(40,80,200,0.12) 0%, transparent 50%);
+      animation: lobbyPulse 4s ease-in-out infinite alternate;
+      pointer-events: none; z-index: 0;
+    }
+    @keyframes lobbyPulse {
+      0% { opacity: 0.6; transform: scale(1); }
+      100% { opacity: 1; transform: scale(1.05); }
     }
     @keyframes starDrift {
       from { transform: translateY(0); }
@@ -38,6 +50,32 @@
       0%   { transform: scale(0.7) translateY(-20px); opacity: 0; }
       60%  { transform: scale(1.05) translateY(4px); opacity: 1; }
       100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    @keyframes crewBob {
+      0%   { transform: translateY(0px) rotate(-2deg); }
+      25%  { transform: translateY(-10px) rotate(1deg); }
+      50%  { transform: translateY(-14px) rotate(-1deg); }
+      75%  { transform: translateY(-6px) rotate(2deg); }
+      100% { transform: translateY(0px) rotate(-2deg); }
+    }
+    @keyframes crewShadowPulse {
+      0%, 100% { transform: scaleX(1); opacity: 0.3; }
+      50%       { transform: scaleX(0.7); opacity: 0.15; }
+    }
+    #startCrewChar {
+      display: flex; flex-direction: column; align-items: center;
+      margin-bottom: 2px; animation: fadeUp 0.4s 0.1s both;
+    }
+    #startCrewChar svg {
+      animation: crewBob 2.4s ease-in-out infinite;
+      filter: drop-shadow(0 6px 18px rgba(197,17,17,0.5));
+    }
+    #startCrewShadow {
+      width: 44px; height: 8px;
+      background: radial-gradient(ellipse at center, rgba(0,0,0,0.55) 0%, transparent 100%);
+      border-radius: 50%;
+      animation: crewShadowPulse 2.4s ease-in-out infinite;
+      margin-top: -4px;
     }
     #startScreen h1 {
       font-size: 58px; font-weight: 800; color: #c51111;
@@ -135,9 +173,15 @@
     }
     #taskFill {
       height: 100%; width: 0%;
-      background: linear-gradient(90deg, #4caf50, #72fa79);
+      background: linear-gradient(90deg, #4ecdc4 0%, #44ffcc 40%, #4ecdc4 60%, #44aaaa 100%);
+      background-size: 200% 100%;
+      animation: taskBarShimmer 2s linear infinite;
       transition: width 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
       box-shadow: 0 0 6px rgba(114,250,121,0.5);
+    }
+    @keyframes taskBarShimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
     @keyframes taskComplete {
       0%,100% { box-shadow: 0 0 8px rgba(78,205,196,0.5); }
@@ -171,53 +215,85 @@
     @keyframes tliBlink { 0%,100%{opacity:1} 50%{opacity:0.4} }
     @keyframes killFeedSlide { from { opacity:0; transform:translateX(24px); } to { opacity:1; transform:translateX(0); } }
     #killFeed { position:fixed; top:56px; right:16px; z-index:22; pointer-events:none; display:flex; flex-direction:column; gap:5px; align-items:flex-end; }
-    .kf-entry { background:rgba(0,0,0,0.82); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:5px 10px; font-size:12px; font-weight:bold; color:#fff; display:flex; align-items:center; gap:6px; animation:killFeedSlide 0.2s both; transition:opacity 0.4s; white-space:nowrap; }
+    .kf-entry {
+        display: flex; align-items: center; gap: 5px;
+        background: linear-gradient(90deg, rgba(20,0,0,0.92) 0%, rgba(40,10,10,0.85) 100%);
+        border: 1px solid rgba(200,50,50,0.4);
+        border-left: 3px solid rgba(255,80,80,0.8);
+        border-radius: 4px;
+        padding: 4px 8px; font-size: 11px; font-weight: 600;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.6), inset 0 0 12px rgba(255,0,0,0.05);
+        transition: opacity 0.4s;
+        animation: killFeedSlide 0.22s cubic-bezier(0.22,1,0.36,1) both;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        letter-spacing: 0.3px;
+      }
     .kf-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
     .tli-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
     .tli-room { font-size: 9px; color: rgba(255,255,255,0.38); white-space: nowrap; flex-shrink: 0; margin-left: 4px; }
     .tli.done .tli-room { color: rgba(61,220,132,0.5); }
     .tli.active .tli-room { color: rgba(255,215,0,0.6); }
+    /* ── Role reveal overlay ── */
     #roleRevealOverlay {
       position: fixed; inset: 0; z-index: 95; display: none;
       align-items: center; justify-content: center; flex-direction: column;
-      background: rgba(0,0,0,0);
-      animation: roleOverlayFade 4.2s forwards;
-      pointer-events: none;
+      pointer-events: none; background: rgba(0,0,0,0);
+      transition: background 0.35s;
     }
-    @keyframes roleOverlayFade {
-      0%   { background: rgba(0,0,0,0); }
-      8%   { background: rgba(0,0,0,0.75); }
-      75%  { background: rgba(0,0,0,0.75); }
-      100% { background: rgba(0,0,0,0); }
+    #roleRevealOverlay.rr-active { background: rgba(0,0,0,0.9); }
+
+    /* Phase 1 — big team name, no card background */
+    #rrPhase1 {
+      display: none; text-align: center;
     }
-    #roleRevealCard {
-      text-align: center; padding: 28px 48px; border-radius: 18px;
-      border: 2px solid currentColor;
-      box-shadow: 0 0 60px currentColor, 0 8px 40px rgba(0,0,0,0.8);
-      animation: roleCardPop 4.2s forwards;
-      background: rgba(0,0,0,0.85);
+    #rrTeamName {
+      font-size: 80px; font-weight: 900; letter-spacing: 6px; line-height: 1;
+      text-transform: uppercase;
+      text-shadow: 0 0 80px currentColor, 0 0 160px currentColor;
+      filter: drop-shadow(0 4px 24px currentColor);
     }
-    @keyframes roleCardPop {
-      0%   { opacity: 0; transform: scale(0.3) translateY(60px); }
-      12%  { opacity: 1; transform: scale(1.08) translateY(0); }
-      20%  { transform: scale(1.0); }
+    #rrTeamSub {
+      font-size: 15px; font-weight: 600; opacity: 0.55; margin-top: 14px;
+      letter-spacing: 4px; text-transform: uppercase;
+    }
+
+    /* Phase 2 — role card */
+    #rrPhase2 {
+      display: none; text-align: center; padding: 34px 60px; border-radius: 20px;
+      background: rgba(0,0,0,0.88); border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 8px 60px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+    }
+    #rrRoleLabel {
+      font-size: 16px; font-weight: 500; opacity: 0.55; letter-spacing: 2px;
+      margin-bottom: 6px; color: #fff;
+    }
+    #rrRoleName {
+      font-size: 60px; font-weight: 900; letter-spacing: 2px; line-height: 1;
+      text-shadow: 0 0 50px currentColor, 0 0 100px currentColor;
+      margin-bottom: 16px;
+    }
+    #rrRoleDesc {
+      font-size: 14px; font-weight: 500; opacity: 0.6;
+      max-width: 320px; line-height: 1.6; color: #fff;
+    }
+
+    @keyframes rrP1In {
+      0%   { opacity: 0; transform: scale(0.35) translateY(40px); }
+      18%  { opacity: 1; transform: scale(1.1) translateY(-4px); }
+      28%  { transform: scale(1.0); }
       72%  { opacity: 1; transform: scale(1.0); }
-      100% { opacity: 0; transform: scale(0.95) translateY(-20px); }
+      88%  { opacity: 0.2; transform: scale(1.05) translateY(-8px); }
+      100% { opacity: 0; transform: scale(1.1) translateY(-16px); }
     }
-    #roleRevealLabel {
-      font-size: 11px; font-weight: 800; letter-spacing: 5px;
-      text-transform: uppercase; opacity: 0.6; margin-bottom: 6px;
+    @keyframes rrP2In {
+      0%   { opacity: 0; transform: scale(0.45) translateY(50px); }
+      16%  { opacity: 1; transform: scale(1.07) translateY(-3px); }
+      25%  { transform: scale(1.0); }
+      76%  { opacity: 1; transform: scale(1.0); }
+      92%  { opacity: 0.2; transform: scale(0.97) translateY(-10px); }
+      100% { opacity: 0; transform: scale(0.94) translateY(-20px); }
     }
-    #roleRevealName {
-      font-size: 42px; font-weight: 900; letter-spacing: 2px;
-      text-shadow: 0 0 30px currentColor;
-      margin-bottom: 10px;
-    }
-    #roleRevealDesc {
-      font-size: 14px; font-weight: 500; opacity: 0.7;
-      max-width: 300px; line-height: 1.5;
-    }
-    /* keep old roleTag for compat but invisible */
     #roleTag { display: none; }
     #interactHint {
       position: fixed; bottom: 78px; left: 50%; transform: translateX(-50%);
@@ -297,10 +373,11 @@
       background: rgba(20,20,50,0.92);
       color: #fff; cursor: pointer; display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 2px;
-      font-weight: 700; transition: transform 0.1s, opacity 0.15s, box-shadow 0.1s;
-      pointer-events: auto; user-select: none; box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      font-weight: 700; transition: transform 0.1s, opacity 0.15s, box-shadow 0.15s;
+      pointer-events: auto; user-select: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.6);
     }
-    .action-btn:hover:not(:disabled) { transform: scale(1.08); border-color: rgba(255,255,255,0.7); }
+    .action-btn:hover:not(:disabled) { transform: scale(1.08) translateY(-1px); border-color: rgba(255,255,255,0.7); box-shadow: 0 4px 20px rgba(100,200,255,0.3), 0 2px 8px rgba(0,0,0,0.5); }
     .action-btn:active:not(:disabled) { transform: scale(0.9); }
     @keyframes killReady {
       0%, 100% { box-shadow: 0 0 8px rgba(255,60,60,0.4); }
@@ -373,7 +450,25 @@
       100% { transform: scale(1); opacity: 1; }
     }
     #reportScreen p { color: #ccc; font-size: 18px; letter-spacing: 1px; }
-    #voteScreen { background: rgba(0,8,24,0.97); }
+    @keyframes voteScreenIn {
+      0%   { transform: scale(0.72) translateY(30px); opacity: 0; filter: brightness(2.5) saturate(0); }
+      40%  { transform: scale(1.04) translateY(-6px); opacity: 1;  filter: brightness(1.4) saturate(1.2); }
+      65%  { transform: scale(0.97) translateY(2px);  opacity: 1;  filter: brightness(1); }
+      100% { transform: scale(1)    translateY(0);    opacity: 1;  filter: brightness(1); }
+    }
+    @keyframes voteRadialBurst {
+      0%   { box-shadow: 0 0 0px 0px rgba(120,60,255,0), 0 0 60px rgba(80,40,160,0.4), inset 0 0 40px rgba(0,0,0,0.5); }
+      18%  { box-shadow: 0 0 80px 60px rgba(100,40,220,0.55), 0 0 60px rgba(80,40,160,0.4), inset 0 0 40px rgba(0,0,0,0.5); }
+      55%  { box-shadow: 0 0 40px 20px rgba(80,30,180,0.25), 0 0 60px rgba(80,40,160,0.4), inset 0 0 40px rgba(0,0,0,0.5); }
+      100% { box-shadow: 0 0 60px rgba(80,40,160,0.4),       0 0 60px rgba(80,40,160,0.4), inset 0 0 40px rgba(0,0,0,0.5); }
+    }
+    #voteScreen.meeting-enter {
+      animation: voteScreenIn 0.55s cubic-bezier(0.22,1,0.36,1) both,
+                 voteRadialBurst 0.7s ease-out both;
+    }
+    #voteScreen { background: radial-gradient(ellipse at center top, rgba(30,15,60,0.97) 0%, rgba(8,4,20,0.99) 100%);
+        border: 1px solid rgba(120,80,200,0.3);
+        box-shadow: 0 0 60px rgba(80,40,160,0.4), inset 0 0 40px rgba(0,0,0,0.5); }
     #voteScreen h2 {
       font-size: 30px; margin-bottom: 16px; color: #ffd700;
       letter-spacing: 2px; text-transform: uppercase; font-weight: 800;
@@ -424,14 +519,20 @@
     #chatSendBtn { padding:7px 16px; background:#ffd700; color:#000; border:none; border-radius:6px; cursor:pointer; font-weight:bold; font-size:14px; }
     #chatSendBtn:hover { background:#ffe740; }
     @keyframes gameOverIn {
-      from { opacity: 0; transform: scale(0.85); }
-      to   { opacity: 1; transform: scale(1); }
+      0%   { opacity: 0; transform: scale(0.78) translateY(30px); filter: blur(18px); }
+      40%  { opacity: 0.85; transform: scale(1.04) translateY(-6px); filter: blur(3px); }
+      65%  { opacity: 1; transform: scale(0.98) translateY(2px); filter: blur(0px); }
+      80%  { transform: scale(1.01) translateY(-1px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0px); }
     }
-    #gameOverScreen.visible { animation: gameOverIn 0.4s cubic-bezier(0.34,1.2,0.64,1) both; }
-    #gameOverScreen { background: linear-gradient(180deg, rgba(0,0,0,0.97) 0%, rgba(10,0,20,0.97) 100%); }
+    #gameOverScreen.visible { animation: gameOverIn 0.65s cubic-bezier(0.34,1.2,0.64,1) both; }
+    #gameOverScreen {
+      background: radial-gradient(ellipse at center, rgba(15,5,35,0.98) 0%, rgba(5,2,15,0.99) 100%);
+      box-shadow: 0 0 80px rgba(100,50,200,0.5), inset 0 0 60px rgba(0,0,0,0.6);
+    }
     #gameOverScreen h1 {
       font-size: 56px; margin-bottom: 10px; font-weight: 800; letter-spacing: 3px;
-      text-shadow: 0 0 30px currentColor, 3px 3px 0 rgba(0,0,0,0.5);
+      text-shadow: 0 0 20px currentColor, 0 0 40px currentColor, 0 2px 4px rgba(0,0,0,0.8);
       text-transform: uppercase; animation: winTitlePop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
     }
     @keyframes winTitlePop {
@@ -1092,6 +1193,25 @@
   <canvas id="game"></canvas>
 
   <div id="startScreen">
+    <div id="startCrewChar">
+      <!-- Simple Among Us crewmate silhouette SVG -->
+      <svg width="60" height="72" viewBox="0 0 60 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Body -->
+        <ellipse cx="30" cy="46" rx="22" ry="22" fill="#c51111"/>
+        <!-- Head -->
+        <ellipse cx="30" cy="22" rx="18" ry="18" fill="#c51111"/>
+        <!-- Visor -->
+        <ellipse cx="33" cy="20" rx="10" ry="7" fill="#6ee6fa" opacity="0.92"/>
+        <!-- Backpack -->
+        <rect x="49" y="38" width="9" height="14" rx="4" fill="#8b0000"/>
+        <!-- Legs -->
+        <rect x="16" y="62" width="10" height="9" rx="4" fill="#8b0000"/>
+        <rect x="34" y="62" width="10" height="9" rx="4" fill="#8b0000"/>
+        <!-- Highlight on visor -->
+        <ellipse cx="29" cy="17" rx="4" ry="2.5" fill="rgba(255,255,255,0.35)"/>
+      </svg>
+      <div id="startCrewShadow"></div>
+    </div>
     <h1>AMONG US</h1>
     <p class="tagline">Complete tasks or find the impostor!</p>
 
@@ -1253,10 +1373,16 @@
   <div id="taskListPanel" style="display:none;"><div id="taskListHeader">Tasks</div><div id="taskListItems"></div></div>
   <div id="roleTag"></div>
   <div id="roleRevealOverlay">
-    <div id="roleRevealCard">
-      <div id="roleRevealLabel">YOUR ROLE</div>
-      <div id="roleRevealName">CREWMATE</div>
-      <div id="roleRevealDesc"></div>
+    <!-- Phase 1: Team reveal (IMPOSTOR / CREWMATE / NEUTRAL) -->
+    <div id="rrPhase1">
+      <div id="rrTeamName">CREWMATE</div>
+      <div id="rrTeamSub"></div>
+    </div>
+    <!-- Phase 2: Specific role reveal -->
+    <div id="rrPhase2">
+      <div id="rrRoleLabel">Your role is</div>
+      <div id="rrRoleName">CREWMATE</div>
+      <div id="rrRoleDesc"></div>
     </div>
   </div>
   <div id="interactHint"></div>
@@ -3998,6 +4124,7 @@
           vy: (Math.random() - 0.5) * 0.14 - 0.06, // slight upward drift
           phase: Math.random() * Math.PI * 2,
           r: 0.8 + Math.random() * 1.4,
+          color: (() => { const _mc = [{r:200,g:210,b:235},{r:220,g:200,b:255},{r:180,g:220,b:200},{r:255,g:220,b:180}]; const _c = _mc[Math.floor(Math.random()*_mc.length)]; return `rgba(${_c.r},${_c.g},${_c.b},1)`; })(),
         });
       }
     }
@@ -4252,6 +4379,63 @@
       // 3D Walls
       for (const w of walls) draw3DWall(w.x, w.y, w.w, w.h);
 
+      // Polus: blue-tinted ice patches on the floor
+      if (selectedMap === 'polus') {
+        const _icePatches = [
+          { x: 420, y: 980, rx: 90, ry: 34 },
+          { x: 780, y: 1260, rx: 70, ry: 26 },
+          { x: 1100, y: 800, rx: 110, ry: 38 },
+          { x: 1450, y: 1050, rx: 80, ry: 28 },
+          { x: 600, y: 1550, rx: 100, ry: 32 },
+          { x: 1750, y: 700, rx: 75, ry: 24 },
+          { x: 1300, y: 1400, rx: 95, ry: 30 },
+          { x: 950, y: 480, rx: 60, ry: 20 },
+          { x: 1900, y: 1200, rx: 85, ry: 28 },
+          { x: 350, y: 600, rx: 65, ry: 22 },
+          { x: 2100, y: 900, rx: 78, ry: 25 },
+          { x: 1600, y: 300, rx: 55, ry: 18 },
+        ];
+        ctx.save();
+        for (const _ip of _icePatches) {
+          // Outer glow tint
+          ctx.globalAlpha = 0.13;
+          ctx.fillStyle = 'rgba(140,200,255,1)';
+          ctx.beginPath();
+          ctx.ellipse(_ip.x, _ip.y, _ip.rx + 12, _ip.ry + 6, 0, 0, Math.PI * 2);
+          ctx.fill();
+          // Main ice surface
+          ctx.globalAlpha = 0.18;
+          const _ig = ctx.createRadialGradient(_ip.x - _ip.rx*0.3, _ip.y - _ip.ry*0.3, 2, _ip.x, _ip.y, Math.max(_ip.rx, _ip.ry));
+          _ig.addColorStop(0, 'rgba(220,240,255,0.9)');
+          _ig.addColorStop(0.5, 'rgba(140,200,255,0.7)');
+          _ig.addColorStop(1, 'rgba(80,140,220,0.2)');
+          ctx.fillStyle = _ig;
+          ctx.beginPath();
+          ctx.ellipse(_ip.x, _ip.y, _ip.rx, _ip.ry, 0, 0, Math.PI * 2);
+          ctx.fill();
+          // Highlight specular
+          ctx.globalAlpha = 0.22;
+          ctx.fillStyle = 'rgba(255,255,255,0.8)';
+          ctx.beginPath();
+          ctx.ellipse(_ip.x - _ip.rx*0.25, _ip.y - _ip.ry*0.3, _ip.rx*0.35, _ip.ry*0.3, -0.3, 0, Math.PI * 2);
+          ctx.fill();
+          // Crack lines
+          ctx.globalAlpha = 0.12;
+          ctx.strokeStyle = 'rgba(180,220,255,1)';
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(_ip.x - _ip.rx*0.5, _ip.y - _ip.ry*0.1);
+          ctx.lineTo(_ip.x + _ip.rx*0.3, _ip.y + _ip.ry*0.2);
+          ctx.lineTo(_ip.x + _ip.rx*0.1, _ip.y - _ip.ry*0.4);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(_ip.x - _ip.rx*0.15, _ip.y + _ip.ry*0.3);
+          ctx.lineTo(_ip.x + _ip.rx*0.4, _ip.y - _ip.ry*0.15);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
       ctx = savedCtx;
     }
 
@@ -4453,6 +4637,12 @@
     let taskEffects = [];        // task-complete sparkles [{x,y,vx,vy,r,alpha,color}]
     let shieldEffects = [];      // shield-absorb rings [{x,y,r,alpha}]
     let floatTexts = [];         // floating text labels [{x,y,vy,text,color,alpha,timer}]
+    let ambientParticles = []; // room atmosphere particles [{x,y,vx,vy,r,alpha,color,type}]
+    let meteorEffects = [];    // shooting stars/meteors [{x,y,vx,vy,alpha,len}]
+    let lightningFlash = 0;    // Fungle lightning flash intensity (0-1, decays)
+    let screenShake = 0; // screen shake intensity, decays each frame
+    let fireflyParticles = []; // [{x,y,vx,vy,alpha,phase,color}] for Fungle bioluminescent fireflies
+    let noisemakerDeathMarkers = []; // [{x,y,color,name,spawnTime}] death locations for noisemaker role
 
     function addKillFeed(killerName, killerColor, victimName) {
       if (!killerName || !victimName) return;
@@ -4466,14 +4656,108 @@
       while (feed.children.length > 5) feed.firstChild.remove();
     }
 
+    function spawnAmbientParticles() {
+      if (!mapTheme) return;
+      const mapId = currentMapId || 'skeld';
+      const now = Date.now();
+      // Spawn based on map and room proximity
+      const px = player.x + player.w / 2, py = player.y + player.h / 2;
+
+      // --- Electrical sparks (Skeld Electrical & Polus Electrical) ---
+      if (frameCount % 4 === 0) {
+        const eRooms = mapTheme.rooms ? mapTheme.rooms.filter(r => r.name && /electrical|electric/i.test(r.name)) : [];
+        for (const er of eRooms) {
+          if (Math.abs(px - (er.x + er.w/2)) < er.w * 0.7 && Math.abs(py - (er.y + er.h/2)) < er.h * 0.7) {
+            for (let i = 0; i < 2; i++) {
+              ambientParticles.push({ x: er.x + Math.random()*er.w, y: er.y + Math.random()*er.h,
+                vx: (Math.random()-0.5)*1.5, vy: -Math.random()*2-0.5,
+                r: 0.8+Math.random()*1.2, alpha: 0.9, color: Math.random()<0.5?'#ffee44':'#ffffff', type:'spark' });
+            }
+          }
+        }
+      }
+      // --- Reactor glow motes ---
+      if (frameCount % 6 === 0) {
+        const rRooms = mapTheme.rooms ? mapTheme.rooms.filter(r => r.name && /reactor/i.test(r.name)) : [];
+        for (const rr of rRooms) {
+          if (Math.abs(px - (rr.x + rr.w/2)) < rr.w * 0.7 && Math.abs(py - (rr.y + rr.h/2)) < rr.h * 0.7) {
+            ambientParticles.push({ x: rr.x + rr.w*0.3 + Math.random()*rr.w*0.4,
+              y: rr.y + rr.h*0.4 + Math.random()*rr.h*0.3,
+              vx: (Math.random()-0.5)*0.6, vy: -Math.random()*1.5-0.3,
+              r: 1.5+Math.random()*2, alpha: 0.7, color: Math.random()<0.5?'#ff8822':'#ffcc44', type:'mote' });
+          }
+        }
+      }
+      // --- Steam wisps (Cafeteria / Kitchen) ---
+      if (frameCount % 8 === 0) {
+        const cRooms = mapTheme.rooms ? mapTheme.rooms.filter(r => r.name && /cafeteria|kitchen/i.test(r.name)) : [];
+        for (const cr of cRooms) {
+          if (Math.abs(px - (cr.x + cr.w/2)) < cr.w * 0.8 && Math.abs(py - (cr.y + cr.h/2)) < cr.h * 0.8) {
+            ambientParticles.push({ x: cr.x + cr.w*0.2 + Math.random()*cr.w*0.6,
+              y: cr.y + cr.h * 0.8,
+              vx: (Math.random()-0.5)*0.4, vy: -Math.random()*1.2-0.4,
+              r: 3+Math.random()*4, alpha: 0.22, color: '#e0e8ff', type:'steam' });
+          }
+        }
+      }
+      // --- Medical particles (MedBay / Medical) ---
+      if (frameCount % 10 === 0) {
+        const mRooms = mapTheme.rooms ? mapTheme.rooms.filter(r => r.name && /medbay|medical/i.test(r.name)) : [];
+        for (const mr of mRooms) {
+          if (Math.abs(px - (mr.x + mr.w/2)) < mr.w * 0.8 && Math.abs(py - (mr.y + mr.h/2)) < mr.h * 0.8) {
+            const ang = Math.random()*Math.PI*2;
+            ambientParticles.push({ x: mr.x + mr.w/2 + Math.cos(ang)*30,
+              y: mr.y + mr.h/2 + Math.sin(ang)*30,
+              vx: (Math.random()-0.5)*0.5, vy: -Math.random()*0.8-0.2,
+              r: 1.2+Math.random()*1.5, alpha: 0.6, color: '#44ffcc', type:'mote' });
+          }
+        }
+      }
+      // --- Greenhouse / Fungle pollen spores ---
+      if (frameCount % 7 === 0) {
+        const gRooms = mapTheme.rooms ? mapTheme.rooms.filter(r => r.name && /greenhouse|jungle|splash|highland/i.test(r.name)) : [];
+        for (const gr of gRooms) {
+          if (Math.abs(px - (gr.x + gr.w/2)) < gr.w * 0.8 && Math.abs(py - (gr.y + gr.h/2)) < gr.h * 0.8) {
+            ambientParticles.push({ x: gr.x + Math.random()*gr.w,
+              y: gr.y + gr.h * 0.6 + Math.random()*gr.h*0.4,
+              vx: (Math.random()-0.5)*0.7, vy: -Math.random()*0.6-0.15,
+              r: 1.8+Math.random()*2, alpha: 0.5, color: Math.random()<0.5?'#aaff88':'#ffeeaa', type:'spore' });
+          }
+        }
+      }
+      // --- MIRA shooting stars ---
+      if ((mapId === 'mira' || mapId === 'airship') && frameCount % 40 === 0 && Math.random() < 0.5) {
+        meteorEffects.push({ x: Math.random()*3000+200, y: Math.random()*400+50,
+          vx: -8-Math.random()*6, vy: 2+Math.random()*3,
+          alpha: 1, len: 60+Math.random()*80 });
+      }
+      // --- Fungle fireflies ---
+      if (mapId === 'fungle' && frameCount % 20 === 0 && fireflyParticles.length < 30) {
+        const _fx2 = 200 + Math.random() * 3000, _fy2 = 200 + Math.random() * 2000;
+        fireflyParticles.push({ x: _fx2, y: _fy2,
+          vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5,
+          alpha: 0, targetAlpha: 0.7 + Math.random()*0.3,
+          phase: Math.random()*Math.PI*2,
+          color: Math.random()<0.5 ? '#44ffaa' : '#aaffee' });
+      }
+      // --- Fungle lightning flash ---
+      if (mapId === 'fungle' && frameCount % 180 === 0 && Math.random() < 0.35) {
+        lightningFlash = 0.7 + Math.random()*0.3;
+      }
+    }
+
     function spawnKillEffect(wx, wy, victimColor) {
-      for (let _i = 0; _i < 16; _i++) {
+      screenShake = Math.max(screenShake, 6);
+      // Shockwave ring
+      ventEffects.push({ x: wx, y: wy, r: 8, alpha: 0.8, color: '#ff2222', isKill: true });
+      ventEffects.push({ x: wx, y: wy, r: 4, alpha: 0.6, color: '#ffaa22', isKill: true });
+      for (let _i = 0; _i < 28; _i++) {
         const _a = Math.random() * Math.PI * 2;
-        const _s = 1.8 + Math.random() * 4;
+        const _s = 2.5 + Math.random() * 6;
         killEffects.push({ x: wx, y: wy,
-          vx: Math.cos(_a) * _s, vy: Math.sin(_a) * _s - 0.8,
-          r: 1.5 + Math.random() * 3, alpha: 0.85 + Math.random() * 0.15,
-          color: _i < 12 ? (_i < 8 ? '#cc0000' : '#880000') : victimColor });
+          vx: Math.cos(_a) * _s, vy: Math.sin(_a) * _s - 1.2,
+          r: 1.5 + Math.random() * 4, alpha: 0.9 + Math.random() * 0.1,
+          color: _i < 14 ? (_i < 8 ? '#dd0000' : '#991111') : _i < 22 ? '#ff4422' : victimColor });
       }
     }
 
@@ -4514,15 +4798,39 @@
     }
 
     function spawnTaskEffect(wx, wy) {
-      const _cols = ['#ffd700','#4ecdc4','#ff9944','#ff69b4','#aaffaa','#ffffff'];
-      for (let _i = 0; _i < 20; _i++) {
-        const _a = (_i / 20) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
-        const _s = 2 + Math.random() * 3.5;
+      const _cols = ['#ffd700','#4ecdc4','#ff9944','#ff69b4','#aaffaa','#ffffff','#44ff88','#ffe566','#88ffff','#ffaaff'];
+      // Main burst — 36 particles in full circle
+      for (let _i = 0; _i < 36; _i++) {
+        const _a = (_i / 36) * Math.PI * 2 + (Math.random() - 0.5) * 0.3;
+        const _s = 2.5 + Math.random() * 5.5;
         taskEffects.push({ x: wx, y: wy,
-          vx: Math.cos(_a) * _s, vy: Math.sin(_a) * _s - 2.2,
-          r: 1.5 + Math.random() * 2.5, alpha: 1, color: _cols[_i % _cols.length] });
+          vx: Math.cos(_a) * _s, vy: Math.sin(_a) * _s - 2.5,
+          r: 1.8 + Math.random() * 3.2, alpha: 1, color: _cols[_i % _cols.length] });
       }
-      floatTexts.push({ x: wx, y: wy - 20, vy: -1.2, text: '✓ Task Complete', color: '#4ecdc4', alpha: 1, timer: 70 });
+      // Inner tight gold/green ring
+      for (let _i = 0; _i < 16; _i++) {
+        const _a = (_i / 16) * Math.PI * 2;
+        taskEffects.push({ x: wx, y: wy,
+          vx: Math.cos(_a) * (1.5 + Math.random() * 2), vy: Math.sin(_a) * (1.5 + Math.random() * 2) - 1.5,
+          r: 2.5 + Math.random() * 2, alpha: 1,
+          color: _i % 2 === 0 ? '#ffd700' : '#44ff88' });
+      }
+      floatTexts.push({ x: wx, y: wy - 24, vy: -1.5, text: '✓ Task Complete', color: '#4ecdc4', alpha: 1, timer: 80 });
+      // Three expanding burst rings
+      ventEffects.push({ x: wx, y: wy, r: 4, alpha: 1.0, color: '#44ffcc', isKill: false });
+      ventEffects.push({ x: wx, y: wy, r: 2, alpha: 0.85, color: '#ffd700', isKill: false });
+      ventEffects.push({ x: wx, y: wy, r: 1, alpha: 0.7, color: '#ffffff', isKill: false });
+      // Extra white star-burst particles
+      for (let _ti = 0; _ti < 14; _ti++) {
+        const _ta = Math.random() * Math.PI * 2;
+        taskEffects.push({ x: wx, y: wy,
+          vx: Math.cos(_ta) * (5 + Math.random() * 4), vy: Math.sin(_ta) * (5 + Math.random() * 4) - 2.5,
+          r: 2 + Math.random() * 2.5, alpha: 1,
+          color: _ti % 3 === 0 ? '#ffffff' : _ti % 3 === 1 ? '#ffd700' : '#aaffaa' });
+      }
+      // Brief green-gold screen flash via overlay element
+      const _tfl = document.getElementById('taskFlashOverlay');
+      if (_tfl) { _tfl.style.opacity = '0.28'; setTimeout(() => { _tfl.style.opacity = '0'; }, 220); }
     }
 
     function spawnShieldEffect(wx, wy) {
@@ -5715,6 +6023,7 @@
       }
 
       deadBodies = [];
+      noisemakerDeathMarkers = [];
       tasksCompleted = 0;
       totalTasks = gameMode === 'hideseek' ? Math.min(gameSettings.hsTaskCount, taskLocations.length) : Math.max(1, player.taskList.length);
       killCooldown = 0;
@@ -5740,21 +6049,8 @@
 
       taskLocations.forEach(t => t.done = false);
 
-      // Show role reveal animation
-      const roleColor = ROLE_COLORS[playerRole] || '#4ecdc4';
-      const roleLabel = ROLE_LABELS[playerRole] || playerRole.toUpperCase();
-      const roleDesc  = ROLE_DESCS[playerRole] || '';
-      const overlay   = document.getElementById('roleRevealOverlay');
-      const card      = document.getElementById('roleRevealCard');
-      document.getElementById('roleRevealName').textContent = roleLabel;
-      document.getElementById('roleRevealDesc').textContent = roleDesc;
-      card.style.color = roleColor;
-      overlay.style.display = 'flex';
-      overlay.style.animation = 'none'; card.style.animation = 'none';
-      overlay.offsetHeight; // force reflow
-      overlay.style.animation = 'roleOverlayFade 4.2s forwards';
-      card.style.animation    = 'roleCardPop 4.2s forwards';
-      setTimeout(() => { overlay.style.display = 'none'; }, 4300);
+      // Show two-phase role reveal
+      showRoleReveal(playerRole);
 
       document.getElementById('sabotageControls').style.display = 'none';
       document.getElementById('sabotageHUD').style.display = 'none';
@@ -6076,11 +6372,70 @@
       if (inVent) exitVent(); else enterVent();
     }
 
+    // Two-phase role reveal: team first, then specific role
+    function showRoleReveal(role) {
+      const _impRoles    = ['impostor','shapeshifter','phantom','viper'];
+      const _neutralRoles = ['jester'];
+      const _isImp     = _impRoles.includes(role);
+      const _isNeutral = _neutralRoles.includes(role);
+
+      const team      = _isImp ? 'IMPOSTOR' : _isNeutral ? 'NEUTRAL' : 'CREWMATE';
+      const teamColor = _isImp ? '#ff3333'  : _isNeutral ? '#ff69b4' : '#4ecdc4';
+      const teamSub   = _isImp ? 'Eliminate all crewmates' : _isNeutral ? 'Play your own game' : 'Complete all tasks';
+
+      const roleColor = ROLE_COLORS[role] || '#4ecdc4';
+      const roleName  = ROLE_LABELS[role]  || role.toUpperCase();
+      const roleDesc  = ROLE_DESCS[role]   || '';
+
+      const overlay  = document.getElementById('roleRevealOverlay');
+      const p1       = document.getElementById('rrPhase1');
+      const p2       = document.getElementById('rrPhase2');
+
+      // Populate phase 1
+      const teamNameEl = document.getElementById('rrTeamName');
+      teamNameEl.textContent = team;
+      teamNameEl.style.color = teamColor;
+      document.getElementById('rrTeamSub').textContent = teamSub;
+
+      // Populate phase 2
+      const roleNameEl = document.getElementById('rrRoleName');
+      roleNameEl.textContent = roleName;
+      roleNameEl.style.color = roleColor;
+      document.getElementById('rrRoleDesc').textContent = roleDesc;
+      p2.style.boxShadow = `0 0 80px ${roleColor}55, 0 8px 60px rgba(0,0,0,0.9)`;
+
+      // Show overlay + phase 1
+      p1.style.display = 'none'; p2.style.display = 'none';
+      overlay.style.display = 'flex';
+      overlay.offsetHeight; // reflow
+      overlay.classList.add('rr-active');
+      p1.style.display = 'block';
+      p1.style.animation = 'none'; p1.offsetHeight;
+      p1.style.animation = 'rrP1In 2.4s forwards';
+
+      // Swap to phase 2
+      setTimeout(() => {
+        p1.style.display = 'none';
+        p2.style.display = 'block';
+        p2.style.animation = 'none'; p2.offsetHeight;
+        p2.style.animation = 'rrP2In 3.5s forwards';
+      }, 2200);
+
+      // Hide everything
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        overlay.classList.remove('rr-active');
+        p1.style.display = 'none'; p2.style.display = 'none';
+      }, 5900);
+    }
+
     function triggerNoisemakerAlert(npc) {
       const el = document.getElementById('noisemakerAlert');
       el.innerHTML = `🔔 NOISE DETECTED<br><span style="font-size:13px;font-weight:normal">${npc.name} was killed near (${Math.round(npc.x / 100) * 100}, ${Math.round(npc.y / 100) * 100})</span>`;
       el.style.display = 'block';
       noisemakerAlertTimer = 300; // 5s
+      // Place a persistent death marker on the map
+      noisemakerDeathMarkers.push({ x: npc.x, y: npc.y, color: npc.color || '#ff88ff', name: npc.name, spawnTime: Date.now() });
     }
 
     function btnUseAction() {
@@ -7691,16 +8046,7 @@
             player.role = 'guardian_angel';
             abilityCooldown = 0; abilityTimer = 0; abilityActive = false;
             // Show Guardian Angel role reveal
-            setTimeout(() => {
-              const ov = document.getElementById('roleRevealOverlay'), c = document.getElementById('roleRevealCard');
-              document.getElementById('roleRevealName').textContent = 'GUARDIAN ANGEL';
-              document.getElementById('roleRevealDesc').textContent = 'Protect living crewmates with your ability.';
-              c.style.color = '#ffffff';
-              ov.style.display = 'flex'; ov.style.animation = 'none'; c.style.animation = 'none';
-              ov.offsetHeight;
-              ov.style.animation = 'roleOverlayFade 4.2s forwards'; c.style.animation = 'roleCardPop 4.2s forwards';
-              setTimeout(() => { ov.style.display = 'none'; }, 4300);
-            }, 600);
+            setTimeout(() => showRoleReveal('guardian_angel'), 600);
           }
           const msg = document.getElementById('ghostMsg');
           msg.style.display = 'block';
@@ -8525,9 +8871,10 @@
       }
       // Vent ripples
       for (let i = ventEffects.length - 1; i >= 0; i--) {
-        ventEffects[i].r += 3 * _frameDt;
-        ventEffects[i].alpha -= 0.035 * _frameDt;
-        if (ventEffects[i].alpha <= 0) ventEffects.splice(i, 1);
+        const _vef = ventEffects[i];
+        _vef.r += (_vef.isKill ? 5 : 3) * _frameDt;
+        _vef.alpha -= (_vef.isKill ? 0.05 : 0.035) * _frameDt;
+        if (_vef.alpha <= 0) ventEffects.splice(i, 1);
       }
       // Task sparkles
       for (let i = taskEffects.length - 1; i >= 0; i--) {
@@ -8557,6 +8904,36 @@
         _ft.timer -= _frameDt;
         _ft.alpha = Math.min(1, _ft.timer / 15);
         if (_ft.timer <= 0) floatTexts.splice(i, 1);
+      }
+      // Ambient particles
+      spawnAmbientParticles();
+      for (let i = ambientParticles.length - 1; i >= 0; i--) {
+        const _ap = ambientParticles[i];
+        _ap.x += _ap.vx * _frameDt; _ap.y += _ap.vy * _frameDt;
+        _ap.vx *= 0.99; _ap.vy *= 0.995;
+        if (_ap.type === 'spark') { _ap.alpha -= 0.045 * _frameDt; _ap.r *= 0.98; }
+        else if (_ap.type === 'steam') { _ap.alpha -= 0.008 * _frameDt; _ap.r += 0.12 * _frameDt; }
+        else { _ap.alpha -= 0.018 * _frameDt; }
+        if (_ap.alpha <= 0) ambientParticles.splice(i, 1);
+      }
+      // Meteors
+      for (let i = meteorEffects.length - 1; i >= 0; i--) {
+        const _m = meteorEffects[i];
+        _m.x += _m.vx * _frameDt; _m.y += _m.vy * _frameDt;
+        _m.alpha -= 0.022 * _frameDt;
+        if (_m.alpha <= 0 || _m.x < -200) meteorEffects.splice(i, 1);
+      }
+      // Lightning flash decay
+      if (lightningFlash > 0) lightningFlash = Math.max(0, lightningFlash - 0.04 * _frameDt);
+      // Fireflies
+      for (let i = fireflyParticles.length - 1; i >= 0; i--) {
+        const _ff = fireflyParticles[i];
+        _ff.x += _ff.vx * _frameDt; _ff.y += _ff.vy * _frameDt;
+        _ff.vx += (Math.random()-0.5)*0.08; _ff.vy += (Math.random()-0.5)*0.08;
+        _ff.vx *= 0.97; _ff.vy *= 0.97;
+        const _ffGlow = 0.5 + 0.5 * Math.sin(Date.now()/600 + _ff.phase);
+        _ff.alpha = _ff.targetAlpha * _ffGlow;
+        if (frameCount % 180 === i % 180) fireflyParticles.splice(i, 1); // cycle out
       }
       // Mushroom mixup countdown
       if (mushroomMixupTimer > 0) {
@@ -9438,6 +9815,10 @@
         discussPhase.style.display = 'none';
         showVotingPhase(candidates, npcVotes);
         voteScreen.style.display = 'flex';
+        voteScreen.classList.remove('meeting-enter');
+        void voteScreen.offsetWidth;
+        voteScreen.classList.add('meeting-enter');
+        setTimeout(() => voteScreen.classList.remove('meeting-enter'), 800);
         return;
       }
       // Schedule NPC messages during discussion
@@ -9583,6 +9964,11 @@
       }, 1000);
 
       voteScreen.style.display = 'flex';
+      // Dramatic zoom+burst entrance animation
+      voteScreen.classList.remove('meeting-enter');
+      void voteScreen.offsetWidth; // reflow to restart animation
+      voteScreen.classList.add('meeting-enter');
+      setTimeout(() => voteScreen.classList.remove('meeting-enter'), 800);
     }
 
     function resolveVote(candidates, votes) {
@@ -9667,14 +10053,7 @@
               npcs.forEach(n => { n.sawBody = false; n.bodyLocation = null; n.completedVisualTasks = []; n.fixingSabotage = false; });
               witnessedVisualTasks = new Set();
               // Show Guardian Angel role reveal
-              const ov = document.getElementById('roleRevealOverlay'), c = document.getElementById('roleRevealCard');
-              document.getElementById('roleRevealName').textContent = 'GUARDIAN ANGEL';
-              document.getElementById('roleRevealDesc').textContent = 'Protect living crewmates with your ability.';
-              c.style.color = '#ffffff';
-              ov.style.display = 'flex'; ov.style.animation = 'none'; c.style.animation = 'none';
-              ov.offsetHeight;
-              ov.style.animation = 'roleOverlayFade 4.2s forwards'; c.style.animation = 'roleCardPop 4.2s forwards';
-              setTimeout(() => { ov.style.display = 'none'; }, 4300);
+              showRoleReveal('guardian_angel');
             }, 3000);
           } else {
             setTimeout(() => { voteScreen.style.display = 'none'; inMeeting = false; endGame(true); }, 3000);
@@ -11355,6 +11734,39 @@
               ctx.fillRect(chx+2, chy+2, 5, 4);
             }
           }
+          // === SKELD CAFETERIA: plate/cup details on tables, seat indicator pads ===
+          if (selectedMap === 'skeld' || selectedMap === 'airship') {
+            const tbl2 = [[0.22,0.24],[0.63,0.24],[0.18,0.64],[0.69,0.64],[0.43,0.82]];
+            for (const [tx2, ty2] of tbl2) {
+              const tbx2 = x+w*tx2, tby2 = y+h*ty2, tr2 = Math.min(w,h)*0.085;
+              ctx.globalAlpha = 0.85;
+              // Plate (white circle, slightly off-center)
+              ctx.fillStyle = 'rgba(240,235,220,0.55)';
+              ctx.beginPath(); ctx.arc(tbx2-tr2*0.25, tby2+tr2*0.10, tr2*0.22, 0, Math.PI*2); ctx.fill();
+              ctx.strokeStyle = 'rgba(200,190,170,0.50)'; ctx.lineWidth = 0.8;
+              ctx.beginPath(); ctx.arc(tbx2-tr2*0.25, tby2+tr2*0.10, tr2*0.22, 0, Math.PI*2); ctx.stroke();
+              // Food on plate (orange-red blob)
+              ctx.fillStyle = 'rgba(220,120,60,0.55)';
+              ctx.beginPath(); ctx.arc(tbx2-tr2*0.25, tby2+tr2*0.10, tr2*0.11, 0, Math.PI*2); ctx.fill();
+              // Cup (small rounded rectangle)
+              ctx.fillStyle = 'rgba(180,200,230,0.45)';
+              const cupX = tbx2+tr2*0.22, cupY = tby2-tr2*0.30;
+              ctx.fillRect(cupX-tr2*0.08, cupY-tr2*0.14, tr2*0.16, tr2*0.18);
+              ctx.strokeStyle = 'rgba(140,170,210,0.40)'; ctx.lineWidth = 0.7;
+              ctx.strokeRect(cupX-tr2*0.08, cupY-tr2*0.14, tr2*0.16, tr2*0.18);
+              // Liquid in cup (blue tint)
+              ctx.fillStyle = 'rgba(80,140,220,0.30)';
+              ctx.fillRect(cupX-tr2*0.07, cupY-tr2*0.08, tr2*0.14, tr2*0.08);
+              // Seat pad indicators (small rounded squares behind chairs)
+              for (let sa = 0; sa < 4; sa++) {
+                const sang = sa*Math.PI/2, scr = tr2+14;
+                const spx = tbx2+Math.cos(sang)*scr, spy = tby2+Math.sin(sang)*scr;
+                ctx.fillStyle = 'rgba(80,100,140,0.25)';
+                ctx.fillRect(spx-4, spy-4, 8, 8);
+              }
+              ctx.globalAlpha = 0.5;
+            }
+          }
           // Download Data panel — top-right area of room
           ctx.fillStyle = '#2a2a3a';
           ctx.fillRect(x+w*0.82, y+10, 26, 20);
@@ -11618,6 +12030,34 @@
             ctx.beginPath(); ctx.arc(x + w * 0.28, y + h * 0.55, 4, 0, Math.PI * 2); ctx.fill();
             ctx.strokeStyle = '#666620'; ctx.lineWidth = 1;
             ctx.beginPath(); ctx.arc(x + w * 0.28, y + h * 0.55, 4, 0, Math.PI * 2); ctx.stroke();
+            // === HAZARD STRIPE WALL SECTION: diagonal yellow/black stripes on right wall ===
+            ctx.save();
+            // Clip to a narrow wall section on the right side of the room
+            const _elHzX = x + w * 0.60, _elHzY = y + h * 0.10;
+            const _elHzW = w * 0.07, _elHzH = h * 0.80;
+            ctx.beginPath(); ctx.rect(_elHzX, _elHzY, _elHzW, _elHzH); ctx.clip();
+            // Dark base
+            ctx.fillStyle = '#181008';
+            ctx.fillRect(_elHzX, _elHzY, _elHzW, _elHzH);
+            // Draw diagonal stripes (yellow and black alternating)
+            const _elStripeW = 10;
+            const _elDiagLen = _elHzW + _elHzH;
+            for (let _elSi = -Math.ceil(_elHzH / _elStripeW); _elSi < Math.ceil(_elDiagLen / _elStripeW) + 2; _elSi++) {
+              const _elSfill = _elSi % 2 === 0 ? 'rgba(255,210,0,0.55)' : 'rgba(10,8,4,0.70)';
+              ctx.fillStyle = _elSfill;
+              ctx.beginPath();
+              const _elOff = _elSi * _elStripeW;
+              ctx.moveTo(_elHzX + _elOff,               _elHzY);
+              ctx.lineTo(_elHzX + _elOff + _elStripeW,  _elHzY);
+              ctx.lineTo(_elHzX + _elOff + _elStripeW - _elHzH, _elHzY + _elHzH);
+              ctx.lineTo(_elHzX + _elOff               - _elHzH, _elHzY + _elHzH);
+              ctx.closePath();
+              ctx.fill();
+            }
+            // Border around the hazard section
+            ctx.strokeStyle = 'rgba(200,160,0,0.45)'; ctx.lineWidth = 1.5;
+            ctx.strokeRect(_elHzX, _elHzY, _elHzW, _elHzH);
+            ctx.restore();
             ctx.globalAlpha = 0.5;
           }
           ctx.globalAlpha = 0.5;
@@ -11657,6 +12097,42 @@
             ctx.moveTo(bx+w*0.33, by+6); ctx.lineTo(bx+w*0.35, by+4); ctx.lineTo(bx+w*0.37, by+8);
             ctx.lineTo(bx+w*0.39, by+5); ctx.lineTo(bx+w*0.42, by+6);
             ctx.stroke();
+          }
+          // === SKELD BED DETAILS: pillow outlines + heart monitor wall screen ===
+          if (selectedMap === 'skeld') {
+            for (let b = 0; b < 2; b++) {
+              const bx = x+w*0.1+b*w*0.48, by = y+10;
+              // Pillow outline — white rounded rectangle over mattress head
+              ctx.globalAlpha = 0.9;
+              ctx.strokeStyle = 'rgba(230,240,255,0.70)'; ctx.lineWidth = 1;
+              if (ctx.roundRect) {
+                ctx.beginPath(); ctx.roundRect(bx+2, by+3, w*0.08, h*0.25-6, 3); ctx.stroke();
+              } else {
+                ctx.strokeRect(bx+2, by+3, w*0.08, h*0.25-6);
+              }
+              // Pillow crease line
+              ctx.strokeStyle = 'rgba(180,210,240,0.40)'; ctx.lineWidth = 0.6;
+              ctx.beginPath(); ctx.moveTo(bx+w*0.05, by+5); ctx.lineTo(bx+w*0.05, by+h*0.25-5); ctx.stroke();
+              // Heart monitor wall screen above bedside monitor — green ECG zigzag on dark panel
+              const hmX = bx+w*0.32-2, hmY = by-14;
+              ctx.fillStyle = '#0a1820';
+              ctx.fillRect(hmX, hmY, 18, 11);
+              ctx.strokeStyle = '#2a4060'; ctx.lineWidth = 0.7;
+              ctx.strokeRect(hmX, hmY, 18, 11);
+              // ECG line (green zigzag)
+              ctx.strokeStyle = 'rgba(50,255,120,0.80)'; ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(hmX+1, hmY+6);
+              ctx.lineTo(hmX+4, hmY+6);
+              ctx.lineTo(hmX+6, hmY+2);
+              ctx.lineTo(hmX+8, hmY+9);
+              ctx.lineTo(hmX+10, hmY+4);
+              ctx.lineTo(hmX+12, hmY+7);
+              ctx.lineTo(hmX+15, hmY+6);
+              ctx.lineTo(hmX+17, hmY+6);
+              ctx.stroke();
+              ctx.globalAlpha = 0.5;
+            }
           }
           // Medical scanner platform — scale to room size, very prominent
           const scnR = Math.min(w*0.28, h*0.38, 36);
@@ -12076,6 +12552,53 @@
               ctx.fillStyle = 'rgba(0,0,0,0.60)';
               ctx.font = '7px Arial'; ctx.textAlign = 'center';
               ctx.fillText('!', _skRpX + 8, _skRpY + 10);
+            }
+            ctx.globalAlpha = 0.5;
+          }
+          // === SKELD REACTOR: multi-ring radial gradient core glow (orange-white center) ===
+          if (selectedMap === 'skeld') {
+            ctx.globalAlpha = 1.0;
+            const _rkCx = cx, _rkCy = cy;
+            const _rkR = Math.min(w, h) * 0.18;
+            // Outer wide glow halo
+            const _rkHalo = ctx.createRadialGradient(_rkCx, _rkCy, _rkR * 0.6, _rkCx, _rkCy, _rkR * 2.2);
+            _rkHalo.addColorStop(0, 'rgba(255,140,20,0.18)');
+            _rkHalo.addColorStop(0.4, 'rgba(220,80,10,0.09)');
+            _rkHalo.addColorStop(1, 'rgba(100,20,0,0)');
+            ctx.fillStyle = _rkHalo;
+            ctx.beginPath(); ctx.arc(_rkCx, _rkCy, _rkR * 2.2, 0, Math.PI * 2); ctx.fill();
+            // Mid glow ring
+            const _rkMid = ctx.createRadialGradient(_rkCx, _rkCy, 0, _rkCx, _rkCy, _rkR * 1.1);
+            _rkMid.addColorStop(0, 'rgba(255,220,100,0.55)');
+            _rkMid.addColorStop(0.35, 'rgba(255,120,20,0.38)');
+            _rkMid.addColorStop(0.70, 'rgba(180,40,0,0.18)');
+            _rkMid.addColorStop(1, 'rgba(80,10,0,0)');
+            ctx.fillStyle = _rkMid;
+            ctx.beginPath(); ctx.arc(_rkCx, _rkCy, _rkR * 1.1, 0, Math.PI * 2); ctx.fill();
+            // Inner hot core
+            const _rkCore = ctx.createRadialGradient(_rkCx, _rkCy, 0, _rkCx, _rkCy, _rkR * 0.55);
+            _rkCore.addColorStop(0, 'rgba(255,255,220,0.95)');
+            _rkCore.addColorStop(0.20, 'rgba(255,200,80,0.80)');
+            _rkCore.addColorStop(0.55, 'rgba(255,100,10,0.50)');
+            _rkCore.addColorStop(1, 'rgba(160,30,0,0)');
+            ctx.fillStyle = _rkCore;
+            ctx.beginPath(); ctx.arc(_rkCx, _rkCy, _rkR * 0.55, 0, Math.PI * 2); ctx.fill();
+            // Bright white-hot pinpoint
+            ctx.fillStyle = 'rgba(255,255,255,0.90)';
+            ctx.beginPath(); ctx.arc(_rkCx, _rkCy, 4, 0, Math.PI * 2); ctx.fill();
+            // Concentric containment ring details
+            ctx.strokeStyle = 'rgba(255,160,40,0.30)'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.arc(_rkCx, _rkCy, _rkR * 0.82, 0, Math.PI * 2); ctx.stroke();
+            ctx.strokeStyle = 'rgba(255,80,10,0.20)'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.arc(_rkCx, _rkCy, _rkR * 1.05, 0, Math.PI * 2); ctx.stroke();
+            // 6 radiating heat-shimmer spokes
+            ctx.strokeStyle = 'rgba(255,180,40,0.16)'; ctx.lineWidth = 2;
+            for (let _rkSp = 0; _rkSp < 6; _rkSp++) {
+              const _rkA = _rkSp * Math.PI / 3;
+              ctx.beginPath();
+              ctx.moveTo(_rkCx + Math.cos(_rkA) * _rkR * 0.28, _rkCy + Math.sin(_rkA) * _rkR * 0.28);
+              ctx.lineTo(_rkCx + Math.cos(_rkA) * _rkR * 0.90, _rkCy + Math.sin(_rkA) * _rkR * 0.90);
+              ctx.stroke();
             }
             ctx.globalAlpha = 0.5;
           }
@@ -12635,6 +13158,42 @@
               // Monitor power light
               ctx.fillStyle = 'rgba(60,240,80,0.5)';
               ctx.beginPath(); ctx.arc(mx+monW-4, my+monH-4, 2, 0, Math.PI*2); ctx.fill();
+              // === SKELD: enhanced blue-tint camera feeds with more detail ===
+              if (selectedMap === 'skeld') {
+                // Blue tint overlay — fake camera feed
+                ctx.fillStyle = ['rgba(20,60,140,0.18)','rgba(10,40,120,0.15)','rgba(20,80,160,0.18)','rgba(30,60,130,0.14)'][row*2+col];
+                ctx.fillRect(mx+1, my+1, monW-2, monH-2);
+                // Horizontal scanlines (denser, blue-tinted)
+                for (let _scsl = 0; _scsl < monH; _scsl += 3) {
+                  ctx.fillStyle = 'rgba(10,30,80,0.10)';
+                  ctx.fillRect(mx+1, my+1+_scsl, monW-2, 1);
+                }
+                // Fake room layout sketch in feed (small corner brackets)
+                ctx.strokeStyle = 'rgba(80,160,255,0.35)'; ctx.lineWidth = 0.7;
+                const _scInset = 5;
+                // Top-left bracket
+                ctx.beginPath(); ctx.moveTo(mx+_scInset+5, my+_scInset); ctx.lineTo(mx+_scInset, my+_scInset); ctx.lineTo(mx+_scInset, my+_scInset+5); ctx.stroke();
+                // Top-right bracket
+                ctx.beginPath(); ctx.moveTo(mx+monW-_scInset-5, my+_scInset); ctx.lineTo(mx+monW-_scInset, my+_scInset); ctx.lineTo(mx+monW-_scInset, my+_scInset+5); ctx.stroke();
+                // Bottom-left bracket
+                ctx.beginPath(); ctx.moveTo(mx+_scInset+5, my+monH-_scInset); ctx.lineTo(mx+_scInset, my+monH-_scInset); ctx.lineTo(mx+_scInset, my+monH-_scInset-5); ctx.stroke();
+                // Bottom-right bracket
+                ctx.beginPath(); ctx.moveTo(mx+monW-_scInset-5, my+monH-_scInset); ctx.lineTo(mx+monW-_scInset, my+monH-_scInset); ctx.lineTo(mx+monW-_scInset, my+monH-_scInset-5); ctx.stroke();
+                // Room silhouette blob in center of feed
+                ctx.fillStyle = 'rgba(60,120,200,0.12)';
+                ctx.fillRect(mx + monW*0.25, my + monH*0.28, monW*0.50, monH*0.44);
+                // Small movement blip dot (fake player dot in feed)
+                const _scBx = mx + monW * (0.30 + (row*2+col)*0.12), _scBy = my + monH * (0.40 + col*0.15);
+                ctx.fillStyle = 'rgba(100,200,255,0.70)';
+                ctx.beginPath(); ctx.arc(_scBx, _scBy, 1.5, 0, Math.PI*2); ctx.fill();
+                // CAM label in top-left corner
+                ctx.globalAlpha = 0.55;
+                ctx.fillStyle = 'rgba(80,200,120,0.80)';
+                ctx.font = '4px monospace';
+                ctx.textAlign = 'left';
+                ctx.fillText('CAM' + (row*2+col+1), mx+3, my+7);
+                ctx.globalAlpha = 0.5;
+              }
             }
           }
           // Accept Diverted Power panel (right side)
@@ -15343,6 +15902,64 @@
       }
     }
 
+    // Draws the noisemaker death marker: broadcast signal arcs + downward chevron + dead body
+    function drawNoisemakerMarker(ctx, wx, wy, color, ox, oy) {
+      const sx = wx - ox; // screen x (center of body)
+      const sy = wy - oy; // screen y
+
+      ctx.save();
+
+      // ── Dead body (reuse drawDeadBody shifted so center aligns) ──────────
+      drawDeadBody(ctx, sx - 18, sy - 10, color, 0);
+
+      // ── Signal icon above the body ────────────────────────────────────────
+      // Pulsing alpha (0.7-1.0) using sine wave
+      const _pulse = 0.7 + 0.3 * Math.abs(Math.sin(Date.now() / 500));
+      ctx.globalAlpha = _pulse;
+
+      const cx = sx;          // center x of signal icon
+      const cy = sy - 38;     // above the body
+
+      // Three broadcast arcs (like WiFi / signal waves pointing upward)
+      ctx.strokeStyle = '#ff2222';
+      ctx.lineCap = 'round';
+
+      // Outer arc
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy + 12, 20, -Math.PI * 0.85, -Math.PI * 0.15);
+      ctx.stroke();
+
+      // Middle arc
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy + 12, 13, -Math.PI * 0.82, -Math.PI * 0.18);
+      ctx.stroke();
+
+      // Inner arc
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy + 12, 7, -Math.PI * 0.78, -Math.PI * 0.22);
+      ctx.stroke();
+
+      // Center dot
+      ctx.fillStyle = '#ff2222';
+      ctx.beginPath();
+      ctx.arc(cx, cy + 12, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Downward chevron / arrow below arcs
+      ctx.strokeStyle = '#ff2222';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(cx - 7, cy + 20);
+      ctx.lineTo(cx, cy + 27);
+      ctx.lineTo(cx + 7, cy + 20);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
     function drawTaskIcon(x, y, name, col, alpha) {
       const s = 8;
       ctx.save();
@@ -15519,13 +16136,60 @@
         ctx.fillRect(-ox, -oy, MAP_W, MAP_H);
       }
 
+      // Animated corridor floor sweep
+      if (mapTheme && mapTheme.floors) {
+        const _sweepT = (Date.now() / 1400) % 1;
+        for (const _fl of mapTheme.floors) {
+          if (!_fl.w || !_fl.h) continue;
+          const _fw = _fl.w, _fh = _fl.h;
+          const _fx = _fl.x - ox, _fy = _fl.y - oy;
+          if (_fw > _fh * 1.8 && _fw > 120) {
+            // horizontal corridor sweep
+            const _sx = _fx + _sweepT * _fw;
+            const _sg = ctx.createLinearGradient(_sx-80,0,_sx+80,0);
+            _sg.addColorStop(0,'rgba(255,255,255,0)'); _sg.addColorStop(0.5,'rgba(255,255,255,0.04)'); _sg.addColorStop(1,'rgba(255,255,255,0)');
+            ctx.save(); ctx.fillStyle=_sg; ctx.fillRect(_sx-80,_fy,160,_fh); ctx.restore();
+          } else if (_fh > _fw * 1.8 && _fh > 120) {
+            // vertical corridor sweep
+            const _sy = _fy + _sweepT * _fh;
+            const _sg2 = ctx.createLinearGradient(0,_sy-80,0,_sy+80);
+            _sg2.addColorStop(0,'rgba(255,255,255,0)'); _sg2.addColorStop(0.5,'rgba(255,255,255,0.04)'); _sg2.addColorStop(1,'rgba(255,255,255,0)');
+            ctx.save(); ctx.fillStyle=_sg2; ctx.fillRect(_fx,_sy-80,_fw,160); ctx.restore();
+          }
+        }
+      }
+
       // Polus snow is animated (not in static canvas) — draw it live on top of the map
       if (selectedMap === 'polus') drawSnow(ox, oy);
+      // MIRA rain
+      if ((currentMapId === 'mira' || selectedMap === 'mira' || (mapTheme && mapTheme.id === 'mira'))) {
+        const _rt = Date.now() / 55;
+        ctx.save(); ctx.globalAlpha = 0.1; ctx.strokeStyle = '#88aacc'; ctx.lineWidth = 0.9;
+        for (let _ri = 0; _ri < 60; _ri++) {
+          const _rx = ((_ri * 457 + _rt * 2.2) % (canvas.width + 120)) - 60;
+          const _ry = ((_ri * 317 + _rt * 4.0) % (canvas.height + 120)) - 60;
+          ctx.beginPath(); ctx.moveTo(_rx, _ry); ctx.lineTo(_rx + 6, _ry + 16); ctx.stroke();
+        }
+        ctx.restore();
+      }
+      // Airship cloud wisps drifting
+      if ((currentMapId === 'airship' || selectedMap === 'airship' || (mapTheme && mapTheme.id === 'airship'))) {
+        const _ct = Date.now() / 4000;
+        ctx.save(); ctx.globalAlpha = 0.06;
+        for (let _ci = 0; _ci < 6; _ci++) {
+          const _cx = ((_ci * 800 + _ct * canvas.width * 0.3) % (canvas.width + 400)) - 200;
+          const _cy = 40 + _ci * 55;
+          const _cg = ctx.createLinearGradient(_cx, _cy, _cx + 300, _cy);
+          _cg.addColorStop(0, 'rgba(255,255,255,0)'); _cg.addColorStop(0.4, 'rgba(255,255,255,0.6)'); _cg.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.fillStyle = _cg; ctx.fillRect(_cx, _cy - 18, 300, 36);
+        }
+        ctx.restore();
+      }
 
       // ── Ambient dust motes ──────────────────────────────────────────────────
       {
         const _now = Date.now() / 1000;
-        ctx.save();
+        const _dmNow = Date.now();
         for (const _dm of _dustMotes) {
           // Drift position over time (wrap around map bounds)
           const _dmx = ((_dm.wx + _dm.vx * _now * 60) % MAP_W + MAP_W) % MAP_W;
@@ -15533,13 +16197,17 @@
           const _sx = _dmx - ox, _sy = _dmy - oy;
           // Only draw if on screen
           if (_sx < -4 || _sx > canvas.width + 4 || _sy < -4 || _sy > canvas.height + 4) continue;
-          // Soft alpha pulse
-          const _pulse = 0.5 + 0.5 * Math.sin(_now * 0.8 + _dm.phase);
-          ctx.globalAlpha = _pulse * 0.18;
-          ctx.fillStyle = '#e8e0d8';
-          ctx.beginPath(); ctx.arc(_sx, _sy, _dm.r, 0, Math.PI * 2); ctx.fill();
+          // Ambient dust motes with color glow
+          const _dma = 0.04 + 0.04 * Math.sin(_dmNow * 0.0008 * (_dm.phase || 1) + (_dm.phase || 0));
+          if (_dma <= 0) continue;
+          ctx.save();
+          ctx.globalAlpha = _dma;
+          const _dmColor = _dm.color || 'rgba(200,210,230,1)';
+          ctx.shadowColor = _dmColor; ctx.shadowBlur = 6;
+          ctx.fillStyle = _dmColor;
+          ctx.beginPath(); ctx.arc(_sx, _sy, _dm.r || 1.5, 0, Math.PI*2); ctx.fill();
+          ctx.restore();
         }
-        ctx.restore();
       }
       // ────────────────────────────────────────────────────────────────────────
 
@@ -15576,6 +16244,19 @@
             ctx.fillRect(dx, dy + d.h + 2, d.w * pct, 3);
           } else {
             ctx.fillRect(dx + d.w + 2, dy, 3, d.h * pct);
+          }
+          // Animated lock symbol on closed door center
+          if (!d.open && !d.sabotaged) {
+            const _lockPulse = 0.5 + 0.5 * Math.sin(Date.now() / 600 + d.x * 0.01);
+            ctx.save();
+            ctx.globalAlpha = 0.5 + _lockPulse * 0.3;
+            ctx.fillStyle = '#ffcc44';
+            ctx.shadowColor = '#ffaa00'; ctx.shadowBlur = 6;
+            ctx.font = 'bold 9px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            const _dCx = d.x - ox + d.w/2;
+            const _dCy = d.y - oy + d.h/2;
+            ctx.fillText('🔒', _dCx, _dCy);
+            ctx.restore();
           }
         } else {
           // Open door - subtle frame showing where door is
@@ -15692,6 +16373,24 @@
         for (let s = 4; s < 36; s += 5) ctx.fillRect(vx + s, vy + 3, 2, 18);
         ctx.fillStyle = 'rgba(255,255,255,0.06)';
         ctx.fillRect(vx + 1, vy + 1, 38, 2);
+        // Animated smoke/gas wisps rising from vents when player is nearby
+        if (dist(player, v) < 180 && !inVent) {
+          const _vt = Date.now() / 600;
+          ctx.save();
+          for (let _wi = 0; _wi < 3; _wi++) {
+            const _wPhase = _vt + _wi * 1.2;
+            const _wRise = (_wPhase % 1.8) / 1.8;           // 0→1 loop
+            const _wX = vx + 8 + _wi * 12 + Math.sin(_wPhase * 2.5) * 5;
+            const _wY = vy - 4 - _wRise * 28;
+            const _wR = 3 + _wRise * 7;
+            const _wA = (1 - _wRise) * 0.18;
+            if (_wA <= 0) continue;
+            ctx.globalAlpha = _wA;
+            ctx.fillStyle = 'rgba(180,220,200,1)';
+            ctx.beginPath(); ctx.arc(_wX, _wY, _wR, 0, Math.PI * 2); ctx.fill();
+          }
+          ctx.restore();
+        }
       }
 
       // CCTV Cameras (mounted on walls in hallways)
@@ -15883,6 +16582,19 @@
         ctx.fillStyle = readyGlow;
         ctx.beginPath(); ctx.arc(ebx, eby, 75, 0, Math.PI * 2); ctx.fill();
       }
+      // Extra pulsing readiness rings when not on cooldown
+      if (!emergencyCooldown || emergencyCooldown <= 0) {
+        const _btnPulse = 0.5 + 0.5 * Math.sin(Date.now() / 500);
+        const _btnPulse2 = 0.5 + 0.5 * Math.sin(Date.now() / 500 + Math.PI);
+        ctx.save();
+        ctx.globalAlpha = _btnPulse * 0.35;
+        ctx.strokeStyle = '#ff4444'; ctx.lineWidth = 2;
+        ctx.shadowColor = '#ff2222'; ctx.shadowBlur = 12;
+        ctx.beginPath(); ctx.arc(ebx, eby, 28 + _btnPulse * 6, 0, Math.PI*2); ctx.stroke();
+        ctx.globalAlpha = _btnPulse2 * 0.2;
+        ctx.beginPath(); ctx.arc(ebx, eby, 38 + _btnPulse2 * 8, 0, Math.PI*2); ctx.stroke();
+        ctx.restore();
+      }
 
       // Tasks — type-specific icons with pulsing glow (hidden during H&S final hunt)
       // Only show tasks assigned to the player (not every task on the map)
@@ -15957,6 +16669,28 @@
           }
         }
         ctx.restore();
+      }
+
+      // Floating room name labels (visible near room transitions)
+      if (mapTheme && mapTheme.rooms && !inMeeting) {
+        const _px2 = player.x + player.w/2, _py2 = player.y + player.h/2;
+        for (const _lr of mapTheme.rooms) {
+          if (!_lr.name || /HALLWAY/i.test(_lr.name)) continue;
+          const _lrCx = _lr.x + _lr.w/2, _lrCy = _lr.y + _lr.h/2;
+          const _lrDist = Math.hypot(_px2 - _lrCx, _py2 - _lrCy);
+          const _lrMaxDist = Math.max(_lr.w, _lr.h) * 0.55;
+          if (_lrDist < _lrMaxDist + 40) {
+            const _lrFade = Math.max(0, 1 - _lrDist / (_lrMaxDist + 40));
+            const _lrx = _lrCx - ox, _lry = _lrCy - oy - _lr.h * 0.35;
+            ctx.save();
+            ctx.globalAlpha = _lrFade * 0.45;
+            ctx.font = 'bold 11px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.shadowColor = '#88ccff'; ctx.shadowBlur = 8;
+            ctx.fillStyle = '#cceeff';
+            ctx.fillText(_lr.name.toUpperCase(), _lrx, _lry);
+            ctx.restore();
+          }
+        }
       }
 
       // Draw sabotage fix consoles
@@ -16201,6 +16935,25 @@
         mc.globalAlpha = 1;
       }
 
+      // NPC dots on minimap (impostors get a glow)
+      if (isGhost || isImpostor) {
+        for (const _mn of npcs) {
+          if (!_mn.alive) continue;
+          const _mnx = _mn.x * sc, _mny = _mn.y * sc;
+          mc.save();
+          if (_mn.isImpostor) {
+            mc.shadowColor = '#ff4444'; mc.shadowBlur = 6;
+            mc.fillStyle = '#ff6666';
+          } else {
+            mc.shadowColor = _mn.color; mc.shadowBlur = 3;
+            mc.fillStyle = _mn.color || '#aaaaff';
+          }
+          mc.globalAlpha = 0.75;
+          mc.beginPath(); mc.arc(_mnx, _mny, 3, 0, Math.PI*2); mc.fill();
+          mc.restore();
+        }
+      }
+
       // Player dot + name
       if (player.alive || isGhost) {
         const px = player.x*sc, py = player.y*sc;
@@ -16209,6 +16962,14 @@
         mc.fillStyle = player.color;
         mc.beginPath(); mc.arc(px, py, 4, 0, Math.PI*2); mc.fill();
         mc.strokeStyle = '#fff'; mc.lineWidth = 1.5; mc.stroke();
+        mc.restore();
+        // Pulsing ring on minimap player dot
+        const _mmPulse = 0.5 + 0.5 * Math.sin(Date.now() / 400);
+        mc.save();
+        mc.globalAlpha = _mmPulse * 0.6;
+        mc.strokeStyle = '#ffffff'; mc.lineWidth = 1;
+        mc.shadowColor = '#44ffcc'; mc.shadowBlur = 4;
+        mc.beginPath(); mc.arc(px, py, 5 + _mmPulse * 2, 0, Math.PI*2); mc.stroke();
         mc.restore();
         // Player name label
         mc.fillStyle = '#fff';
@@ -16232,8 +16993,14 @@
 
     function render() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const ox = player.x - canvas.width / 2;
-      const oy = player.y - canvas.height / 2;
+      let ox = player.x - canvas.width / 2;
+      let oy = player.y - canvas.height / 2;
+      // Screen shake
+      if (screenShake > 0) {
+        ox += (Math.random() - 0.5) * screenShake;
+        oy += (Math.random() - 0.5) * screenShake;
+        screenShake = Math.max(0, screenShake - 0.4 * (_frameDt || 1));
+      }
 
       drawMap(ox, oy);
 
@@ -16286,6 +17053,11 @@
         ctx.restore();
       }
 
+      // ── Noisemaker death markers ──────────────────────────────────────────
+      for (const _nm of noisemakerDeathMarkers) {
+        drawNoisemakerMarker(ctx, _nm.x + 9, _nm.y + 10, _nm.color, ox, oy);
+      }
+
       // ── Canvas effect animations ──────────────────────────────────────────
       // Kill blood splatter
       for (const _kp of killEffects) {
@@ -16308,13 +17080,14 @@
         ctx.restore();
       }
       // Vent ripple rings
-      for (const _vr of ventEffects) {
+      for (const _ve of ventEffects) {
         ctx.save();
-        ctx.globalAlpha = Math.max(0, _vr.alpha);
-        ctx.strokeStyle = '#44ddff';
-        ctx.lineWidth = 2;
-        ctx.shadowColor = '#44ddff'; ctx.shadowBlur = 6;
-        ctx.beginPath(); ctx.arc(_vr.x - ox, _vr.y - oy, _vr.r, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha = Math.max(0, _ve.alpha);
+        const _vec = _ve.color || '#44aaff';
+        ctx.strokeStyle = _vec;
+        ctx.lineWidth = _ve.isKill ? 2.5 : 2;
+        ctx.shadowColor = _vec; ctx.shadowBlur = _ve.isKill ? 14 : 8;
+        ctx.beginPath(); ctx.arc(_ve.x - ox, _ve.y - oy, _ve.r, 0, Math.PI * 2); ctx.stroke();
         ctx.restore();
       }
       // Task complete sparkles
@@ -16354,6 +17127,75 @@
         ctx.fillText(_ft.text, _ft.x - ox + 1, _ft.y - oy + 1);
         ctx.fillStyle = _ft.color;
         ctx.fillText(_ft.text, _ft.x - ox, _ft.y - oy);
+        ctx.restore();
+      }
+      // Ambient room particles
+      for (const _ap of ambientParticles) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, _ap.alpha);
+        if (_ap.type === 'spark') {
+          ctx.shadowColor = _ap.color; ctx.shadowBlur = 6;
+          ctx.fillStyle = _ap.color;
+          ctx.beginPath(); ctx.arc(_ap.x - ox, _ap.y - oy, _ap.r, 0, Math.PI*2); ctx.fill();
+        } else if (_ap.type === 'steam') {
+          const _sg = ctx.createRadialGradient(_ap.x-ox, _ap.y-oy, 0, _ap.x-ox, _ap.y-oy, _ap.r);
+          _sg.addColorStop(0, _ap.color); _sg.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.fillStyle = _sg;
+          ctx.beginPath(); ctx.arc(_ap.x-ox, _ap.y-oy, _ap.r, 0, Math.PI*2); ctx.fill();
+        } else if (_ap.type === 'spore') {
+          ctx.fillStyle = _ap.color;
+          ctx.shadowColor = _ap.color; ctx.shadowBlur = 4;
+          ctx.beginPath(); ctx.arc(_ap.x-ox, _ap.y-oy, _ap.r, 0, Math.PI*2); ctx.fill();
+        } else {
+          ctx.fillStyle = _ap.color;
+          ctx.shadowColor = _ap.color; ctx.shadowBlur = 8;
+          ctx.beginPath(); ctx.arc(_ap.x-ox, _ap.y-oy, _ap.r, 0, Math.PI*2); ctx.fill();
+        }
+        ctx.restore();
+      }
+      // Twinkling star sparkles (dynamic layer on top of static stars)
+      if (selectedMap === 'skeld' || selectedMap === 'airship') {
+        const _twNow = Date.now();
+        for (let _twi = 0; _twi < 12; _twi++) {
+          const _twPhase = Math.sin(_twNow / (300 + _twi * 47) + _twi * 1.3);
+          if (_twPhase > 0.7) {
+            const _twx = ((_twi * 1847 + 200) % (MAP_W - 100)) + 50;
+            const _twy = ((_twi * 937 + 100) % (MAP_H * 0.4)) + 50;
+            ctx.save();
+            ctx.globalAlpha = (_twPhase - 0.7) * 2.5 * 0.6;
+            ctx.shadowColor = '#ffffff'; ctx.shadowBlur = 8;
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath(); ctx.arc(_twx - ox, _twy - oy, 1.5, 0, Math.PI*2); ctx.fill();
+            ctx.restore();
+          }
+        }
+      }
+      // Meteor/shooting star effects
+      for (const _m of meteorEffects) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, _m.alpha);
+        const _mg = ctx.createLinearGradient(_m.x-ox, _m.y-oy, _m.x-ox+_m.len, _m.y-oy-_m.len*0.35);
+        _mg.addColorStop(0, 'rgba(255,255,255,0)'); _mg.addColorStop(0.6, 'rgba(200,220,255,0.6)'); _mg.addColorStop(1, 'rgba(255,255,255,0.9)');
+        ctx.strokeStyle = _mg; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(_m.x-ox+_m.len, _m.y-oy-_m.len*0.35); ctx.lineTo(_m.x-ox, _m.y-oy); ctx.stroke();
+        ctx.restore();
+      }
+      // Fungle fireflies
+      for (const _ff of fireflyParticles) {
+        if (_ff.alpha <= 0) continue;
+        ctx.save();
+        ctx.globalAlpha = _ff.alpha;
+        ctx.shadowColor = _ff.color; ctx.shadowBlur = 12;
+        ctx.fillStyle = _ff.color;
+        ctx.beginPath(); ctx.arc(_ff.x - ox, _ff.y - oy, 2.5, 0, Math.PI*2); ctx.fill();
+        ctx.restore();
+      }
+      // Fungle lightning flash overlay
+      if (lightningFlash > 0) {
+        ctx.save();
+        ctx.globalAlpha = lightningFlash * 0.18;
+        ctx.fillStyle = '#eeeeff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.restore();
       }
       // ─────────────────────────────────────────────────────────────────────
@@ -16404,7 +17246,8 @@
           ctx.fillStyle = 'rgba(0,0,0,0.22)';
           ctx.beginPath(); ctx.ellipse(npc.x - ox + npc.w * 0.5, npc.y - oy + npc.h * 0.92, npc.w * 0.38, npc.h * 0.10, 0, 0, Math.PI * 2); ctx.fill();
           ctx.restore();
-          drawCrewmate(ctx, npc.x - ox, npc.y - oy, npc.w, npc.h, npc.color, npc.name, npc.alive,
+          const _npcBobY = (npc.state === 'idle' || npc.state === 'doing_task') ? Math.sin(Date.now()/700 + npc.x * 0.01) * 1.5 : 0;
+          drawCrewmate(ctx, npc.x - ox, npc.y - oy + _npcBobY, npc.w, npc.h, npc.color, npc.name, npc.alive,
             npc.facingLeft ? 'left' : npc.state, 1, showSuspect ? 'impostor' : null, npc.hat, npc.protectionTimer);
           // Witness speech bubble
           if (npc.speechBubble) {
@@ -16439,6 +17282,17 @@
             ctx.beginPath();
             ctx.roundRect(rx, ry, bw, bh, 6);
             ctx.fill(); ctx.stroke();
+            // Animated glow border
+            const _sbPulse = 0.5 + 0.5 * Math.sin(Date.now() / 400 + npc.x * 0.01);
+            ctx.save();
+            ctx.globalAlpha = alpha * (0.4 + _sbPulse * 0.3);
+            ctx.strokeStyle = _bubbleColor;
+            ctx.lineWidth = 1.5;
+            ctx.shadowColor = _bubbleColor; ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.roundRect(rx, ry, bw, bh, 6);
+            ctx.stroke();
+            ctx.restore();
             // Tail
             ctx.fillStyle = '#1a1a2e';
             ctx.strokeStyle = _bubbleColor;
@@ -16566,8 +17420,52 @@
           ctx.beginPath(); ctx.ellipse(player.x - ox + player.w * 0.5, player.y - oy + player.h * 0.92, player.w * 0.38, player.h * 0.10, 0, 0, Math.PI * 2); ctx.fill();
           ctx.restore();
         }
+        // Player motion trail
+        if (player.alive && !isGhost && (player.vx*player.vx + player.vy*player.vy > 0.5 || (keys['w']||keys['s']||keys['a']||keys['d']||keys['arrowup']||keys['arrowdown']||keys['arrowleft']||keys['arrowright']))) {
+          const _trailColor = player.color || '#ffffff';
+          for (let _ti = 1; _ti <= 3; _ti++) {
+            ctx.save();
+            ctx.globalAlpha = 0.08 * (4 - _ti);
+            ctx.shadowColor = _trailColor; ctx.shadowBlur = 4;
+            ctx.fillStyle = _trailColor;
+            ctx.beginPath();
+            ctx.ellipse(player.x - ox + player.w/2, player.y - oy + player.h*0.6 + _ti*3, player.w*0.3, player.h*0.3, 0, 0, Math.PI*2);
+            ctx.fill();
+            ctx.restore();
+          }
+        }
         drawCrewmate(ctx, player.x - ox, player.y - oy, player.w, player.h, drawColor, drawName, true,
           _playerState, drawAlpha, playerRole, drawHat, player.protectionTimer, drawSkin);
+
+        // Ghost ethereal mist
+        if (isGhost && player.alive === false) {
+          const _gNow = Date.now();
+          for (let _gi = 0; _gi < 4; _gi++) {
+            const _gPhase = (_gNow / 800 + _gi * 0.8) % (Math.PI * 2);
+            const _gx = player.x - ox + player.w/2 + Math.cos(_gPhase) * 12;
+            const _gy = player.y - oy + player.h/2 + Math.sin(_gPhase * 0.7) * 8 - 5;
+            ctx.save();
+            ctx.globalAlpha = 0.2 + 0.1 * Math.sin(_gNow/600 + _gi);
+            ctx.fillStyle = '#aaccff';
+            ctx.shadowColor = '#88aaff'; ctx.shadowBlur = 8;
+            ctx.beginPath(); ctx.arc(_gx, _gy, 2, 0, Math.PI*2); ctx.fill();
+            ctx.restore();
+          }
+        }
+
+        // Ability-ready glow outline
+        if (playerRole && !isImpostor && !isGhost) {
+          const _abilityReady = abilityCooldown !== undefined && abilityCooldown <= 0;
+          if (_abilityReady && playerRole !== 'crewmate') {
+            const _arpulse = 0.5 + 0.5 * Math.sin(Date.now() / 350);
+            ctx.save();
+            ctx.globalAlpha = _arpulse * 0.5;
+            ctx.shadowColor = '#44ffcc'; ctx.shadowBlur = 16;
+            ctx.strokeStyle = '#44ffcc'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.ellipse(player.x - ox + player.w/2, player.y - oy + player.h*0.55, player.w*0.55, player.h*0.6, 0, 0, Math.PI*2); ctx.stroke();
+            ctx.restore();
+          }
+        }
 
         // Final hunt: pulsing red scan ring shows seeker has eyes on player
         if (gameMode === 'hideseek' && finalHide && !isImpostor && !isGhost) {
@@ -16775,15 +17673,226 @@
       }
       // ── End navigation arrows ─────────────────────────────────────────────
 
+      // --- Dynamic room ambient lighting ---
+      const _dlNow = Date.now();
+      if (mapTheme && mapTheme.rooms) {
+        for (const _dlr of mapTheme.rooms) {
+          if (!_dlr.name) continue;
+          const _dlx = _dlr.x - ox, _dly = _dlr.y - oy;
+          const _dlw = _dlr.w, _dlh = _dlr.h;
+          // Reactor: pulsing core glow overlay
+          if (/reactor/i.test(_dlr.name)) {
+            const _rp = 0.5 + 0.5 * Math.sin(_dlNow / 400);
+            const _rg = ctx.createRadialGradient(_dlx+_dlw/2, _dly+_dlh/2, 0, _dlx+_dlw/2, _dly+_dlh/2, _dlw*0.55);
+            _rg.addColorStop(0, `rgba(255,140,20,${0.12 + _rp*0.1})`);
+            _rg.addColorStop(0.5, `rgba(200,80,0,${0.04 + _rp*0.04})`);
+            _rg.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.save(); ctx.fillStyle = _rg; ctx.fillRect(_dlx, _dly, _dlw, _dlh); ctx.restore();
+          }
+          // Reactor rotating warning rings
+          if (/reactor/i.test(_dlr.name)) {
+            const _rotAngle = Date.now() / 1500;
+            const _rcx = _dlx + _dlw/2, _rcy = _dly + _dlh/2;
+            const _rrad = Math.min(_dlw, _dlh) * 0.3;
+            ctx.save();
+            ctx.globalAlpha = 0.2;
+            ctx.strokeStyle = '#ff8822'; ctx.lineWidth = 1.5;
+            ctx.shadowColor = '#ff8822'; ctx.shadowBlur = 8;
+            ctx.setLineDash([8, 16]);
+            ctx.lineDashOffset = -_rotAngle * 30;
+            ctx.beginPath(); ctx.arc(_rcx, _rcy, _rrad, 0, Math.PI*2); ctx.stroke();
+            ctx.lineDashOffset = _rotAngle * 20;
+            ctx.globalAlpha = 0.12;
+            ctx.beginPath(); ctx.arc(_rcx, _rcy, _rrad * 1.4, 0, Math.PI*2); ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.restore();
+          }
+          // Electrical: flickering hazard light
+          if (/electrical|electric/i.test(_dlr.name)) {
+            const _ep = 0.5 + 0.5 * Math.sin(_dlNow / 180 + 0.7);
+            ctx.save(); ctx.globalAlpha = _ep * 0.06; ctx.fillStyle = '#ffee00';
+            ctx.fillRect(_dlx, _dly, _dlw, _dlh); ctx.restore();
+            // Spark flash
+            if (Math.floor(_dlNow / 200) % 7 === 0) {
+              ctx.save(); ctx.globalAlpha = 0.12; ctx.fillStyle = '#ffffff';
+              ctx.fillRect(_dlx, _dly, _dlw, _dlh); ctx.restore();
+            }
+          }
+          // MedBay: soft cyan scanner pulse
+          if (/medbay|medical/i.test(_dlr.name)) {
+            const _mp = 0.5 + 0.5 * Math.sin(_dlNow / 700);
+            const _mg = ctx.createRadialGradient(_dlx+_dlw/2, _dly+_dlh*0.5, 0, _dlx+_dlw/2, _dly+_dlh*0.5, _dlw*0.45);
+            _mg.addColorStop(0, `rgba(0,220,200,${0.06 + _mp*0.06})`);
+            _mg.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.save(); ctx.fillStyle = _mg; ctx.fillRect(_dlx, _dly, _dlw, _dlh); ctx.restore();
+          }
+          // Greenhouse/Jungle: warm green glow
+          if (/greenhouse|jungle|splash|highland/i.test(_dlr.name)) {
+            const _gp = 0.5 + 0.5 * Math.sin(_dlNow / 900);
+            ctx.save(); ctx.globalAlpha = 0.04 + _gp * 0.03; ctx.fillStyle = '#44ff44';
+            ctx.fillRect(_dlx, _dly, _dlw, _dlh); ctx.restore();
+          }
+          // Navigation: blue star-glow overlay + animated console screens
+          if (/navigation|cockpit|viewing/i.test(_dlr.name)) {
+            const _np = 0.5 + 0.5 * Math.sin(_dlNow / 1200);
+            const _ng = ctx.createRadialGradient(_dlx+_dlw*0.7, _dly+_dlh*0.4, 0, _dlx+_dlw*0.7, _dly+_dlh*0.4, _dlw*0.6);
+            _ng.addColorStop(0, `rgba(80,120,255,${0.07 + _np*0.05})`);
+            _ng.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.save(); ctx.fillStyle = _ng; ctx.fillRect(_dlx, _dly, _dlw, _dlh); ctx.restore();
+            // Animated console screen data: scrolling scanline + waveform on left-side consoles
+            ctx.save();
+            ctx.beginPath(); ctx.rect(_dlx, _dly, _dlw, _dlh); ctx.clip();
+            const _navT = _dlNow / 1000;
+            // Three console panels along the left side of Navigation/Cockpit floor
+            const _isNav = /navigation/i.test(_dlr.name);
+            const _consolePanels = _isNav
+              ? [{ px: _dlx+8, py: _dly+_dlh*0.09, pw: _dlw*0.23, ph: _dlh*0.21 },
+                 { px: _dlx+8, py: _dly+_dlh*0.37, pw: _dlw*0.23, ph: _dlh*0.21 },
+                 { px: _dlx+8, py: _dly+_dlh*0.65, pw: _dlw*0.23, ph: _dlh*0.21 }]
+              : [{ px: _dlx+10, py: _dly+_dlh*0.15, pw: _dlw*0.33, ph: _dlh*0.58 }];
+            for (let _pi = 0; _pi < _consolePanels.length; _pi++) {
+              const _cp = _consolePanels[_pi];
+              const _screenX = _cp.px + 3, _screenY = _cp.py + 3, _screenW = _cp.pw - 6, _screenH = _cp.ph * 0.62;
+              // Screen clip region
+              ctx.save();
+              ctx.beginPath(); ctx.rect(_screenX, _screenY, _screenW, _screenH); ctx.clip();
+              // Scrolling waveform
+              const _waveColors = ['rgba(80,150,255,', 'rgba(100,220,255,', 'rgba(60,220,180,'];
+              ctx.strokeStyle = _waveColors[_pi % 3] + '0.55)';
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              for (let _wx2 = 0; _wx2 <= _screenW; _wx2 += 2) {
+                const _wt2 = (_wx2 / _screenW) * Math.PI * 6 - _navT * 3 + _pi * 1.5;
+                const _wy2 = _screenY + _screenH * 0.5 + Math.sin(_wt2) * _screenH * 0.28
+                           + Math.sin(_wt2 * 1.7 + _pi) * _screenH * 0.12;
+                if (_wx2 === 0) ctx.moveTo(_screenX + _wx2, _wy2);
+                else ctx.lineTo(_screenX + _wx2, _wy2);
+              }
+              ctx.stroke();
+              // Scrolling data rows (text-like horizontal bars)
+              const _rowH = 3, _rowGap = 5;
+              const _scrollOff = (_navT * 18 + _pi * 7) % (_rowH + _rowGap);
+              ctx.globalAlpha = 0.14;
+              ctx.fillStyle = _waveColors[_pi % 3] + '1)';
+              for (let _ry = _screenY - _scrollOff; _ry < _screenY + _screenH; _ry += _rowH + _rowGap) {
+                const _rw = _screenW * (0.4 + 0.45 * ((_ry * 7 + _pi * 13) % 100) / 100);
+                ctx.fillRect(_screenX + 2, _ry, _rw, _rowH);
+              }
+              // Horizontal scanline sweep
+              const _sweepY = _screenY + ((_navT * 0.4 + _pi * 0.3) % 1) * _screenH;
+              ctx.globalAlpha = 0.18;
+              const _sweepGrad = ctx.createLinearGradient(0, _sweepY - 4, 0, _sweepY + 4);
+              _sweepGrad.addColorStop(0, 'rgba(180,230,255,0)');
+              _sweepGrad.addColorStop(0.5, 'rgba(180,230,255,0.7)');
+              _sweepGrad.addColorStop(1, 'rgba(180,230,255,0)');
+              ctx.fillStyle = _sweepGrad;
+              ctx.fillRect(_screenX, _sweepY - 4, _screenW, 8);
+              ctx.restore();
+              // Blinking status LED below screen
+              const _ledOn = Math.floor(_navT * 1.5 + _pi * 0.7) % 3 !== 0;
+              ctx.save();
+              ctx.globalAlpha = _ledOn ? 0.75 : 0.15;
+              ctx.fillStyle = _pi === 1 ? '#44ff88' : '#4488ff';
+              ctx.shadowColor = _pi === 1 ? '#44ff88' : '#4488ff';
+              ctx.shadowBlur = _ledOn ? 6 : 0;
+              ctx.beginPath();
+              ctx.arc(_screenX + 4, _screenY + _screenH + 5, 2, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.restore();
+            }
+            // Starmap projection: animated moving star cursor on overhead screen (Skeld Nav only)
+            if (_isNav) {
+              const _smX = _dlx + _dlw*0.08, _smY = _dly + 4, _smW = _dlw*0.38, _smH = _dlh*0.16;
+              const _cursorAngle = _navT * 0.4;
+              const _curX = _smX + _smW * (0.5 + Math.cos(_cursorAngle) * 0.25);
+              const _curY = _smY + _smH * (0.5 + Math.sin(_cursorAngle * 0.7) * 0.25);
+              ctx.save();
+              ctx.globalAlpha = 0.55;
+              ctx.strokeStyle = '#ffd700';
+              ctx.lineWidth = 1;
+              // Cross-hair cursor
+              ctx.beginPath(); ctx.moveTo(_curX - 5, _curY); ctx.lineTo(_curX + 5, _curY); ctx.stroke();
+              ctx.beginPath(); ctx.moveTo(_curX, _curY - 5); ctx.lineTo(_curX, _curY + 5); ctx.stroke();
+              // Cursor circle
+              ctx.globalAlpha = 0.35;
+              ctx.beginPath(); ctx.arc(_curX, _curY, 4, 0, Math.PI * 2); ctx.stroke();
+              ctx.restore();
+            }
+            ctx.restore();
+          }
+        }
+      }
+      // Security room: animated radar sweep on monitor
+      if (mapTheme && mapTheme.rooms) {
+        const _secRooms = mapTheme.rooms.filter(r => r.name && /security/i.test(r.name));
+        for (const _sec of _secRooms) {
+          const _ssx = _sec.x - ox + _sec.w * 0.25;
+          const _ssy = _sec.y - oy + _sec.h * 0.45;
+          const _ssr = Math.min(_sec.w, _sec.h) * 0.18;
+          const _sweepAngle = (Date.now() / 800) % (Math.PI * 2);
+          ctx.save();
+          // Monitor screen BG
+          ctx.globalAlpha = 0.18;
+          ctx.fillStyle = '#003300';
+          ctx.beginPath(); ctx.arc(_ssx, _ssy, _ssr, 0, Math.PI*2); ctx.fill();
+          // Radar grid circles
+          ctx.globalAlpha = 0.25; ctx.strokeStyle = '#00aa44'; ctx.lineWidth = 0.8;
+          for (let _ri2 = 1; _ri2 <= 3; _ri2++) {
+            ctx.beginPath(); ctx.arc(_ssx, _ssy, _ssr * _ri2/3, 0, Math.PI*2); ctx.stroke();
+          }
+          ctx.beginPath(); ctx.moveTo(_ssx-_ssr, _ssy); ctx.lineTo(_ssx+_ssr, _ssy);
+          ctx.moveTo(_ssx, _ssy-_ssr); ctx.lineTo(_ssx, _ssy+_ssr); ctx.stroke();
+          // Sweep beam
+          const _sweepGrad = ctx.createConicalGradient ? null : null; // fallback
+          ctx.globalAlpha = 0.5;
+          ctx.strokeStyle = '#00ff44'; ctx.lineWidth = 1.5;
+          ctx.shadowColor = '#00ff44'; ctx.shadowBlur = 6;
+          ctx.beginPath(); ctx.moveTo(_ssx, _ssy);
+          ctx.lineTo(_ssx + Math.cos(_sweepAngle) * _ssr, _ssy + Math.sin(_sweepAngle) * _ssr); ctx.stroke();
+          // Sweep trail (arc behind beam)
+          ctx.globalAlpha = 0.12; ctx.fillStyle = '#00ff44';
+          ctx.beginPath(); ctx.moveTo(_ssx, _ssy);
+          ctx.arc(_ssx, _ssy, _ssr, _sweepAngle - 0.8, _sweepAngle); ctx.closePath(); ctx.fill();
+          ctx.restore();
+        }
+      }
       // Sabotage atmosphere: red vignette pulse while sabotage is active
       if (sabotage && sabotage.active && !inMeeting) {
         const _sabPulse = 0.5 + 0.5 * Math.sin(Date.now() / 600);
-        const _sabColor = sabotage.type === 'o2' ? 'rgba(80,255,80,' : sabotage.type === 'reactor' ? 'rgba(255,160,0,' : 'rgba(255,30,30,';
-        const _sabGrad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, canvas.width*0.25, canvas.width/2, canvas.height/2, canvas.width*0.75);
+        const _sabFastPulse = 0.5 + 0.5 * Math.sin(Date.now() / 180);
+        const _sabColor = sabotage.type === 'o2' ? [80,255,80] : sabotage.type === 'reactor' ? [255,160,0] : [255,30,30];
+        const [_sr,_sg,_sb] = _sabColor;
+        // Main vignette
+        const _sabGrad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, canvas.width*0.2, canvas.width/2, canvas.height/2, canvas.width*0.8);
         _sabGrad.addColorStop(0, 'rgba(0,0,0,0)');
-        _sabGrad.addColorStop(1, _sabColor + (0.12 + _sabPulse * 0.1) + ')');
-        ctx.fillStyle = _sabGrad;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        _sabGrad.addColorStop(0.7, `rgba(${_sr},${_sg},${_sb},${0.06 + _sabPulse*0.06})`);
+        _sabGrad.addColorStop(1, `rgba(${_sr},${_sg},${_sb},${0.22 + _sabPulse*0.12})`);
+        ctx.fillStyle = _sabGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Flickering edge scanlines
+        ctx.save(); ctx.globalAlpha = _sabFastPulse * 0.07;
+        ctx.fillStyle = `rgb(${_sr},${_sg},${_sb})`;
+        for (let _sli = 0; _sli < canvas.height; _sli += 6) ctx.fillRect(0, _sli, canvas.width, 2);
+        ctx.restore();
+        // Corner flares
+        const _cornerAlpha = 0.08 + _sabFastPulse * 0.06;
+        for (const [_cx,_cy] of [[0,0],[canvas.width,0],[0,canvas.height],[canvas.width,canvas.height]]) {
+          const _cg = ctx.createRadialGradient(_cx,_cy,0,_cx,_cy,180);
+          _cg.addColorStop(0,`rgba(${_sr},${_sg},${_sb},${_cornerAlpha})`); _cg.addColorStop(1,'rgba(0,0,0,0)');
+          ctx.save(); ctx.fillStyle=_cg; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.restore();
+        }
+        // "SABOTAGE" watermark text flashing every 500ms
+        const _sabFlash = Math.floor(Date.now() / 500) % 2 === 0;
+        if (_sabFlash) {
+          ctx.save();
+          ctx.globalAlpha = 0.12 + _sabPulse * 0.06;
+          ctx.font = 'bold 96px "Barlow Semi Condensed", Arial, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = `rgb(${_sr},${_sg},${_sb})`;
+          ctx.letterSpacing = '12px';
+          ctx.fillText('SABOTAGE', canvas.width / 2, canvas.height / 2);
+          ctx.restore();
+        }
       }
 
       // Ghost overlay tint
@@ -16798,32 +17907,30 @@
 
       // In-vent overlay
       if (inVent) {
-        ctx.fillStyle = 'rgba(0,0,0,0.65)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        // Vent slat bars across the whole screen
-        ctx.save();
-        ctx.globalAlpha = 0.55;
-        ctx.fillStyle = '#2a2a2a';
+        // Dark overlay
+        ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+        // Metal slat bars
+        ctx.save(); ctx.globalAlpha = 0.55; ctx.fillStyle = '#1e1e1e';
         const _slotH = Math.floor(canvas.height / 10);
-        for (let _si = 0; _si < 10; _si++) {
-          ctx.fillRect(0, _si * _slotH * 1.1, canvas.width, _slotH * 0.55);
-        }
-        // Subtle highlight on each slat
-        ctx.globalAlpha = 0.12;
-        ctx.fillStyle = '#aaaacc';
-        for (let _si = 0; _si < 10; _si++) {
-          ctx.fillRect(0, _si * _slotH * 1.1, canvas.width, 2);
-        }
+        for (let _si = 0; _si < 10; _si++) ctx.fillRect(0, _si * _slotH * 1.1, canvas.width, _slotH * 0.55);
+        // Slat edge highlights
+        ctx.globalAlpha = 0.14; ctx.fillStyle = '#aaaacc';
+        for (let _si = 0; _si < 10; _si++) ctx.fillRect(0, _si * _slotH * 1.1, canvas.width, 2);
+        // Moving scan line
+        const _scanY = (Date.now() / 1200) % 1;
+        ctx.globalAlpha = 0.18; ctx.fillStyle = '#44ccff';
+        ctx.fillRect(0, _scanY * canvas.height - 2, canvas.width, 4);
         ctx.restore();
-        ctx.save();
-        ctx.textAlign = 'center';
-        ctx.shadowColor = '#44ccff'; ctx.shadowBlur = 16;
-        ctx.fillStyle = '#88ddff';
+        // Vignette depth
+        const _vvig = ctx.createRadialGradient(canvas.width/2, canvas.height/2, canvas.height*0.15, canvas.width/2, canvas.height/2, canvas.height*0.75);
+        _vvig.addColorStop(0, 'rgba(0,0,0,0)'); _vvig.addColorStop(1, 'rgba(0,0,0,0.55)');
+        ctx.fillStyle = _vvig; ctx.fillRect(0,0,canvas.width,canvas.height);
+        // Text
+        ctx.save(); ctx.textAlign = 'center';
+        ctx.shadowColor = '#44ccff'; ctx.shadowBlur = 20; ctx.fillStyle = '#88ddff';
         ctx.font = 'bold 22px Arial';
         ctx.fillText('HIDING IN VENT', canvas.width / 2, canvas.height / 2 - 18);
-        ctx.shadowBlur = 0;
-        ctx.fillStyle = 'rgba(180,220,255,0.75)';
-        ctx.font = '14px Arial';
+        ctx.shadowBlur = 0; ctx.fillStyle = 'rgba(180,220,255,0.75)'; ctx.font = '14px Arial';
         ctx.fillText('V = Exit   |   E = Travel to connected vent', canvas.width / 2, canvas.height / 2 + 14);
         ctx.restore();
       }
@@ -17060,6 +18167,15 @@
         ctx.arc(s.x - ox, s.y - oy, s.r, 0, Math.PI * 2);
         ctx.fill();
       }
+      // Wind streaks
+      const _wt = Date.now() / 80;
+      ctx.save(); ctx.globalAlpha = 0.06; ctx.strokeStyle = '#cce8ff'; ctx.lineWidth = 1;
+      for (let i = 0; i < 18; i++) {
+        const _wy = ((i * 347 + _wt * 0.4) % MAP_H);
+        const _wx = ((_wt * 3 + i * 613) % MAP_W);
+        ctx.beginPath(); ctx.moveTo(_wx - ox, _wy - oy); ctx.lineTo(_wx - ox - 80 - (i%4)*20, _wy - oy + 12); ctx.stroke();
+      }
+      ctx.restore();
     }
 
     // ===== DROPSHIP FUNCTIONS =====
@@ -20575,7 +21691,8 @@
       return false;
     }
   </script>
-<div id="killFlashOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#ff0000;opacity:0;pointer-events:none;z-index:45;transition:opacity 0.3s;"></div>
+<div id="killFlashOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at center, rgba(200,0,0,0.7) 0%, rgba(100,0,0,0.4) 40%, transparent 70%);opacity:0;pointer-events:none;z-index:45;transition:opacity 0.3s;"></div>
+<div id="taskFlashOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at center,rgba(80,255,160,0.6) 0%,rgba(255,215,0,0.3) 60%,transparent 100%);opacity:0;pointer-events:none;z-index:44;transition:opacity 0.22s;"></div>
 <div id="killFeed"></div>
 <div id="sabFlashOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;opacity:0;pointer-events:none;z-index:44;box-shadow:inset 0 0 120px 40px rgba(255,40,0,0);transition:opacity 0.2s;background:radial-gradient(ellipse at center,transparent 40%,rgba(255,40,0,0.0) 100%);"></div>
 
