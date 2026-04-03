@@ -4331,6 +4331,7 @@
       // write to the offscreen canvas (they all close over ctx).
       const savedCtx = ctx;
       ctx = offCtx;
+      try {
 
       // Background
       ctx.fillStyle = mapTheme.bg;
@@ -4442,7 +4443,9 @@
         ctx.restore();
       }
 
-      ctx = savedCtx;
+      } finally {
+        ctx = savedCtx;
+      }
     }
 
     // Build map selector UI
