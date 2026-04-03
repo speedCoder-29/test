@@ -5540,12 +5540,7 @@
       mpPublishEvent('gameover', null, { mode, ...payload });
     }
 
-    // Auto-connect on page load (no button click needed)
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', mpBootstrap);
-    } else {
-      setTimeout(mpBootstrap, 0);
-    }
+    // Multiplayer connects only when the user explicitly clicks the MP button (not on page load)
 
     // ===================================================
     // ===== END MULTIPLAYER MODULE =====
@@ -17014,6 +17009,7 @@
     }
 
     function render() {
+      if (!player) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       let ox = player.x - canvas.width / 2;
       let oy = player.y - canvas.height / 2;
@@ -18973,6 +18969,7 @@
     let _frameDt = 1; // normalised: 1.0 = 60 fps tick, 2.0 = 30 fps, 0.5 = 120 fps
     function gameLoop() {
       if (!gameStarted || gameOver) return;
+      try {
       if (gamePaused) { render(); requestAnimationFrame(gameLoop); return; }
       const _now = performance.now();
       if (_lastFrameMs) _frameDt = Math.min((_now - _lastFrameMs) / (1000 / 60), 4);
@@ -19281,6 +19278,10 @@
 
       render();
       requestAnimationFrame(gameLoop);
+      } catch (_glErr) {
+        console.error('[gameLoop]', _glErr);
+        requestAnimationFrame(gameLoop);
+      }
     }
 
     document.addEventListener('keydown', (e) => {
@@ -19351,14 +19352,18 @@
     document.getElementById('startBtn').addEventListener('click', () => {
       document.getElementById('startScreen').style.display = 'none';
       gameStarted = true;
-      initDropship();
+      dropshipPhase = false;
+      _dropshipInitDone = false;
+      init();
       requestAnimationFrame(gameLoop);
     });
 
     document.getElementById('restartBtn').addEventListener('click', () => {
       clearGameUI();
       gameOver = false;
-      initDropship();
+      dropshipPhase = false;
+      _dropshipInitDone = false;
+      init();
       requestAnimationFrame(gameLoop);
     });
 
