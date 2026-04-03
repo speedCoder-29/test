@@ -5016,8 +5016,6 @@
         if (!mpIsHost || !mpLobbyCode) { clearInterval(mpPingInterval); return; }
         _mpBroadcast({ type: 'ping', t: Date.now() });
       }, 5000);
-      // Auto-enter dropship as the waiting lobby
-      _mpEnterDropship();
     }
 
     // --- Connect to an existing host ---
@@ -5035,8 +5033,6 @@
         _mpShowLobbyUI();
         mpUpdateStatus('<span class="mp-status-dot connected"></span>Joined lobby!');
         mpShowToast('Joined lobby!');
-        // Auto-enter dropship as the waiting lobby
-        _mpEnterDropship();
       });
 
       conn.on('data', data => _mpHandleHostMsg(data));
@@ -5208,7 +5204,6 @@
       if (!mpIsHost) { mpShowToast('You are in a lobby as a client.'); return; }
       _mpShowLobbyUI();
       mpCopyLink();
-      _mpEnterDropship(); // host enters dropship immediately as the lobby waiting area
     }
 
     // --- Join lobby (manual: paste lobby ID or invite URL) ---
@@ -6036,6 +6031,7 @@
       statsMeetingsCalled = 0;
       meetingCount = 0;
       statsBodiesReported = 0;
+      gamePaused = false;
       inVent = false;
       playerDoingTask = false;
       playerTaskProgress = 0;
@@ -6052,6 +6048,10 @@
       if (selectedMap === 'polus') initSnow();
 
       taskLocations.forEach(t => t.done = false);
+
+      // Close settings panel and unpause before game starts
+      closeSettings();
+      gamePaused = false;
 
       // Show two-phase role reveal
       showRoleReveal(playerRole);
@@ -18198,6 +18198,8 @@
 
     // ===== DROPSHIP FUNCTIONS =====
     function initDropship() {
+      gamePaused = false;
+      document.getElementById('pauseMenu').style.display = 'none';
       loadedMapId = null; // force reload if map changed between games
       loadMap(selectedMap); // preload map + build walkGrid NOW during lobby, not at countdown end
       dropshipPhase = true;
@@ -18708,7 +18710,8 @@
       hide('dangerMeter'); hide('taskProgress'); hide('ventHint'); hide('abilityHUD');
       hide('vitalsPanel'); hide('noisemakerAlert'); hide('ghostMsg'); hide('reportScreen');
       hide('voteScreen'); hide('taskModal'); hide('adminMapOverlay'); hide('sabSubMenu');
-      hide('pauseMenu'); hide('gameOverScreen');
+      hide('pauseMenu'); hide('gameOverScreen'); hide('settingsPanel');
+      gamePaused = false;
       const role = document.getElementById('roleTag'); if (role) role.style.animation = 'none';
       const ab = document.getElementById('actionButtons'); if (ab) ab.style.display = 'none';
       hsPingEffects = []; killEffects = []; ventEffects = []; taskEffects = []; shieldEffects = []; floatTexts = []; phantomSmokeEffects = [];
