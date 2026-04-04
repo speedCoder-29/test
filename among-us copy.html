@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Among Us</title>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700;800&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1732,109 +1733,163 @@
 
     window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
-    // ===== AMONG US SPRITE SYSTEM =====
+    // ===== AMONG US SPRITE SYSTEM (Phaser.js) =====
     // Sprites from space-elephant/among-us-sprites (GPL-3.0)
-    const _SPRITE_BASE = 'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/player/';
-    const _spriteFrames = { idle: null, walk: new Array(12).fill(null), ready: false };
 
-    // Per-color pre-rendered sprite cache (pixel-based recoloring, accurate for all colors)
-    const _coloredSpriteCache = {}; // hex → { idle: canvas, walk: canvas[12] } | { failed: true }
+    // ── Phaser sprite system ──────────────────────────────────────────────────
+    let _phaserReady = false;
+    let _phaserScene = null;
+    const _phaserSpriteCache = {}; // key: "hexcolor_framekey" -> offscreen canvas
 
-    // Recolor a single sprite image to targetHex using luminance-preserving pixel replacement.
-    // Recolors ALL opaque pixels except the visor (blue-dominant) and visor shine (near-white).
-    function _recolorImage(img, hex) {
-      const sw = img.naturalWidth, sh = img.naturalHeight;
-      if (!sw || !sh) return null;
+    const SPRITE_BASE = 'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/player/';
+    const SPRITE_KEYS = { idle: 'idle', walk: ['w1','w2','w3','w4','w5','w6','w7','w8','w9','w10','w11','w12'] };
+    const SPRITE_URLS = {
+      idle: SPRITE_BASE + 'idle.png',
+      w1:  SPRITE_BASE + 'Walk/walkcolor0001.png',
+      w2:  SPRITE_BASE + 'Walk/walkcolor0002.png',
+      w3:  SPRITE_BASE + 'Walk/walkcolor0003.png',
+      w4:  SPRITE_BASE + 'Walk/walkcolor0004.png',
+      w5:  SPRITE_BASE + 'Walk/walkcolor0005.png',
+      w6:  SPRITE_BASE + 'Walk/walkcolor0006.png',
+      w7:  SPRITE_BASE + 'Walk/walkcolor0007.png',
+      w8:  SPRITE_BASE + 'Walk/walkcolor0008.png',
+      w9:  SPRITE_BASE + 'Walk/walkcolor0009.png',
+      w10: SPRITE_BASE + 'Walk/walkcolor0010.png',
+      w11: SPRITE_BASE + 'Walk/walkcolor0011.png',
+      w12: SPRITE_BASE + 'Walk/walkcolor0012.png',
+      // Hats
+      hat_tophat:     'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/tophat.png',
+      hat_hardhat:    'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/hardhat.png',
+      hat_crown:      'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/crown.png',
+      hat_santa:      'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/santahat.png',
+      hat_cowboy:     'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/cowboy.png',
+      hat_party:      'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/partyhat.png',
+      hat_propeller:  'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/propellerhat.png',
+      hat_headphones: 'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/headphones.png',
+      hat_baseball:   'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/baseball.png',
+      hat_flower:     'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/flower.png',
+      hat_police:     'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/police.png',
+      hat_safari:     'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/safari.png',
+      hat_plant:      'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/plant.png',
+      hat_fez:        'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/fez.png',
+      // Pets
+      pet_mini_crewmate: 'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/pets/mini_crewmate.png',
+      pet_hamster:       'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/pets/hamster.png',
+      pet_dog:           'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/pets/dog.png',
+      pet_alien:         'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/pets/alien.png',
+      pet_robot:         'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/pets/robot.png',
+      pet_cat:           'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/pets/cat.png',
+      pet_snowball:      'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/pets/snowball.png',
+      // Dead body + ghost
+      dead_body:  'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/player/dead.png',
+      ghost_idle: 'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/player/ghost.png',
+      // Skins
+      skin_astronaut: 'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/skins/astronaut.png',
+      skin_tuxedo:    'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/skins/tuxedo.png',
+      skin_military:  'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/skins/military.png',
+      skin_hazmat:    'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/skins/hazmat.png',
+      skin_prisoner:  'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/skins/prisoner.png',
+    };
+
+    class SpriteScene extends Phaser.Scene {
+      constructor() { super({ key: 'SpriteScene' }); }
+      preload() {
+        for (const [key, url] of Object.entries(SPRITE_URLS)) {
+          this.load.image(key, url);
+        }
+      }
+      create() {
+        _phaserScene = this;
+        _phaserReady = true;
+      }
+    }
+
+    // Defer Phaser init to DOMContentLoaded so #phaserCanvas exists in DOM
+    let _phaserGame = null;
+    document.addEventListener('DOMContentLoaded', () => {
+      _phaserGame = new Phaser.Game({
+        type: Phaser.CANVAS,
+        width: 100, height: 100,
+        parent: null,
+        canvas: document.getElementById('phaserCanvas'),
+        scene: SpriteScene,
+        backgroundColor: 'transparent',
+        transparent: true,
+      });
+    });
+
+    function _getPhaserSprite(hexColor, frameKey) {
+      const cacheKey = hexColor + '_' + frameKey;
+      if (_phaserSpriteCache[cacheKey]) return _phaserSpriteCache[cacheKey];
+      if (!_phaserReady) return null;
+      const texture = _phaserScene.textures.get(frameKey);
+      if (!texture || texture.key === '__MISSING') return null;
+      const src = texture.source[0].image;
+      const W = src.naturalWidth || src.width, H = src.naturalHeight || src.height;
+      if (!W || !H) return null;
       const ofc = document.createElement('canvas');
-      ofc.width = sw; ofc.height = sh;
-      const oc = ofc.getContext('2d', { willReadFrequently: true });
-      oc.drawImage(img, 0, 0);
-      const imgData = oc.getImageData(0, 0, sw, sh);
-      const d = imgData.data;
-      const tr = parseInt(hex.slice(1,3), 16);
-      const tg = parseInt(hex.slice(3,5), 16);
-      const tb = parseInt(hex.slice(5,7), 16);
+      ofc.width = W; ofc.height = H;
+      const octx = ofc.getContext('2d', { willReadFrequently: true });
+      octx.drawImage(src, 0, 0);
+      // Apply color tint via luminance-preserving pixel replacement
+      const tr = parseInt(hexColor.slice(1,3), 16);
+      const tg = parseInt(hexColor.slice(3,5), 16);
+      const tb = parseInt(hexColor.slice(5,7), 16);
       // Sprite body base luminance for red #c51111 (r=197,g=17,b=17)
       const BASE_LUM = Math.sqrt(0.299*(197/255)**2 + 0.587*(17/255)**2 + 0.114*(17/255)**2);
-      for (let i = 0; i < d.length; i += 4) {
-        if (d[i+3] < 10) continue; // skip transparent
-        const sr = d[i], sg = d[i+1], sb = d[i+2];
-        // Skip visor (bright blue-dominant pixels only) and near-white visor shine.
-        // Brightness threshold prevents dark blue outlines/shadows at the bottom
-        // from being misclassified as visor — those should recolor to the player's shade.
+      const data = octx.getImageData(0, 0, W, H);
+      const px = data.data;
+      for (let i = 0; i < px.length; i += 4) {
+        if (px[i+3] < 10) continue; // skip transparent
+        const sr = px[i], sg = px[i+1], sb = px[i+2];
         const _brightness = sr + sg + sb;
         const isVisor = sb > sr * 1.1 && sb > sg * 0.75 && _brightness > 180;
         const isShine = sr > 210 && sg > 210 && sb > 210;
         if (isVisor || isShine) continue;
-        // Recolor body, outline, backpack, legs — preserving relative luminance
         const lum = Math.sqrt(0.299*(sr/255)**2 + 0.587*(sg/255)**2 + 0.114*(sb/255)**2);
         const ratio = lum / (BASE_LUM || 0.001);
-        d[i]   = Math.min(255, Math.round(tr * ratio));
-        d[i+1] = Math.min(255, Math.round(tg * ratio));
-        d[i+2] = Math.min(255, Math.round(tb * ratio));
+        px[i]   = Math.min(255, Math.round(tr * ratio));
+        px[i+1] = Math.min(255, Math.round(tg * ratio));
+        px[i+2] = Math.min(255, Math.round(tb * ratio));
       }
-      oc.putImageData(imgData, 0, 0);
+      octx.putImageData(data, 0, 0);
+      _phaserSpriteCache[cacheKey] = ofc;
       return ofc;
     }
 
-    // Returns the pre-recolored sprite set for targetHex, building it lazily if needed.
-    // Returns null if sprites aren't ready or if CORS pixel access failed.
-    function _getColoredSprites(hex) {
-      const cached = _coloredSpriteCache[hex];
-      if (cached) return cached.failed ? null : cached;
-      if (!_spriteFrames.ready) return null;
-      try {
-        const result = {
-          idle: _recolorImage(_spriteFrames.idle, hex),
-          walk: _spriteFrames.walk.map(f => f ? _recolorImage(f, hex) : null)
-        };
-        _coloredSpriteCache[hex] = result;
-        return result;
-      } catch(e) {
-        _coloredSpriteCache[hex] = { failed: true };
-        return null;
-      }
+    function _drawPhaserSprite(ctx, key, x, y, w, h, hexColor) {
+      const frame = hexColor ? _getPhaserSprite(hexColor, key) : (() => {
+        // No recolor needed — just get raw texture as canvas
+        if (!_phaserReady) return null;
+        const cacheKey = '__raw_' + key;
+        if (_phaserSpriteCache[cacheKey]) return _phaserSpriteCache[cacheKey];
+        const texture = _phaserScene.textures.get(key);
+        if (!texture || texture.key === '__MISSING') return null;
+        const src = texture.source[0].image;
+        const ofc = document.createElement('canvas');
+        ofc.width = src.naturalWidth || src.width;
+        ofc.height = src.naturalHeight || src.height;
+        ofc.getContext('2d').drawImage(src, 0, 0);
+        _phaserSpriteCache[cacheKey] = ofc;
+        return ofc;
+      })();
+      if (!frame) return false;
+      ctx.drawImage(frame, x, y, w, h);
+      return true;
     }
 
-    // Pre-warm sprite cache for a list of hex colors one at a time via setTimeout
-    // so the first render frame doesn't synchronously build all 15 colors at once.
+    // Pre-warm sprite cache for a list of hex colors
     function _prewarmSpriteColors(colors) {
-      const queue = [...new Set(colors.filter(Boolean))];
-      function buildNext(i) {
-        if (i >= queue.length) return;
-        if (_spriteFrames.ready) {
-          _getColoredSprites(queue[i]);
-          setTimeout(() => buildNext(i + 1), 0);
-        } else {
-          setTimeout(() => buildNext(i), 50); // wait for sprites to load
-        }
-      }
-      buildNext(0);
-    }
-
-    function _loadGameSprites() {
-      let pending = 13; // 1 idle + 12 walk
-      function done() {
-        if (--pending === 0) {
-          _spriteFrames.ready = !!(_spriteFrames.idle && _spriteFrames.idle.naturalWidth > 0);
-        }
-      }
-      const idle = new Image(); idle.crossOrigin = 'anonymous';
-      idle.onload = done; idle.onerror = done;
-      idle.src = _SPRITE_BASE + 'idle.png';
-      _spriteFrames.idle = idle;
-      for (let i = 0; i < 12; i++) {
-        const img = new Image(); img.crossOrigin = 'anonymous';
-        img.onload = done; img.onerror = done;
-        img.src = _SPRITE_BASE + 'Walk/walkcolor' + String(i + 1).padStart(4, '0') + '.png';
-        _spriteFrames.walk[i] = img;
+      if (!_phaserReady) { setTimeout(() => _prewarmSpriteColors(colors), 50); return; }
+      const allKeys = ['idle', 'ghost_idle', 'w1','w2','w3','w4','w5','w6','w7','w8','w9','w10','w11','w12', 'dead_body'];
+      for (const color of colors) {
+        for (const key of allKeys) _getPhaserSprite(color, key);
       }
     }
 
     // States where the crewmate stands still (matches AI_STATE string values)
     const _SPRITE_STILL_STATES = new Set(['idle', 'doing_task', 'faking_task', null, undefined]);
 
-    _loadGameSprites();
     // ===== END SPRITE SYSTEM =====
 
     const COLORS = [
@@ -1870,10 +1925,12 @@
     // Hats & Pets (defined here so picker init below can reference them)
     let selectedHat = 'none';
     let selectedPet = 'none';
-    const HATS = ['none','tophat','propeller','hardhat','crown','santa','cowboy','party','headphones'];
-    const HAT_ICONS = { none:'🚫', tophat:'🎩', propeller:'🌀', hardhat:'🪖', crown:'👑', santa:'🎅', cowboy:'🤠', party:'🎉', headphones:'🎧' };
-    const PETS = ['none','mini_crewmate','hamster','dog','alien','robot'];
-    const PET_ICONS = { none:'🚫', mini_crewmate:'👶', hamster:'🐹', dog:'🐶', alien:'👽', robot:'🤖' };
+    const HATS = ['none','tophat','propeller','hardhat','crown','santa','cowboy','party','headphones',
+                  'baseball','flower','police','safari','plant','fez'];
+    const HAT_ICONS = { none:'🚫', tophat:'🎩', propeller:'🌀', hardhat:'🪖', crown:'👑', santa:'🎅', cowboy:'🤠', party:'🎉', headphones:'🎧',
+                        baseball:'🧢', flower:'🌸', police:'👮', safari:'🏜️', plant:'🌿', fez:'🎭' };
+    const PETS = ['none','mini_crewmate','hamster','dog','alien','robot','cat','snowball'];
+    const PET_ICONS = { none:'🚫', mini_crewmate:'👶', hamster:'🐹', dog:'🐶', alien:'👽', robot:'🤖', cat:'🐱', snowball:'⛄' };
 
     // Hat picker
     const hatPicker = document.getElementById('hatPicker');
@@ -10321,12 +10378,11 @@
       const isSeeker = gameMode === 'hideseek' && role === 'impostor';
       const isMixup  = mushroomMixupTimer > 0;
       if (alive && !isGhostDraw && !isSeeker && !isMixup && a >= 1) {
-        const sprites = _getColoredSprites(color);
-        if (sprites) {
-          const isMoving = !_SPRITE_STILL_STATES.has(state);
-          const walkIdx  = Math.floor(frameCount / 5) % 12;
-          const frame    = isMoving ? (sprites.walk[walkIdx] || sprites.idle) : sprites.idle;
-          if (frame) {
+        const isMoving = !_SPRITE_STILL_STATES.has(state);
+        const walkIdx  = Math.floor(frameCount / 5) % 12;
+        const frameKey = isMoving ? SPRITE_KEYS.walk[walkIdx] : SPRITE_KEYS.idle;
+        const frame    = _getPhaserSprite(color, frameKey) || (isMoving ? _getPhaserSprite(color, SPRITE_KEYS.idle) : null);
+        if (frame) {
             ctx.save();
             if (state === 'left') {
               ctx.translate(x + w, y); ctx.scale(-1, 1);
@@ -10379,6 +10435,94 @@
             }
             return;
           }
+      }
+
+      // ── Phaser ghost rendering ──
+      if (isGhostDraw) {
+        const ghostFrame = _getPhaserSprite(color, 'ghost_idle') || _getPhaserSprite(color, SPRITE_KEYS.idle);
+        if (ghostFrame) {
+          ctx.save();
+          ctx.globalAlpha = a;
+          ctx.shadowColor = '#aaaaff';
+          ctx.shadowBlur = 22;
+          // Flip for left-facing ghosts based on state
+          if (state === 'left') {
+            ctx.translate(x + w, y); ctx.scale(-1, 1);
+            ctx.drawImage(ghostFrame, 0, 0, w, h);
+          } else {
+            ctx.drawImage(ghostFrame, x, y, w, h);
+          }
+          ctx.restore();
+          // Ghost name tag
+          if (name && mushroomMixupTimer <= 0) {
+            ctx.save();
+            ctx.globalAlpha = a;
+            ctx.font = 'bold 12px Arial'; ctx.textAlign = 'center';
+            ctx.fillStyle = 'rgba(180,180,255,0.8)';
+            ctx.fillText(name, x + w / 2, y - 8);
+            ctx.restore();
+          }
+          if (hat && hat !== 'none') {
+            ctx.save(); ctx.globalAlpha = a;
+            drawHat(ctx, x, y, w, h, hat);
+            ctx.restore();
+          }
+          return;
+        }
+      }
+
+      // ── Phaser seeker rendering (hide & seek) ──
+      if (isSeeker && alive) {
+        const seekerFrame = _getPhaserSprite(color, SPRITE_KEYS.idle);
+        if (seekerFrame) {
+          ctx.save();
+          ctx.drawImage(seekerFrame, x, y, w, h);
+          // Dark tint overlay for menacing look
+          ctx.globalAlpha = 0.35;
+          ctx.fillStyle = '#330000';
+          ctx.beginPath();
+          ctx.ellipse(x + w / 2, y + h * 0.55, w / 2, h * 0.45, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+          // Seeker monster features
+          const a2 = (typeof alpha === 'number' ? alpha : 1);
+          ctx.globalAlpha = a2;
+          ctx.fillStyle = '#1a0000';
+          ctx.beginPath();
+          ctx.ellipse(x + w * 0.5, y + h * 0.72, w * 0.28, h * 0.14, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          const toothCount = 4;
+          const mouthLeft = x + w * 0.5 - w * 0.22;
+          const toothW = (w * 0.44) / toothCount;
+          for (let t = 0; t < toothCount; t++) {
+            ctx.beginPath();
+            ctx.moveTo(mouthLeft + t * toothW, y + h * 0.60);
+            ctx.lineTo(mouthLeft + t * toothW + toothW * 0.5, y + h * 0.70);
+            ctx.lineTo(mouthLeft + (t + 1) * toothW, y + h * 0.60);
+            ctx.closePath(); ctx.fill();
+          }
+          const tongueWiggle = Math.sin(Date.now() / 150) * 3;
+          ctx.fillStyle = '#cc0000';
+          ctx.beginPath();
+          ctx.ellipse(x + w * 0.5 + tongueWiggle, y + h * 0.76, w * 0.1, h * 0.07, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowColor = '#ff0000'; ctx.shadowBlur = 8;
+          ctx.fillStyle = '#ff2222';
+          ctx.beginPath();
+          ctx.ellipse(x + w * 0.38, y + h * 0.38, w * 0.09, h * 0.07, -0.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.ellipse(x + w * 0.62, y + h * 0.38, w * 0.09, h * 0.07, 0.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          if (name) {
+            ctx.save(); ctx.font = 'bold 12px Arial'; ctx.textAlign = 'center';
+            ctx.fillStyle = '#fff'; ctx.fillText(name, x + w / 2, y - 8);
+            ctx.restore();
+          }
+          if (hat && hat !== 'none') drawHat(ctx, x, y, w, h, hat);
+          return;
         }
       }
 
@@ -10619,7 +10763,20 @@
       ctx.restore();
     }
 
-    function drawHat(ctx, x, y, w, h, hat) {
+    function drawHat(ctx, x, y, w, h, hat, facingLeft) {
+      if (!hat || hat === 'none') return;
+      const hatKey = 'hat_' + hat;
+      // Try Phaser sprite first
+      ctx.save();
+      if (facingLeft) { ctx.scale(-1, 1); ctx.translate(-(x * 2 + w), 0); }
+      const hatW = w * 1.1, hatH = h * 0.55;
+      const hatX = x + (w - hatW) / 2, hatY = y - hatH * 0.6;
+      if (_drawPhaserSprite(ctx, hatKey, hatX, hatY, hatW, hatH, null)) {
+        ctx.restore();
+        return;
+      }
+      ctx.restore();
+      // Fall through to canvas drawing
       const cx = x + w / 2;
       const topY = y + h * 0.05;
       ctx.save();
@@ -10684,12 +10841,77 @@
           ctx.fillRect(cx - 16, topY - 14, 6, 8);
           ctx.fillRect(cx + 10, topY - 14, 6, 8);
           break;
+        case 'baseball':
+          ctx.fillStyle = '#cc2222';
+          ctx.beginPath();
+          ctx.arc(cx, topY - 12, 12, Math.PI, 0); ctx.fill();
+          ctx.fillRect(cx - 12, topY - 12, 24, 5);
+          ctx.fillStyle = '#aa1111';
+          ctx.fillRect(cx - 16, topY - 14, 5, 3); // brim
+          break;
+        case 'flower':
+          ctx.fillStyle = '#ff88cc';
+          for (let _fp = 0; _fp < 5; _fp++) {
+            const _fa = (_fp / 5) * Math.PI * 2;
+            ctx.beginPath();
+            ctx.ellipse(cx + Math.cos(_fa) * 7, topY - 16 + Math.sin(_fa) * 7, 4, 4, _fa, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.fillStyle = '#ffff44';
+          ctx.beginPath(); ctx.arc(cx, topY - 16, 5, 0, Math.PI * 2); ctx.fill();
+          break;
+        case 'police':
+          ctx.fillStyle = '#2244aa';
+          ctx.fillRect(cx - 10, topY - 16, 20, 10);
+          ctx.fillRect(cx - 12, topY - 8, 24, 4); // brim
+          ctx.fillStyle = '#ffd700';
+          ctx.beginPath(); ctx.arc(cx, topY - 14, 4, 0, Math.PI * 2); ctx.fill();
+          break;
+        case 'safari':
+          ctx.fillStyle = '#c8a450';
+          ctx.beginPath();
+          ctx.ellipse(cx, topY - 12, 14, 6, 0, 0, Math.PI * 2); ctx.fill(); // wide brim
+          ctx.fillStyle = '#b08030';
+          ctx.fillRect(cx - 8, topY - 20, 16, 10); // crown
+          break;
+        case 'plant':
+          ctx.fillStyle = '#226622';
+          // Stem
+          ctx.fillRect(cx - 2, topY - 22, 4, 10);
+          // Leaves
+          ctx.beginPath();
+          ctx.ellipse(cx - 6, topY - 20, 7, 4, -0.5, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath();
+          ctx.ellipse(cx + 6, topY - 22, 7, 4, 0.5, 0, Math.PI * 2); ctx.fill();
+          // Pot
+          ctx.fillStyle = '#cc7744';
+          ctx.fillRect(cx - 8, topY - 14, 16, 8);
+          break;
+        case 'fez':
+          ctx.fillStyle = '#cc2200';
+          ctx.beginPath();
+          ctx.moveTo(cx - 8, topY - 4);
+          ctx.lineTo(cx - 6, topY - 20);
+          ctx.lineTo(cx + 6, topY - 20);
+          ctx.lineTo(cx + 8, topY - 4);
+          ctx.closePath(); ctx.fill();
+          ctx.fillStyle = '#000088';
+          ctx.fillRect(cx - 8, topY - 5, 16, 3); // base stripe
+          ctx.strokeStyle = '#aa8800'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(cx, topY - 20); ctx.lineTo(cx + 4, topY - 28); ctx.stroke(); // tassel
+          ctx.fillStyle = '#aa8800';
+          ctx.beginPath(); ctx.arc(cx + 4, topY - 28, 2.5, 0, Math.PI * 2); ctx.fill();
+          break;
       }
       ctx.restore();
     }
 
     function drawPet(ctx, x, y, petType) {
       if (!petType || petType === 'none') return;
+      const petKey = 'pet_' + petType;
+      const size = 28;
+      if (_drawPhaserSprite(ctx, petKey, x - size / 2, y - size / 2, size, size, null)) return;
+      // Fall through to canvas drawing
       ctx.save();
       // Ground shadow under pet
       ctx.fillStyle = 'rgba(0,0,0,0.22)';
@@ -10876,11 +11098,101 @@
         ctx.stroke();
         if (ctx.roundRect) ctx.roundRect(x - 5, y - 1, 10, 9, 2); else ctx.rect(x - 5, y - 1, 10, 9);
         ctx.stroke();
+      } else if (petType === 'cat') {
+        // ── Cat ── round head with pointy ears, oval body, tail
+        const cc = '#888888', cl = '#aaaaaa';
+        // Tail (curved arc)
+        ctx.strokeStyle = cc; ctx.lineWidth = 3; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.arc(x + 7, y + 3, 6, Math.PI * 0.1, Math.PI * 0.9, false); ctx.stroke();
+        ctx.lineCap = 'butt';
+        // Body
+        ctx.fillStyle = cc;
+        ctx.beginPath(); ctx.ellipse(x, y + 3, 6, 5, 0, 0, Math.PI * 2); ctx.fill();
+        // Head
+        ctx.beginPath(); ctx.ellipse(x, y - 4, 6, 5.5, 0, 0, Math.PI * 2); ctx.fill();
+        // Pointy ears
+        ctx.fillStyle = cc;
+        ctx.beginPath();
+        ctx.moveTo(x - 5, y - 8); ctx.lineTo(x - 8, y - 15); ctx.lineTo(x - 1, y - 9); ctx.closePath(); ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(x + 5, y - 8); ctx.lineTo(x + 8, y - 15); ctx.lineTo(x + 1, y - 9); ctx.closePath(); ctx.fill();
+        // Inner ears
+        ctx.fillStyle = '#ffaaaa';
+        ctx.beginPath();
+        ctx.moveTo(x - 5, y - 9); ctx.lineTo(x - 7, y - 14); ctx.lineTo(x - 2, y - 10); ctx.closePath(); ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(x + 5, y - 9); ctx.lineTo(x + 7, y - 14); ctx.lineTo(x + 2, y - 10); ctx.closePath(); ctx.fill();
+        // Eyes
+        ctx.fillStyle = '#22aa22';
+        ctx.beginPath(); ctx.ellipse(x - 2.5, y - 4.5, 1.8, 1.4, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(x + 2.5, y - 4.5, 1.8, 1.4, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#111';
+        ctx.beginPath(); ctx.ellipse(x - 2.5, y - 4.5, 0.7, 1.2, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(x + 2.5, y - 4.5, 0.7, 1.2, 0, 0, Math.PI * 2); ctx.fill();
+        // Nose
+        ctx.fillStyle = '#ffaaaa';
+        ctx.beginPath(); ctx.moveTo(x, y - 1.5); ctx.lineTo(x - 1.2, y - 0.3); ctx.lineTo(x + 1.2, y - 0.3); ctx.closePath(); ctx.fill();
+        // Mouth whisker lines
+        ctx.strokeStyle = 'rgba(60,60,60,0.5)'; ctx.lineWidth = 0.7;
+        ctx.beginPath(); ctx.moveTo(x - 1, y - 0.5); ctx.lineTo(x - 7, y - 1.5); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x - 1, y); ctx.lineTo(x - 7, y + 1); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x + 1, y - 0.5); ctx.lineTo(x + 7, y - 1.5); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x + 1, y); ctx.lineTo(x + 7, y + 1); ctx.stroke();
+        // Belly
+        ctx.fillStyle = cl;
+        ctx.beginPath(); ctx.ellipse(x, y + 4, 3.5, 3, 0, 0, Math.PI * 2); ctx.fill();
+        // Outline
+        ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 0.8;
+        ctx.beginPath(); ctx.ellipse(x, y - 4, 6, 5.5, 0, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.ellipse(x, y + 3, 6, 5, 0, 0, Math.PI * 2); ctx.stroke();
+      } else if (petType === 'snowball') {
+        // ── Snowball ── round snowman-style with carrot nose and top hat
+        // Bottom ball (ground shadow already drawn above)
+        ctx.fillStyle = '#e8f4ff';
+        ctx.beginPath(); ctx.arc(x, y + 4, 7, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#c8ddf0'; ctx.lineWidth = 0.8;
+        ctx.stroke();
+        // Top ball (head)
+        ctx.fillStyle = '#f0f8ff';
+        ctx.beginPath(); ctx.arc(x, y - 4, 5.5, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#c8ddf0'; ctx.lineWidth = 0.8;
+        ctx.stroke();
+        // Eyes
+        ctx.fillStyle = '#222222';
+        ctx.beginPath(); ctx.arc(x - 2, y - 5, 1.2, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(x + 2, y - 5, 1.2, 0, Math.PI * 2); ctx.fill();
+        // Carrot nose
+        ctx.fillStyle = '#ff8800';
+        ctx.beginPath();
+        ctx.moveTo(x, y - 3.5); ctx.lineTo(x + 5, y - 3); ctx.lineTo(x, y - 2.5); ctx.closePath(); ctx.fill();
+        // Buttons on body
+        ctx.fillStyle = '#334455';
+        ctx.beginPath(); ctx.arc(x, y + 1, 1.2, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(x, y + 4.5, 1.2, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(x, y + 8, 1.2, 0, Math.PI * 2); ctx.fill();
+        // Mini top hat
+        ctx.fillStyle = '#222222';
+        ctx.fillRect(x - 5, y - 12, 10, 5); // hat brim
+        ctx.fillRect(x - 3.5, y - 17, 7, 6); // hat top
+        ctx.fillStyle = '#cc2222';
+        ctx.fillRect(x - 4, y - 12.5, 8, 1.5); // hat band
       }
       ctx.restore();
     }
 
     function drawDeadBody(ctx, x, y, color, dissolveProgress) {
+      // Try Phaser dead sprite with color tint
+      if (!dissolveProgress || dissolveProgress < 0.3) {
+        const alpha = dissolveProgress > 0 ? Math.max(0, 1 - dissolveProgress / 0.3) : 1;
+        ctx.save();
+        ctx.globalAlpha *= alpha;
+        if (_drawPhaserSprite(ctx, 'dead_body', x, y, 40, 30, color)) {
+          ctx.restore();
+          return;
+        }
+        ctx.restore();
+      }
+      // Fall through to canvas drawing
       const _dp = dissolveProgress || 0;
       ctx.save();
       // Blood pool — replaced by acid for dissolving bodies
@@ -21657,6 +21969,9 @@
     // ===== SKIN DRAWING =====
     function drawSkinOverlay(ctx, x, y, w, h, skin) {
       if (!skin || skin === 'none') return;
+      // Try Phaser sprite first (drawn over the body at full size)
+      if (_drawPhaserSprite(ctx, 'skin_' + skin, x, y, w, h, null)) return;
+      // Canvas fallback
       ctx.save();
       switch(skin) {
         case 'astronaut':
@@ -21723,5 +22038,6 @@
 <div id="mpErrorToast" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
      background:rgba(20,80,60,0.95);border:1px solid #4ecdc4;border-radius:8px;padding:10px 22px;
      color:#fff;font-size:14px;z-index:350;pointer-events:none;max-width:380px;text-align:center;"></div>
+<canvas id="phaserCanvas" style="display:none; position:absolute; pointer-events:none;"></canvas>
 </body>
 </html>
