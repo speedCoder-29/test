@@ -17418,7 +17418,7 @@
     }
 
     function render() {
-      if (!player) return;
+      if (!player) { console.warn('[render] skipped — player is', player); return; }
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       let ox = player.x - canvas.width / 2;
       let oy = player.y - canvas.height / 2;
@@ -18665,7 +18665,9 @@
           }
           if (dropshipCountdown === 0) {
             dropshipPhase = false;
-            init();
+            console.log('[dropship] countdown reached 0, calling init()');
+            try { init(); } catch(_ie) { console.error('[init() error]', _ie); }
+            console.log('[dropship] after init — player:', !!player, 'dropshipPhase:', dropshipPhase);
             return;
           }
         }
