@@ -10559,32 +10559,37 @@
       ctx.beginPath();
       ctx.ellipse(x + w / 2, y + h * 0.55, w / 2, h * 0.45, 0, 0, Math.PI * 2);
       ctx.fill();
-      // Visor
+      // Visor (enlarged — closer to real Among Us proportions)
       ctx.fillStyle = '#9cd8f7';
       ctx.beginPath();
-      ctx.ellipse(x + w * 0.65, y + h * 0.35, w * 0.22, h * 0.18, 0, 0, Math.PI * 2);
+      ctx.ellipse(x + w * 0.62, y + h * 0.32, w * 0.30, h * 0.23, 0, 0, Math.PI * 2);
       ctx.fill();
       // Visor border
       ctx.strokeStyle = '#1a3a5c';
       ctx.lineWidth = 1.5;
       ctx.stroke();
       // Visor inner gradient
-      const _vGrad = ctx.createLinearGradient(x + w * 0.43, y + h * 0.17, x + w * 0.87, y + h * 0.53);
+      const _vGrad = ctx.createLinearGradient(x + w * 0.32, y + h * 0.09, x + w * 0.92, y + h * 0.55);
       _vGrad.addColorStop(0, 'rgba(200,235,255,0.5)');
       _vGrad.addColorStop(1, 'rgba(80,160,220,0.3)');
       ctx.fillStyle = _vGrad;
       ctx.beginPath();
-      ctx.ellipse(x + w * 0.65, y + h * 0.35, w * 0.22, h * 0.18, 0, 0, Math.PI * 2);
+      ctx.ellipse(x + w * 0.62, y + h * 0.32, w * 0.30, h * 0.23, 0, 0, Math.PI * 2);
       ctx.fill();
       // Visor primary shine
       ctx.fillStyle = 'rgba(255,255,255,0.55)';
       ctx.beginPath();
-      ctx.ellipse(x + w * 0.71, y + h * 0.27, w * 0.1, h * 0.065, -0.3, 0, Math.PI * 2);
+      ctx.ellipse(x + w * 0.70, y + h * 0.23, w * 0.13, h * 0.085, -0.3, 0, Math.PI * 2);
       ctx.fill();
       // Visor secondary reflection
-      ctx.fillStyle = 'rgba(255,255,255,0.2)';
+      ctx.fillStyle = 'rgba(255,255,255,0.22)';
       ctx.beginPath();
-      ctx.ellipse(x + w * 0.59, y + h * 0.4, w * 0.05, h * 0.04, 0.4, 0, Math.PI * 2);
+      ctx.ellipse(x + w * 0.52, y + h * 0.41, w * 0.07, h * 0.055, 0.4, 0, Math.PI * 2);
+      ctx.fill();
+      // Visor bottom rim shadow
+      ctx.fillStyle = 'rgba(0,40,80,0.18)';
+      ctx.beginPath();
+      ctx.ellipse(x + w * 0.62, y + h * 0.44, w * 0.28, h * 0.10, 0, 0, Math.PI * 2);
       ctx.fill();
       // Arms (drawn before backpack so backpack overlaps left arm)
       const _armY = y + h * 0.60;
@@ -10610,37 +10615,58 @@
       ctx.ellipse(x + w - 2, _armY - h * 0.03, w * 0.05, h * 0.04, 0.25, 0, Math.PI * 2);
       ctx.fill();
 
-      // Backpack
-      const _bpX = x - 7, _bpY = y + h * 0.32, _bpW = 9, _bpH = h * 0.32;
+      // Backpack (wider, taller, with vent detail)
+      const _bpX = x - 12, _bpY = y + h * 0.28, _bpW = 14, _bpH = h * 0.42;
       ctx.fillStyle = drawColor;
       ctx.beginPath();
-      if (ctx.roundRect) { ctx.roundRect(_bpX, _bpY, _bpW, _bpH, 3); } else { ctx.rect(_bpX, _bpY, _bpW, _bpH); }
+      if (ctx.roundRect) { ctx.roundRect(_bpX, _bpY, _bpW, _bpH, 4); } else { ctx.rect(_bpX, _bpY, _bpW, _bpH); }
       ctx.fill();
-      ctx.strokeStyle = 'rgba(0,0,0,0.35)';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(0,0,0,0.40)';
+      ctx.lineWidth = 1.2;
       ctx.stroke();
       // Backpack highlight line
-      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.22)';
       ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(_bpX + 2, _bpY + 2);
-      ctx.lineTo(_bpX + 2, _bpY + _bpH - 2);
+      ctx.moveTo(_bpX + 2, _bpY + 3);
+      ctx.lineTo(_bpX + 2, _bpY + _bpH - 3);
       ctx.stroke();
-      // Legs
-      const _legY = y + h * 0.85, _legH = 9;
+      // Backpack vent slats (3 horizontal lines near bottom)
+      ctx.strokeStyle = 'rgba(0,0,0,0.22)';
+      ctx.lineWidth = 1;
+      for (let _vi = 0; _vi < 3; _vi++) {
+        const _vy = _bpY + _bpH * 0.58 + _vi * 4;
+        ctx.beginPath(); ctx.moveTo(_bpX + 3, _vy); ctx.lineTo(_bpX + _bpW - 3, _vy); ctx.stroke();
+      }
+      // Backpack bottom nub (oxygen tank)
       ctx.fillStyle = drawColor;
-      // Left leg
       ctx.beginPath();
-      if (ctx.roundRect) { ctx.roundRect(x + 3, _legY, 10, _legH, [0, 0, 3, 3]); } else { ctx.rect(x + 3, _legY, 10, _legH); }
+      if (ctx.roundRect) { ctx.roundRect(_bpX + 2, _bpY + _bpH - 1, _bpW - 4, 5, [0, 0, 3, 3]); } else { ctx.rect(_bpX + 2, _bpY + _bpH - 1, _bpW - 4, 5); }
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.30)'; ctx.lineWidth = 1; ctx.stroke();
+      // Legs (wider, with boot flare at bottom)
+      const _legY = y + h * 0.85, _legH = 10;
+      ctx.fillStyle = drawColor;
+      // Left leg shaft
+      ctx.beginPath();
+      if (ctx.roundRect) { ctx.roundRect(x + 4, _legY, 11, _legH, [0, 0, 2, 2]); } else { ctx.rect(x + 4, _legY, 11, _legH); }
       ctx.fill();
       ctx.strokeStyle = 'rgba(0,0,0,0.3)';
       ctx.lineWidth = 1;
       ctx.stroke();
-      // Right leg
+      // Left boot flare
       ctx.beginPath();
-      if (ctx.roundRect) { ctx.roundRect(x + w - 13, _legY, 10, _legH, [0, 0, 3, 3]); } else { ctx.rect(x + w - 13, _legY, 10, _legH); }
+      if (ctx.roundRect) { ctx.roundRect(x + 2, _legY + _legH - 2, 14, 4, [0, 0, 3, 3]); } else { ctx.rect(x + 2, _legY + _legH - 2, 14, 4); }
+      ctx.fill(); ctx.stroke();
+      // Right leg shaft
+      ctx.beginPath();
+      if (ctx.roundRect) { ctx.roundRect(x + w - 15, _legY, 11, _legH, [0, 0, 2, 2]); } else { ctx.rect(x + w - 15, _legY, 11, _legH); }
       ctx.fill();
-      ctx.stroke();
+      ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 1; ctx.stroke();
+      // Right boot flare
+      ctx.beginPath();
+      if (ctx.roundRect) { ctx.roundRect(x + w - 16, _legY + _legH - 2, 14, 4, [0, 0, 3, 3]); } else { ctx.rect(x + w - 16, _legY + _legH - 2, 14, 4); }
+      ctx.fill(); ctx.stroke();
       // Leg center seam
       ctx.strokeStyle = 'rgba(0,0,0,0.2)';
       ctx.lineWidth = 1;
@@ -11765,6 +11791,83 @@
             for (let sy = 0; sy < 14; sy += 7) {
               ctx.beginPath(); ctx.moveTo(x,y+sy); ctx.lineTo(x,y+sy+10); ctx.lineTo(x+w,y+sy+4); ctx.lineTo(x+w,y+sy-6); ctx.closePath(); ctx.fill();
               ctx.beginPath(); ctx.moveTo(x,y+h-sy); ctx.lineTo(x,y+h-sy-10); ctx.lineTo(x+w,y+h-sy-4); ctx.lineTo(x+w,y+h-sy+6); ctx.closePath(); ctx.fill();
+            }
+          }
+        }
+        // Overhead pipe run along one wall (orange-yellow, Skeld signature)
+        if (thick >= 30) {
+          const _pipeY = horiz ? y + 4 : y + 4;
+          const _pipeX = horiz ? x : x + 4;
+          ctx.strokeStyle = 'rgba(220,160,40,0.38)';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          if (horiz) { ctx.moveTo(x, y + 5); ctx.lineTo(x + w, y + 5); }
+          else        { ctx.moveTo(x + 5, y); ctx.lineTo(x + 5, y + h); }
+          ctx.stroke();
+          // Pipe highlight (top rim)
+          ctx.strokeStyle = 'rgba(255,210,80,0.22)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          if (horiz) { ctx.moveTo(x, y + 4); ctx.lineTo(x + w, y + 4); }
+          else        { ctx.moveTo(x + 4, y); ctx.lineTo(x + 4, y + h); }
+          ctx.stroke();
+          // Pipe joint rings every 80px
+          ctx.strokeStyle = 'rgba(180,120,20,0.45)';
+          ctx.lineWidth = 2;
+          const _jointStep = 80;
+          if (horiz) {
+            for (let _pj = _jointStep / 2; _pj < w; _pj += _jointStep) {
+              ctx.beginPath(); ctx.moveTo(x + _pj, y + 2); ctx.lineTo(x + _pj, y + 8); ctx.stroke();
+            }
+          } else {
+            for (let _pj = _jointStep / 2; _pj < h; _pj += _jointStep) {
+              ctx.beginPath(); ctx.moveTo(x + 2, y + _pj); ctx.lineTo(x + 8, y + _pj); ctx.stroke();
+            }
+          }
+        }
+        // Emergency red indicator lights along opposite wall, every 120px
+        if (thick >= 36) {
+          const _emStep = 120;
+          if (horiz) {
+            for (let _ex = _emStep / 2; _ex < w; _ex += _emStep) {
+              // Glow halo
+              const _eg = ctx.createRadialGradient(x+_ex, y+h-4, 0, x+_ex, y+h-4, 7);
+              _eg.addColorStop(0, 'rgba(255,40,40,0.18)');
+              _eg.addColorStop(1, 'rgba(255,0,0,0)');
+              ctx.fillStyle = _eg; ctx.fillRect(x+_ex-7, y+h-11, 14, 14);
+              // Dot
+              ctx.fillStyle = 'rgba(255,60,60,0.55)';
+              ctx.beginPath(); ctx.arc(x+_ex, y+h-4, 2, 0, Math.PI*2); ctx.fill();
+              ctx.fillStyle = 'rgba(255,180,180,0.6)';
+              ctx.beginPath(); ctx.arc(x+_ex-0.5, y+h-4.5, 0.8, 0, Math.PI*2); ctx.fill();
+            }
+          } else {
+            for (let _ey = _emStep / 2; _ey < h; _ey += _emStep) {
+              const _eg = ctx.createRadialGradient(x+w-4, y+_ey, 0, x+w-4, y+_ey, 7);
+              _eg.addColorStop(0, 'rgba(255,40,40,0.18)');
+              _eg.addColorStop(1, 'rgba(255,0,0,0)');
+              ctx.fillStyle = _eg; ctx.fillRect(x+w-11, y+_ey-7, 14, 14);
+              ctx.fillStyle = 'rgba(255,60,60,0.55)';
+              ctx.beginPath(); ctx.arc(x+w-4, y+_ey, 2, 0, Math.PI*2); ctx.fill();
+              ctx.fillStyle = 'rgba(255,180,180,0.6)';
+              ctx.beginPath(); ctx.arc(x+w-4.5, y+_ey-0.5, 0.8, 0, Math.PI*2); ctx.fill();
+            }
+          }
+        }
+        // Floor center drain strip (thin grate)
+        if (len >= 60 && thick >= 30) {
+          ctx.strokeStyle = 'rgba(60,100,160,0.16)';
+          ctx.lineWidth = 1;
+          const _drainW = Math.max(4, thick * 0.12);
+          if (horiz) {
+            ctx.strokeRect(x + 20, y + h/2 - _drainW/2, w - 40, _drainW);
+            for (let _dg = 20; _dg < w - 20; _dg += 8) {
+              ctx.beginPath(); ctx.moveTo(x+_dg, y+h/2-_drainW/2); ctx.lineTo(x+_dg, y+h/2+_drainW/2); ctx.stroke();
+            }
+          } else {
+            ctx.strokeRect(x + w/2 - _drainW/2, y + 20, _drainW, h - 40);
+            for (let _dg = 20; _dg < h - 20; _dg += 8) {
+              ctx.beginPath(); ctx.moveTo(x+w/2-_drainW/2, y+_dg); ctx.lineTo(x+w/2+_drainW/2, y+_dg); ctx.stroke();
             }
           }
         }
@@ -19575,9 +19678,10 @@
         player.petY = (player.petY || player.y) + (player.y - (player.petY || player.y)) * petLerp;
       }
 
-      render();
+      } catch(e) { console.error('[gameLoop error]', e); }
+      // Always render and schedule next frame — even if game update threw an error
+      try { render(); } catch(re) { console.error('[render error]', re); }
       requestAnimationFrame(gameLoop);
-      } catch(e) { console.error('[gameLoop error]', e); requestAnimationFrame(gameLoop); }
     }
 
     document.addEventListener('keydown', (e) => {
