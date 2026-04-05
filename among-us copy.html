@@ -4717,7 +4717,7 @@
 
     function spawnAmbientParticles() {
       if (!mapTheme) return;
-      const mapId = currentMapId || 'skeld';
+      const mapId = selectedMap || 'skeld';
       const now = Date.now();
       // Spawn based on map and room proximity
       const px = player.x + player.w / 2, py = player.y + player.h / 2;
@@ -16588,7 +16588,7 @@
       // Polus snow is animated (not in static canvas) — draw it live on top of the map
       if (selectedMap === 'polus') drawSnow(ox, oy);
       // MIRA rain
-      if ((currentMapId === 'mira' || selectedMap === 'mira' || (mapTheme && mapTheme.id === 'mira'))) {
+      if (selectedMap === 'mira') {
         const _rt = Date.now() / 55;
         ctx.save(); ctx.globalAlpha = 0.1; ctx.strokeStyle = '#88aacc'; ctx.lineWidth = 0.9;
         for (let _ri = 0; _ri < 60; _ri++) {
@@ -17418,7 +17418,7 @@
     }
 
     function render() {
-      if (!player) { console.warn('[render] skipped — player is', player); return; }
+      if (!player) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       let ox = player.x - canvas.width / 2;
       let oy = player.y - canvas.height / 2;
@@ -18665,9 +18665,7 @@
           }
           if (dropshipCountdown === 0) {
             dropshipPhase = false;
-            console.log('[dropship] countdown reached 0, calling init()');
-            try { init(); } catch(_ie) { console.error('[init() error]', _ie); }
-            console.log('[dropship] after init — player:', !!player, 'dropshipPhase:', dropshipPhase);
+            init();
             return;
           }
         }
