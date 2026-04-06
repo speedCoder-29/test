@@ -1740,77 +1740,11 @@
     const _spriteImages  = {}; // key → loaded Image element
     const _phaserSpriteCache = {}; // key: "hexcolor_framekey" or "__raw_key" → offscreen canvas
 
-    const SPRITE_BASE = 'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/player/';
     const SPRITE_KEYS = { idle: 'idle', walk: ['w1','w2','w3','w4','w5','w6','w7','w8','w9','w10','w11','w12'] };
 
-    const SPRITE_URLS = {
-      // ── Player body (red base, pixel-recolored at runtime) ──
-      idle:     SPRITE_BASE + 'idle.png',
-      w1:       SPRITE_BASE + 'Walk/walkcolor0001.png',
-      w2:       SPRITE_BASE + 'Walk/walkcolor0002.png',
-      w3:       SPRITE_BASE + 'Walk/walkcolor0003.png',
-      w4:       SPRITE_BASE + 'Walk/walkcolor0004.png',
-      w5:       SPRITE_BASE + 'Walk/walkcolor0005.png',
-      w6:       SPRITE_BASE + 'Walk/walkcolor0006.png',
-      w7:       SPRITE_BASE + 'Walk/walkcolor0007.png',
-      w8:       SPRITE_BASE + 'Walk/walkcolor0008.png',
-      w9:       SPRITE_BASE + 'Walk/walkcolor0009.png',
-      w10:      SPRITE_BASE + 'Walk/walkcolor0010.png',
-      w11:      SPRITE_BASE + 'Walk/walkcolor0011.png',
-      w12:      SPRITE_BASE + 'Walk/walkcolor0012.png',
-      dead_body: SPRITE_BASE + 'Death/Dead0033.png',
-      ghost_idle: SPRITE_BASE + 'Ghost/ghostbob0001.png',
-      // Ghost animation frames (4-frame cycle sampled from 48)
-      ghost1: SPRITE_BASE + 'Ghost/ghostbob0001.png',
-      ghost2: SPRITE_BASE + 'Ghost/ghostbob0012.png',
-      ghost3: SPRITE_BASE + 'Ghost/ghostbob0024.png',
-      ghost4: SPRITE_BASE + 'Ghost/ghostbob0036.png',
-      // ── Hats (isolated overlay sprites from space-elephant) ──
-      hat_tophat:     'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/tophat.png',
-      hat_hardhat:    'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/hardhat.png',
-      hat_crown:      'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/crown.png',
-      hat_santa:      'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/santahat.png',
-      hat_cowboy:     'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/cowboy.png',
-      hat_party:      'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/partyhat.png',
-      hat_propeller:  'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/propellerhat.png',
-      hat_headphones: 'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/headphones.png',
-      hat_baseball:   'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/baseball.png',
-      hat_flower:     'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/flower.png',
-      hat_police:     'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/police.png',
-      hat_safari:     'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/safari.png',
-      hat_plant:      'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/plant.png',
-      hat_fez:        'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/hats/fez.png',
-      // ── Pets (Among Us wiki — isolated pet sprites, CORS: *) ──
-      pet_mini_crewmate: 'https://static.wikia.nocookie.net/among-us-wiki/images/d/d5/Mini_Crewmate_pet.png/revision/latest',
-      pet_hamster:       'https://static.wikia.nocookie.net/among-us-wiki/images/b/be/Hammy.png/revision/latest',
-      pet_dog:           'https://static.wikia.nocookie.net/among-us-wiki/images/0/09/Doggy.png/revision/latest',
-      pet_alien:         'https://static.wikia.nocookie.net/among-us-wiki/images/7/77/UFO.png/revision/latest',
-      pet_robot:         'https://static.wikia.nocookie.net/among-us-wiki/images/6/65/Ro-Bot.png/revision/latest',
-      pet_cat:           'https://static.wikia.nocookie.net/among-us-wiki/images/8/89/Space_Cat.png/revision/latest',
-      pet_snowball:      'https://static.wikia.nocookie.net/among-us-wiki/images/0/04/Snowball.png/revision/latest',
-      // ── Skins (isolated overlay sprites from space-elephant) ──
-      skin_astronaut: 'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/skins/astronaut.png',
-      skin_tuxedo:    'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/skins/tuxedo.png',
-      skin_military:  'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/skins/military.png',
-      skin_hazmat:    'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/skins/hazmat.png',
-      skin_prisoner:  'https://raw.githubusercontent.com/space-elephant/among-us-sprites/main/skins/prisoner.png',
-    };
-
-    // Load all sprites asynchronously via Image elements (no Phaser needed)
-    function _initSpriteSystem() {
-      const keys = Object.keys(SPRITE_URLS);
-      let pending = keys.length;
-      function _onDone() { if (--pending <= 0) _spritesReady = true; }
-      for (const key of keys) {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload  = () => { _spriteImages[key] = img; _onDone(); };
-        img.onerror = _onDone; // graceful failure — canvas fallback will be used
-        img.src = SPRITE_URLS[key];
-      }
-      if (!keys.length) _spritesReady = true;
-    }
-    document.addEventListener('DOMContentLoaded', _initSpriteSystem);
+    // No external sprite URLs — canvas fallback renders all characters
+    // (External sprite repos were unavailable; canvas drawing is used instead)
+    _spritesReady = true;
 
     function _getPhaserSprite(hexColor, frameKey) {
       const cacheKey = hexColor + '_' + frameKey;
@@ -16599,7 +16533,7 @@
         ctx.restore();
       }
       // Airship cloud wisps drifting
-      if ((currentMapId === 'airship' || selectedMap === 'airship' || (mapTheme && mapTheme.id === 'airship'))) {
+      if (selectedMap === 'airship') {
         const _ct = Date.now() / 4000;
         ctx.save(); ctx.globalAlpha = 0.06;
         for (let _ci = 0; _ci < 6; _ci++) {
