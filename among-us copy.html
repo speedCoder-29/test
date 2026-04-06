@@ -2530,8 +2530,7 @@
           { x: 1036, y: 1116, w: 488, h: 498 },  // 7: Storage (LARGE)
           { x: 536, y: 940, w: 424, h: 350 },    // 8: Electrical (wider, ABOVE corridor)
           { x: 156, y: 1226, w: 258, h: 282 },   // 9: Lower Engine
-          { x: 16, y: 394, w: 228, h: 832 },     // 10: Reactor (tall, x:16-244, y:394-1226)
-          { x: 244, y: 700, w: 16, h: 80 },      // Reactor door connector (fills gap for walkGrid)
+          { x: 16, y: 394, w: 244, h: 832 },     // 10: Reactor (tall, x:16-260, flush with UE-LE corridor)
           { x: 380, y: 586, w: 280, h: 234 },    // 11: Security (wider, adjacent to UE-LE corridor)
           { x: 156, y: 146, w: 258, h: 248 },    // 12: Upper Engine
           { x: 536, y: 280, w: 328, h: 320 },    // 13: MedBay (BELOW top corridor)
@@ -2542,9 +2541,9 @@
           { x: 260, y: 394, w: 120, h: 832 },    // UE-LE main vertical corridor (Reactor left, Security right)
           // Central corridor: Cafeteria south → beside Admin → Storage top
           { x: 1264, y: 600, w: 116, h: 516 },   // Central corridor (x:1264-1380, y:600-1116)
-          { x: 1680, y: 700, w: 256, h: 80 },    // Admin/O2 hallway (x:1680-1936, extends to O2 inner edge)
+          { x: 1840, y: 700, w: 96, h: 80 },     // Admin/O2 hallway (x:1840-1936, flush with Admin right wall)
           { x: 2310, y: 700, w: 240, h: 80 },    // O2 -> Navigation (aligned with Nav door y:700-780 and O2 right door)
-          { x: 2230, y: 490, w: 80, h: 90 },     // Weapons -> O2 connector
+          { x: 2230, y: 490, w: 80, h: 106 },    // Weapons -> O2 connector (extends to O2 floor top y:596)
           { x: 2470, y: 490, w: 80, h: 210 },    // Weapons -> Nav upper connector (full height to O2→Nav corridor)
           { x: 2428, y: 780, w: 96, h: 336 },     // East vertical corridor (O2/Nav → Shields north, y:780-1116)
           { x: 414, y: 1290, w: 622, h: 90  },   // LE→Storage bottom corridor (x:414-1036, passes below Electrical)
@@ -3279,6 +3278,7 @@
           { name: 'Specimen Room', x: 1400, y: 1580 },
           { name: 'Boiler Room',   x: 360,  y: 2180 },
           { name: 'Decontamination', x: 1520, y: 1100 },
+          { name: 'Decontamination', x: 1970, y: 1100 },
         ],
         floors: [
           { x: 166, y: 96, w: 388, h: 228 },     // Dropship
@@ -4331,38 +4331,148 @@
       // Polus snow is animated (snowParticles empty here) so it's a no-op and drawn live in drawMap().
       drawEnvironmentBG(0, 0);
 
-      // Room floors with per-room colors, tiles, decor, and hallways
+      // ── PASS 1: Unified floor base ─────────────────────────────────────────
+      // Fill EVERY walkable area with a single base color first.
+      // This ensures seamless floor-to-corridor transitions with no visible rect seams.
+      if (mapTheme.floors) {
+        const _baseCol = {
+          skeld:   '#0e1622',  // deep navy-steel (space ship interior)
+          mira:    '#050d18',  // near-black blue (high-altitude tech station)
+          polus:   '#1c1010',  // dark red-black (frozen surface base)
+          airship: '#1c130c',  // dark mahogany (ornate airship)
+          fungle:  '#0e1808',  // near-black jungle green
+        }[selectedMap] || '#111820';
+        ctx.fillStyle = _baseCol;
+        for (const f of mapTheme.floors) ctx.fillRect(f.x, f.y, f.w, f.h);
+      }
+
+      // ── PASS 2: Per-map global floor texture overlay ────────────────────────
+      // Thin grid or plank lines drawn over the entire walkable area before rooms.
+      if (mapTheme.floors) {
+        const _texStep = { skeld: 48, mira: 36, polus: 52, airship: 40, fungle: 44 }[selectedMap] || 48;
+        const _texCol   = {
+          skeld:   'rgba(40,80,140,0.07)',
+          mira:    'rgba(0,160,200,0.09)',
+          polus:   'rgba(120,60,60,0.08)',
+          airship: 'rgba(120,80,30,0.10)',
+          fungle:  'rgba(40,100,20,0.08)',
+        }[selectedMap] || 'rgba(255,255,255,0.04)';
+        ctx.strokeStyle = _texCol; ctx.lineWidth = 1;
+        for (const f of mapTheme.floors) {
+          // Vertical lines
+          for (let gx = 0; gx < f.w; gx += _texStep) {
+            ctx.beginPath(); ctx.moveTo(f.x + gx, f.y); ctx.lineTo(f.x + gx, f.y + f.h); ctx.stroke();
+          }
+          // Horizontal lines
+          for (let gy = 0; gy < f.h; gy += _texStep) {
+            ctx.beginPath(); ctx.moveTo(f.x, f.y + gy); ctx.lineTo(f.x + f.w, f.y + gy); ctx.stroke();
+          }
+        }
+        // Airship: diagonal wood-plank overlay on top of grid
+        if (selectedMap === 'airship') {
+          ctx.strokeStyle = 'rgba(160,100,40,0.06)'; ctx.lineWidth = 2;
+          for (const f of mapTheme.floors) {
+            for (let gx = -f.h; gx < f.w; gx += 24) {
+              ctx.beginPath(); ctx.moveTo(f.x + gx, f.y); ctx.lineTo(f.x + gx + f.h, f.y + f.h); ctx.stroke();
+            }
+          }
+        }
+        // Fungle: slight organic diagonal variation
+        if (selectedMap === 'fungle') {
+          ctx.strokeStyle = 'rgba(60,120,20,0.05)'; ctx.lineWidth = 2;
+          for (const f of mapTheme.floors) {
+            for (let gx = -f.h; gx < f.w; gx += 36) {
+              ctx.beginPath(); ctx.moveTo(f.x + gx, f.y); ctx.lineTo(f.x + gx + f.h * 0.7, f.y + f.h); ctx.stroke();
+            }
+          }
+        }
+      }
+
+      // ── PASS 3: Room floors (color overlay + tiles + decor) ────────────────
       if (mapTheme.floors) {
         const numRooms = rooms.length;
-        for (let i = 0; i < mapTheme.floors.length; i++) {
+        for (let i = 0; i < numRooms && i < mapTheme.floors.length; i++) {
           const f = mapTheme.floors[i];
           const fx = f.x, fy = f.y;
-          if (i < numRooms) {
-            ctx.fillStyle = selectedMap === 'polus' ? '#cc1111' : (roomFloorColors[rooms[i].name] || '#222228');
-            ctx.fillRect(fx, fy, f.w, f.h);
-            ctx.fillStyle = 'rgba(255,255,255,0.03)';
-            ctx.fillRect(fx + 1, fy + 1, f.w, 4);
-            drawFloorTiles(fx, fy, f.w, f.h);
-            ctx.strokeStyle = selectedMap === 'polus' ? 'rgba(255,255,255,0.15)' :
-                              selectedMap === 'skeld' ? 'rgba(180,200,220,0.18)' :
-                              selectedMap === 'mira'  ? 'rgba(80,200,255,0.18)' :
-                                                        'rgba(255,255,255,0.04)';
-            ctx.lineWidth = selectedMap === 'polus' ? 2 : selectedMap === 'mira' ? 2 : selectedMap === 'skeld' ? 2 : 1;
-            ctx.strokeRect(fx + 2, fy + 2, f.w - 4, f.h - 4);
-            if (selectedMap === 'mira') {
-              ctx.strokeStyle = 'rgba(60,160,220,0.08)';
-              ctx.lineWidth = 4;
-              ctx.strokeRect(fx + 6, fy + 6, f.w - 12, f.h - 12);
-            }
-            drawRoomDecor(rooms[i].name, fx, fy, f.w, f.h);
+          // Room base color as semi-transparent overlay so base seeps through corridor joins
+          const _rColSolid = selectedMap === 'polus' ? '#cc1111' : (roomFloorColors[rooms[i].name] || '#222228');
+          ctx.fillStyle = _rColSolid;
+          ctx.fillRect(fx, fy, f.w, f.h);
+          // Subtle top-highlight bevel
+          ctx.fillStyle = 'rgba(255,255,255,0.03)';
+          ctx.fillRect(fx + 1, fy + 1, f.w, 4);
+          drawFloorTiles(fx, fy, f.w, f.h);
+          // Room border (inset stroke)
+          ctx.strokeStyle = { polus:'rgba(255,255,255,0.18)', skeld:'rgba(140,180,220,0.22)',
+                               mira:'rgba(60,200,255,0.22)', airship:'rgba(200,140,60,0.18)',
+                               fungle:'rgba(80,200,60,0.15)' }[selectedMap] || 'rgba(255,255,255,0.05)';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(fx + 2, fy + 2, f.w - 4, f.h - 4);
+          if (selectedMap === 'mira') {
+            // MIRA: double inset border glow
+            ctx.strokeStyle = 'rgba(40,160,220,0.10)'; ctx.lineWidth = 3;
+            ctx.strokeRect(fx + 7, fy + 7, f.w - 14, f.h - 14);
+          }
+          if (selectedMap === 'airship') {
+            // Airship: gold-trim inner border
+            ctx.strokeStyle = 'rgba(200,160,60,0.12)'; ctx.lineWidth = 2;
+            ctx.strokeRect(fx + 6, fy + 6, f.w - 12, f.h - 12);
+          }
+          // Per-map room depth shadows on top/bottom edges
+          if (selectedMap === 'skeld' || selectedMap === 'mira') {
+            const _depthH = Math.min(20, f.h * 0.12);
+            const _topSh = ctx.createLinearGradient(fx, fy, fx, fy + _depthH);
+            _topSh.addColorStop(0, 'rgba(0,0,0,0.30)'); _topSh.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = _topSh; ctx.fillRect(fx, fy, f.w, _depthH);
+            const _btmSh = ctx.createLinearGradient(fx, fy + f.h - _depthH, fx, fy + f.h);
+            _btmSh.addColorStop(0, 'rgba(0,0,0,0)'); _btmSh.addColorStop(1, 'rgba(0,0,0,0.30)');
+            ctx.fillStyle = _btmSh; ctx.fillRect(fx, fy + f.h - _depthH, f.w, _depthH);
+          }
+          drawRoomDecor(rooms[i].name, fx, fy, f.w, f.h);
+        }
+      }
+
+      // ── PASS 4: Corridor / hallway detail overlays ─────────────────────────
+      if (mapTheme.floors) {
+        const numRooms = rooms.length;
+        for (let i = numRooms; i < mapTheme.floors.length; i++) {
+          const f = mapTheme.floors[i];
+          const fx = f.x, fy = f.y;
+          // Corridor tint over base
+          const _corrCol = {
+            polus:   '#f0b0b0',
+            fungle:  'rgba(70,110,50,0.14)',
+            mira:    'rgba(8,24,56,0.55)',
+            airship: 'rgba(40,26,14,0.55)',
+            skeld:   'rgba(14,30,58,0.60)',
+          }[selectedMap] || 'rgba(150,150,180,0.06)';
+          ctx.fillStyle = _corrCol;
+          ctx.fillRect(fx, fy, f.w, f.h);
+          drawHallwayDetail(fx, fy, f.w, f.h);
+        }
+      }
+
+      // ── PASS 5: Per-map ambient floor glow (post-room) ─────────────────────
+      if (selectedMap === 'mira' && mapTheme.floors) {
+        // MIRA: teal edge glow along all corridor floors
+        ctx.strokeStyle = 'rgba(0,200,230,0.12)'; ctx.lineWidth = 2;
+        const numRooms2 = rooms.length;
+        for (let i = numRooms2; i < mapTheme.floors.length; i++) {
+          const f = mapTheme.floors[i];
+          ctx.strokeRect(f.x + 1, f.y + 1, f.w - 2, f.h - 2);
+        }
+      }
+      if (selectedMap === 'polus' && mapTheme.floors) {
+        // Polus: bright white snow-path highlight along corridor centers
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 3;
+        const numRooms3 = rooms.length;
+        for (let i = numRooms3; i < mapTheme.floors.length; i++) {
+          const f = mapTheme.floors[i];
+          const _horiz = f.w > f.h;
+          if (_horiz) {
+            ctx.beginPath(); ctx.moveTo(f.x, f.y + f.h / 2); ctx.lineTo(f.x + f.w, f.y + f.h / 2); ctx.stroke();
           } else {
-            ctx.fillStyle = selectedMap === 'polus' ? '#f4b8bc' :
-                            selectedMap === 'fungle' ? 'rgba(80,120,60,0.06)' :
-                            selectedMap === 'mira'   ? '#101e30' :
-                            selectedMap === 'skeld'  ? '#1e2530' :
-                                                       'rgba(150,150,180,0.06)';
-            ctx.fillRect(fx, fy, f.w, f.h);
-            drawHallwayDetail(fx, fy, f.w, f.h);
+            ctx.beginPath(); ctx.moveTo(f.x + f.w / 2, f.y); ctx.lineTo(f.x + f.w / 2, f.y + f.h); ctx.stroke();
           }
         }
       }
@@ -11713,19 +11823,40 @@
             }
           }
         }
-        // Yellow hazard stripes at corridor ends (junctions)
+        // Yellow/black hazard chevrons at corridor ends (junctions) — bolder than before
         if (len > 150) {
-          ctx.fillStyle = 'rgba(255,200,0,0.07)';
+          // Yellow fill stripes
+          ctx.fillStyle = 'rgba(255,200,0,0.14)';
           if (horiz) {
-            for (let sx = 0; sx < 14; sx += 7) {
-              ctx.beginPath(); ctx.moveTo(x+sx,y); ctx.lineTo(x+sx+10,y); ctx.lineTo(x+sx+4,y+h); ctx.lineTo(x+sx-6,y+h); ctx.closePath(); ctx.fill();
-              ctx.beginPath(); ctx.moveTo(x+w-sx,y); ctx.lineTo(x+w-sx-10,y); ctx.lineTo(x+w-sx-4,y+h); ctx.lineTo(x+w-sx+6,y+h); ctx.closePath(); ctx.fill();
+            for (let sx = 0; sx < 18; sx += 6) {
+              ctx.beginPath(); ctx.moveTo(x+sx,y); ctx.lineTo(x+sx+8,y); ctx.lineTo(x+sx+3,y+h); ctx.lineTo(x+sx-5,y+h); ctx.closePath(); ctx.fill();
+              ctx.beginPath(); ctx.moveTo(x+w-sx,y); ctx.lineTo(x+w-sx-8,y); ctx.lineTo(x+w-sx-3,y+h); ctx.lineTo(x+w-sx+5,y+h); ctx.closePath(); ctx.fill();
+            }
+            // Dark between-stripe fills
+            ctx.fillStyle = 'rgba(0,0,0,0.08)';
+            for (let sx = 3; sx < 18; sx += 6) {
+              ctx.beginPath(); ctx.moveTo(x+sx,y); ctx.lineTo(x+sx+8,y); ctx.lineTo(x+sx+3,y+h); ctx.lineTo(x+sx-5,y+h); ctx.closePath(); ctx.fill();
+              ctx.beginPath(); ctx.moveTo(x+w-sx,y); ctx.lineTo(x+w-sx-8,y); ctx.lineTo(x+w-sx-3,y+h); ctx.lineTo(x+w-sx+5,y+h); ctx.closePath(); ctx.fill();
             }
           } else {
-            for (let sy = 0; sy < 14; sy += 7) {
-              ctx.beginPath(); ctx.moveTo(x,y+sy); ctx.lineTo(x,y+sy+10); ctx.lineTo(x+w,y+sy+4); ctx.lineTo(x+w,y+sy-6); ctx.closePath(); ctx.fill();
-              ctx.beginPath(); ctx.moveTo(x,y+h-sy); ctx.lineTo(x,y+h-sy-10); ctx.lineTo(x+w,y+h-sy-4); ctx.lineTo(x+w,y+h-sy+6); ctx.closePath(); ctx.fill();
+            for (let sy = 0; sy < 18; sy += 6) {
+              ctx.beginPath(); ctx.moveTo(x,y+sy); ctx.lineTo(x,y+sy+8); ctx.lineTo(x+w,y+sy+3); ctx.lineTo(x+w,y+sy-5); ctx.closePath(); ctx.fill();
+              ctx.beginPath(); ctx.moveTo(x,y+h-sy); ctx.lineTo(x,y+h-sy-8); ctx.lineTo(x+w,y+h-sy-3); ctx.lineTo(x+w,y+h-sy+5); ctx.closePath(); ctx.fill();
             }
+            ctx.fillStyle = 'rgba(0,0,0,0.08)';
+            for (let sy = 3; sy < 18; sy += 6) {
+              ctx.beginPath(); ctx.moveTo(x,y+sy); ctx.lineTo(x,y+sy+8); ctx.lineTo(x+w,y+sy+3); ctx.lineTo(x+w,y+sy-5); ctx.closePath(); ctx.fill();
+              ctx.beginPath(); ctx.moveTo(x,y+h-sy); ctx.lineTo(x,y+h-sy-8); ctx.lineTo(x+w,y+h-sy-3); ctx.lineTo(x+w,y+h-sy+5); ctx.closePath(); ctx.fill();
+            }
+          }
+          // Thin border line at each hazard zone boundary
+          ctx.strokeStyle = 'rgba(200,160,0,0.22)'; ctx.lineWidth = 1;
+          if (horiz) {
+            ctx.beginPath(); ctx.moveTo(x+18, y); ctx.lineTo(x+18, y+h); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x+w-18, y); ctx.lineTo(x+w-18, y+h); ctx.stroke();
+          } else {
+            ctx.beginPath(); ctx.moveTo(x, y+18); ctx.lineTo(x+w, y+18); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x, y+h-18); ctx.lineTo(x+w, y+h-18); ctx.stroke();
           }
         }
         // Overhead pipe run along one wall (orange-yellow, Skeld signature)
@@ -11802,6 +11933,68 @@
             ctx.strokeRect(x + w/2 - _drainW/2, y + 20, _drainW, h - 40);
             for (let _dg = 20; _dg < h - 20; _dg += 8) {
               ctx.beginPath(); ctx.moveTo(x+w/2-_drainW/2, y+_dg); ctx.lineTo(x+w/2+_drainW/2, y+_dg); ctx.stroke();
+            }
+          }
+        }
+        // Vent shaft openings along far wall — iconic Among Us vents, offset from lamp positions
+        if (thick >= 36) {
+          const _ventStep = 140;
+          if (horiz) {
+            for (let _vx = 60; _vx < w - 40; _vx += _ventStep) {
+              const _vgX = x + _vx, _vgY = y + h - 10, _vgW = 18, _vgH = 8;
+              ctx.fillStyle = 'rgba(8,12,22,0.75)';
+              ctx.fillRect(_vgX, _vgY, _vgW, _vgH);
+              ctx.strokeStyle = 'rgba(70,100,150,0.55)'; ctx.lineWidth = 0.8;
+              ctx.strokeRect(_vgX, _vgY, _vgW, _vgH);
+              // Grate slats (4 vertical bars)
+              ctx.strokeStyle = 'rgba(50,80,130,0.45)'; ctx.lineWidth = 0.6;
+              for (let _sl = 1; _sl <= 4; _sl++) {
+                const _slx = _vgX + _vgW * _sl / 5;
+                ctx.beginPath(); ctx.moveTo(_slx, _vgY + 1.5); ctx.lineTo(_slx, _vgY + _vgH - 1.5); ctx.stroke();
+              }
+              // Recessed shadow at top of vent opening
+              ctx.fillStyle = 'rgba(0,0,0,0.22)';
+              ctx.fillRect(_vgX + 1, _vgY + 1, _vgW - 2, 2);
+            }
+          } else {
+            for (let _vy = 60; _vy < h - 40; _vy += _ventStep) {
+              const _vgX = x + w - 10, _vgY = y + _vy, _vgW = 8, _vgH = 18;
+              ctx.fillStyle = 'rgba(8,12,22,0.75)';
+              ctx.fillRect(_vgX, _vgY, _vgW, _vgH);
+              ctx.strokeStyle = 'rgba(70,100,150,0.55)'; ctx.lineWidth = 0.8;
+              ctx.strokeRect(_vgX, _vgY, _vgW, _vgH);
+              ctx.strokeStyle = 'rgba(50,80,130,0.45)'; ctx.lineWidth = 0.6;
+              for (let _sl = 1; _sl <= 4; _sl++) {
+                const _sly = _vgY + _vgH * _sl / 5;
+                ctx.beginPath(); ctx.moveTo(_vgX + 1.5, _sly); ctx.lineTo(_vgX + _vgW - 1.5, _sly); ctx.stroke();
+              }
+              ctx.fillStyle = 'rgba(0,0,0,0.22)';
+              ctx.fillRect(_vgX + 1, _vgY + 1, 2, _vgH - 2);
+            }
+          }
+        }
+        // Secondary coolant pipe along far wall (thin blue — contrasts with orange near-wall pipe)
+        if (thick >= 36) {
+          ctx.strokeStyle = 'rgba(40,130,220,0.28)'; ctx.lineWidth = 2;
+          ctx.beginPath();
+          if (horiz) { ctx.moveTo(x, y + h - 6); ctx.lineTo(x + w, y + h - 6); }
+          else        { ctx.moveTo(x + w - 6, y); ctx.lineTo(x + w - 6, y + h); }
+          ctx.stroke();
+          // Pipe highlight (top rim shine)
+          ctx.strokeStyle = 'rgba(90,180,255,0.14)'; ctx.lineWidth = 1;
+          ctx.beginPath();
+          if (horiz) { ctx.moveTo(x, y + h - 7); ctx.lineTo(x + w, y + h - 7); }
+          else        { ctx.moveTo(x + w - 7, y); ctx.lineTo(x + w - 7, y + h); }
+          ctx.stroke();
+          // Blue pipe joint rings every 80px (staggered 40px offset from orange joints)
+          ctx.strokeStyle = 'rgba(30,90,180,0.38)'; ctx.lineWidth = 1.5;
+          if (horiz) {
+            for (let _bp = 40; _bp < w; _bp += 80) {
+              ctx.beginPath(); ctx.moveTo(x + _bp, y + h - 9); ctx.lineTo(x + _bp, y + h - 3); ctx.stroke();
+            }
+          } else {
+            for (let _bp = 40; _bp < h; _bp += 80) {
+              ctx.beginPath(); ctx.moveTo(x + w - 9, y + _bp); ctx.lineTo(x + w - 3, y + _bp); ctx.stroke();
             }
           }
         }
@@ -16160,6 +16353,55 @@
           ctx.beginPath(); ctx.moveTo(x+w*0.22, cy-30); ctx.lineTo(x+w*0.38, cy-30); ctx.stroke();
           break;
         }
+      }
+      // === Skeld room floor stencils + corner vent grates (applied to all Skeld rooms) ===
+      if (selectedMap === 'skeld' && w >= 60 && h >= 60) {
+        // Faint painted room name on floor
+        const _skRmCol = {
+          'Cafeteria':'#ccaa60','Electrical':'#cccc40','MedBay':'#60cccc','Reactor':'#cc8840',
+          'Navigation':'#6080cc','Weapons':'#cc6060','Admin':'#80cc80','Security':'#60cc60',
+          'Shields':'#cc4040','Storage':'#ccaa40','Communications':'#40cccc','O2':'#40cc80',
+          'Upper Engine':'#cc6820','Lower Engine':'#cc6820','Kitchen':'#ccaa60'
+        }[name];
+        if (_skRmCol) {
+          ctx.save();
+          ctx.globalAlpha = 0.055;
+          ctx.fillStyle = _skRmCol;
+          ctx.font = `bold ${Math.min(10, Math.max(6, Math.floor(w * 0.06)))}px Arial`;
+          ctx.textAlign = 'center';
+          ctx.fillText(name.toUpperCase(), cx, y + h * 0.90);
+          ctx.restore();
+        }
+        // Corner vent grate in bottom-left of room
+        const _cvX = x + 4, _cvY = y + h - 12, _cvW = 20, _cvH = 10;
+        ctx.save();
+        ctx.globalAlpha = 1.0;
+        ctx.fillStyle = 'rgba(10,14,24,0.65)';
+        ctx.fillRect(_cvX, _cvY, _cvW, _cvH);
+        ctx.strokeStyle = 'rgba(70,100,145,0.55)'; ctx.lineWidth = 0.8;
+        ctx.strokeRect(_cvX, _cvY, _cvW, _cvH);
+        ctx.strokeStyle = 'rgba(50,75,125,0.40)'; ctx.lineWidth = 0.6;
+        for (let _cvs = 1; _cvs <= 5; _cvs++) {
+          const _cvsx = _cvX + _cvW * _cvs / 6;
+          ctx.beginPath(); ctx.moveTo(_cvsx, _cvY + 1.5); ctx.lineTo(_cvsx, _cvY + _cvH - 1.5); ctx.stroke();
+        }
+        ctx.fillStyle = 'rgba(0,0,0,0.20)';
+        ctx.fillRect(_cvX + 1, _cvY + 1, _cvW - 2, 2);
+        // Second vent grate in bottom-right corner
+        const _cv2X = x + w - 24, _cv2Y = _cvY;
+        ctx.fillStyle = 'rgba(10,14,24,0.65)';
+        ctx.fillRect(_cv2X, _cv2Y, _cvW, _cvH);
+        ctx.strokeStyle = 'rgba(70,100,145,0.55)'; ctx.lineWidth = 0.8;
+        ctx.strokeRect(_cv2X, _cv2Y, _cvW, _cvH);
+        ctx.strokeStyle = 'rgba(50,75,125,0.40)'; ctx.lineWidth = 0.6;
+        for (let _cvs2 = 1; _cvs2 <= 5; _cvs2++) {
+          const _cvsx2 = _cv2X + _cvW * _cvs2 / 6;
+          ctx.beginPath(); ctx.moveTo(_cvsx2, _cv2Y + 1.5); ctx.lineTo(_cvsx2, _cv2Y + _cvH - 1.5); ctx.stroke();
+        }
+        ctx.fillStyle = 'rgba(0,0,0,0.20)';
+        ctx.fillRect(_cv2X + 1, _cv2Y + 1, _cvW - 2, 2);
+        ctx.restore();
+        ctx.globalAlpha = 0.5;
       }
       ctx.restore();
     }
