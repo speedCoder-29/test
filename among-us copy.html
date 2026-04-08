@@ -2676,36 +2676,65 @@
           { x: 2134, y: 1280, w: 16, h: 90, room: 'Shields', dir: 'v' },       // west entry from Storage corridor
         ],
         waypoints: [
-          { x: 280, y: 250, room: 'Upper Engine' },  // 0
-          { x: 220, y: 710, room: 'Reactor' },       // 1
-          { x: 488, y: 710, room: 'Security' },       // 2
-          { x: 700, y: 410, room: 'MedBay' },         // 3
-          { x: 700, y: 700, room: 'Hallway' },        // 4
-          { x: 700, y: 810, room: 'Hallway' },        // 5
-          { x: 710, y: 1115, room: 'Electrical' },    // 6
-          { x: 280, y: 1360, room: 'Lower Engine' },  // 7
-          { x: 1270, y: 1360, room: 'Storage' },      // 8
-          { x: 1400, y: 260, room: 'Cafeteria' },     // 9
-          { x: 1480, y: 770, room: 'Admin' },         // 10
-          { x: 2100, y: 740, room: 'O2' },            // 11
-          { x: 2300, y: 260, room: 'Weapons' },       // 12
-          { x: 2750, y: 740, room: 'Navigation' },    // 13
-          { x: 1912, y: 1560, room: 'Communications' }, // 14
-          { x: 2380, y: 1290, room: 'Shields' },      // 15
-          { x: 1050, y: 700, room: 'Hallway' },       // 16
-          { x: 1400, y: 550, room: 'Hallway' },       // 17
-          { x: 1700, y: 700, room: 'Hallway' },       // 18
-          { x: 2400, y: 550, room: 'Hallway' },       // 19
-          { x: 1400, y: 1050, room: 'Hallway' },      // 20
-          { x: 2480, y: 950,  room: 'Hallway' },      // 21: East corridor (O2/Nav→Shields junction)
-          { x: 320, y: 710, room: 'Hallway' },        // 22: UE-LE corridor mid (junction with horizontal entrance)
+          { x: 285,  y: 270,  room: 'Upper Engine' },     // 0  UE center (x:156-414, y:146-394)
+          { x: 138,  y: 810,  room: 'Reactor' },          // 1  Reactor center (x:16-260, y:394-1226)
+          { x: 520,  y: 703,  room: 'Security' },         // 2  Security center (x:380-660, y:586-820)
+          { x: 700,  y: 440,  room: 'MedBay' },           // 3  MedBay center (x:536-864, y:280-600)
+          { x: 700,  y: 240,  room: 'Hallway' },          // 4  top corridor mid (x:414-986, y:200-280)
+          { x: 700,  y: 1335, room: 'Hallway' },          // 5  LE-Storage corridor (x:414-1036, y:1290-1380)
+          { x: 748,  y: 1115, room: 'Electrical' },       // 6  Electrical (x:536-960, y:940-1290)
+          { x: 285,  y: 1367, room: 'Lower Engine' },     // 7  LE center (x:156-414, y:1226-1508)
+          { x: 1280, y: 1365, room: 'Storage' },          // 8  Storage center (x:1036-1524, y:1116-1614)
+          { x: 1418, y: 342,  room: 'Cafeteria' },        // 9  Cafeteria center (x:986-1850, y:112-600)
+          { x: 1618, y: 825,  room: 'Admin' },            // 10 Admin center (x:1396-1840, y:676-974)
+          { x: 2123, y: 750,  room: 'O2' },               // 11 O2 center (x:1936-2310, y:596-904)
+          { x: 2305, y: 283,  room: 'Weapons' },          // 12 Weapons (x:2066-2544, y:112-490)
+          { x: 2806, y: 750,  room: 'Navigation' },       // 13 Navigation (x:2566-3046, y:566-934)
+          { x: 1912, y: 1560, room: 'Communications' },   // 14 Comms (x:1740-2084, y:1370-1750)
+          { x: 2347, y: 1305, room: 'Shields' },          // 15 Shields (x:2150-2544, y:1116-1494)
+          { x: 1320, y: 640,  room: 'Hallway' },          // 16 central corridor top (x:1264-1380, y:600-1116)
+          { x: 1320, y: 1060, room: 'Hallway' },          // 17 central corridor bottom
+          { x: 1888, y: 740,  room: 'Hallway' },          // 18 Admin→O2 corridor (x:1840-1936, y:700-780)
+          { x: 2430, y: 740,  room: 'Hallway' },          // 19 O2→Nav corridor (x:2310-2550, y:700-780)
+          { x: 1829, y: 1325, room: 'Hallway' },          // 20 Storage→Shields corridor (x:1524-2134, y:1280-1370)
+          { x: 2476, y: 950,  room: 'Hallway' },          // 21 east corridor (x:2428-2524, y:780-1116)
+          { x: 320,  y: 710,  room: 'Hallway' },          // 22 UE-LE corridor junction (x:260-380, y:394-1226)
         ],
         waypointEdges: [
-          [0,3],[0,1],[1,2],[2,4],[3,4],[3,9],[4,16],[4,5],[5,6],[5,7],[6,8],
-          [9,17],[9,12],[17,10],[10,16],[10,18],[10,20],[18,11],[11,12],[11,13],
-          [11,19],[12,19],[13,19],[20,8],[14,15],[14,20],[8,14],
-          [11,21],[21,15],[7,20],
-          [0,22],[1,22],[2,22],[7,22],[6,22],
+          // UE: top corridor + UE-LE vertical
+          [0,4],[0,22],
+          // Reactor: UE-LE corridor via right-wall door gap y:700-780
+          [1,22],
+          // Security: UE-LE corridor via left-wall door gap y:700-780
+          [2,22],
+          // MedBay: top corridor (no top wall at y:280) + Cafeteria (direct via top corridor)
+          [3,4],[3,9],
+          // top corridor: Cafeteria east end
+          [4,9],
+          // UE-LE corridor: connects LE at bottom
+          [22,7],
+          // LE-Storage corridor: Electrical south door, LE east door, Storage left door
+          [5,6],[5,7],[5,8],
+          // Cafeteria: Weapons via Caf→Weapons corridor, central corridor top
+          [9,12],[9,16],
+          // central corridor: Admin (left-wall door), bottom half
+          [16,10],[16,17],
+          // Admin: Admin→O2 corridor, central corridor bottom
+          [10,18],[10,17],
+          // central corridor bottom: Storage top door
+          [17,8],
+          // Admin→O2 corridor: O2 left-wall door
+          [18,11],
+          // O2: Weapons via vertical connector, O2→Nav corridor
+          [11,12],[11,19],
+          // Weapons/Nav: both connect into O2→Nav corridor
+          [12,19],[13,19],
+          // east corridor: from O2→Nav bottom, down to Shields
+          [19,21],[21,15],
+          // Storage: Storage→Shields corridor, Comms below S→S corridor
+          [8,20],[8,14],
+          // Comms and Shields via S→S corridor
+          [14,15],[14,20],[20,15],
         ],
         // Official 4 CCTV camera locations (mounted positions on ship, viewed from Security)
         cameras: [
@@ -4235,57 +4264,97 @@
     }
 
     // A* on the waypoint graph. Returns [{x,y}…] path to (toX,toY), or null if unreachable.
+    // String-pull: remove waypoints that can be skipped with direct LOS.
+    // Runs on the raw A* output to produce the shortest possible straight-line path.
+    function _stringPull(path) {
+      if (path.length <= 2) return path;
+      const out = [path[0]];
+      let i = 0;
+      while (i < path.length - 1) {
+        let j = path.length - 1;
+        // Walk backwards from the end; take the furthest point we have LOS to
+        while (j > i + 1) {
+          if (hasLineOfSight(path[i].x, path[i].y, path[j].x, path[j].y, 26, 34)) break;
+          j--;
+        }
+        out.push(path[j]);
+        i = j;
+      }
+      return out;
+    }
+
     function waypointAStar(fromX, fromY, toX, toY) {
       if (!waypoints.length) return null;
-      // Already have direct line of sight — no waypoints needed
+      // Direct LOS — no graph search needed
       if (hasLineOfSight(fromX, fromY, toX, toY, 26, 34)) return [{ x: toX, y: toY }];
 
       const n = waypoints.length;
-      // Find nearest waypoint to goal by distance, and nearest LOS-visible waypoint to start
+      // Find start (nearest waypoint with LOS) and goal (nearest waypoint to target)
       let gi = 0, gd2 = Infinity;
-      const _swp = new Array(n);
+      const cands = new Array(n);
       for (let i = 0; i < n; i++) {
         const wp = waypoints[i];
-        _swp[i] = { i, ds: (wp.x - fromX) ** 2 + (wp.y - fromY) ** 2 };
+        cands[i] = { i, ds: (wp.x - fromX) ** 2 + (wp.y - fromY) ** 2 };
         const dg = (wp.x - toX) ** 2 + (wp.y - toY) ** 2;
         if (dg < gd2) { gd2 = dg; gi = i; }
       }
-      _swp.sort((a, b) => a.ds - b.ds);
-      // Pick nearest waypoint with LOS from start (check up to 8 nearest candidates)
-      let si = _swp[0].i;
-      const _chk = Math.min(8, n);
-      for (let ci = 0; ci < _chk; ci++) {
-        if (hasLineOfSight(fromX, fromY, waypoints[_swp[ci].i].x, waypoints[_swp[ci].i].y, 26, 34)) {
-          si = _swp[ci].i; break;
-        }
+      cands.sort((a, b) => a.ds - b.ds);
+      let si = cands[0].i;
+      for (let c = 0; c < Math.min(8, n); c++) {
+        const ci = cands[c].i;
+        if (hasLineOfSight(fromX, fromY, waypoints[ci].x, waypoints[ci].y, 26, 34)) { si = ci; break; }
       }
       if (si === gi) return [{ x: toX, y: toY }];
 
-      // A* search
+      // A* with binary min-heap — O(E log V) vs previous O(V²) open-list scan
       const gScore = new Float32Array(n).fill(Infinity);
-      const fScore = new Float32Array(n).fill(Infinity);
       const parent = new Int32Array(n).fill(-1);
       const closed = new Uint8Array(n);
       const gx2 = waypoints[gi].x, gy2 = waypoints[gi].y;
       gScore[si] = 0;
-      fScore[si] = Math.hypot(waypoints[si].x - gx2, waypoints[si].y - gy2);
-      const open = [si];
 
-      while (open.length) {
-        let bi = 0;
-        for (let i = 1; i < open.length; i++) if (fScore[open[i]] < fScore[open[bi]]) bi = i;
-        const curr = open.splice(bi, 1)[0];
+      // Inline heap: entries are [fScore, nodeIndex]
+      const heap = [[Math.hypot(waypoints[si].x - gx2, waypoints[si].y - gy2), si]];
+      function _hpush(fs, idx) {
+        heap.push([fs, idx]);
+        let i = heap.length - 1;
+        while (i > 0) {
+          const p = (i - 1) >> 1;
+          if (heap[p][0] <= heap[i][0]) break;
+          const tmp = heap[i]; heap[i] = heap[p]; heap[p] = tmp;
+          i = p;
+        }
+      }
+      function _hpop() {
+        const top = heap[0], last = heap.pop();
+        if (heap.length) {
+          heap[0] = last;
+          let i = 0;
+          for (;;) {
+            let s = i, l = 2*i+1, r = 2*i+2;
+            if (l < heap.length && heap[l][0] < heap[s][0]) s = l;
+            if (r < heap.length && heap[r][0] < heap[s][0]) s = r;
+            if (s === i) break;
+            const tmp = heap[i]; heap[i] = heap[s]; heap[s] = tmp;
+            i = s;
+          }
+        }
+        return top;
+      }
+
+      while (heap.length) {
+        const [, curr] = _hpop();
         if (closed[curr]) continue;
         closed[curr] = 1;
         if (curr === gi) {
-          // Reconstruct path
-          const path = [{ x: toX, y: toY }];
+          // Reconstruct raw path then string-pull for smoothness
+          const raw = [{ x: toX, y: toY }];
           let node = gi;
           while (parent[node] !== -1) {
-            path.unshift({ x: waypoints[node].x, y: waypoints[node].y });
+            raw.unshift({ x: waypoints[node].x, y: waypoints[node].y });
             node = parent[node];
           }
-          return path;
+          return _stringPull(raw);
         }
         for (const edge of waypointAdj[curr]) {
           if (closed[edge.to]) continue;
@@ -4293,12 +4362,11 @@
           if (tg < gScore[edge.to]) {
             parent[edge.to] = curr;
             gScore[edge.to] = tg;
-            fScore[edge.to] = tg + Math.hypot(waypoints[edge.to].x - gx2, waypoints[edge.to].y - gy2);
-            open.push(edge.to);
+            _hpush(tg + Math.hypot(waypoints[edge.to].x - gx2, waypoints[edge.to].y - gy2), edge.to);
           }
         }
       }
-      return null; // no path — caller falls back to grid BFS
+      return null; // no path found — caller falls back to grid BFS
     }
 
     // Pre-render static parts of the map to an offscreen canvas.
@@ -5879,6 +5947,101 @@
       };
     }
 
+    // ── NPC archetype profiles ──────────────────────────────────────────────────
+    // Each key is a profile name. Fields override createNPC defaults.
+    // onTick(npc, {player, npcs, AI_STATE, moveToward}) is called each frame
+    // before the default AI state-machine runs; return true to suppress default AI.
+    const NPC_PROFILES = {
+      crewmate: {
+        speed: 2.2,
+        personality: { bravery: 0.4, taskSpeed: 1.0, awareness: 0.5, sociability: 0.7 },
+        isImpostor: false,
+      },
+      detective: {
+        speed: 2.4,
+        personality: { bravery: 0.8, taskSpeed: 0.9, awareness: 1.0, sociability: 0.4 },
+        isImpostor: false,
+        onTick(npc, { npcs, AI_STATE }) {
+          // Detectives drift toward the nearest suspicious NPC when idle
+          if (npc.state === AI_STATE.IDLE || npc.state === AI_STATE.WANDER) {
+            const suspect = npcs.find(n => n !== npc && n.alive && (npc.suspicion[n.name] || 0) > 0.5);
+            if (suspect) { npc.targetX = suspect.x; npc.targetY = suspect.y; npc.state = AI_STATE.GOTO_TASK; }
+          }
+        },
+      },
+      guardian: {
+        speed: 2.0,
+        personality: { bravery: 1.0, taskSpeed: 0.7, awareness: 0.9, sociability: 0.9 },
+        isImpostor: false,
+        onTick(npc, { player, moveToward, AI_STATE }) {
+          // Guardians shadow the human player when they are a crewmate
+          if (!player.isImpostor && player.alive && npc.state !== AI_STATE.REPORT_BODY) {
+            const d = Math.hypot(player.x - npc.x, player.y - npc.y);
+            if (d > 160) { moveToward(npc, player.x, player.y); return true; }
+          }
+        },
+      },
+      engineer: {
+        speed: 2.6,
+        personality: { bravery: 0.5, taskSpeed: 1.4, awareness: 0.4, sociability: 0.3 },
+        isImpostor: false,
+        onTick(npc, { AI_STATE }) {
+          // Engineers rush tasks; reduce time spent wandering
+          if (npc.state === AI_STATE.WANDER && npc.taskList.length > 0) {
+            npc.state = AI_STATE.GOTO_TASK; npc.stateTimer = 0;
+          }
+        },
+      },
+      impostor: {
+        speed: 2.5,
+        personality: { bravery: 0.9, taskSpeed: 0.6, awareness: 0.8, sociability: 0.6 },
+        isImpostor: true,
+      },
+    };
+
+    // ── spawnNPC — one-call convenience API ─────────────────────────────────────
+    // opts: { x, y, color?, name?, profile?, tasks?, onTick? }
+    //   profile  – key from NPC_PROFILES (default: 'crewmate')
+    //   color    – hex string; auto-picked from unused COLORS if omitted
+    //   tasks    – array of task objects; auto-assigned from map if omitted
+    //   onTick   – per-instance hook, overrides profile onTick
+    function spawnNPC(opts = {}) {
+      const profile = NPC_PROFILES[opts.profile || 'crewmate'] || NPC_PROFILES.crewmate;
+
+      // Auto-pick a color not yet in use
+      let colorHex = opts.color;
+      if (!colorHex) {
+        const usedHexes = new Set([player.color, ...npcs.map(n => n.color)]);
+        const free = COLORS.find(c => !usedHexes.has(c.hex));
+        colorHex = free ? free.hex : COLORS[Math.floor(Math.random() * COLORS.length)].hex;
+      }
+
+      const name = opts.name || ('NPC-' + (npcs.length + 1));
+      const npc  = createNPC(opts.x ?? player.x, opts.y ?? player.y, colorHex, name, profile.isImpostor);
+
+      // Apply profile overrides
+      if (profile.speed    !== undefined) npc.speed = profile.speed;
+      if (profile.personality) Object.assign(npc.personality, profile.personality);
+
+      // Per-instance or profile onTick hook
+      const hookFn = opts.onTick || profile.onTick || null;
+      if (hookFn) npc._onTick = hookFn;
+
+      // Tasks: use provided array, or auto-assign from map task-list
+      if (opts.tasks) {
+        npc.taskList = opts.tasks;
+      } else {
+        const m = MAPS[selectedMap];
+        if (m && m.tasks && m.tasks.length) {
+          const shuffled = [...m.tasks].sort(() => Math.random() - 0.5);
+          npc.taskList = shuffled.slice(0, Math.min(3, shuffled.length)).map(t => ({ ...t, done: false }));
+        }
+      }
+
+      npcs.push(npc);
+      return npc;
+    }
+
     function init() {
       loadMap(selectedMap);
       const m = MAPS[selectedMap];
@@ -7420,21 +7583,21 @@
       if (!npc.navPath || npc.navRecalc-- <= 0) {
         npc.navPath = waypointAStar(cx2, cy2, tx, ty) || findPath(cx2, cy2, tx, ty);
         npc.navIndex = 0;
-        npc.navRecalc = _nearDoor ? 12 : 45;
+        npc.navRecalc = _nearDoor ? 12 : 30;
         npc._navTx = tx; npc._navTy = ty;
       }
 
       if (npc.navPath && npc.navIndex < npc.navPath.length) {
         const wp = npc.navPath[npc.navIndex];
 
-        // Lookahead corner blend: when within 52px of the current waypoint and a next
+        // Lookahead corner blend: when within 72px of the current waypoint and a next
         // waypoint exists, start curving toward it to produce smooth arcs at intersections.
         // Disabled for door waypoints — NPCs must pass exactly through doorway centres.
         let _targetX = wp.x, _targetY = wp.y;
         if (!wp.isDoor && npc.navIndex + 1 < npc.navPath.length) {
           const _dWp = Math.hypot(wp.x - npc.x, wp.y - npc.y);
-          if (_dWp < 52) {
-            const _blend = 1 - _dWp / 52;
+          if (_dWp < 72) {
+            const _blend = 1 - _dWp / 72;
             const _nwp = npc.navPath[npc.navIndex + 1];
             _targetX = wp.x + _blend * (_nwp.x - wp.x);
             _targetY = wp.y + _blend * (_nwp.y - wp.y);
@@ -7469,6 +7632,9 @@
 
     // Crewmate AI
     function updateCrewmateAI(npc) {
+      // Per-NPC custom tick hook (from NPC_PROFILES or spawnNPC opts)
+      if (npc._onTick && npc._onTick(npc, { player, npcs, AI_STATE, moveToward })) return;
+
       // H&S: hiders always run from seeker at all times
       if (gameMode === 'hideseek') {
         // If in vent: tick timer then exit at the vent farthest from seeker
@@ -7520,27 +7686,56 @@
         }
       }
 
-      // Awareness: track nearby players
-      const nearby = getNearbyEntities(npc, 200);
+      // Awareness: track nearby players — range scales with difficulty
+      const _df = _npcDiff();
+      const nearby = getNearbyEntities(npc, _df.awarenessRange);
       for (const e of nearby) {
         npc.lastSeen[e.name] = { x: e.x, y: e.y, time: Date.now() };
       }
+      // Hard: share suspicion intel with nearby allies every ~3s
+      if (_df.hard && !inMeeting) {
+        npc._intelTick = (npc._intelTick || 0) + 1;
+        if (npc._intelTick % 180 === 0) {
+          const allies = npcs.filter(n => n !== npc && n.alive && !n.isImpostor
+            && Math.hypot(n.x - npc.x, n.y - npc.y) < _df.shareIntelRange);
+          for (const ally of allies) {
+            for (const [name, val] of Object.entries(npc.suspicion)) {
+              ally.suspicion[name] = Math.max(ally.suspicion[name] || 0, val * 0.6);
+            }
+          }
+        }
+      }
+      // Easy: suspicion slowly decays (NPCs forget easily)
+      if (_df.easy) {
+        for (const name of Object.keys(npc.suspicion)) {
+          npc.suspicion[name] = Math.max(0, (npc.suspicion[name] || 0) - 0.05);
+        }
+      }
 
-      // NPCs respond to sabotage - prioritize critical sabotages
+      // NPCs respond to sabotage — response chance and speed scale with difficulty
       if (sabotage.active && npc.state !== AI_STATE.REPORTING && !npc.fixingSabotage) {
         const sabStations = getSabFixStations();
-        const fixTarget = sabStations.length >= 2
-          ? (sabotage.fixProgress <= sabotage.fixProgressB ? sabStations[0] : sabStations[1])
-          : sabStations[0];
+        // Hard: go to nearest station; Easy/Normal: pick whichever needs more progress
+        let fixTarget;
+        if (_df.hard && sabStations.length >= 2) {
+          fixTarget = dist(npc, sabStations[0]) < dist(npc, sabStations[1]) ? sabStations[0] : sabStations[1];
+        } else {
+          fixTarget = sabStations.length >= 2
+            ? (sabotage.fixProgress <= sabotage.fixProgressB ? sabStations[0] : sabStations[1])
+            : sabStations[0];
+        }
         if (fixTarget) {
           const isCritical = sabotage.type === 'o2' || sabotage.type === 'reactor';
-          if (Math.random() < (isCritical ? 0.08 : 0.02)) {
-            npc.sabFixX = fixTarget.x + (Math.random() - 0.5) * 30;
-            npc.sabFixY = fixTarget.y + (Math.random() - 0.5) * 30;
+          const _sabChance = isCritical ? _df.sabChanceCrit : _df.sabChanceNorm;
+          if (Math.random() < _sabChance) {
+            npc.sabFixX = fixTarget.x + (Math.random() - 0.5) * (_df.hard ? 10 : 30);
+            npc.sabFixY = fixTarget.y + (Math.random() - 0.5) * (_df.hard ? 10 : 30);
             npc.fixingSabotage = true;
             npc.state = AI_STATE.WALKING_TO_TASK;
             npc.stateTimer = 0;
             npc.navPath = null;
+            // Hard: immediately cancel current task to respond
+            if (_df.hard) npc.navPath = null;
           }
         }
       }
@@ -7582,23 +7777,198 @@
         }
       }
 
-      // Check for dead bodies nearby
+      // ── Role-specific crewmate logic ─────────────────────────────────────────
+      if (!inMeeting && !gameOver && gameMode !== 'hideseek') {
+
+        // ENGINEER: vent to shortcut to distant tasks; vent-escape when fleeing
+        if (npc.role === 'engineer' && vents && vents.length) {
+          const _engTask = npc.taskList && npc.taskList.find(t => !t.npcDone);
+          if (_engTask && npc.state === AI_STATE.WALKING_TO_TASK) {
+            const _td = Math.hypot(_engTask.x - npc.x, _engTask.y - npc.y);
+            if (_td > 420) {
+              const _ncx = npc.x + npc.w / 2, _ncy = npc.y + npc.h / 2;
+              const _entryV = vents.find(v => Math.hypot(v.x - _ncx, v.y - _ncy) < 75);
+              if (_entryV) {
+                const _exitV = vents.reduce((best, v) => {
+                  const vd = Math.hypot(v.x - _engTask.x, v.y - _engTask.y);
+                  return (!best || vd < best.d) ? { v, d: vd } : best;
+                }, null);
+                if (_exitV && _exitV.v !== _entryV) {
+                  npc.x = _exitV.v.x - npc.w / 2; npc.y = _exitV.v.y - npc.h / 2;
+                  npc.navPath = null;
+                  spawnVentEffect(_exitV.v.x, _exitV.v.y);
+                }
+              }
+            }
+          }
+          if (npc.state === AI_STATE.FLEEING) {
+            const _ncx = npc.x + npc.w / 2, _ncy = npc.y + npc.h / 2;
+            const _ev = vents.reduce((b, v) => { const d = Math.hypot(v.x-_ncx,v.y-_ncy); return(!b||d<b.d)?{v,d}:b; }, null);
+            if (_ev && _ev.d < 70 && Math.random() < 0.04) {
+              const _rx = vents[Math.floor(Math.random() * vents.length)];
+              npc.x = _rx.x - npc.w / 2; npc.y = _rx.y - npc.h / 2;
+              npc.navPath = null; npc.state = AI_STATE.IDLE;
+              spawnVentEffect(_rx.x, _rx.y);
+            }
+          }
+        }
+
+        // SCIENTIST: monitor who is alive; raise suspicion when someone goes silent
+        if (npc.role === 'scientist') {
+          npc._sciTick = (npc._sciTick || 0) + 1;
+          if (npc._sciTick % 120 === 0) {
+            if (!npc._lastAlive) npc._lastAlive = {};
+            const snap = {};
+            for (const o of npcs) snap[o.name] = { alive: o.alive, x: o.x, y: o.y };
+            snap[player.name] = { alive: player.alive, x: player.x, y: player.y };
+            for (const [nm, prev] of Object.entries(npc._lastAlive)) {
+              if (prev.alive && snap[nm] && !snap[nm].alive) {
+                // Someone just died — suspect all nearby at time of death
+                for (const o of npcs) {
+                  if (o !== npc && Math.hypot(o.x - prev.x, o.y - prev.y) < 260)
+                    npc.suspicion[o.name] = (npc.suspicion[o.name] || 0) + 18 * npc.personality.awareness;
+                }
+                if (!npc.speechBubble)
+                  npc.speechBubble = { text: `${nm} just flatlined!`, timer: 210 };
+              }
+            }
+            npc._lastAlive = snap;
+          }
+        }
+
+        // DETECTIVE: faster suspicion build-up; moves toward fresh bodies to investigate
+        if (npc.role === 'detective') {
+          const _detNear = getNearbyEntities(npc, 200);
+          for (const e of _detNear) {
+            if (e.isImpostor)
+              npc.suspicion[e.name] = (npc.suspicion[e.name] || 0) + 0.07 * npc.personality.awareness;
+          }
+          const _freshBody = deadBodies.find(b => !b.reported && !b._detScanned);
+          if (_freshBody && npc.state !== AI_STATE.REPORTING && Math.random() < 0.012) {
+            _freshBody._detScanned = true;
+            npc.targetX = _freshBody.x; npc.targetY = _freshBody.y;
+            npc.state = AI_STATE.WALKING_TO_TASK; npc.stateTimer = 0;
+          }
+          if (!npc.speechBubble && Math.random() < 0.0008) {
+            let _top = null, _tv = 30;
+            for (const [nm, v] of Object.entries(npc.suspicion)) { if (v > _tv) { _tv = v; _top = nm; } }
+            if (_top) npc.speechBubble = { text: `I'm watching ${_top}…`, timer: 200 };
+          }
+        }
+
+        // NOISEMAKER: actively seek groups; warns players when isolated
+        if (npc.role === 'noisemaker') {
+          const _nmNear = npcs.filter(n => n !== npc && n.alive && !n.isImpostor && dist(npc, n) < 180);
+          if (_nmNear.length === 0 && npc.state !== AI_STATE.WALKING_TO_TASK && Math.random() < 0.018) {
+            let _bestGroup = null, _bestSz = 0;
+            for (const c of npcs) {
+              if (c === npc || !c.alive || c.isImpostor) continue;
+              const _sz = npcs.filter(n => n !== npc && n.alive && dist(n, c) < 140).length;
+              if (_sz > _bestSz) { _bestSz = _sz; _bestGroup = c; }
+            }
+            if (_bestGroup) {
+              npc.targetX = _bestGroup.x + (Math.random()-0.5)*40;
+              npc.targetY = _bestGroup.y + (Math.random()-0.5)*40;
+              npc.state = AI_STATE.WALKING_RANDOM; npc.stateTimer = 220; npc.navPath = null;
+            }
+          }
+          if (!npc.speechBubble && _nmNear.length === 0 && Math.random() < 0.001)
+            npc.speechBubble = { text: 'Stay together!', timer: 180 };
+        }
+
+        // GUARDIAN ANGEL: shadow the crewmate closest to an impostor
+        if (npc.role === 'guardian_angel') {
+          npc._gaTick = (npc._gaTick || 0) + 1;
+          if (npc._gaTick % 60 === 0) {
+            let _threat = 0, _ward = null;
+            for (const cm of npcs) {
+              if (cm === npc || !cm.alive || cm.isImpostor) continue;
+              let _cd = Infinity;
+              for (const imp of npcs) { if (imp.alive && imp.isImpostor) _cd = Math.min(_cd, dist(cm, imp)); }
+              if (isImpostor && player.alive) _cd = Math.min(_cd, dist(cm, player));
+              const t = _cd < 450 ? 450 - _cd : 0;
+              if (t > _threat) { _threat = t; _ward = cm; }
+            }
+            if (_ward) npc.companionTarget = _ward;
+          }
+          if (npc.companionTarget && npc.companionTarget.alive && npc.state !== AI_STATE.REPORTING) {
+            if (dist(npc, npc.companionTarget) > 75) moveToward(npc, npc.companionTarget.x, npc.companionTarget.y);
+            const _closeImp = npcs.find(n => n.alive && n.isImpostor && dist(n, npc.companionTarget) < 140);
+            if (_closeImp && !npc.speechBubble)
+              npc.speechBubble = { text: 'Stay back!', timer: 160 };
+          }
+        }
+
+        // TRACKER: follow a tracked NPC; warn crew if track target is impostor and near victims
+        if (npc.role === 'tracker') {
+          if (!npc._trackTarget || !npc._trackTarget.alive || (npc._trackTimer || 0) <= 0) {
+            const _cands = npcs.filter(n => n !== npc && n.alive);
+            npc._trackTarget = _cands.length ? _cands[Math.floor(Math.random() * _cands.length)] : null;
+            npc._trackTimer = (gameSettings.trackerDuration || 30) * 60;
+          }
+          if (npc._trackTarget) {
+            npc._trackTimer--;
+            if (npc._trackTarget.isImpostor) {
+              const _vic = npcs.find(n => !n.isImpostor && n.alive && dist(n, npc._trackTarget) < 160);
+              if (_vic && !npc.speechBubble && Math.random() < 0.004)
+                npc.speechBubble = { text: `Tracking ${npc._trackTarget.name}!`, timer: 200 };
+            }
+            if ((npc.state === AI_STATE.IDLE || npc.state === AI_STATE.WALKING_RANDOM)
+                && dist(npc, npc._trackTarget) > 320) {
+              npc.targetX = npc._trackTarget.x; npc.targetY = npc._trackTarget.y;
+              npc.state = AI_STATE.WALKING_RANDOM; npc.stateTimer = 120;
+            }
+          }
+        }
+
+        // JESTER: act sus — linger near bodies, dart away when watched, emit cryptic speech
+        if (npc.role === 'jester') {
+          if (deadBodies.length > 0 && Math.random() < 0.007 && npc.state !== AI_STATE.REPORTING) {
+            const _jb = deadBodies[Math.floor(Math.random() * deadBodies.length)];
+            npc.targetX = _jb.x + (Math.random()-0.5)*60; npc.targetY = _jb.y + (Math.random()-0.5)*60;
+            npc.state = AI_STATE.WALKING_RANDOM; npc.stateTimer = 100; npc.navPath = null;
+          }
+          if (player.alive && dist(npc, player) < 90 && Math.random() < 0.009) {
+            const _ja = Math.atan2(npc.y - player.y, npc.x - player.x);
+            npc.targetX = Math.max(50, Math.min(MAP_W-50, npc.x + Math.cos(_ja)*180));
+            npc.targetY = Math.max(50, Math.min(MAP_H-50, npc.y + Math.sin(_ja)*180));
+            npc.state = AI_STATE.WALKING_RANDOM; npc.stateTimer = 55;
+          }
+          if (!npc.speechBubble && Math.random() < 0.0005) {
+            const _jq = ['...', 'Nothing to see here.', "I definitely wasn't there.", "Don't mind me.", 'I\'m fine.'];
+            npc.speechBubble = { text: _jq[Math.floor(Math.random() * _jq.length)], timer: 200 };
+          }
+        }
+
+      } // end role-specific crewmate logic
+
+      // Check for dead bodies nearby — detection range and panic scale with difficulty
       for (const body of deadBodies) {
-        if (dist(npc, body) < 120 && !npc.sawBody && !body.reported) {
+        const _bodyDist = dist(npc, body);
+        // Hard: also require line of sight to "see" a body from distance
+        const _canSee = _bodyDist < _df.bodyRange &&
+          (!_df.hard || _bodyDist < 60 || hasLineOfSight(npc.x + npc.w/2, npc.y + npc.h/2, body.x, body.y, 4, 4));
+        if (_canSee && !npc.sawBody && !body.reported) {
           npc.sawBody = true;
           npc.bodyLocation = { x: body.x, y: body.y };
           npc.state = AI_STATE.REPORTING;
-          npc.panicTimer = 60;
+          // Panic duration: bravery + difficulty-aware base
+          npc.panicTimer = Math.round(_df.panicBase * (1 - npc.personality.bravery * 0.55));
 
-          // Suspect anyone they saw nearby
+          // Suspect nearby entities — awareness scales how much suspicion is added
           const crewDiffMult = gameSettings.npcDifficulty === 'Easy' ? 0.4 : gameSettings.npcDifficulty === 'Hard' ? 2.0 : 1.0;
+          const awareMult = npc.personality.awareness * crewDiffMult;
           for (const e of nearby) {
             if (e !== player || !player.alive) continue;
-            npc.suspicion[e.name] = (npc.suspicion[e.name] || 0) + 30 * crewDiffMult;
+            const dToBody = Math.hypot(e.x - body.x, e.y - body.y);
+            const proxBonus = dToBody < 80 ? 1.4 : 1.0; // more suspicious if right next to body
+            npc.suspicion[e.name] = (npc.suspicion[e.name] || 0) + 30 * awareMult * proxBonus;
           }
           for (const other of npcs) {
-            if (other !== npc && other.alive && dist(npc, other) < 200) {
-              npc.suspicion[other.name] = (npc.suspicion[other.name] || 0) + 30 * crewDiffMult;
+            if (other !== npc && other.alive && dist(npc, other) < 220) {
+              const dToBody = Math.hypot(other.x - body.x, other.y - body.y);
+              const proxBonus = dToBody < 80 ? 1.4 : 1.0;
+              npc.suspicion[other.name] = (npc.suspicion[other.name] || 0) + 30 * awareMult * proxBonus;
             }
           }
           return;
@@ -7617,9 +7987,11 @@
               const hasTask = npc.taskList.some(t => !t.npcDone);
               const roll = Math.random();
 
-              if (hasTask && roll < 0.8) {
-                // Go do next task
-                const nextTask = npc.taskList.find(t => !t.npcDone);
+              if (hasTask && roll < _df.taskChance) {
+                // Go do nearest unfinished task first
+                const pending = npc.taskList.filter(t => !t.npcDone);
+                const nextTask = pending.sort((a, b) =>
+                  Math.hypot(a.x - npc.x, a.y - npc.y) - Math.hypot(b.x - npc.x, b.y - npc.y))[0];
                 if (nextTask) {
                   npc.targetX = nextTask.x + (Math.random() - 0.5) * 20;
                   npc.targetY = nextTask.y + (Math.random() - 0.5) * 20;
@@ -7627,24 +7999,47 @@
                   npc.stateTimer = 0;
                 }
               } else if (roll < 0.9 && npc.personality.sociability > 0.5) {
-                // Follow someone (safety in numbers)
-                const others = npcs.filter(n => n !== npc && n.alive && dist(npc, n) < 400);
-                if (others.length > 0) {
-                  npc.companionTarget = others[Math.floor(Math.random() * others.length)];
+                // Follow someone — prefer unsuspected companions; also consider player
+                const others = npcs.filter(n => n !== npc && n.alive && dist(npc, n) < 400
+                  && (npc.suspicion[n.name] || 0) < 20);
+                const candidates = [...others];
+                if (player.alive && !player.isImpostor && dist(npc, player) < 400
+                  && (npc.suspicion[player.name] || 0) < 20) candidates.push(player);
+                if (candidates.length > 0) {
+                  npc.companionTarget = candidates[Math.floor(Math.random() * candidates.length)];
                   npc.state = AI_STATE.FOLLOWING;
                   npc.stateTimer = 120 + Math.random() * 180;
                 } else {
-                  npc.targetX = 100 + Math.random() * (MAP_W - 200);
-                  npc.targetY = 100 + Math.random() * (MAP_H - 200);
+                  // No safe companion — patrol a map waypoint instead of truly random coords
+                  const m = MAPS[selectedMap];
+                  const wp = m && m.waypoints && m.waypoints.length
+                    ? m.waypoints[Math.floor(Math.random() * m.waypoints.length)]
+                    : null;
+                  npc.targetX = wp ? wp.x + (Math.random() - 0.5) * 60 : 100 + Math.random() * (MAP_W - 200);
+                  npc.targetY = wp ? wp.y + (Math.random() - 0.5) * 60 : 100 + Math.random() * (MAP_H - 200);
                   npc.state = AI_STATE.WALKING_RANDOM;
                   npc.stateTimer = 180 + Math.random() * 240;
                 }
               } else {
-                // Random walk
-                npc.targetX = 100 + Math.random() * (MAP_W - 200);
-                npc.targetY = 100 + Math.random() * (MAP_H - 200);
+                // Patrol toward a known map waypoint for natural-looking routes
+                const m = MAPS[selectedMap];
+                let _wpPool = m && m.waypoints && m.waypoints.length ? [...m.waypoints] : null;
+                // Hard: avoid waypoints near high-suspicion NPCs
+                if (_df.hard && _wpPool) {
+                  const _topSusp = Object.entries(npc.suspicion)
+                    .filter(([,v]) => v > 25).map(([nm]) => npcs.find(n => n.name === nm)).filter(Boolean);
+                  if (_topSusp.length > 0) {
+                    _wpPool = _wpPool.filter(wp =>
+                      _topSusp.every(s => Math.hypot(s.x - wp.x, s.y - wp.y) > 200));
+                  }
+                }
+                const wp = _wpPool && _wpPool.length
+                  ? _wpPool[Math.floor(Math.random() * _wpPool.length)]
+                  : null;
+                npc.targetX = wp ? wp.x + (Math.random() - 0.5) * 80 : 100 + Math.random() * (MAP_W - 200);
+                npc.targetY = wp ? wp.y + (Math.random() - 0.5) * 80 : 100 + Math.random() * (MAP_H - 200);
                 npc.state = AI_STATE.WALKING_RANDOM;
-                npc.stateTimer = 180 + Math.random() * 240;
+                npc.stateTimer = _df.easy ? 300 + Math.random() * 300 : 180 + Math.random() * 240;
               }
             }
           }
@@ -7725,26 +8120,51 @@
             npc.idleTimer = 0;
             break;
           }
-          // Follow at a distance
-          const followDist = dist(npc, npc.companionTarget);
-          if (followDist > 60) {
-            moveToward(npc, npc.companionTarget.x, npc.companionTarget.y);
+          // Abandon companion if they became highly suspected
+          if ((npc.suspicion[npc.companionTarget.name] || 0) > 40 && Math.random() < 0.02) {
+            npc.companionTarget = null;
+            npc.state = AI_STATE.IDLE;
+            break;
           }
-          // If companion is doing task, wait nearby
+          {
+            const followDist = dist(npc, npc.companionTarget);
+            if (followDist > 80) {
+              moveToward(npc, npc.companionTarget.x, npc.companionTarget.y);
+            } else if (followDist < 35) {
+              // Too close — back off gently
+              const _fa = Math.atan2(npc.y - npc.companionTarget.y, npc.x - npc.companionTarget.x);
+              npc.x += Math.cos(_fa) * npc.speed * 0.5;
+              npc.y += Math.sin(_fa) * npc.speed * 0.5;
+            }
+            // Occasionally chat when following (social NPC behaviour)
+            if (!npc.speechBubble && npc.chatCooldown > 0) npc.chatCooldown--;
+            if (!npc.speechBubble && npc.chatCooldown <= 0 && followDist < 120 && Math.random() < 0.003) {
+              const _msgs = ['Come with me!', 'Stay close!', 'I got tasks near here.', 'Did you see anything?'];
+              npc.speechBubble = { text: _msgs[Math.floor(Math.random() * _msgs.length)], timer: 180 };
+              npc.chatCooldown = 300 + Math.floor(Math.random() * 400);
+            }
+          }
           break;
 
         case AI_STATE.REPORTING:
-          // Run to cafeteria (meeting area) then trigger report
           npc.panicTimer--;
           if (npc.panicTimer > 0) {
-            // Panic freeze
+            // Panic freeze — pace in place (small random jitter)
+            if (Math.random() < 0.15) {
+              npc.x += (Math.random() - 0.5) * 3;
+              npc.y += (Math.random() - 0.5) * 3;
+            }
           } else {
-            // NPC auto-reports after reaching body area (instant for simplicity)
-            npc.sawBody = false;
-            npc.state = AI_STATE.IDLE;
-            // Trigger meeting
-            if (deadBodies.length > 0 && !gameOver) {
-              triggerNPCReport(npc);
+            // Run toward body location first, then trigger report
+            const bx = npc.bodyLocation ? npc.bodyLocation.x : npc.x;
+            const by = npc.bodyLocation ? npc.bodyLocation.y : npc.y;
+            const arrived = moveToward(npc, bx, by);
+            if (arrived || Math.hypot(npc.x - bx, npc.y - by) < 100) {
+              npc.sawBody = false;
+              npc.state = AI_STATE.IDLE;
+              if (deadBodies.length > 0 && !gameOver) {
+                triggerNPCReport(npc);
+              }
             }
           }
           break;
@@ -7752,6 +8172,22 @@
         case AI_STATE.FLEEING:
           npc.stateTimer--;
           if (npc.stateTimer <= 0) { npc.state = AI_STATE.IDLE; break; }
+          // Prefer fleeing toward a group of crewmates for safety
+          {
+            let _safeTarget = null, _safeBest = Infinity;
+            for (const _n of npcs) {
+              if (_n !== npc && _n.alive && !_n.isImpostor) {
+                const _gd = dist(npc, _n);
+                const _groupSize = npcs.filter(x => x !== npc && x.alive && dist(x, _n) < 150).length;
+                const _score = _gd - _groupSize * 80; // closer + bigger group = lower score
+                if (_score < _safeBest) { _safeBest = _score; _safeTarget = _n; }
+              }
+            }
+            if (_safeTarget && Math.hypot(_safeTarget.x - npc.targetX, _safeTarget.y - npc.targetY) > 200) {
+              npc.targetX = _safeTarget.x + (Math.random() - 0.5) * 60;
+              npc.targetY = _safeTarget.y + (Math.random() - 0.5) * 60;
+            }
+          }
           moveToward(npc, npc.targetX, npc.targetY);
           break;
       }
@@ -7759,6 +8195,9 @@
 
     // Impostor AI
     function updateImpostorAI(npc) {
+      // Per-NPC custom tick hook (from NPC_PROFILES or spawnNPC opts)
+      if (npc._onTick && npc._onTick(npc, { player, npcs, AI_STATE, moveToward })) return;
+
       if (npc.hsFreeze) return;
       npc.killCooldown = Math.max(0, npc.killCooldown - 1);
 
@@ -7792,6 +8231,78 @@
         return;
       }
 
+      // ── Role-specific impostor logic ─────────────────────────────────────────
+      if (!inMeeting && !gameOver && gameMode !== 'hideseek') {
+
+        // SHAPESHIFTER: auto-shift into a crewmate when witnesses are present during a hunt
+        if (npc.role === 'shapeshifter') {
+          if (!npc._shiftActive && npc.state === AI_STATE.HUNTING && npc.companionTarget) {
+            const _sw = getNearbyEntities(npc, 210).filter(e => !e.isImpostor && e !== npc.companionTarget);
+            if (_sw.length > 0 && Math.random() < 0.025) {
+              const _cm = npcs.filter(n => !n.isImpostor && n.alive && n !== npc.companionTarget);
+              if (_cm.length > 0) {
+                const _st = _cm[Math.floor(Math.random() * _cm.length)];
+                npc._shiftColor = npc.color; npc._shiftName = npc.name;
+                npc.color = _st.color; npc.name = _st.name;
+                npc._shiftActive = true;
+                npc._shiftTimer  = (gameSettings.shapeshifterDuration || 15) * 60;
+              }
+            }
+          }
+          if (npc._shiftActive) {
+            npc._shiftTimer = (npc._shiftTimer || 0) - 1;
+            if (npc._shiftTimer <= 0) {
+              npc.color = npc._shiftColor || npc.color;
+              npc.name  = npc._shiftName  || npc.name;
+              npc._shiftActive = false;
+            }
+          }
+        }
+
+        // PHANTOM: go semi-invisible when fleeing or when outnumbered; hunt freely while invisible
+        if (npc.role === 'phantom') {
+          if (!npc._phantomActive) {
+            const _pw = getNearbyEntities(npc, 180).filter(e => !e.isImpostor).length;
+            if ((npc.state === AI_STATE.FLEEING || _pw > 1) && Math.random() < 0.02) {
+              npc._phantomActive = true;
+              npc._phantomTimer  = (gameSettings.phantomDuration || 15) * 60;
+              npc._phantomAlpha  = 0.18;
+            }
+          }
+          if (npc._phantomActive) {
+            npc._phantomTimer = (npc._phantomTimer || 0) - 1;
+            if (npc._phantomTimer <= 0) { npc._phantomActive = false; npc._phantomAlpha = 1.0; }
+            // Phantom hunts freely while invisible — skip witness checks
+            if (npc.state !== AI_STATE.HUNTING && npc.killCooldown <= 0) {
+              const _prey = npcs.find(n => !n.isImpostor && n.alive && dist(npc, n) < 320);
+              if (_prey) { npc.companionTarget = _prey; npc.state = AI_STATE.HUNTING; npc.stateTimer = 220; }
+            }
+          }
+        }
+
+        // VIPER: bolder kill threshold (acid dissolves body); hunts near vents; up to 2 witnesses ok
+        if (npc.role === 'viper') {
+          if (npc.killCooldown <= 0 && npc.state === AI_STATE.HUNTING && npc.companionTarget
+              && dist(npc, npc.companionTarget) < 72) {
+            const _vw = getNearbyEntities(npc, 180).filter(e => !e.isImpostor && e !== npc.companionTarget);
+            if (_vw.length <= 2) {
+              performNPCKill(npc, npc.companionTarget);
+              npc.state = AI_STATE.IDLE; npc.idleTimer = 0;
+            }
+          }
+          // Prefer positions near vents for quick acid kills and escapes
+          if (npc.state === AI_STATE.IDLE && vents && vents.length) {
+            const _vNear = vents.find(v => Math.hypot(v.x - npc.x, v.y - npc.y) < 140);
+            if (!_vNear && Math.random() < 0.012) {
+              const _rv = vents[Math.floor(Math.random() * vents.length)];
+              npc.targetX = _rv.x + (Math.random()-0.5)*60; npc.targetY = _rv.y + (Math.random()-0.5)*60;
+              npc.state = AI_STATE.WALKING_RANDOM; npc.stateTimer = 110;
+            }
+          }
+        }
+
+      } // end role-specific impostor logic
+
       const nearby = getNearbyEntities(npc, 250);
       // Phantom players are invisible — can't be targeted
       const nearbyCrewmates = nearby.filter(e => !e.isImpostor && e.alive && !(e === player && playerRole === 'phantom' && abilityActive));
@@ -7807,33 +8318,41 @@
             } else {
               const roll = Math.random();
 
-              if (npc.killCooldown <= 0 && nearbyCrewmates.length >= 1 && roll < 0.6) {
-                // Find most isolated crewmate
+              const _dfi = _npcDiff();
+              if (npc.killCooldown <= 0 && nearbyCrewmates.length >= 1 && roll < _dfi.huntIdleRoll) {
+                // Score targets: isolation + proximity; Hard also weights task progress (finish them first)
                 let bestTarget = null, bestScore = Infinity;
                 for (const cm of nearbyCrewmates) {
                   const othersNear = getNearbyEntities(cm, 220).filter(e => e !== npc && e !== cm).length;
-                  if (othersNear < bestScore) { bestScore = othersNear; bestTarget = cm; }
+                  const distScore = Math.hypot(cm.x - npc.x, cm.y - npc.y) / 100;
+                  const taskScore = _dfi.targetTaskers
+                    ? -(cm.taskList || []).filter(t => t.npcDone).length * 1.5  // hard: prefer those who finished tasks
+                    : 0;
+                  // Hard: also prioritize those who voted against impostors last round
+                  const voteScore = _dfi.hard && (cm._votedImpostor) ? -2 : 0;
+                  const score = othersNear * 3 + distScore + taskScore + voteScore;
+                  if (score < bestScore) { bestScore = score; bestTarget = cm; }
                 }
-                if (bestTarget && bestScore <= 1) {
+                const _maxWit = _dfi.killWitnessMax;
+                if (bestTarget && getNearbyEntities(bestTarget, 220).filter(e => e !== npc && e !== bestTarget).length <= _maxWit) {
                   npc.companionTarget = bestTarget;
                   npc.state = AI_STATE.HUNTING;
-                  npc.stateTimer = 200;
+                  npc.stateTimer = _dfi.easy ? 120 : 200;
                 }
-              } else if (roll < 0.4) {
-                // Fake doing a task
+              } else if (roll < (_dfi.easy ? 0.25 : 0.4)) {
+                // Fake doing a task — Hard NPCs stay longer and pick more convincing locations
                 const task = taskLocations[Math.floor(Math.random() * taskLocations.length)];
-                npc.targetX = task.x;
-                npc.targetY = task.y;
+                npc.targetX = task.x; npc.targetY = task.y;
                 npc.state = AI_STATE.FAKING_TASK;
-                npc.stateTimer = 0;
-                npc.taskProgress = 0;
-              } else if (roll < 0.7) {
-                // Stalk a crewmate, waiting for them to be alone
-                const crewmates = npcs.filter(n => n !== npc && n.alive && !n.isImpostor);
-                if (crewmates.length > 0) {
-                  npc.companionTarget = crewmates[Math.floor(Math.random() * crewmates.length)];
+                npc.stateTimer = 0; npc.taskProgress = 0;
+              } else if (roll < (_dfi.easy ? 0.45 : _dfi.hard ? 0.80 : 0.7)) {
+                // Stalk a crewmate — Hard also considers stalking player
+                const stalkPool = npcs.filter(n => n !== npc && n.alive && !n.isImpostor);
+                if (_dfi.hard && player.alive && !player.isImpostor) stalkPool.push(player);
+                if (stalkPool.length > 0) {
+                  npc.companionTarget = stalkPool[Math.floor(Math.random() * stalkPool.length)];
                   npc.state = AI_STATE.STALKING;
-                  npc.stateTimer = 300 + Math.random() * 300;
+                  npc.stateTimer = _dfi.hard ? 400 + Math.random() * 300 : 300 + Math.random() * 300;
                 }
               } else {
                 // Wander to look innocent
@@ -7862,28 +8381,36 @@
             }
           }
 
-          // Check if we can kill
-          const diffMult = gameSettings.npcDifficulty === 'Easy' ? 0.4 : gameSettings.npcDifficulty === 'Hard' ? 2.0 : 1.0;
-          if (dist(npc, npc.companionTarget) < 55 * diffMult && npc.killCooldown <= 0) {
-            // Check for witnesses
-            const witnesses = getNearbyEntities(npc, 200).filter(e => e !== npc.companionTarget);
-            if (witnesses.length === 0) {
-              // KILL
+          // Check if we can kill — witness threshold and range scale with difficulty
+          const _dfh = _npcDiff();
+          if (dist(npc, npc.companionTarget) < 58 && npc.killCooldown <= 0) {
+            const witnesses = getNearbyEntities(npc, _dfh.witnessCheckRange).filter(e => e !== npc.companionTarget && e !== npc);
+            if (witnesses.length <= _dfh.killWitnessMax) {
               performNPCKill(npc, npc.companionTarget);
-              npc.state = AI_STATE.FLEEING;
-              // Flee in opposite direction
-              const fleeAngle = Math.atan2(npc.y - npc.companionTarget.y, npc.x - npc.companionTarget.x);
-              npc.targetX = npc.x + Math.cos(fleeAngle) * 400;
-              npc.targetY = npc.y + Math.sin(fleeAngle) * 400;
-              npc.targetX = Math.max(50, Math.min(MAP_W - 50, npc.targetX));
-              npc.targetY = Math.max(50, Math.min(MAP_H - 50, npc.targetY));
-              npc.stateTimer = 120;
+              // Escape via nearest vent if close enough, otherwise flee on foot
+              const _vc = npc.x + npc.w / 2, _vcy = npc.y + npc.h / 2;
+              const _nearVent = vents && vents.reduce((best, v) => {
+                const vd = Math.hypot(v.x - _vc, v.y - _vcy);
+                return (!best || vd < best.d) ? { v, d: vd } : best;
+              }, null);
+              if (_nearVent && _nearVent.d < 100) {
+                npc.inVent = true;
+                npc.x = _nearVent.v.x; npc.y = _nearVent.v.y;
+                npc.ventTimer = 120 + Math.floor(Math.random() * 120);
+                npc.state = AI_STATE.IDLE;
+              } else {
+                npc.state = AI_STATE.FLEEING;
+                const _fa = Math.atan2(npc.y - npc.companionTarget.y, npc.x - npc.companionTarget.x);
+                npc.targetX = Math.max(50, Math.min(MAP_W - 50, npc.x + Math.cos(_fa) * 400));
+                npc.targetY = Math.max(50, Math.min(MAP_H - 50, npc.y + Math.sin(_fa) * 400));
+                npc.stateTimer = 120;
+              }
             } else {
-              // Too many witnesses, back off
-              npc.state = AI_STATE.WALKING_RANDOM;
-              npc.targetX = npc.x + (Math.random() - 0.5) * 400;
-              npc.targetY = npc.y + (Math.random() - 0.5) * 400;
-              npc.stateTimer = 90;
+              // Witnesses present — abort and blend back in
+              npc.state = AI_STATE.FAKING_TASK;
+              const _ft = taskLocations[Math.floor(Math.random() * taskLocations.length)];
+              npc.targetX = _ft.x; npc.targetY = _ft.y;
+              npc.stateTimer = 0; npc.taskProgress = 0;
             }
           }
           break;
@@ -7893,36 +8420,54 @@
           if (npc.stateTimer <= 0 || !npc.companionTarget || !npc.companionTarget.alive) {
             npc.state = AI_STATE.IDLE; break;
           }
-          // Keep distance but follow
-          const stalkDist = dist(npc, npc.companionTarget);
-          if (stalkDist > 180) {
-            moveToward(npc, npc.companionTarget.x, npc.companionTarget.y);
-          } else if (stalkDist < 100) {
-            // Too close, back off slightly
-          }
-          // Check if target is alone
-          if (npc.killCooldown <= 0 && stalkDist < 150) {
-            const othersNearTarget = getNearbyEntities(npc.companionTarget, 200).filter(e => e !== npc);
-            if (othersNearTarget.length === 0) {
-              npc.state = AI_STATE.HUNTING;
-              npc.stateTimer = 120;
+          {
+            const stalkDist = dist(npc, npc.companionTarget);
+            if (stalkDist > 200) {
+              moveToward(npc, npc.companionTarget.x, npc.companionTarget.y);
+            } else if (stalkDist < 90) {
+              // Too close — actively back away to avoid suspicion
+              const _sa = Math.atan2(npc.y - npc.companionTarget.y, npc.x - npc.companionTarget.x);
+              const _bx = npc.x + Math.cos(_sa) * npc.speed * 1.5;
+              const _by = npc.y + Math.sin(_sa) * npc.speed * 1.5;
+              if (!isBlockedAt(_bx, _by, npc.w, npc.h)) { npc.x = _bx; npc.y = _by; }
+            }
+            // Check if target is now alone — pounce
+            if (npc.killCooldown <= 0 && stalkDist < 160) {
+              const othersNearTarget = getNearbyEntities(npc.companionTarget, 200).filter(e => e !== npc);
+              if (othersNearTarget.length === 0) {
+                npc.state = AI_STATE.HUNTING;
+                npc.stateTimer = 140;
+              } else if (!sabotage.active && Math.random() < (_npcDiff().hard ? 0.006 : 0.002)) {
+                // Still not alone — trigger sabotage to scatter crewmates (Hard: 3x more likely)
+                triggerSabotage && triggerSabotage();
+              }
             }
           }
           break;
 
         case AI_STATE.FAKING_TASK:
           if (npc.stateTimer === 0) {
-            // Walk to task location
             if (moveToward(npc, npc.targetX, npc.targetY)) {
               npc.stateTimer = 1;
               npc.taskProgress = 0;
             }
           } else {
-            // Pretend to do task
-            npc.taskProgress += 0.8;
+            // Pretend to do task — Hard NPCs look more convincing (slower progress = longer stay)
+            const _dff = _npcDiff();
+            const _fakeRate = _dff.easy ? 1.4 : _dff.hard ? 0.55 : 0.8;
+            npc.taskProgress += _fakeRate;
             if (npc.taskProgress >= 100) {
               npc.state = AI_STATE.IDLE;
               npc.idleTimer = 0;
+            }
+            // If a crewmate lingers very close, move away to avoid suspicion
+            const _tooClose = nearbyCrewmates.find(c => dist(npc, c) < 55);
+            if (_tooClose && Math.random() < 0.03) {
+              npc.state = AI_STATE.WALKING_RANDOM;
+              const _ca = Math.atan2(npc.y - _tooClose.y, npc.x - _tooClose.x);
+              npc.targetX = Math.max(50, Math.min(MAP_W - 50, npc.x + Math.cos(_ca) * 200));
+              npc.targetY = Math.max(50, Math.min(MAP_H - 50, npc.y + Math.sin(_ca) * 200));
+              npc.stateTimer = 60;
             }
           }
           break;
@@ -8318,6 +8863,33 @@
           npc.panicTimer = 90; // brief panic freeze before running to report
         }
       }
+    }
+
+    // Returns a config object tuned to the current NPC difficulty setting.
+    // Call once per AI update where multiple diff-gated values are needed.
+    function _npcDiff() {
+      const d = gameSettings.npcDifficulty;
+      const easy = d === 'Easy', hard = d === 'Hard';
+      return {
+        easy, hard,
+        // Crewmate
+        taskChance:          easy ? 0.50 : hard ? 0.95 : 0.80,  // prob IDLE → goto task
+        bodyRange:           easy ?   70 : hard ?  175 :  120,  // body detection radius
+        suspMult:            easy ? 0.30 : hard ? 1.80 : 1.00,  // suspicion accumulation scalar
+        sabChanceCrit:       easy ? 0.01 : hard ? 0.18 : 0.08,  // per-frame chance: fix critical sabotage
+        sabChanceNorm:       easy ? 0.00 : hard ? 0.08 : 0.02,  // per-frame chance: fix normal sabotage
+        shareIntelRange:     hard ?  160 : 0,                    // radius for Hard NPC suspicion sharing
+        awarenessRange:      easy ?  100 : hard ?  300 :  200,  // getNearbyEntities radius
+        panicBase:           easy ?  120 : hard ?   30 :   70,  // base panic timer ticks before reporting
+        // Impostor
+        killWitnessMax:      easy ?    2 : hard ?    0 :    1,  // max witnesses tolerated for kill
+        witnessCheckRange:   easy ?  100 : hard ?  280 :  220,  // witness scan radius
+        huntIdleRoll:        easy ? 0.30 : hard ? 0.75 : 0.55,  // roll threshold to start hunting
+        fakeTaskDuration:    easy ?   40 : hard ?  130 :   80,  // ticks faking a task
+        useVentsAggressively: hard,                              // vent-escape every kill on hard
+        strategicSabotage:   hard,                              // sabotage to isolate kill target
+        targetTaskers:       hard,                              // prefer high-task-progress victims
+      };
     }
 
     function updateNPCs() {
@@ -9583,8 +10155,65 @@
         }
         msgs.push(`Someone is trying to pin this on me. Think logically.`);
         msgs.push(`I've been doing tasks non-stop, check the task bar.`);
+      } else if (npc.role === 'detective') {
+        msgs.push(`I've been tracking movement patterns — ${topSuspect ? topSuspect.name + ' is my prime suspect.' : 'still building my case.'}`);
+        msgs.push(`My investigation points to ${topSuspect ? topSuspect.name : 'someone in this room'}.`);
+        if (topSuspect && maxSusp > 20) {
+          msgs.push(`${topSuspect.name} was near the kill zone. I have notes on this.`);
+          msgs.push(`I'm voting ${topSuspect.name}. The evidence doesn't lie.`);
+        }
+        msgs.push(`Anyone notice irregular movement before the body was found?`);
+        msgs.push(`I need everyone to state their last room. Detective's orders.`);
+
+      } else if (npc.role === 'scientist') {
+        msgs.push(`My vitals scanner went off — the kill happened fast.`);
+        msgs.push(`I was watching the vitals panel. Someone flatlined suddenly.`);
+        if (topSuspect && maxSusp > 15)
+          msgs.push(`${topSuspect.name}'s position on vitals puts them close to the victim.`);
+        msgs.push(`According to my readings, the kill was in ${myRoom || 'an isolated area'}.`);
+        msgs.push(`I'll keep the vitals open — if someone else dies, I'll call it immediately.`);
+
+      } else if (npc.role === 'tracker') {
+        if (npc._trackTarget) {
+          const _tn = npc._trackTarget.name;
+          msgs.push(`I've been tracking ${_tn} — their route was suspicious.`);
+          msgs.push(`${_tn} was nowhere near their claimed location based on my tracker.`);
+          if (npc._trackTarget.isImpostor)
+            msgs.push(`I'm pointing at ${_tn}. The tracker data is damning.`);
+        } else {
+          msgs.push(`I lost my track target. We need to compare locations manually.`);
+        }
+        msgs.push(`Anyone want to be tracked next round? I'll report back.`);
+
+      } else if (npc.role === 'engineer') {
+        msgs.push(`I vented across the ship this round — I can vouch for my route.`);
+        msgs.push(`I came through the vents near ${myRoom}. Saw nothing weird.`);
+        if (topSuspect && maxSusp > 15)
+          msgs.push(`${topSuspect.name} was in the vent area. Could explain the kill.`);
+        msgs.push(`Check the vent exits near the body — the killer used them to escape.`);
+
+      } else if (npc.role === 'noisemaker') {
+        msgs.push(`I'm the Noisemaker. If I get killed you'll hear it. Keep that in mind.`);
+        msgs.push(`Whoever the impostor is — kill me and you expose yourself. Just saying.`);
+        if (topSuspect && maxSusp > 10)
+          msgs.push(`I'd watch ${topSuspect.name} though. Something's off.`);
+        msgs.push(`I stayed near groups all round. The kill happened elsewhere.`);
+
+      } else if (npc.role === 'guardian_angel') {
+        const _ward = npc.companionTarget;
+        msgs.push(_ward ? `I was protecting ${_ward.name} — we were together the whole time.` : `I was guarding someone. They can confirm my alibi.`);
+        msgs.push(`Guardian Angel here. I've been watching for suspicious behaviour.`);
+        if (topSuspect && maxSusp > 15)
+          msgs.push(`${topSuspect.name} circled my ward twice. That's not normal.`);
+
+      } else if (npc.role === 'sheriff') {
+        msgs.push(`I'm the Sheriff. I can handle this. ${topSuspect && maxSusp > 20 ? 'I have a shot on ' + topSuspect.name + '.' : 'Give me more info.'}`);
+        msgs.push(`Point me at the suspect and I'll deal with it next round.`);
+        if (topSuspect && maxSusp > 25)
+          msgs.push(`I'm taking the shot on ${topSuspect.name}. If I'm wrong, vote me out next.`);
+
       } else {
-        // Crewmate: honest report, ask questions
+        // Generic crewmate: honest report, ask questions
         msgs.push(`I was in ${myRoom} when the meeting was called.`);
         msgs.push(`I was doing tasks in ${myRoom}, happy to confirm.`);
         if (topSuspect && maxSusp > 15) {
@@ -9850,18 +10479,48 @@
       candidates.forEach(c => npcVotes[c.name] = 0);
       npcVotes['skip'] = 0;
 
+      const _vdf = _npcDiff();
       for (const npc of npcs) {
         if (!npc.alive || npc.isImpostor || npc.aiConfig) continue; // AI NPCs vote via API
+
+        if (_vdf.easy) {
+          // Easy: mostly random — 60% random, 40% skip
+          if (Math.random() < 0.6) {
+            const others = candidates.filter(c => c.entity !== npc);
+            if (others.length > 0) npcVotes[others[Math.floor(Math.random() * others.length)].name]++;
+          } else {
+            npcVotes['skip']++;
+          }
+          continue;
+        }
+
+        // Normal + Hard: pool suspicion from nearby visible allies first
+        const _pooledSusp = { ...npc.suspicion };
+        if (_vdf.hard) {
+          const _vAllies = npcs.filter(n => n !== npc && n.alive && !n.isImpostor
+            && Math.hypot(n.x - npc.x, n.y - npc.y) < 300);
+          for (const ally of _vAllies) {
+            for (const [nm, val] of Object.entries(ally.suspicion)) {
+              _pooledSusp[nm] = Math.max(_pooledSusp[nm] || 0, val * 0.75);
+            }
+          }
+        }
+
         let maxSuspicion = 0, suspect = null;
         for (const c of candidates) {
           if (c.entity === npc) continue;
-          const susp = npc.suspicion[c.name] || 0;
+          const susp = _pooledSusp[c.name] || 0;
           if (susp > maxSuspicion) { maxSuspicion = susp; suspect = c.name; }
         }
-        if (suspect && maxSuspicion > 10) {
+
+        const _threshold = _vdf.hard ? 8 : 10;
+        if (suspect && maxSuspicion > _threshold) {
           npcVotes[suspect]++;
+          // Hard: mark that this NPC voted against someone (impostors can then target them)
+          if (_vdf.hard) { const _sv = npcs.find(n => n.name === suspect); if (_sv && _sv.isImpostor) npc._votedImpostor = true; }
         } else {
-          if (Math.random() < 0.4) {
+          const _skipChance = _vdf.hard ? 0.15 : 0.4;
+          if (Math.random() < _skipChance) {
             npcVotes['skip']++;
           } else {
             const others = candidates.filter(c => c.entity !== npc);
@@ -9872,7 +10531,23 @@
       for (const npc of npcs) {
         if (!npc.alive || !npc.isImpostor || npc.aiConfig) continue; // AI impostors vote via API
         const crewCandidates = candidates.filter(c => !c.isImpostor && c.entity !== npc);
-        if (crewCandidates.length > 0) npcVotes[crewCandidates[Math.floor(Math.random() * crewCandidates.length)].name]++;
+        if (_vdf.easy) {
+          // Easy impostors sometimes vote wrong (vote another crewmate)
+          if (crewCandidates.length > 0) npcVotes[crewCandidates[Math.floor(Math.random() * crewCandidates.length)].name]++;
+        } else if (_vdf.hard) {
+          // Hard impostors vote for the crewmate with highest suspicion score against them
+          // (eliminate the most dangerous investigator)
+          let _dangerTarget = null, _dangerScore = -1;
+          for (const c of crewCandidates) {
+            const _s = (c.entity && c.entity.suspicion) ? (Object.values(c.entity.suspicion).reduce((a,b)=>a+b,0)) : 0;
+            const _vScore = c.entity && c.entity._votedImpostor ? 50 : 0;
+            if (_s + _vScore > _dangerScore) { _dangerScore = _s + _vScore; _dangerTarget = c; }
+          }
+          if (_dangerTarget) npcVotes[_dangerTarget.name]++;
+          else if (crewCandidates.length > 0) npcVotes[crewCandidates[Math.floor(Math.random() * crewCandidates.length)].name]++;
+        } else {
+          if (crewCandidates.length > 0) npcVotes[crewCandidates[Math.floor(Math.random() * crewCandidates.length)].name]++;
+        }
       }
       // Alibi from visual task witnesses: NPCs/player who saw someone do a visual task clear them
       for (const npc of npcs) {
@@ -12231,65 +12906,65 @@
             ctx.beginPath(); ctx.moveTo(x, y+h); ctx.lineTo(x+cutSz, y+h); ctx.lineTo(x, y+h-cutSz); ctx.closePath(); ctx.fill();
             ctx.beginPath(); ctx.moveTo(x+w, y+h); ctx.lineTo(x+w-cutSz, y+h); ctx.lineTo(x+w, y+h-cutSz); ctx.closePath(); ctx.fill();
           }
-          // Checkered tile floor (warm tones matching reference)
+          // Checkered tile floor (warm tan — matching reference image clearly visible pattern)
           ctx.globalAlpha = 1.0;
-          const tileSize = 28;
+          const tileSize = 32;
           for (let ty = 0; ty < h; ty += tileSize) {
             for (let tx = 0; tx < w; tx += tileSize) {
               const even = ((Math.floor(tx/tileSize) + Math.floor(ty/tileSize)) % 2 === 0);
-              ctx.fillStyle = even ? 'rgba(200,180,140,0.20)' : 'rgba(160,140,110,0.12)';
+              ctx.fillStyle = even ? 'rgba(210,185,145,0.42)' : 'rgba(155,130,95,0.26)';
               ctx.fillRect(x+tx, y+ty, tileSize, tileSize);
             }
           }
-          ctx.globalAlpha = 0.5;
+          ctx.globalAlpha = 0.7;
           // Tile grid lines
-          ctx.strokeStyle = 'rgba(160,140,100,0.18)'; ctx.lineWidth = 0.5;
+          ctx.strokeStyle = 'rgba(140,115,80,0.35)'; ctx.lineWidth = 0.6;
           for (let tx = 0; tx <= w; tx += tileSize) {
             ctx.beginPath(); ctx.moveTo(x+tx, y); ctx.lineTo(x+tx, y+h); ctx.stroke();
           }
           for (let ty = 0; ty <= h; ty += tileSize) {
             ctx.beginPath(); ctx.moveTo(x, y+ty); ctx.lineTo(x+w, y+ty); ctx.stroke();
           }
-          // 5 round seating tables in pentagon pattern (matching reference image — orange tables)
-          const tbl = [[0.22,0.24],[0.63,0.24],[0.18,0.64],[0.69,0.64],[0.43,0.82]];
+          // 6 round seating tables in 2×3 grid (matching reference image — blue/teal tables)
+          const tbl = [[0.20,0.26],[0.47,0.26],[0.74,0.26],[0.20,0.63],[0.47,0.63],[0.74,0.63]];
           for (const [tx,ty] of tbl) {
             const tbx = x+w*tx, tby = y+h*ty, tr = Math.min(w,h)*0.085;
             // Table shadow
             ctx.fillStyle = 'rgba(0,0,0,0.35)';
             ctx.beginPath(); ctx.arc(tbx+4, tby+5, tr+3, 0, Math.PI*2); ctx.fill();
-            // Orange table surface (matching reference image)
+            // Blue/teal table surface (matching reference image)
             const tblGrad = ctx.createRadialGradient(tbx-tr*0.25, tby-tr*0.25, 0, tbx, tby, tr);
-            tblGrad.addColorStop(0, '#e07830');
-            tblGrad.addColorStop(0.5, '#c05820');
-            tblGrad.addColorStop(1, '#803010');
-            ctx.globalAlpha = 0.85;
+            tblGrad.addColorStop(0, '#4aa0c8');
+            tblGrad.addColorStop(0.5, '#2a6a90');
+            tblGrad.addColorStop(1, '#183850');
+            ctx.globalAlpha = 0.90;
             ctx.fillStyle = tblGrad;
             ctx.beginPath(); ctx.arc(tbx, tby, tr, 0, Math.PI*2); ctx.fill();
-            ctx.globalAlpha = 0.5;
-            ctx.strokeStyle = '#f09040'; ctx.lineWidth = 2.5;
+            ctx.globalAlpha = 0.6;
+            ctx.strokeStyle = '#60c0e0'; ctx.lineWidth = 2.5;
             ctx.beginPath(); ctx.arc(tbx, tby, tr, 0, Math.PI*2); ctx.stroke();
             // Inner rim highlight
-            ctx.strokeStyle = 'rgba(255,180,100,0.4)'; ctx.lineWidth = 1.5;
+            ctx.strokeStyle = 'rgba(140,220,255,0.4)'; ctx.lineWidth = 1.5;
             ctx.beginPath(); ctx.arc(tbx, tby, tr*0.65, 0, Math.PI*2); ctx.stroke();
             // Center — food items
-            ctx.fillStyle = 'rgba(255,200,120,0.3)';
+            ctx.fillStyle = 'rgba(200,240,255,0.25)';
             ctx.beginPath(); ctx.arc(tbx, tby, tr*0.20, 0, Math.PI*2); ctx.fill();
-            // 4 chairs around table (matching reference — dark square chairs)
+            // 4 chairs around table (dark square chairs with blue tint)
             for (let a = 0; a < 4; a++) {
               const ang = a*Math.PI/2, cr = tr + 14;
               const chx = tbx+Math.cos(ang)*cr-6, chy = tby+Math.sin(ang)*cr-6;
-              ctx.fillStyle = '#2a3040';
+              ctx.fillStyle = '#1a2535';
               ctx.fillRect(chx, chy, 12, 12);
-              ctx.strokeStyle = '#4a5060'; ctx.lineWidth = 0.8;
+              ctx.strokeStyle = '#3a5070'; ctx.lineWidth = 0.8;
               ctx.strokeRect(chx, chy, 12, 12);
               // Chair highlight
-              ctx.fillStyle = 'rgba(100,120,160,0.2)';
+              ctx.fillStyle = 'rgba(80,140,200,0.20)';
               ctx.fillRect(chx+2, chy+2, 5, 4);
             }
           }
           // === SKELD CAFETERIA: plate/cup details on tables, seat indicator pads ===
           if (selectedMap === 'skeld' || selectedMap === 'airship') {
-            const tbl2 = [[0.22,0.24],[0.63,0.24],[0.18,0.64],[0.69,0.64],[0.43,0.82]];
+            const tbl2 = [[0.20,0.26],[0.47,0.26],[0.74,0.26],[0.20,0.63],[0.47,0.63],[0.74,0.63]];
             for (const [tx2, ty2] of tbl2) {
               const tbx2 = x+w*tx2, tby2 = y+h*ty2, tr2 = Math.min(w,h)*0.085;
               ctx.globalAlpha = 0.85;
@@ -12334,30 +13009,40 @@
           ctx.strokeRect(x+w*0.8, y+h-16, w*0.12, 16);
           ctx.fillStyle = 'rgba(0,0,0,0.18)';
           ctx.fillRect(x+w*0.82, y+h-12, w*0.08, 8);
-          // Vending machines along top wall (left side)
-          for (let v = 0; v < 3; v++) {
-            const vx = x + w*0.07 + v*38, vy = y + 10;
-            ctx.fillStyle = '#3a3a5a';
-            ctx.fillRect(vx, vy, 30, 44);
-            ctx.strokeStyle = '#5a5a7a'; ctx.lineWidth = 0.8;
-            ctx.strokeRect(vx, vy, 30, 44);
-            // Screen/display area
-            ctx.fillStyle = '#0a1a3a';
-            ctx.fillRect(vx+3, vy+4, 24, 20);
-            ctx.fillStyle = v%2===0 ? 'rgba(100,220,120,0.3)' : 'rgba(100,140,255,0.25)';
-            ctx.fillRect(vx+4, vy+5, 22, 18);
-            // Item display (colored squares)
-            ctx.fillStyle = v===0?'rgba(255,180,80,0.4)':v===1?'rgba(80,200,100,0.4)':'rgba(200,80,80,0.4)';
-            ctx.fillRect(vx+6, vy+8, 8, 10);
-            ctx.fillRect(vx+16, vy+8, 8, 10);
-            // Coin slot
-            ctx.fillStyle = '#2a2a4a';
-            ctx.fillRect(vx+11, vy+30, 8, 4);
-            // Buttons
-            for (let b = 0; b < 3; b++) {
-              ctx.fillStyle = ['#cc4444','#44cc44','#4488cc'][b];
-              ctx.beginPath(); ctx.arc(vx+7+b*8, vy+38, 2.5, 0, Math.PI*2); ctx.fill();
+          // Food dispensers along top-left wall (2 units, matching reference)
+          for (let v = 0; v < 2; v++) {
+            const vx = x + w*0.08 + v*46, vy = y + 8;
+            // Dispenser body
+            ctx.fillStyle = '#3a3050';
+            ctx.fillRect(vx, vy, 38, 50);
+            ctx.strokeStyle = '#5a4a70'; ctx.lineWidth = 1;
+            ctx.strokeRect(vx, vy, 38, 50);
+            // Food window (glass panel showing items inside)
+            ctx.fillStyle = '#0a0818';
+            ctx.fillRect(vx+4, vy+5, 30, 26);
+            ctx.strokeStyle = '#4a3860'; ctx.lineWidth = 0.8;
+            ctx.strokeRect(vx+4, vy+5, 30, 26);
+            // Items visible inside (3 colored blobs: food)
+            const _fColors = [['#e08040','#c06020'],['#60c040','#408020']];
+            for (let fi = 0; fi < 3; fi++) {
+              const [fc1, fc2] = _fColors[v % 2];
+              ctx.fillStyle = fi % 2 === 0 ? fc1 : fc2;
+              ctx.fillRect(vx + 6 + fi * 9, vy + 8, 7, 8);
+              ctx.fillRect(vx + 6 + fi * 9, vy + 19, 7, 8);
             }
+            // Dispenser slot / output tray
+            ctx.fillStyle = '#1a1428';
+            ctx.fillRect(vx+8, vy+34, 22, 6);
+            ctx.strokeStyle = '#3a2848'; ctx.lineWidth = 0.7;
+            ctx.strokeRect(vx+8, vy+34, 22, 6);
+            // Select buttons (3 small circles)
+            for (let b = 0; b < 3; b++) {
+              ctx.fillStyle = b===0?'#cc4040':b===1?'#40b040':'#4080cc';
+              ctx.beginPath(); ctx.arc(vx+9+b*10, vy+45, 3, 0, Math.PI*2); ctx.fill();
+            }
+            // Status light
+            ctx.fillStyle = 'rgba(80,220,80,0.65)';
+            ctx.beginPath(); ctx.arc(vx+34, vy+7, 2.5, 0, Math.PI*2); ctx.fill();
           }
           // Kitchen serving hatch (right wall, center)
           ctx.fillStyle = '#2a2520'; ctx.fillRect(x+w-26, cy-18, 20, 36);
@@ -12373,13 +13058,48 @@
             ctx.fillStyle = 'rgba(255,240,200,0.06)';
             ctx.fillRect(tlx, y+7, w*0.16, h*0.06); // cone of light
           }
-          // Emergency button console (prominent, top-right area)
-          ctx.fillStyle = '#3a1010'; ctx.fillRect(x+w*0.72, y+8, 30, 22);
-          ctx.strokeStyle = '#6a2020'; ctx.lineWidth = 1; ctx.strokeRect(x+w*0.72, y+8, 30, 22);
-          ctx.fillStyle = 'rgba(255,40,40,0.35)';
-          ctx.beginPath(); ctx.arc(x+w*0.72+15, y+22, 6, 0, Math.PI*2); ctx.fill();
-          ctx.strokeStyle = 'rgba(255,80,80,0.4)'; ctx.lineWidth = 1;
-          ctx.beginPath(); ctx.arc(x+w*0.72+15, y+22, 8, 0, Math.PI*2); ctx.stroke();
+          // === EMERGENCY MEETING BUTTON — large central console (matching reference image) ===
+          {
+            const _emBx = cx - 28, _emBy = cy + h * 0.10;
+            const _emBw = 56, _emBh = 46;
+            ctx.globalAlpha = 1.0;
+            // Console base (dark pedestal)
+            ctx.fillStyle = '#2a1010';
+            ctx.fillRect(_emBx, _emBy, _emBw, _emBh);
+            ctx.strokeStyle = '#6a2020'; ctx.lineWidth = 2;
+            ctx.strokeRect(_emBx, _emBy, _emBw, _emBh);
+            // Bright yellow/orange warning border
+            ctx.strokeStyle = 'rgba(255,200,0,0.80)'; ctx.lineWidth = 2.5;
+            ctx.strokeRect(_emBx+3, _emBy+3, _emBw-6, _emBh-6);
+            // Red button circle (large, center)
+            const _emBtnX = cx, _emBtnY = _emBy + _emBh * 0.52;
+            const _emBtnR = 14;
+            // Outer glow
+            const _emGlow = ctx.createRadialGradient(_emBtnX, _emBtnY, 0, _emBtnX, _emBtnY, _emBtnR * 2.5);
+            _emGlow.addColorStop(0, 'rgba(255,60,0,0.25)');
+            _emGlow.addColorStop(1, 'rgba(255,0,0,0)');
+            ctx.fillStyle = _emGlow;
+            ctx.fillRect(_emBx - _emBtnR, _emBy, _emBw + _emBtnR * 2, _emBh + _emBtnR);
+            // Button face gradient
+            const _emBFill = ctx.createRadialGradient(_emBtnX - _emBtnR * 0.3, _emBtnY - _emBtnR * 0.3, 0, _emBtnX, _emBtnY, _emBtnR);
+            _emBFill.addColorStop(0, '#ff6040');
+            _emBFill.addColorStop(0.5, '#e02010');
+            _emBFill.addColorStop(1, '#801000');
+            ctx.fillStyle = _emBFill;
+            ctx.beginPath(); ctx.arc(_emBtnX, _emBtnY, _emBtnR, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#ff4020'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(_emBtnX, _emBtnY, _emBtnR, 0, Math.PI * 2); ctx.stroke();
+            // Button specular highlight
+            ctx.fillStyle = 'rgba(255,200,180,0.35)';
+            ctx.beginPath(); ctx.arc(_emBtnX - 4, _emBtnY - 4, _emBtnR * 0.45, 0, Math.PI * 2); ctx.fill();
+            // "EMERGENCY MEETING" label above button
+            ctx.fillStyle = 'rgba(255,220,0,0.90)';
+            ctx.font = `bold ${Math.max(5, Math.floor(_emBw * 0.14))}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText('EMERGENCY', _emBtnX, _emBy + 10);
+            ctx.fillText('MEETING', _emBtnX, _emBy + 18);
+            ctx.globalAlpha = 0.5;
+          }
           // === SKELD MISSING: corner wall-mounted intercom/speaker boxes ===
           if (selectedMap === 'skeld') {
             // Top-left corner intercom box
@@ -17850,8 +18570,10 @@
           ctx.beginPath(); ctx.ellipse(npc.x - ox + npc.w * 0.5, npc.y - oy + npc.h * 0.92, npc.w * 0.38, npc.h * 0.10, 0, 0, Math.PI * 2); ctx.fill();
           ctx.restore();
           const _npcBobY = (npc.state === 'idle' || npc.state === 'doing_task') ? Math.sin(Date.now()/700 + npc.x * 0.01) * 1.5 : 0;
+          // Phantom-role NPCs draw at reduced alpha while invisible
+          const _npcDrawAlpha = (npc._phantomActive && npc._phantomAlpha != null) ? npc._phantomAlpha : 1;
           drawCrewmate(ctx, npc.x - ox, npc.y - oy + _npcBobY, npc.w, npc.h, npc.color, npc.name, npc.alive,
-            npc.facingLeft ? 'left' : npc.state, 1, showSuspect ? 'impostor' : null, npc.hat, npc.protectionTimer);
+            npc.facingLeft ? 'left' : npc.state, _npcDrawAlpha, showSuspect ? 'impostor' : null, npc.hat, npc.protectionTimer);
           // Witness speech bubble
           if (npc.speechBubble) {
             const bx = npc.x - ox + npc.w / 2;
