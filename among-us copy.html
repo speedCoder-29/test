@@ -2188,9 +2188,7 @@
           w.push({ x: 60, y: 1522, w: 200, h: 16 });    // bottom far left
           // Left hull - reactor bulge with engine exhausts
           w.push({ x: 0,  y: 194, w: 16, h: 200 });     // left upper wall
-          w.push({ x: -30, y: 378, w: 46, h: 16 });     // reactor top-left step
-          w.push({ x: -30, y: 378, w: 16, h: 850 });    // reactor left wall (full height)
-          w.push({ x: -30, y: 1212, w: 46, h: 16 });    // reactor bottom-left step
+          w.push({ x: 0, y: 394, w: 16, h: 818 });        // reactor left wall (flush with map edge, y:394-1212)
           w.push({ x: 0,  y: 1212, w: 16, h: 326 });    // left lower wall
 
           // ============ INTERIOR ROOM WALLS ============
@@ -2494,17 +2492,17 @@
           return w;
         })(),
         rooms: [
-          { name: 'Cafeteria',     x: 1418, y: 342 },
-          { name: 'Weapons',       x: 2305, y: 283 },
+          { name: 'Cafeteria',     x: 1418, y: 356 },
+          { name: 'Weapons',       x: 2305, y: 301 },
           { name: 'Navigation',    x: 2806, y: 750 },
-          { name: 'O2',            x: 2110, y: 750 },
+          { name: 'O2',            x: 2123, y: 750 },
           { name: 'Admin',         x: 1618, y: 825 },
           { name: 'Shields',       x: 2347, y: 1305 },
           { name: 'Communications',x: 1912, y: 1560 },
           { name: 'Storage',       x: 1280, y: 1365 },
           { name: 'Electrical',    x: 748,  y: 1115 },
           { name: 'Lower Engine',  x: 285,  y: 1367 },
-          { name: 'Reactor',       x: 130,  y: 810 },
+          { name: 'Reactor',       x: 138,  y: 810 },
           { name: 'Security',      x: 520,  y: 700 },
           { name: 'Upper Engine',  x: 285,  y: 270 },
           { name: 'MedBay',        x: 700,  y: 440 },
@@ -4517,6 +4515,48 @@
           ctx.fillStyle = _corrCol;
           ctx.fillRect(fx, fy, f.w, f.h);
           drawHallwayDetail(fx, fy, f.w, f.h);
+
+          // ── Corridor props: fire extinguisher cabinets + ceiling sprinkler heads ──
+          if (selectedMap === 'skeld' || selectedMap === 'mira' || selectedMap === 'airship') {
+            const _cpHoriz = f.w > f.h;
+            const _cpLen = _cpHoriz ? f.w : f.h;
+            const _cpThk = _cpHoriz ? f.h : f.w;
+            // Fire extinguisher boxes: red cabinet every ~220px on thick corridors
+            if (_cpThk >= 34 && _cpLen >= 180) {
+              ctx.save();
+              for (let _fe = 40; _fe < _cpLen - 20; _fe += 220) {
+                let _fex, _fey, _few = 10, _feh = 8;
+                if (_cpHoriz) { _fex = fx + _fe; _fey = fy + 3; }
+                else          { _fex = fx + 3;   _fey = fy + _fe; _few = 8; _feh = 10; }
+                ctx.fillStyle = selectedMap === 'mira' ? '#1a2a5a' : '#7a1010';
+                ctx.fillRect(_fex, _fey, _few, _feh);
+                ctx.strokeStyle = selectedMap === 'mira' ? '#3a5aaa' : '#bb2020'; ctx.lineWidth = 0.7;
+                ctx.strokeRect(_fex, _fey, _few, _feh);
+                // White cross on cabinet
+                ctx.fillStyle = 'rgba(255,255,255,0.55)';
+                if (_cpHoriz) {
+                  ctx.fillRect(_fex+3, _fey+3, 4, 1); ctx.fillRect(_fex+4, _fey+2, 2, 3);
+                } else {
+                  ctx.fillRect(_fex+2, _fey+4, 3, 1); ctx.fillRect(_fex+3, _fey+3, 1, 3);
+                }
+              }
+              ctx.restore();
+            }
+            // Ceiling sprinkler heads: small disc + cross, every ~95px in any corridor
+            if (_cpThk >= 26 && _cpLen >= 80) {
+              ctx.save();
+              for (let _sp = 48; _sp < _cpLen; _sp += 95) {
+                const _spx = _cpHoriz ? fx + _sp : fx + f.w/2;
+                const _spy = _cpHoriz ? fy + f.h/2 : fy + _sp;
+                ctx.fillStyle = 'rgba(180,200,220,0.18)';
+                ctx.beginPath(); ctx.arc(_spx, _spy, 2.5, 0, Math.PI*2); ctx.fill();
+                ctx.strokeStyle = 'rgba(140,175,210,0.22)'; ctx.lineWidth = 0.8;
+                ctx.beginPath(); ctx.moveTo(_spx-4, _spy); ctx.lineTo(_spx+4, _spy); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(_spx, _spy-4); ctx.lineTo(_spx, _spy+4); ctx.stroke();
+              }
+              ctx.restore();
+            }
+          }
         }
       }
 
@@ -4721,7 +4761,9 @@
       FAKING_TASK: 'faking_task',
       STALKING: 'stalking',
       REPORTING: 'reporting',
-      WANDERING_SAFE: 'wandering_safe'
+      WANDERING_SAFE: 'wandering_safe',
+      ALIBI_WALK: 'alibi_walk',   // impostor: escort a crewmate to build trust & alibi
+      SELF_REPORT: 'self_report', // impostor: linger near own kill then "discover" the body
     };
 
     let player, npcs, deadBodies, gameStarted, isImpostor, tasksCompleted, totalTasks;
@@ -7688,7 +7730,8 @@
 
       // Awareness: track nearby players — range scales with difficulty
       const _df = _npcDiff();
-      const nearby = getNearbyEntities(npc, _df.awarenessRange);
+      const _crewVis = Math.max(0.5, gameSettings.crewVision || 1);
+      const nearby = getNearbyEntities(npc, Math.round(_df.awarenessRange * _crewVis));
       for (const e of nearby) {
         npc.lastSeen[e.name] = { x: e.x, y: e.y, time: Date.now() };
       }
@@ -7747,8 +7790,10 @@
           : sabStations2[0];
         if (fixTarget && dist(npc, fixTarget) < 80) {
           const atB = sabStations2.length >= 2 && dist(npc, sabStations2[1]) < dist(npc, sabStations2[0]);
-          if (atB) sabotage.fixProgressB = Math.min(100, sabotage.fixProgressB + 0.5);
-          else sabotage.fixProgress = Math.min(100, sabotage.fixProgress + 0.5);
+          // Fix speed: Hard NPCs work faster; also slight boost based on taskSpeed personality
+          const _fixRate = 0.5 * (_npcDiff().hard ? 1.6 : _npcDiff().easy ? 0.7 : 1.0) * (npc.personality.taskSpeed || 1);
+          if (atB) sabotage.fixProgressB = Math.min(100, sabotage.fixProgressB + _fixRate);
+          else sabotage.fixProgress = Math.min(100, sabotage.fixProgress + _fixRate);
           if (sabotage.fixProgress >= 100 && (sabStations2.length < 2 || sabotage.fixProgressB >= 100)) endSabotage();
           if (!sabotage.active) npc.fixingSabotage = false;
         }
@@ -7759,7 +7804,7 @@
         if (npc.sheriffKillCooldown > 0) {
           npc.sheriffKillCooldown--;
         } else {
-          const kRange = 65;
+          const kRange = gameSettings.killDistance === 'Short' ? 48 : gameSettings.killDistance === 'Long' ? 88 : 68;
           const impTarget = npcs.find(n => n.alive && n.isImpostor && !n.inVent && dist(npc, n) < kRange
             && hasLineOfSight(npc.x + 16, npc.y + 20, n.x + 16, n.y + 20, 4, 4));
           if (impTarget) {
@@ -8282,8 +8327,9 @@
 
         // VIPER: bolder kill threshold (acid dissolves body); hunts near vents; up to 2 witnesses ok
         if (npc.role === 'viper') {
+          const _vipKillDist = (gameSettings.killDistance === 'Short' ? 40 : gameSettings.killDistance === 'Long' ? 80 : 60) + 14;
           if (npc.killCooldown <= 0 && npc.state === AI_STATE.HUNTING && npc.companionTarget
-              && dist(npc, npc.companionTarget) < 72) {
+              && dist(npc, npc.companionTarget) < _vipKillDist) {
             const _vw = getNearbyEntities(npc, 180).filter(e => !e.isImpostor && e !== npc.companionTarget);
             if (_vw.length <= 2) {
               performNPCKill(npc, npc.companionTarget);
@@ -8303,10 +8349,34 @@
 
       } // end role-specific impostor logic
 
-      const nearby = getNearbyEntities(npc, 250);
+      const _impVis = Math.max(0.5, gameSettings.impVision || 1);
+      const nearby = getNearbyEntities(npc, Math.round(250 * _impVis));
       // Phantom players are invisible — can't be targeted
       const nearbyCrewmates = nearby.filter(e => !e.isImpostor && e.alive && !(e === player && playerRole === 'phantom' && abilityActive));
       const nearbyWitnesses = nearby.length;
+
+      // ── Passive trust & alibi tracking ───────────────────────────────────────
+      if (!inMeeting && !gameOver) {
+        if (!npc._trustWith)  npc._trustWith  = {};
+        if (!npc._alibiLog)   npc._alibiLog   = [];   // [{room,names,tick}] max 6
+        if (!npc._alibilTick) npc._alibilTick = 0;
+        npc._alibilTick++;
+
+        // Build trust: for each nearby crewmate not being hunted, increment trust score
+        for (const cm of nearbyCrewmates) {
+          if (npc.companionTarget !== cm || npc.state !== AI_STATE.HUNTING) {
+            npc._trustWith[cm.name] = Math.min(100, (npc._trustWith[cm.name] || 0) + 0.04);
+          }
+        }
+
+        // Log alibi moments: every 4s when near 2+ crewmates, record room + names
+        if (npc._alibilTick % 240 === 0 && nearbyCrewmates.length >= 2) {
+          const _aRoom = getEntityRoom(npc) || getRoomAtPoint(npc.x, npc.y) || 'corridor';
+          const _aNames = nearbyCrewmates.slice(0, 3).map(c => c.name);
+          npc._alibiLog.push({ room: _aRoom, names: _aNames, tick: npc._alibilTick });
+          if (npc._alibiLog.length > 6) npc._alibiLog.shift(); // keep latest 6
+        }
+      }
 
       switch (npc.state) {
         case AI_STATE.IDLE:
@@ -8354,6 +8424,21 @@
                   npc.state = AI_STATE.STALKING;
                   npc.stateTimer = _dfi.hard ? 400 + Math.random() * 300 : 300 + Math.random() * 300;
                 }
+              } else if (roll < (_dfi.hard ? 0.95 : 0.82)) {
+                // Alibi walk — escort a crewmate doing tasks to build trust and create witnesses
+                const _abCands = npcs.filter(n => n !== npc && n.alive && !n.isImpostor
+                  && (n.state === AI_STATE.WALKING_TO_TASK || n.state === AI_STATE.DOING_TASK));
+                if (_abCands.length > 0) {
+                  npc._escortTarget = _abCands[Math.floor(Math.random() * _abCands.length)];
+                  npc.state = AI_STATE.ALIBI_WALK;
+                  npc.stateTimer = _dfi.hard ? 600 + Math.random() * 400 : 300 + Math.random() * 240;
+                } else {
+                  // Fall back: wander to look innocent
+                  npc.targetX = 200 + Math.random() * (MAP_W - 400);
+                  npc.targetY = 200 + Math.random() * (MAP_H - 400);
+                  npc.state = AI_STATE.WALKING_RANDOM;
+                  npc.stateTimer = 100 + Math.random() * 150;
+                }
               } else {
                 // Wander to look innocent
                 npc.targetX = 200 + Math.random() * (MAP_W - 400);
@@ -8365,6 +8450,90 @@
           }
           break;
 
+        case AI_STATE.ALIBI_WALK: {
+          npc.stateTimer--;
+          const _et = npc._escortTarget;
+          if (npc.stateTimer <= 0 || !_et || !_et.alive) {
+            npc._escortTarget = null; npc.state = AI_STATE.IDLE; break;
+          }
+          const _ed = dist(npc, _et);
+          // Stay close but not overlapping — walk 60-120px behind the escort target
+          if (_ed > 130) {
+            moveToward(npc, _et.x, _et.y);
+          } else if (_ed < 55) {
+            // Back off slightly to not be creepy-close
+            const _bka = Math.atan2(npc.y - _et.y, npc.x - _et.x);
+            const _bkx = npc.x + Math.cos(_bka) * npc.speed;
+            const _bky = npc.y + Math.sin(_bka) * npc.speed;
+            if (!isBlockedAt(_bkx, _bky, npc.w, npc.h)) { npc.x = _bkx; npc.y = _bky; }
+          }
+          // Helpful chat to build appearance of cooperation
+          if (!npc.speechBubble && Math.random() < 0.003) {
+            const _helpLines = [
+              `I'll keep watch, ${_et.name}.`, `Need backup, ${_et.name}?`,
+              'Stay safe out there.', 'I got your back.',
+              `Let me know if you need help, ${_et.name}.`, 'Sticking together is safer.',
+              "I finished my tasks \u2014 just making sure you're OK.",
+            ];
+            npc.speechBubble = { text: _helpLines[Math.floor(Math.random() * _helpLines.length)], timer: 220 };
+          }
+          // If kill cooldown is up and escort target happens to be completely alone — opportunistically kill
+          // Only on Hard: the alibi walk can become a kill setup
+          const _alibiKillDist = gameSettings.killDistance === 'Short' ? 40 : gameSettings.killDistance === 'Long' ? 80 : 60;
+          if (_npcDiff().hard && npc.killCooldown <= 0 && _ed < _alibiKillDist) {
+            const _ewit = getNearbyEntities(npc, 200).filter(e => e !== _et && e !== npc && !e.isImpostor);
+            if (_ewit.length === 0) {
+              performNPCKill(npc, _et);
+              npc._escortTarget = null;
+              // Self-report: impostor stays near body and "discovers" it (30% chance on hard)
+              if (Math.random() < 0.30) {
+                npc.state = AI_STATE.SELF_REPORT;
+                npc.stateTimer = 90 + Math.floor(Math.random() * 60); // wait 1.5-2.5s
+              } else {
+                npc.state = AI_STATE.FLEEING;
+                const _fa2 = Math.atan2(npc.y - _et.y, npc.x - _et.x);
+                npc.targetX = Math.max(50, Math.min(MAP_W-50, npc.x + Math.cos(_fa2)*380));
+                npc.targetY = Math.max(50, Math.min(MAP_H-50, npc.y + Math.sin(_fa2)*380));
+                npc.stateTimer = 110;
+              }
+            }
+          }
+          break;
+        }
+
+        case AI_STATE.SELF_REPORT: {
+          // Impostor lingers near the body then "discovers" and reports it
+          // This makes them look like an innocent reporter rather than a fleeing killer
+          npc.stateTimer--;
+          if (npc.stateTimer <= 0) {
+            // Find the body we just made and "report" it
+            const _myBody = deadBodies.find(b => !b.reported
+              && Math.hypot(b.x - npc.x, b.y - npc.y) < 250);
+            if (_myBody && !gameOver) {
+              // Assign a frame target: nearest OTHER crewmate when we "find" the body
+              const _frameCands = npcs.filter(n => n.alive && !n.isImpostor && n !== npc
+                && dist(n, npc) < 400);
+              if (_frameCands.length > 0) {
+                npc._frameTarget = _frameCands.reduce((a, b) =>
+                  dist(a, npc) < dist(b, npc) ? a : b);
+              }
+              npc.sawBody = true;
+              npc.bodyLocation = { x: _myBody.x, y: _myBody.y };
+              npc.panicTimer = 5; // minimal panic — impostors know what they're doing
+              npc.state = AI_STATE.REPORTING;
+            } else {
+              npc.state = AI_STATE.IDLE;
+            }
+          } else {
+            // Pace near the body to look natural
+            if (Math.random() < 0.1) {
+              npc.x += (Math.random() - 0.5) * 4;
+              npc.y += (Math.random() - 0.5) * 4;
+            }
+          }
+          break;
+        }
+
         case AI_STATE.HUNTING:
           npc.stateTimer--;
           if (npc.stateTimer <= 0 || !npc.companionTarget || !npc.companionTarget.alive) {
@@ -8372,38 +8541,81 @@
           }
           moveToward(npc, npc.companionTarget.x, npc.companionTarget.y);
 
-          // Try to close doors on victim to trap them
-          if (doorCooldown <= 0 && dist(npc, npc.companionTarget) < 150) {
+          // Try to close doors on victim to trap them (only if doors sabotage is enabled)
+          if (gameSettings.doorsSabotage && doorCooldown <= 0 && dist(npc, npc.companionTarget) < 150) {
             const victimRoom = getEntityRoom(npc.companionTarget);
             if (victimRoom) {
-              const hasDoors = doors.some(d => d.room === victimRoom && !d.closed);
-              if (hasDoors) closeDoor(victimRoom);
+              let _npcClosedDoor = false;
+              for (const _nd of doors) {
+                if (_nd.room === victimRoom && !_nd.closed) {
+                  _nd.closed = true; _nd.timer = DOOR_CLOSE_DURATION; _npcClosedDoor = true;
+                }
+              }
+              if (_npcClosedDoor) { doorCooldown = DOOR_COOLDOWN; playSfx('door_close'); }
             }
           }
 
-          // Check if we can kill — witness threshold and range scale with difficulty
+          // Check if we can kill — distance from settings, witness threshold from difficulty
           const _dfh = _npcDiff();
-          if (dist(npc, npc.companionTarget) < 58 && npc.killCooldown <= 0) {
+          const _npcKillDist = gameSettings.killDistance === 'Short' ? 40 : gameSettings.killDistance === 'Long' ? 80 : 60;
+          if (dist(npc, npc.companionTarget) < _npcKillDist && npc.killCooldown <= 0) {
             const witnesses = getNearbyEntities(npc, _dfh.witnessCheckRange).filter(e => e !== npc.companionTarget && e !== npc);
             if (witnesses.length <= _dfh.killWitnessMax) {
-              performNPCKill(npc, npc.companionTarget);
-              // Escape via nearest vent if close enough, otherwise flee on foot
-              const _vc = npc.x + npc.w / 2, _vcy = npc.y + npc.h / 2;
-              const _nearVent = vents && vents.reduce((best, v) => {
-                const vd = Math.hypot(v.x - _vc, v.y - _vcy);
-                return (!best || vd < best.d) ? { v, d: vd } : best;
-              }, null);
-              if (_nearVent && _nearVent.d < 100) {
-                npc.inVent = true;
-                npc.x = _nearVent.v.x; npc.y = _nearVent.v.y;
-                npc.ventTimer = 120 + Math.floor(Math.random() * 120);
-                npc.state = AI_STATE.IDLE;
+              const _killVictim = npc.companionTarget;
+              performNPCKill(npc, _killVictim);
+
+              // Assign frame target: nearest crewmate other than victim to blame in meeting
+              const _frameCands = npcs.filter(n => n.alive && !n.isImpostor && n !== npc
+                && Math.hypot(n.x - npc.x, n.y - npc.y) < 500);
+              if (_frameCands.length > 0) {
+                // Prefer someone with low trust (harder to defend themselves)
+                _frameCands.sort((a, b) => (npc._trustWith[a.name]||0) - (npc._trustWith[b.name]||0));
+                npc._frameTarget = _frameCands[0];
+              }
+
+              // Self-report strategy: Hard impostors sometimes stay and "discover" the body
+              const _selfRepChance = _dfh.hard ? 0.25 : 0.06;
+              if (Math.random() < _selfRepChance) {
+                npc.state = AI_STATE.SELF_REPORT;
+                npc.stateTimer = 80 + Math.floor(Math.random() * 70);
               } else {
-                npc.state = AI_STATE.FLEEING;
-                const _fa = Math.atan2(npc.y - npc.companionTarget.y, npc.x - npc.companionTarget.x);
-                npc.targetX = Math.max(50, Math.min(MAP_W - 50, npc.x + Math.cos(_fa) * 400));
-                npc.targetY = Math.max(50, Math.min(MAP_H - 50, npc.y + Math.sin(_fa) * 400));
-                npc.stateTimer = 120;
+                // Escape via nearest vent if close enough, otherwise flee then blend into a group
+                const _vc = npc.x + npc.w / 2, _vcy = npc.y + npc.h / 2;
+                const _nearVent = vents && vents.reduce((best, v) => {
+                  const vd = Math.hypot(v.x - _vc, v.y - _vcy);
+                  return (!best || vd < best.d) ? { v, d: vd } : best;
+                }, null);
+                if (_nearVent && _nearVent.d < 100) {
+                  npc.inVent = true;
+                  npc.x = _nearVent.v.x; npc.y = _nearVent.v.y;
+                  npc.ventTimer = 120 + Math.floor(Math.random() * 120);
+                  npc.state = AI_STATE.IDLE;
+                } else {
+                  npc.state = AI_STATE.FLEEING;
+                  // Hard: flee toward nearest group to blend in; Easy/Normal: flee away from kill
+                  if (_dfh.hard) {
+                    let _grp = null, _grpBest = Infinity;
+                    for (const _gc of npcs) {
+                      if (!_gc.alive || _gc.isImpostor || _gc === npc) continue;
+                      const _gsz = npcs.filter(x => x.alive && !x.isImpostor && dist(x, _gc) < 120).length;
+                      const _gsc = dist(npc, _gc) - _gsz * 60;
+                      if (_gsc < _grpBest) { _grpBest = _gsc; _grp = _gc; }
+                    }
+                    if (_grp) {
+                      npc.targetX = _grp.x + (Math.random()-0.5)*50;
+                      npc.targetY = _grp.y + (Math.random()-0.5)*50;
+                    } else {
+                      const _fa = Math.atan2(npc.y - _killVictim.y, npc.x - _killVictim.x);
+                      npc.targetX = Math.max(50, Math.min(MAP_W-50, npc.x + Math.cos(_fa)*350));
+                      npc.targetY = Math.max(50, Math.min(MAP_H-50, npc.y + Math.sin(_fa)*350));
+                    }
+                  } else {
+                    const _fa = Math.atan2(npc.y - _killVictim.y, npc.x - _killVictim.x);
+                    npc.targetX = Math.max(50, Math.min(MAP_W - 50, npc.x + Math.cos(_fa) * 400));
+                    npc.targetY = Math.max(50, Math.min(MAP_H - 50, npc.y + Math.sin(_fa) * 400));
+                  }
+                  npc.stateTimer = 120;
+                }
               }
             } else {
               // Witnesses present — abort and blend back in
@@ -8482,10 +8694,11 @@
             // Occasionally switch back to IDLE so impostor can re-evaluate
             if (Math.random() < 0.3) { npc.state = AI_STATE.IDLE; npc.idleTimer = 999; }
           }
-          // Opportunistic kill
+          // Opportunistic kill — range from settings
+          const _oppKillDist = gameSettings.killDistance === 'Short' ? 40 : gameSettings.killDistance === 'Long' ? 80 : 60;
           if (npc.killCooldown <= 0) {
             for (const cm of nearbyCrewmates) {
-              if (dist(npc, cm) < 55) {
+              if (dist(npc, cm) < _oppKillDist) {
                 const witnesses = getNearbyEntities(npc, 200).filter(e => e !== cm);
                 if (witnesses.length === 0) {
                   performNPCKill(npc, cm);
@@ -8749,7 +8962,7 @@
         }
         if (npcVictim.role === 'noisemaker') triggerNoisemakerAlert(npcVictim);
         notifyWitnessesOfKill(impostor.name, impostor.x, impostor.y, npcVictim.name);
-        impostor.killCooldown = (gameMode === 'hideseek' ? gameSettings.seekerKillCooldown : 10) * 60;
+        impostor.killCooldown = (gameMode === 'hideseek' ? gameSettings.seekerKillCooldown : gameSettings.killCooldown) * 60;
         if (gameSettings.killFlash && dist(player, npcVictim) < 300) {
           const flashEl = document.getElementById('killFlashOverlay');
           if (flashEl) { flashEl.style.opacity = '0.5'; setTimeout(() => { flashEl.style.opacity = '0'; }, 300); }
@@ -8777,6 +8990,7 @@
 
     function triggerNPCReport(reporter) {
       if (gameMode === 'hideseek') return;
+      if (gameSettings.maxMeetings > 0 && meetingCount >= gameSettings.maxMeetings) return;
       deadBodies.forEach(b => b.reported = true);
       document.getElementById('reportScreen').style.display = 'flex';
       document.getElementById('reportScreen').classList.add('active');
@@ -8835,7 +9049,7 @@
     ];
 
     function notifyWitnessesOfKill(killerName, killerX, killerY, victimName) {
-      const WITNESS_RADIUS = 220;
+      const WITNESS_RADIUS = Math.round(220 * (gameSettings.crewVision || 1));
       for (const npc of npcs) {
         if (!npc.alive || npc.isImpostor) continue;
         if (dist({ x: killerX, y: killerY }, npc) > WITNESS_RADIUS) continue;
@@ -8924,6 +9138,12 @@
           }
         }
         if (!npc.alive) continue;
+        // Keep NPC base speed proportional to playerSpeed setting (without overriding per-role offsets)
+        {
+          const _baseSpd = npc.isImpostor ? 2.5 : 2.2;
+          const _targetSpd = _baseSpd * (gameSettings.playerSpeed || 1);
+          if (Math.abs(npc.speed - _targetSpd) > 0.05) npc.speed = _targetSpd;
+        }
         if (npc.isImpostor) {
           updateImpostorAI(npc);
         } else {
@@ -8932,7 +9152,61 @@
         // Clamp to map
         npc.x = Math.max(25, Math.min(MAP_W - npc.w - 25, npc.x));
         npc.y = Math.max(25, Math.min(MAP_H - npc.h - 25, npc.y));
+
+        // ── In-game speech bubble reaction ─────────────────────────────────────
+        // When NPC A's bubble is freshly set, nearby NPCs may react within ~2s
+        if (npc.speechBubble && !npc._bubbleReacted && npc.speechBubble.timer > 190) {
+          npc._bubbleReacted = true;
+          const _bubText = npc.speechBubble.text;
+          const _nearby = npcs.filter(n => n !== npc && n.alive && !n.speechBubble
+            && dist(n, npc) < 180);
+          if (_nearby.length > 0 && Math.random() < 0.28) {
+            const _reactor = _nearby[Math.floor(Math.random() * _nearby.length)];
+            // Generate a short contextual reply
+            const _replyPool = _generateBubbleReply(_reactor, npc, _bubText);
+            if (_replyPool) {
+              _reactor.speechBubble = { text: _replyPool, timer: 200 };
+              _reactor.chatCooldown = 180 + Math.floor(Math.random() * 200);
+            }
+          }
+        }
+        if (!npc.speechBubble) npc._bubbleReacted = false; // reset when bubble clears
       }
+    }
+
+    // Generates a short in-game speech bubble reply from `reactor` to `speaker`'s text.
+    function _generateBubbleReply(reactor, speaker, text) {
+      const lower = text.toLowerCase();
+      const isImp = reactor.isImpostor;
+
+      // Speaker called for help / warned of danger
+      if (lower.includes('stay') || lower.includes('careful') || lower.includes('watch')) {
+        return isImp ? null : ['On it!', 'Copy that.', 'Understood.', 'I see them too!'][Math.floor(Math.random()*4)];
+      }
+      // Speaker mentioned tasks
+      if (lower.includes('task') || lower.includes('fixing') || lower.includes('need help')) {
+        return isImp
+          ? ['Keep going, I\'ll watch.', 'Almost done?'][Math.floor(Math.random()*2)]
+          : ['Same, almost done.', 'Which one?', 'I\'ll come with you.', 'On my way.'][Math.floor(Math.random()*4)];
+      }
+      // Speaker sounds suspicious / alarmed
+      if (lower.includes('sus') || lower.includes('impostor') || lower.includes('watching')) {
+        return isImp
+          ? ['Relax, nothing happened.', 'You\'re overthinking it.'][Math.floor(Math.random()*2)]
+          : ['Who?', 'I noticed that too.', 'Stay with me then.', 'Point them out!'][Math.floor(Math.random()*4)];
+      }
+      // Speaker is a guardian_angel warning
+      if (lower.includes('stay back')) {
+        return ['What\'s going on?', 'I\'m coming!', 'Careful!'][Math.floor(Math.random()*3)];
+      }
+      // Idle / social chatter — friendly echo
+      if (Math.random() < 0.4) {
+        const echoes = isImp
+          ? ['Noted.', 'Mm-hmm.', 'Sure.']
+          : ['Yeah.', 'Agreed.', 'Same here.', 'Hm.'];
+        return echoes[Math.floor(Math.random() * echoes.length)];
+      }
+      return null;
     }
 
     // --- Door System ---
@@ -10139,22 +10413,65 @@
         msgs.push("I'm not gonna lie, I look pretty sus right now.");
         msgs.push("Just vote me, it's fine.");
       } else if (isImp) {
-        // Impostor: lie about location, deflect suspicion
-        const fakeRooms = ['Cafeteria', 'Electrical', 'Reactor', 'MedBay', 'Admin', 'Navigation'];
-        const fakeRoom = fakeRooms[Math.floor(Math.random() * fakeRooms.length)];
-        msgs.push(`I was in ${fakeRoom} doing tasks, ask anyone.`);
-        msgs.push(`I've been in ${fakeRoom} the whole round, it wasn't me.`);
-        msgs.push(`I was with someone in ${fakeRoom} — I can't be the one.`);
-        if (topSuspect) {
+        // ── Impostor: layered deception strategy ─────────────────────────────
+
+        // 1. Use real alibi log entries if available (most convincing)
+        const _alibis = npc._alibiLog || [];
+        if (_alibis.length > 0) {
+          const _ab = _alibis[_alibis.length - 1]; // most recent
+          const _abWith = _ab.names.slice(0,2).join(' and ');
+          msgs.push(`I was in ${_ab.room} with ${_abWith} — they can confirm.`);
+          msgs.push(`Ask ${_ab.names[0]}, I was right next to them in ${_ab.room} the whole time.`);
+          if (_ab.names.length >= 2)
+            msgs.push(`${_ab.names[0]} and ${_ab.names[1]} saw me. I wasn't alone.`);
+        }
+
+        // 2. Cite trusted crewmates as alibi witnesses
+        const _trusted = Object.entries(npc._trustWith || {})
+          .filter(([,v]) => v > 35).map(([nm]) => nm);
+        if (_trusted.length > 0) {
+          const _tw = _trusted[Math.floor(Math.random() * _trusted.length)];
+          msgs.push(`${_tw}, tell them — we've been together all round, right?`);
+          msgs.push(`I was helping ${_tw} with tasks. We were literally just talking.`);
+          msgs.push(`${_tw} can vouch for me. We were in the same area.`);
+        }
+
+        // 3. If self-reporter, use that as proof of innocence
+        if (npc.sawBody || (npc._alibiLog && npc.state === AI_STATE.IDLE && reporterNPC && reporterNPC.name === npc.name)) {
+          msgs.push(`I reported the body myself — why would the killer do that?`);
+          msgs.push(`I found the body and immediately called it. Killers don't report.`);
+          msgs.push(`Think about it: I'm the one who called the meeting. That clears me.`);
+        }
+
+        // 4. Confidently frame the target (if assigned)
+        const _ft = npc._frameTarget;
+        if (_ft && _ft.alive) {
+          msgs.push(`${_ft.name} was acting suspicious right before this happened.`);
+          msgs.push(`I saw ${_ft.name} near that area with no one else around.`);
+          msgs.push(`${_ft.name}, where were you? Because I didn't see you on tasks.`);
+          msgs.push(`I'm voting ${_ft.name}. Everything points to them.`);
+          msgs.push(`${_ft.name} has barely done anything this round — that's always a red flag.`);
+        } else if (topSuspect) {
+          // Fall back to suspicion-based accusation
           msgs.push(`${topSuspect.name} was acting really weird earlier, not gonna lie.`);
           msgs.push(`I saw ${topSuspect.name} near the body location. Just saying.`);
           msgs.push(`Why was ${topSuspect.name} alone for so long? That's suspicious.`);
         }
-        if (randomOther) {
-          msgs.push(`${randomOther.name}, where exactly were YOU when this happened?`);
-        }
+
+        // 5. Deflect accusations / generic innocence claims
+        const fakeRooms = ['Cafeteria', 'Electrical', 'Reactor', 'MedBay', 'Admin', 'Navigation'];
+        const fakeRoom = myRoom !== 'unknown' ? myRoom : fakeRooms[Math.floor(Math.random() * fakeRooms.length)];
+        msgs.push(`I was in ${fakeRoom} doing tasks the whole time.`);
         msgs.push(`Someone is trying to pin this on me. Think logically.`);
-        msgs.push(`I've been doing tasks non-stop, check the task bar.`);
+        msgs.push(`I've been doing tasks non-stop — check the task bar.`);
+        if (randomOther && randomOther.entity !== _ft)
+          msgs.push(`${randomOther.name}, where exactly were YOU when this happened?`);
+
+        // 6. Gaslighting if accused
+        msgs.push(`If I was the impostor, why would I be this obvious about it?`);
+        msgs.push(`Voting me out now hands the impostors exactly what they want.`);
+        msgs.push(`I've been the most active this round — does that really sound like an impostor?`);
+
       } else if (npc.role === 'detective') {
         msgs.push(`I've been tracking movement patterns — ${topSuspect ? topSuspect.name + ' is my prime suspect.' : 'still building my case.'}`);
         msgs.push(`My investigation points to ${topSuspect ? topSuspect.name : 'someone in this room'}.`);
@@ -10283,6 +10600,8 @@
     }
 
     let voteTimerInterval = null;
+    let chatLog = [];        // [{name,color,text,isPlayer,ts}] — cleared each meeting
+    let _reactTimers = [];   // scheduled reaction timeouts (cleared with liveMsgTimers)
     function _hexToRgbVote(hex) {
       const r = parseInt((hex||'#888888').slice(1,3),16)||136;
       const g = parseInt((hex||'#888888').slice(3,5),16)||136;
@@ -10450,6 +10769,7 @@
       voteList.innerHTML = '';
       voteList.style.display = 'none';
       chatArea.innerHTML = '';
+      chatLog = []; _reactTimers.forEach(clearTimeout); _reactTimers = [];
       discussPhase.style.display = 'flex';
       meetingTitle.textContent = reporterNPC
         ? reporterNPC.name + ' reported a body!'
@@ -10572,7 +10892,6 @@
 
       // Chat helpers
       function addChatMessage(name, color, text, fromGhost) {
-        // If sender is ghost and viewer is alive: skip
         if (fromGhost && !isGhost) return;
         const msg = document.createElement('div');
         msg.className = 'chat-msg' + (fromGhost ? ' ghost-msg' : '');
@@ -10582,6 +10901,208 @@
         msg.innerHTML = prefix + '<span class="msg-name" style="color:' + color + '">' + escapeHtml(name) + ':</span> ' + escapeHtml(text);
         chatArea.appendChild(msg);
         chatArea.scrollTop = chatArea.scrollHeight;
+        // Log and trigger NPC reactions for non-ghost in-meeting messages
+        if (!fromGhost && inMeeting) {
+          chatLog.push({ name, color, text, isPlayer: name === player.name, ts: Date.now() });
+          scheduleNPCReactions(name, color, text);
+        }
+      }
+
+      // ── Message intent parser ──────────────────────────────────────────────────
+      // Returns { accused:[], defended:[], askedOf:string|null, type:'accuse'|'defend'|'question'|'agree'|'info' }
+      function parseMessageIntent(text, senderName) {
+        const lower = text.toLowerCase();
+        const allNames = [player.name, ...npcs.map(n => n.name)];
+        const result = { accused: [], defended: [], askedOf: null, type: 'info' };
+
+        // Extract any names mentioned in the message
+        const mentioned = allNames.filter(nm => lower.includes(nm.toLowerCase()) && nm !== senderName);
+
+        // Accusation signals
+        const accSignals = ['sus', 'impostor', 'vote', 'it was', "i saw", 'kill', 'did it', 'pointing', 'among us', 'lying', 'liar', 'sketchy', 'weird', 'red flag', "wasn't doing", 'fake', 'acting', 'following'];
+        if (accSignals.some(s => lower.includes(s))) {
+          result.type = 'accuse';
+          result.accused = mentioned;
+        }
+
+        // Defense signals
+        const defSignals = ['was with', 'can vouch', 'alibi', "wasn't me", 'innocent', 'trust me', 'i was in', 'i was doing', 'can confirm', 'we were', 'together', 'i swear'];
+        if (defSignals.some(s => lower.includes(s))) {
+          result.type = result.type === 'accuse' ? 'accuse' : 'defend'; // accuse overrides
+          result.defended = mentioned;
+        }
+
+        // Agreement signals
+        const agreeSignals = ['agree', 'same', 'exactly', 'me too', 'right', 'yeah', 'yes', 'i think so', 'also think', 'also sus'];
+        if (agreeSignals.some(s => lower.includes(s)) && result.type === 'info') result.type = 'agree';
+
+        // Question signals — find who is being asked
+        const qSignals = ['where were you', 'what were you', 'why were you', 'can you explain', 'what did you', 'were you in', 'where did you'];
+        if (qSignals.some(s => lower.includes(s))) {
+          result.type = 'question';
+          result.askedOf = mentioned.length > 0 ? mentioned[0] : null;
+        }
+
+        return result;
+      }
+
+      // ── NPC reaction message generator ───────────────────────────────────────
+      function generateNPCReaction(npc, senderName, text, intent) {
+        const lower = text.toLowerCase();
+        const myName = npc.name;
+        const isAccused = intent.accused.includes(myName);
+        const isAsked   = intent.askedOf === myName;
+        const ftName    = npc._frameTarget ? npc._frameTarget.name : null;
+        const ftDefended = ftName && intent.defended.includes(ftName);
+        const ftAccused  = ftName && intent.accused.includes(ftName);
+        const alibiNames = (npc._alibiLog || []).flatMap(a => a.names);
+        const senderDefended = intent.defended.includes(senderName);
+
+        const pool = [];
+
+        // ---- NPC is directly accused ----
+        if (isAccused) {
+          if (npc.isImpostor) {
+            // Impostor defends with alibi + redirect
+            const _alibis = npc._alibiLog || [];
+            if (_alibis.length > 0) {
+              const _ab = _alibis[_alibis.length - 1];
+              pool.push(`${senderName}, I was in ${_ab.room} with ${_ab.names[0]}. Ask them.`);
+              pool.push(`That's not true. ${_ab.names[0]} saw me in ${_ab.room} the whole time.`);
+            }
+            if (ftName) {
+              pool.push(`Stop pointing at me. Look at ${ftName} instead.`);
+              pool.push(`${senderName}, why are you so focused on me? ${ftName} is the one acting weird.`);
+            }
+            const trusted = Object.keys(npc._trustWith || {}).filter(k => (npc._trustWith[k]||0) > 35);
+            if (trusted.length > 0) pool.push(`${trusted[0]}, back me up — we were together, right?`);
+            pool.push(`${senderName}, I have nothing to hide. Why are you pushing so hard?`);
+            pool.push(`Accusing me just lets the real impostor get away.`);
+            pool.push(`I reported tasks all round. How does that make me the impostor?`);
+          } else {
+            // Crewmate defends honestly
+            const _ab = (npc._alibiLog || []).slice(-1)[0];
+            if (_ab) pool.push(`${senderName}, I was in ${_ab.room} — ${_ab.names.join(', ')} can confirm.`);
+            pool.push(`${senderName}, I have an alibi. I was doing tasks the whole time.`);
+            pool.push(`I'm not the impostor. Check what I've been doing this round.`);
+            pool.push(`${senderName}, why me? What evidence do you have?`);
+            if (npc.role === 'sheriff') pool.push(`${senderName}, I'm the Sheriff. I'd never risk a misfire on myself.`);
+            if (npc.role === 'detective') pool.push(`${senderName}, my investigation points elsewhere. I'm clean.`);
+          }
+        }
+
+        // ---- NPC is directly asked a question ----
+        if (isAsked) {
+          const _ab = (npc._alibiLog || []).slice(-1)[0];
+          if (npc.isImpostor) {
+            const fakeRooms = ['Cafeteria', 'Electrical', 'MedBay', 'Admin', 'Navigation'];
+            const fakeR = _ab ? _ab.room : fakeRooms[Math.floor(Math.random() * fakeRooms.length)];
+            pool.push(`I was in ${fakeR} doing tasks. ${_ab ? _ab.names[0] + ' was with me.' : 'Anyone can check.'}`);
+            pool.push(`${senderName}, I was moving between tasks. I do have an alibi.`);
+            if (ftName) pool.push(`Funny you ask me — ${ftName} was the one wandering alone.`);
+          } else {
+            const myRoom = getRoomAtPoint(npc.x, npc.y) || (npc.premeetingRoom) || 'the corridor';
+            pool.push(`I was in ${_ab ? _ab.room : myRoom}. ${_ab ? _ab.names[0] + ' saw me.' : 'Doing tasks.'}`);
+            pool.push(`${senderName}, I can account for my whole round. Nothing suspicious on my end.`);
+            if (npc.role === 'scientist') pool.push(`My vitals panel tracks everyone — I was monitoring it in ${myRoom}.`);
+            if (npc.role === 'tracker') pool.push(`I was following my tracker target. I can show my path if you need.`);
+          }
+        }
+
+        // ---- Impostor's frame target is being defended ----
+        if (ftDefended && npc.isImpostor) {
+          pool.push(`${senderName}, are you sure? ${ftName} was alone for a long stretch.`);
+          pool.push(`I don't know, ${senderName}. ${ftName} was near the area when it happened.`);
+          pool.push(`${ftName} has an alibi? Interesting timing to bring that up, ${senderName}.`);
+          pool.push(`Even if ${ftName} was with you, that doesn't clear them for the whole round.`);
+        }
+
+        // ---- Impostor's frame target is being accused by someone else ----
+        if (ftAccused && npc.isImpostor) {
+          pool.push(`${senderName} is right — ${ftName} was acting off this whole round.`);
+          pool.push(`I noticed the same thing about ${ftName}. That route makes no sense for a crewmate.`);
+          pool.push(`${ftName} keep an eye on ${ftName}. Something doesn't add up.`);
+        }
+
+        // ---- Crewmate agrees with accusation of known suspect ----
+        if (!npc.isImpostor && intent.type === 'accuse' && intent.accused.length > 0) {
+          const acc = intent.accused[0];
+          const susp = (npc.suspicion[acc] || 0);
+          if (susp > 20) {
+            pool.push(`${senderName}, I also noticed something off about ${acc}.`);
+            pool.push(`Agreed, ${senderName}. ${acc} wasn't doing tasks near me either.`);
+          } else if (susp < 5) {
+            pool.push(`${senderName}, I actually haven't seen anything sus from ${acc}.`);
+            pool.push(`Are we sure about ${acc}? I saw them near the task areas earlier.`);
+          }
+        }
+
+        // ---- Crewmate reaction to someone defending the impostor ----
+        if (!npc.isImpostor && senderDefended && intent.defended.length > 0) {
+          const defended = intent.defended[0];
+          const defNPC = npcs.find(n => n.name === defended);
+          if (defNPC && defNPC.isImpostor && (npc.suspicion[defended] || 0) > 15) {
+            pool.push(`${senderName}, I'm not so sure. I've seen ${defended} doing some strange things.`);
+            pool.push(`${senderName}, can you really vouch for ${defended} the whole round?`);
+          }
+        }
+
+        // ---- Generic reactions based on message type ----
+        if (pool.length === 0) {
+          if (intent.type === 'accuse' && intent.accused.length === 0) {
+            pool.push(`Who are you pointing at, ${senderName}? Be specific.`);
+            pool.push(`${senderName}, name names — we're running out of time.`);
+          } else if (intent.type === 'agree') {
+            pool.push(npc.isImpostor ? `Let's vote before we overthink this.` : `We need to reach a consensus quickly.`);
+          } else if (intent.type === 'info') {
+            pool.push(npc.isImpostor ? `Interesting. Anyone else have info before we vote?` : `Good point, ${senderName}. Let's factor that in.`);
+          }
+        }
+
+        return pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : null;
+      }
+
+      // ── Reaction dispatcher ───────────────────────────────────────────────────
+      // Picks at most 2 NPCs to react to the given message, with staggered delays.
+      function scheduleNPCReactions(senderName, senderColor, text) {
+        if (!inMeeting || gameOver) return;
+        const intent = parseMessageIntent(text, senderName);
+        // Only react to messages that have meaningful intent
+        if (intent.type === 'info' && intent.accused.length === 0 && !intent.askedOf) return;
+
+        const reactable = npcs.filter(n =>
+          n.alive && !n.aiConfig &&                   // no API-driven NPCs
+          n.name !== senderName &&                     // not the sender
+          (Date.now() - (n._lastReactTs || 0)) > 4000 // 4s cooldown per NPC
+        );
+
+        // Score each NPC by how relevant this message is to them
+        const scored = reactable.map(npc => {
+          let score = 0;
+          if (intent.accused.includes(npc.name)) score += 10;   // directly accused
+          if (intent.askedOf === npc.name) score += 10;          // directly questioned
+          const ftName = npc._frameTarget ? npc._frameTarget.name : null;
+          if (ftName && intent.defended.includes(ftName) && npc.isImpostor) score += 7;
+          if (ftName && intent.accused.includes(ftName) && npc.isImpostor) score += 5;
+          if (!npc.isImpostor && intent.accused.length > 0 && (npc.suspicion[intent.accused[0]]||0) > 15) score += 4;
+          score += Math.random() * 2; // small noise
+          return { npc, score };
+        }).filter(s => s.score > 1.5)
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 2); // at most 2 NPCs react
+
+        scored.forEach(({ npc }, idx) => {
+          const delay = 1800 + idx * 2200 + Math.floor(Math.random() * 1500);
+          const t = setTimeout(() => {
+            if (!inMeeting || gameOver) return;
+            const reaction = generateNPCReaction(npc, senderName, text, intent);
+            if (reaction) {
+              addChatMessage(npc.name, npc.color, reaction, false);
+              npc._lastReactTs = Date.now();
+            }
+          }, delay);
+          _reactTimers.push(t);
+        });
       }
 
       function sendPlayerMessage() {
@@ -10741,7 +11262,7 @@
         discussTimerEl.textContent = timeLeft;
         if (timeLeft <= 0) {
           clearInterval(countdownId);
-          liveMsgTimers.forEach(clearTimeout);
+          liveMsgTimers.forEach(clearTimeout); _reactTimers.forEach(clearTimeout); _reactTimers = [];
           chatSendBtn.onclick = null;
           chatInput.onkeydown = null;
           discussPhase.style.display = 'none';
@@ -17123,6 +17644,121 @@
         ctx.restore();
         ctx.globalAlpha = 0.5;
       }
+
+      // === Additional room detail props (all maps) ===
+      if (w >= 50 && h >= 50) {
+        ctx.save();
+        ctx.globalAlpha = 1.0;
+
+        // CAFETERIA: chalkboard menu board on side wall
+        if (name === 'Cafeteria') {
+          const mbX = x + w*0.04, mbY = y + h*0.56, mbW = Math.min(42, w*0.14), mbH = Math.min(30, h*0.18);
+          ctx.fillStyle = '#1a2a1a';
+          ctx.fillRect(mbX, mbY, mbW, mbH);
+          ctx.strokeStyle = '#5a4a28'; ctx.lineWidth = 2;
+          ctx.strokeRect(mbX - 2, mbY - 2, mbW + 4, mbH + 4);
+          ctx.strokeStyle = '#2a4a2a'; ctx.lineWidth = 0.8;
+          ctx.strokeRect(mbX, mbY, mbW, mbH);
+          ctx.strokeStyle = 'rgba(220,220,200,0.38)'; ctx.lineWidth = 0.8;
+          for (let ml = 0; ml < 4; ml++) {
+            const lw2 = [mbW*0.70, mbW*0.55, mbW*0.65, mbW*0.45][ml];
+            ctx.beginPath(); ctx.moveTo(mbX+4, mbY+5+ml*6); ctx.lineTo(mbX+4+lw2, mbY+5+ml*6); ctx.stroke();
+          }
+          ctx.fillStyle = 'rgba(255,220,80,0.28)';
+          for (let pr = 0; pr < 4; pr++) ctx.fillRect(mbX+mbW-8, mbY+3+pr*6, 6, 2);
+        }
+
+        // STORAGE: floor loading-zone arrows
+        if (name === 'Storage') {
+          ctx.globalAlpha = 0.10;
+          ctx.fillStyle = '#ffdd00';
+          const arX = x + w*0.42, arY = y + h*0.46;
+          ctx.beginPath();
+          ctx.moveTo(arX, arY-6); ctx.lineTo(arX+14, arY); ctx.lineTo(arX, arY+6);
+          ctx.lineTo(arX+2, arY+2); ctx.lineTo(arX-6, arY+2); ctx.lineTo(arX-6, arY-2); ctx.lineTo(arX+2, arY-2);
+          ctx.closePath(); ctx.fill();
+        }
+
+        // ADMIN: framed mission poster on bottom-right wall
+        if (name === 'Admin') {
+          const poX = x + w*0.60, poY = y + h*0.64, poW = Math.min(36, w*0.22), poH = Math.min(24, h*0.14);
+          ctx.globalAlpha = 0.80;
+          ctx.fillStyle = '#e8e0c8';
+          ctx.fillRect(poX, poY, poW, poH);
+          ctx.strokeStyle = '#8a7040'; ctx.lineWidth = 1.5;
+          ctx.strokeRect(poX-2, poY-2, poW+4, poH+4);
+          ctx.strokeStyle = 'rgba(40,30,10,0.30)'; ctx.lineWidth = 0.7;
+          for (let pl = 0; pl < 4; pl++) {
+            ctx.beginPath(); ctx.moveTo(poX+3, poY+4+pl*5); ctx.lineTo(poX+poW-3, poY+4+pl*5); ctx.stroke();
+          }
+        }
+
+        // NAVIGATION: floor star-chart projection grid
+        if (name === 'Navigation') {
+          ctx.globalAlpha = 0.06;
+          ctx.strokeStyle = '#4060cc'; ctx.lineWidth = 0.8;
+          const ncx2 = cx + w*0.1, ncy2 = cy + h*0.2;
+          for (let nc2 = 1; nc2 <= 3; nc2++) {
+            ctx.beginPath(); ctx.arc(ncx2, ncy2, nc2 * Math.min(w,h)*0.06, 0, Math.PI*2); ctx.stroke();
+          }
+          for (let nr = 0; nr < 6; nr++) {
+            const ra = nr * Math.PI / 3;
+            ctx.beginPath(); ctx.moveTo(ncx2, ncy2); ctx.lineTo(ncx2 + Math.cos(ra)*Math.min(w,h)*0.18, ncy2 + Math.sin(ra)*Math.min(w,h)*0.18); ctx.stroke();
+          }
+        }
+
+        // WEAPONS: targeting reticle projected on floor
+        if (name === 'Weapons') {
+          ctx.globalAlpha = 0.06;
+          ctx.strokeStyle = '#cc4444'; ctx.lineWidth = 1;
+          const wtrX = x + w*0.55, wtrY = cy, wtr = Math.min(w,h)*0.12;
+          ctx.beginPath(); ctx.arc(wtrX, wtrY, wtr, 0, Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(wtrX, wtrY, wtr*0.5, 0, Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(wtrX-wtr*1.3, wtrY); ctx.lineTo(wtrX+wtr*1.3, wtrY); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(wtrX, wtrY-wtr*1.3); ctx.lineTo(wtrX, wtrY+wtr*1.3); ctx.stroke();
+        }
+
+        // REACTOR: radiation hexagon floor markings
+        if (name === 'Reactor') {
+          ctx.globalAlpha = 0.05;
+          ctx.strokeStyle = '#ffcc00'; ctx.lineWidth = 1.5;
+          for (const rhex of [Math.min(w,h)*0.30, Math.min(w,h)*0.18]) {
+            ctx.beginPath();
+            for (let hv = 0; hv < 6; hv++) {
+              const ha = hv * Math.PI/3 - Math.PI/6;
+              hv===0 ? ctx.moveTo(cx+Math.cos(ha)*rhex, cy+Math.sin(ha)*rhex) : ctx.lineTo(cx+Math.cos(ha)*rhex, cy+Math.sin(ha)*rhex);
+            }
+            ctx.closePath(); ctx.stroke();
+          }
+        }
+
+        // ELECTRICAL: high-voltage floor diagonal tread marks
+        if (name === 'Electrical') {
+          ctx.globalAlpha = 0.06;
+          ctx.strokeStyle = '#ffaa00'; ctx.lineWidth = 2;
+          ctx.setLineDash([10, 14]);
+          for (let et = 0; et < 3; et++) {
+            ctx.beginPath();
+            ctx.moveTo(x + w*0.02 + et*w*0.12, y + h*0.70);
+            ctx.lineTo(x + w*0.20 + et*w*0.12, y + h*0.30);
+            ctx.stroke();
+          }
+          ctx.setLineDash([]);
+        }
+
+        // MEDBAY: sterile floor grid (white tile lines)
+        if (name === 'MedBay') {
+          ctx.globalAlpha = 0.04;
+          ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 0.8;
+          const mgt = 24;
+          for (let mgx = 0; mgx < w; mgx += mgt) { ctx.beginPath(); ctx.moveTo(x+mgx, y); ctx.lineTo(x+mgx, y+h); ctx.stroke(); }
+          for (let mgy = 0; mgy < h; mgy += mgt) { ctx.beginPath(); ctx.moveTo(x, y+mgy); ctx.lineTo(x+w, y+mgy); ctx.stroke(); }
+        }
+
+        ctx.restore();
+        ctx.globalAlpha = 0.5;
+      }
+
       ctx.restore();
     }
 
@@ -17532,6 +18168,153 @@
         }
       }
       // ────────────────────────────────────────────────────────────────────────
+
+      // ── Animated room-specific live overlays ─────────────────────────────────
+      if (mapTheme && mapTheme.floors && rooms.length > 0) {
+        const _alt = Date.now();
+        for (let _ari = 0; _ari < rooms.length && _ari < mapTheme.floors.length; _ari++) {
+          const _arn = rooms[_ari].name;
+          const _arf = mapTheme.floors[_ari];
+          const _arfx = _arf.x - ox, _arfy = _arf.y - oy;
+          const _arfw = _arf.w, _arfh = _arf.h;
+          const _arcx = _arfx + _arfw/2, _arcy = _arfy + _arfh/2;
+
+          // REACTOR – expanding pulse ring + core brightness oscillation
+          if (_arn === 'Reactor') {
+            const _rR = Math.min(_arfw, _arfh) * 0.18;
+            const _rPulse = 0.5 + 0.5 * Math.sin(_alt * 0.0018);
+            // Expanding ring burst (loop 0→1)
+            const _ringT = (_alt * 0.00080) % 1;
+            const _ringR = _rR + _ringT * _rR * 0.80;
+            ctx.save();
+            ctx.globalAlpha = (1 - _ringT) * 0.18;
+            ctx.strokeStyle = '#ffee44';
+            ctx.lineWidth = 2.5;
+            ctx.shadowColor = '#ffe060'; ctx.shadowBlur = 8;
+            ctx.beginPath(); ctx.arc(_arcx, _arcy, _ringR, 0, Math.PI*2); ctx.stroke();
+            ctx.restore();
+            // Core brightness pulse
+            const _cG = ctx.createRadialGradient(_arcx, _arcy, 0, _arcx, _arcy, _rR*0.55);
+            _cG.addColorStop(0, `rgba(255,240,80,${(0.07 + 0.06*_rPulse).toFixed(3)})`);
+            _cG.addColorStop(1, 'rgba(220,100,255,0)');
+            ctx.save(); ctx.fillStyle = _cG; ctx.fillRect(_arcx-_rR, _arcy-_rR, _rR*2, _rR*2); ctx.restore();
+          }
+
+          // UPPER/LOWER ENGINE – spinning turbine blade overlay + heat pulse
+          if (_arn === 'Upper Engine' || _arn === 'Lower Engine') {
+            const _er2 = Math.min(_arfw, _arfh) * 0.22;
+            const _ang2 = (_alt * 0.0024) % (Math.PI*2);
+            ctx.save();
+            ctx.translate(_arcx, _arcy);
+            ctx.strokeStyle = 'rgba(220,130,50,0.32)';
+            ctx.lineWidth = 2;
+            for (let _b = 0; _b < 8; _b++) {
+              const _ba = _b * Math.PI/4 + _ang2;
+              ctx.beginPath();
+              ctx.moveTo(Math.cos(_ba)*_er2*0.56, Math.sin(_ba)*_er2*0.56);
+              ctx.lineTo(Math.cos(_ba)*_er2*0.88, Math.sin(_ba)*_er2*0.88);
+              ctx.stroke();
+            }
+            // Pulsing heat core glow
+            const _ep = 0.5 + 0.5 * Math.sin(_alt * 0.003);
+            const _eG = ctx.createRadialGradient(0,0,0,0,0,_er2*0.50);
+            _eG.addColorStop(0, `rgba(255,200,80,${(0.14+0.10*_ep).toFixed(3)})`);
+            _eG.addColorStop(1, 'rgba(220,80,0,0)');
+            ctx.fillStyle = _eG; ctx.beginPath(); ctx.arc(0,0,_er2*0.50,0,Math.PI*2); ctx.fill();
+            ctx.restore();
+          }
+
+          // MEDBAY – rotating scanner arm sweep
+          if (_arn === 'MedBay') {
+            const _scnR2 = Math.min(_arfw*0.28, _arfh*0.38, 36);
+            const _scnX2 = _arcx, _scnY2 = _arcy + _arfh*0.08;
+            const _scanA = (_alt * 0.00055) % (Math.PI*2);
+            ctx.save();
+            // Trailing arc glow
+            ctx.strokeStyle = 'rgba(60,220,220,0.07)';
+            ctx.lineWidth = _scnR2 * 0.55;
+            ctx.lineCap = 'round';
+            ctx.beginPath(); ctx.arc(_scnX2, _scnY2, _scnR2*0.5, _scanA-0.7, _scanA); ctx.stroke();
+            // Bright scan line arm
+            ctx.globalAlpha = 0.35;
+            ctx.strokeStyle = 'rgba(80,255,255,0.75)';
+            ctx.lineWidth = 1.5;
+            ctx.shadowColor = '#00ffff'; ctx.shadowBlur = 6;
+            ctx.beginPath();
+            ctx.moveTo(_scnX2, _scnY2);
+            ctx.lineTo(_scnX2 + Math.cos(_scanA)*_scnR2, _scnY2 + Math.sin(_scanA)*_scnR2);
+            ctx.stroke();
+            ctx.restore();
+          }
+
+          // ELECTRICAL – random light flicker
+          if (_arn === 'Electrical') {
+            const _flickN = Math.sin(_alt * 0.013) * Math.cos(_alt * 0.021);
+            if (_flickN > 0.50) {
+              ctx.save();
+              ctx.globalAlpha = (_flickN - 0.50) * 0.25;
+              ctx.fillStyle = 'rgba(255,230,150,0.8)';
+              ctx.fillRect(_arfx, _arfy, _arfw, _arfh);
+              ctx.restore();
+            }
+          }
+
+          // CAFETERIA – emergency button ambient pulse
+          if (_arn === 'Cafeteria') {
+            const _ebP = 0.5 + 0.5 * Math.sin(_alt * 0.0013);
+            const _ebX = _arcx, _ebY = _arcy + _arfh * 0.10 + 23;
+            const _ebG = ctx.createRadialGradient(_ebX, _ebY, 0, _ebX, _ebY, 28);
+            _ebG.addColorStop(0, `rgba(255,60,0,${(0.06 + 0.05*_ebP).toFixed(3)})`);
+            _ebG.addColorStop(1, 'rgba(255,0,0,0)');
+            ctx.save(); ctx.fillStyle = _ebG; ctx.fillRect(_ebX-28, _ebY-28, 56, 56); ctx.restore();
+          }
+
+          // O2 – grow light soft pulse
+          if (_arn === 'O2') {
+            const _glP = 0.5 + 0.5 * Math.sin(_alt * 0.0021);
+            ctx.save();
+            ctx.globalAlpha = 0.028 + 0.018 * _glP;
+            ctx.fillStyle = 'rgba(80,255,60,0.9)';
+            ctx.fillRect(_arfx, _arfy + _arfh*0.64, _arfw, _arfh*0.30);
+            ctx.restore();
+          }
+
+          // SECURITY – camera monitor rolling scan line
+          if (_arn === 'Security') {
+            const _scanLine = (_alt * 0.038) % (_arfh * 0.55);
+            ctx.save();
+            ctx.globalAlpha = 0.06;
+            ctx.fillStyle = 'rgba(80,200,80,1)';
+            ctx.fillRect(_arcx - _arfw*0.30, _arfy + _scanLine, _arfw*0.60, 2);
+            ctx.restore();
+          }
+
+          // SHIELDS – shield emitter slow pulse
+          if (_arn === 'Shields') {
+            const _shP = 0.5 + 0.5 * Math.sin(_alt * 0.0016);
+            const _shR = Math.min(_arfw, _arfh) * 0.20;
+            const _shG = ctx.createRadialGradient(_arcx - _arfw*0.1, _arcy, _shR*0.3, _arcx - _arfw*0.1, _arcy, _shR*1.3);
+            _shG.addColorStop(0, `rgba(220,40,40,${(0.06 + 0.05*_shP).toFixed(3)})`);
+            _shG.addColorStop(1, 'rgba(180,0,0,0)');
+            ctx.save(); ctx.fillStyle = _shG; ctx.fillRect(_arcx-_arfw*0.5, _arcy-_shR*1.3, _arfw, _shR*2.6); ctx.restore();
+          }
+
+          // COMMUNICATIONS – dish signal ripple
+          if (_arn === 'Communications') {
+            const _sigT = (_alt * 0.00065) % 1;
+            const _dshR = Math.min(_arfw, _arfh) * 0.22;
+            const _dshX = _arfx + _arfw*0.04 + _dshR, _dshY = _arcy - _arfh*0.08 + _dshR*0.5;
+            ctx.save();
+            ctx.globalAlpha = (1 - _sigT) * 0.14;
+            ctx.strokeStyle = 'rgba(60,220,220,0.8)';
+            ctx.lineWidth = 1.5;
+            const _ripR = _dshR * (0.6 + _sigT * 1.2);
+            ctx.beginPath(); ctx.arc(_dshX, _dshY, _ripR, -Math.PI/4, Math.PI/4); ctx.stroke();
+            ctx.restore();
+          }
+        }
+      }
+      // ── End animated room overlays ────────────────────────────────────────────
 
       // Doors
       for (const d of doors) {
@@ -20038,24 +20821,80 @@
     });
 
     function drawDSCrate(x, y, w, h, type) {
-      ctx.fillStyle = '#3d6b5a';
-      ctx.fillRect(x, y, w, h);
-      ctx.fillStyle = '#4e8a72'; ctx.fillRect(x, y, w, 5); ctx.fillRect(x, y, 5, h);
-      ctx.fillStyle = '#294a3c'; ctx.fillRect(x, y+h-5, w, 5); ctx.fillRect(x+w-5, y, 5, h);
-      ctx.strokeStyle = '#5aaa88'; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(x+w/2, y+8); ctx.lineTo(x+w/2, y+h-8); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(x+8, y+h/2); ctx.lineTo(x+w-8, y+h/2); ctx.stroke();
-      ctx.textAlign = 'center';
+      const _ct = Date.now();
+      if (type === 'big') {
+        // Industrial cargo container
+        const cg = ctx.createLinearGradient(x, y, x, y+h);
+        cg.addColorStop(0, '#2a4838'); cg.addColorStop(0.5, '#1e3828'); cg.addColorStop(1, '#142818');
+        ctx.fillStyle = cg; ctx.fillRect(x, y, w, h);
+        ctx.fillStyle = '#3a6050'; ctx.fillRect(x, y, w, 6); ctx.fillRect(x, y, 6, h);
+        ctx.fillStyle = '#0e1e14'; ctx.fillRect(x, y+h-6, w, 6); ctx.fillRect(x+w-6, y, 6, h);
+        for (let bi = 1; bi < 3; bi++) {
+          const by2 = y + h*bi/3;
+          ctx.fillStyle = '#1e3028'; ctx.fillRect(x, by2-3, w, 6);
+          ctx.strokeStyle = '#4a7860'; ctx.lineWidth = 1; ctx.strokeRect(x, by2-3, w, 6);
+        }
+        ctx.strokeStyle = '#3a5a48'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(x+w/2, y+6); ctx.lineTo(x+w/2, y+h-6); ctx.stroke();
+        ctx.fillStyle = 'rgba(255,180,0,0.20)'; ctx.fillRect(x+w*0.10, y+h*0.35, w*0.80, h*0.28);
+        ctx.strokeStyle = 'rgba(255,180,0,0.32)'; ctx.lineWidth = 1; ctx.strokeRect(x+w*0.10, y+h*0.35, w*0.80, h*0.28);
+        ctx.fillStyle = 'rgba(255,200,60,0.70)'; ctx.font = 'bold 10px monospace'; ctx.textAlign = 'center';
+        ctx.fillText('CARGO', x+w/2, y+h*0.52);
+        ctx.fillStyle = 'rgba(160,220,150,0.45)'; ctx.font = '8px monospace';
+        ctx.fillText('ID-' + (x+y).toString(16).toUpperCase().padStart(4,'0'), x+w/2, y+h*0.64);
+        const brk = 10; ctx.strokeStyle = '#5a8070'; ctx.lineWidth = 2;
+        [[x,y],[x+w,y],[x,y+h],[x+w,y+h]].forEach(([bx2,by2]) => {
+          const dx2 = bx2===x?1:-1, dy2 = by2===y?1:-1;
+          ctx.beginPath(); ctx.moveTo(bx2, by2+dy2*brk); ctx.lineTo(bx2, by2); ctx.lineTo(bx2+dx2*brk, by2); ctx.stroke();
+        });
+        const slp = Math.sin(_ct * 0.003 + x) * 0.5 + 0.5;
+        ctx.fillStyle = `rgba(80,220,120,${0.5+slp*0.5})`; ctx.beginPath(); ctx.arc(x+w-10, y+10, 3, 0, Math.PI*2); ctx.fill();
+        return;
+      }
       if (type === 'laptop') {
-        ctx.fillStyle = '#1a2828'; ctx.fillRect(x+w/2-16, y+8, 32, 22);
-        ctx.fillStyle = '#2ae4d0'; ctx.fillRect(x+w/2-14, y+10, 28, 18);
-        ctx.fillStyle = '#263535'; ctx.fillRect(x+w/2-18, y+30, 36, 9);
-        ctx.fillStyle = '#fff'; ctx.font = 'bold 7px Arial'; ctx.fillText('LAPTOP', x+w/2, y+h-7);
-      } else if (type === 'wardrobe') {
-        ctx.strokeStyle = '#ccc'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.arc(x+w/2, y+16, 7, Math.PI, 0);
-        ctx.lineTo(x+w/2+20, y+38); ctx.moveTo(x+w/2-20, y+38); ctx.lineTo(x+w/2+20, y+38); ctx.stroke();
-        ctx.fillStyle = '#fff'; ctx.font = 'bold 7px Arial'; ctx.fillText('WARDROBE', x+w/2, y+h-7);
+        const tg = ctx.createLinearGradient(x, y, x, y+h);
+        tg.addColorStop(0, '#1a2838'); tg.addColorStop(1, '#0e1620');
+        ctx.fillStyle = tg; ctx.fillRect(x, y, w, h);
+        ctx.strokeStyle = '#3a6080'; ctx.lineWidth = 1.5; ctx.strokeRect(x, y, w, h);
+        ctx.fillStyle = '#081018'; ctx.fillRect(x+4, y+4, w-8, h*0.55);
+        const sg = ctx.createLinearGradient(x+4, y+4, x+4, y+4+h*0.55);
+        sg.addColorStop(0, 'rgba(40,180,255,0.20)'); sg.addColorStop(1, 'rgba(20,100,200,0.08)');
+        ctx.fillStyle = sg; ctx.fillRect(x+5, y+5, w-10, h*0.55-2);
+        ctx.fillStyle = 'rgba(80,220,180,0.90)'; ctx.font = '5px monospace'; ctx.textAlign = 'left';
+        ctx.fillText('> SYSTEM READY', x+7, y+13);
+        ctx.fillStyle = 'rgba(140,200,255,0.70)'; ctx.font = '5px monospace';
+        ctx.fillText('> CREW LINK OK', x+7, y+21);
+        const cur = Math.floor(_ct/500)%2===0 ? '\u2588' : ' ';
+        ctx.fillText('> ' + cur, x+7, y+29);
+        ctx.fillStyle = '#1e3040'; ctx.fillRect(x+4, y+h*0.62, w-8, h*0.26);
+        for (let ki = 0; ki < 5; ki++) for (let kj = 0; kj < 3; kj++) {
+          ctx.fillStyle = '#2a3850'; ctx.fillRect(x+6+ki*10, y+h*0.64+kj*8, 8, 6);
+        }
+        ctx.fillStyle = '#e8f4ff'; ctx.font = 'bold 7px Arial'; ctx.textAlign = 'center';
+        ctx.fillText('SETTINGS', x+w/2, y+h-5);
+        return;
+      }
+      if (type === 'wardrobe') {
+        const wg = ctx.createLinearGradient(x, y, x, y+h);
+        wg.addColorStop(0, '#201428'); wg.addColorStop(1, '#100a18');
+        ctx.fillStyle = wg; ctx.fillRect(x, y, w, h);
+        ctx.strokeStyle = '#6040a0'; ctx.lineWidth = 1.5; ctx.strokeRect(x, y, w, h);
+        ctx.fillStyle = 'rgba(80,40,200,0.12)'; ctx.fillRect(x+4, y+4, w-8, h*0.60);
+        ctx.strokeStyle = 'rgba(140,80,255,0.45)'; ctx.lineWidth = 1; ctx.strokeRect(x+5, y+5, w-10, h*0.60-2);
+        const scanY = y+5 + ((_ct * 0.04) % (h*0.60-4));
+        const slg = ctx.createLinearGradient(x+5, scanY, x+5, scanY+4);
+        slg.addColorStop(0,'rgba(160,80,255,0)'); slg.addColorStop(0.5,'rgba(160,80,255,0.55)'); slg.addColorStop(1,'rgba(160,80,255,0)');
+        ctx.fillStyle = slg; ctx.fillRect(x+5, scanY, w-10, 4);
+        ctx.strokeStyle = 'rgba(140,100,220,0.55)'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(x+w/2, y+12, 7, 0, Math.PI*2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x+w/2-8, y+20); ctx.lineTo(x+w/2-10, y+36); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x+w/2+8, y+20); ctx.lineTo(x+w/2+10, y+36); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x+w/2-8, y+20); ctx.lineTo(x+w/2+8, y+20); ctx.stroke();
+        const swc = ['#c51111','#132ed1','#117f2d','#ed54ba','#ef7d0d','#6b2fbb','#71491e'];
+        swc.forEach((sc, si) => { ctx.fillStyle = sc; ctx.beginPath(); ctx.arc(x+7+si*8, y+h*0.72+5, 2.5, 0, Math.PI*2); ctx.fill(); });
+        ctx.fillStyle = '#e8d0ff'; ctx.font = 'bold 7px Arial'; ctx.textAlign = 'center';
+        ctx.fillText('WARDROBE', x+w/2, y+h-5);
+        return;
       }
     }
 
@@ -20064,13 +20903,35 @@
       const p = dropshipPlayer;
       let ox = cw >= DS.W ? (DS.W - cw) / 2 : Math.max(0, Math.min(p.x - cw/2, DS.W - cw));
       let oy = ch >= DS.H ? (DS.H - ch) / 2 : Math.max(0, Math.min(p.y - ch/2, DS.H - ch));
+      const _t = Date.now();
 
       ctx.clearRect(0, 0, cw, ch);
-      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cw, ch);
+
+      // === DEEP SPACE BACKGROUND ===
+      ctx.fillStyle = '#020408'; ctx.fillRect(0, 0, cw, ch);
+      // Stars (deterministic, blinking)
+      for (let si = 0; si < 200; si++) {
+        const sx = (Math.sin(si*127.1+3.4)*0.5+0.5)*900 - ox;
+        const sy2 = (Math.sin(si*311.7+1.2)*0.5+0.5)*700 - oy;
+        const ss = 0.5 + (Math.sin(si*47.3)*0.5+0.5)*1.4;
+        const blink = 0.35 + 0.65*(Math.sin(_t*0.001+si*2.1)*0.5+0.5);
+        ctx.globalAlpha = blink * 0.75;
+        ctx.fillStyle = si%3===0 ? '#b0d0ff' : si%5===0 ? '#ffd0a0' : '#ffffff';
+        ctx.beginPath(); ctx.arc(sx, sy2, ss, 0, Math.PI*2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      // Nebula clouds
+      const neb1 = ctx.createRadialGradient(-50-ox, 200-oy, 0, -50-ox, 200-oy, 300);
+      neb1.addColorStop(0,'rgba(80,20,140,0.22)'); neb1.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle = neb1; ctx.fillRect(0,0,cw,ch);
+      const neb2 = ctx.createRadialGradient(960-ox, 480-oy, 0, 960-ox, 480-oy, 250);
+      neb2.addColorStop(0,'rgba(20,60,140,0.22)'); neb2.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle = neb2; ctx.fillRect(0,0,cw,ch);
+
       ctx.save();
       ctx.translate(-ox, -oy);
 
-      // Hull exterior polygon
+      // === HULL EXTERIOR — metallic gradient polygon ===
       ctx.beginPath();
       ctx.moveTo(260,70); ctx.lineTo(380,50); ctx.lineTo(520,50); ctx.lineTo(640,70);
       ctx.lineTo(790,135); ctx.lineTo(855,225); ctx.lineTo(875,360);
@@ -20078,189 +20939,377 @@
       ctx.lineTo(660,650); ctx.lineTo(240,650);
       ctx.lineTo(110,570); ctx.lineTo(45,490); ctx.lineTo(25,360);
       ctx.lineTo(45,225); ctx.lineTo(110,135); ctx.closePath();
-      ctx.fillStyle = '#252830'; ctx.fill();
-      ctx.strokeStyle = '#40434e'; ctx.lineWidth = 3; ctx.stroke();
-
-      // Panel lines
-      ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1;
+      const hg = ctx.createLinearGradient(450, 50, 450, 650);
+      hg.addColorStop(0,'#2c3044'); hg.addColorStop(0.35,'#1e2236'); hg.addColorStop(0.7,'#181c2c'); hg.addColorStop(1,'#10141e');
+      ctx.fillStyle = hg; ctx.fill();
+      ctx.strokeStyle = '#3a5080'; ctx.lineWidth = 3; ctx.stroke();
+      // Hull highlight rim
+      ctx.strokeStyle = 'rgba(100,160,255,0.18)'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(260,70); ctx.lineTo(380,50); ctx.lineTo(520,50); ctx.lineTo(640,70); ctx.lineTo(790,135); ctx.lineTo(855,225); ctx.stroke();
+      // Panel seam lines
+      ctx.strokeStyle = 'rgba(80,100,160,0.18)'; ctx.lineWidth = 1;
+      for (let hy2 = 180; hy2 < 620; hy2 += 44) { ctx.beginPath(); ctx.moveTo(120,hy2); ctx.lineTo(780,hy2); ctx.stroke(); }
+      for (let hx2 = 200; hx2 < 800; hx2 += 120) { ctx.beginPath(); ctx.moveTo(hx2,136); ctx.lineTo(hx2,620); ctx.stroke(); }
       [[260,70,120,136],[640,70,780,136],[110,570,120,620],[790,570,780,620]].forEach(([x1,y1,x2,y2]) => {
         ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
       });
+      // Rivets along top/bottom seams
+      ctx.fillStyle = 'rgba(100,130,200,0.35)';
+      for (let ri = 0; ri < 13; ri++) {
+        ctx.beginPath(); ctx.arc(144+ri*48, 133, 1.8, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(144+ri*48, 620, 1.8, 0, Math.PI*2); ctx.fill();
+      }
+      for (let ri = 0; ri < 8; ri++) {
+        ctx.beginPath(); ctx.arc(117, 180+ri*46, 1.8, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(783, 180+ri*46, 1.8, 0, Math.PI*2); ctx.fill();
+      }
 
-      // Engine pod glows
-      const mkGlow = (cx, cy) => { const g = ctx.createRadialGradient(cx,cy,5,cx,cy,85); g.addColorStop(0,'rgba(110,190,255,0.5)'); g.addColorStop(1,'rgba(80,150,255,0)'); return g; };
-      ctx.fillStyle = mkGlow(30,360);  ctx.fillRect(0,280,90,160);
-      ctx.fillStyle = mkGlow(870,360); ctx.fillRect(810,280,90,160);
+      // === THRUSTER PODS — animated plasma glow ===
+      const thrP = Math.sin(_t*0.003)*0.5+0.5;
+      const thrR = 50 + thrP*14;
+      const thrA = 0.38 + thrP*0.32;
+      for (const [tx2, ts] of [[25,-1],[875,1]]) {
+        const tg2 = ctx.createRadialGradient(tx2,360,4,tx2,360,thrR+28);
+        tg2.addColorStop(0,`rgba(100,220,255,${thrA+0.18})`);
+        tg2.addColorStop(0.4,`rgba(60,160,255,${thrA})`);
+        tg2.addColorStop(0.75,`rgba(30,80,220,${thrA*0.35})`);
+        tg2.addColorStop(1,'rgba(0,30,100,0)');
+        ctx.fillStyle = tg2; ctx.beginPath(); ctx.arc(tx2, 360, thrR+28, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#141c28'; ctx.fillRect(tx2+(ts<0?-20:0), 316, 20, 88);
+        ctx.strokeStyle = '#304060'; ctx.lineWidth = 1; ctx.strokeRect(tx2+(ts<0?-20:0), 316, 20, 88);
+        for (let ri = 0; ri < 3; ri++) {
+          const rr2 = 10+ri*10+thrP*5;
+          ctx.strokeStyle = `rgba(80,180,255,${0.45-ri*0.12})`; ctx.lineWidth = 2-ri*0.4;
+          ctx.beginPath(); ctx.arc(tx2+(ts<0?-10:10), 360, rr2, 0, Math.PI*2); ctx.stroke();
+        }
+      }
 
-      // Interior floor
-      ctx.fillStyle = '#363c3c'; ctx.fillRect(120,136,660,484);
-      ctx.strokeStyle = 'rgba(255,255,255,0.035)'; ctx.lineWidth = 1;
-      for (let gx = 120; gx <= 780; gx += 60) { ctx.beginPath(); ctx.moveTo(gx,136); ctx.lineTo(gx,620); ctx.stroke(); }
-      for (let gy = 136; gy <= 620; gy += 60) { ctx.beginPath(); ctx.moveTo(120,gy); ctx.lineTo(780,gy); ctx.stroke(); }
-      ctx.strokeStyle = '#50535e'; ctx.lineWidth = 2; ctx.strokeRect(120,136,660,484);
+      // === INTERIOR FLOOR — reflective dark metal ===
+      const fg = ctx.createLinearGradient(120,136,120,620);
+      fg.addColorStop(0,'#1c2030'); fg.addColorStop(0.5,'#161a26'); fg.addColorStop(1,'#10141e');
+      ctx.fillStyle = fg; ctx.fillRect(120,136,660,484);
+      // Floor reflection sheen
+      const rg = ctx.createRadialGradient(450,380,0,450,380,360);
+      rg.addColorStop(0,'rgba(80,120,200,0.09)'); rg.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle = rg; ctx.fillRect(120,136,660,484);
+      // Grid lines
+      ctx.strokeStyle = 'rgba(70,90,150,0.09)'; ctx.lineWidth = 1;
+      for (let gx2 = 120; gx2 <= 780; gx2 += 30) { ctx.beginPath(); ctx.moveTo(gx2,136); ctx.lineTo(gx2,620); ctx.stroke(); }
+      for (let gy2 = 136; gy2 <= 620; gy2 += 30) { ctx.beginPath(); ctx.moveTo(120,gy2); ctx.lineTo(780,gy2); ctx.stroke(); }
+      // Diagonal diamond tread
+      ctx.strokeStyle = 'rgba(60,80,140,0.05)'; ctx.lineWidth = 0.5;
+      for (let d = -500; d < 700; d += 42) { ctx.beginPath(); ctx.moveTo(120+d,136); ctx.lineTo(120+d+484,620); ctx.stroke(); }
+      // Central walkway glow strip
+      const wg2 = ctx.createLinearGradient(390,136,510,136);
+      wg2.addColorStop(0,'rgba(40,80,160,0)'); wg2.addColorStop(0.4,'rgba(60,120,230,0.14)'); wg2.addColorStop(0.6,'rgba(60,120,230,0.14)'); wg2.addColorStop(1,'rgba(40,80,160,0)');
+      ctx.fillStyle = wg2; ctx.fillRect(390,136,120,484);
+      ctx.strokeStyle = 'rgba(80,160,255,0.22)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(391,136); ctx.lineTo(391,620); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(509,136); ctx.lineTo(509,620); ctx.stroke();
 
-      // Seat zone backgrounds
-      ctx.fillStyle = '#2e3535';
-      ctx.fillRect(120,136,80,255); ctx.fillRect(700,136,80,255);
-      ctx.strokeStyle = '#40504e'; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(200,136); ctx.lineTo(200,391); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(700,136); ctx.lineTo(700,391); ctx.stroke();
+      // === ZONE TINTS ===
+      const szLG = ctx.createLinearGradient(120,136,210,136);
+      szLG.addColorStop(0,'rgba(40,180,160,0.13)'); szLG.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle = szLG; ctx.fillRect(120,136,90,280);
+      const szRG = ctx.createLinearGradient(780,136,690,136);
+      szRG.addColorStop(0,'rgba(40,180,160,0.13)'); szRG.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle = szRG; ctx.fillRect(690,136,90,280);
+      const czBG = ctx.createLinearGradient(120,620,120,500);
+      czBG.addColorStop(0,'rgba(160,120,40,0.14)'); czBG.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle = czBG; ctx.fillRect(120,500,660,120);
 
-      // Seats left (back on left, pad extends right)
-      DS.seatsLeft.forEach(({x: sx, y: sy}) => {
-        ctx.fillStyle = '#232c2c'; ctx.fillRect(sx, sy, 14, DS.seatH);
-        ctx.fillStyle = '#5a5a70'; ctx.fillRect(sx+14, sy+3, 32, DS.seatH-3);
-        ctx.fillStyle = 'rgba(255,255,255,0.07)'; ctx.fillRect(sx+15, sy+4, 30, 8);
-        ctx.fillStyle = '#3a3a4a'; ctx.fillRect(sx+14, sy, 32, 3); ctx.fillRect(sx+14, sy+DS.seatH-3, 32, 3);
-      });
-      // Seats right (pad extends left, back on right)
-      DS.seatsRight.forEach(({x: sx, y: sy}) => {
-        ctx.fillStyle = '#5a5a70'; ctx.fillRect(sx, sy+3, 32, DS.seatH-3);
-        ctx.fillStyle = '#232c2c'; ctx.fillRect(sx+32, sy, 14, DS.seatH);
-        ctx.fillStyle = 'rgba(255,255,255,0.07)'; ctx.fillRect(sx+1, sy+4, 30, 8);
-        ctx.fillStyle = '#3a3a4a'; ctx.fillRect(sx, sy, 32, 3); ctx.fillRect(sx, sy+DS.seatH-3, 32, 3);
-      });
+      // === OVERHEAD LIGHT STRIPS ===
+      const lf = Math.sin(_t*0.007+1.2)>0.97 ? 0.35 : 1.0;
+      for (const [lx2, lw2] of [[190,160],[550,160]]) {
+        ctx.fillStyle = `rgba(210,235,255,${0.88*lf})`; ctx.fillRect(lx2, 140, lw2, 4);
+        const lcg = ctx.createLinearGradient(lx2, 144, lx2, 264);
+        lcg.addColorStop(0,`rgba(100,180,255,${0.22*lf})`); lcg.addColorStop(1,'rgba(80,160,255,0)');
+        ctx.fillStyle = lcg;
+        ctx.beginPath(); ctx.moveTo(lx2,144); ctx.lineTo(lx2-28,264); ctx.lineTo(lx2+lw2+28,264); ctx.lineTo(lx2+lw2,144); ctx.closePath(); ctx.fill();
+      }
+      // Emergency base strips
+      const ep = Math.sin(_t*0.0015)*0.5+0.5;
+      ctx.fillStyle = `rgba(200,30,30,${0.08+ep*0.07})`;
+      ctx.fillRect(120,610,660,10); ctx.fillRect(120,136,660,8);
 
-      // Crates
+      // === WALL PANELS ===
+      for (const [wx2, wd2, flip] of [[104,32,false],[764,32,true]]) {
+        const wpg = ctx.createLinearGradient(flip?wx2+wd2:wx2, 0, flip?wx2:wx2+wd2, 0);
+        wpg.addColorStop(0,'#0c0e16'); wpg.addColorStop(1,'#1c2236');
+        ctx.fillStyle = wpg; ctx.fillRect(wx2, 120, wd2, 516);
+        for (let pi = 0; pi < 7; pi++) {
+          const py2 = 150+pi*66;
+          ctx.fillStyle = 'rgba(0,0,0,0.40)'; ctx.fillRect(wx2+(flip?4:6), py2, 20, 50);
+          ctx.strokeStyle = 'rgba(60,110,180,0.50)'; ctx.lineWidth = 1; ctx.strokeRect(wx2+(flip?5:7), py2+1, 18, 48);
+          const lon = ((pi + Math.floor(_t/900)) % 3 !== 0);
+          ctx.fillStyle = lon ? 'rgba(80,220,180,0.90)' : 'rgba(30,70,55,0.60)';
+          ctx.beginPath(); ctx.arc(wx2+(flip?14:18), py2+44, 2.5, 0, Math.PI*2); ctx.fill();
+        }
+      }
+      const twg = ctx.createLinearGradient(120,120,120,152);
+      twg.addColorStop(0,'#0c0e16'); twg.addColorStop(1,'#1c2236');
+      ctx.fillStyle = twg; ctx.fillRect(120,120,265,32); ctx.fillRect(515,120,265,32);
+      ctx.fillStyle = '#10121a'; ctx.fillRect(104,620,692,32);
+      ctx.strokeStyle = 'rgba(50,70,120,0.38)'; ctx.lineWidth = 1;
+      for (let bpi = 0; bpi < 10; bpi++) { ctx.strokeRect(122+bpi*64, 623, 58, 22); }
+
+      // === UPGRADED SEATS ===
+      const drawSeat = (sx, sy, side) => {
+        ctx.fillStyle = 'rgba(0,0,0,0.38)'; ctx.fillRect(sx-2, sy+3, 50, 35);
+        const sf = ctx.createLinearGradient(sx, sy, sx, sy+36);
+        sf.addColorStop(0,'#252f4a'); sf.addColorStop(1,'#131826');
+        ctx.fillStyle = sf; ctx.fillRect(sx, sy, 46, 36);
+        const cf = ctx.createLinearGradient(sx+(side==='left'?14:0), sy+3, sx+(side==='left'?46:32), sy+3);
+        cf.addColorStop(0,'#485a8c'); cf.addColorStop(0.45,'#5c72b0'); cf.addColorStop(1,'#384578');
+        ctx.fillStyle = cf;
+        if (side==='left') ctx.fillRect(sx+14, sy+3, 32, 30); else ctx.fillRect(sx, sy+3, 32, 30);
+        ctx.fillStyle = '#182038';
+        if (side==='left') ctx.fillRect(sx, sy, 14, 36); else ctx.fillRect(sx+32, sy, 14, 36);
+        ctx.fillStyle = 'rgba(140,165,230,0.22)';
+        if (side==='left') ctx.fillRect(sx+15, sy+4, 28, 8); else ctx.fillRect(sx+1, sy+4, 28, 8);
+        ctx.fillStyle = 'rgba(80,115,200,0.42)';
+        if (side==='left') { ctx.fillRect(sx+14, sy, 32, 3); ctx.fillRect(sx+14, sy+33, 32, 3); }
+        else { ctx.fillRect(sx, sy, 32, 3); ctx.fillRect(sx, sy+33, 32, 3); }
+        ctx.strokeStyle = 'rgba(80,140,255,0.38)'; ctx.lineWidth = 1; ctx.strokeRect(sx, sy, 46, 36);
+      };
+      DS.seatsLeft.forEach(({x:sx,y:sy}) => drawSeat(sx,sy,'left'));
+      DS.seatsRight.forEach(({x:sx,y:sy}) => drawSeat(sx,sy,'right'));
+      ctx.fillStyle = 'rgba(80,190,160,0.65)'; ctx.font = 'bold 9px monospace';
+      ctx.textAlign = 'left';
+      DS.seatsLeft.forEach(({x:sx,y:sy},i) => { ctx.fillText(i+1, sx+4, sy+22); });
+      ctx.textAlign = 'right';
+      DS.seatsRight.forEach(({x:sx,y:sy},i) => { ctx.fillText(i+6, sx+42, sy+22); });
+
+      // === COMMAND STATIONS ===
       drawDSCrate(DS.laptop.x,   DS.laptop.y,   DS.laptop.w,   DS.laptop.h,   'laptop');
       drawDSCrate(DS.wardrobe.x, DS.wardrobe.y, DS.wardrobe.w, DS.wardrobe.h, 'wardrobe');
-      drawDSCrate(DS.crateL.x,   DS.crateL.y,   DS.crateL.w,   DS.crateL.h,   'big');
-      drawDSCrate(DS.crateR.x,   DS.crateR.y,   DS.crateR.w,   DS.crateR.h,   'big');
 
-      // Door at top (dark panel above gap)
-      ctx.fillStyle = '#181c1c'; ctx.fillRect(385,56,130,64);
-      ctx.strokeStyle = '#3a8aa8'; ctx.lineWidth = 2; ctx.strokeRect(386,57,128,62);
-      ctx.strokeStyle = '#2a6880'; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.moveTo(450,57); ctx.lineTo(450,119); ctx.stroke();
-      const dg = ctx.createLinearGradient(385,118,515,136);
-      dg.addColorStop(0,'rgba(60,160,200,0)'); dg.addColorStop(0.5,'rgba(60,160,200,0.35)'); dg.addColorStop(1,'rgba(60,160,200,0)');
-      ctx.fillStyle = dg; ctx.fillRect(385,118,130,18);
+      // === CARGO CRATES ===
+      drawDSCrate(DS.crateL.x, DS.crateL.y, DS.crateL.w, DS.crateL.h, 'big');
+      drawDSCrate(DS.crateR.x, DS.crateR.y, DS.crateR.w, DS.crateR.h, 'big');
 
-      // Wall trim (drawn over floor edges)
-      ctx.fillStyle = '#2a2d35';
-      ctx.fillRect(104,120,16,500); ctx.fillRect(780,120,16,500);
-      ctx.fillRect(120,120,265,16); ctx.fillRect(515,120,265,16);
-      ctx.fillRect(104,620,692,16);
+      // === MISSION BRIEFING HOLOGRAPHIC DISPLAY (center, above stations) ===
+      {
+        const hdX=238, hdY=152, hdW=424, hdH=60;
+        ctx.fillStyle = '#0a0e1c';
+        ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(hdX,hdY,hdW,hdH,5); else ctx.rect(hdX,hdY,hdW,hdH); ctx.fill();
+        ctx.strokeStyle = '#243880'; ctx.lineWidth = 2;
+        ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(hdX,hdY,hdW,hdH,5); else ctx.rect(hdX,hdY,hdW,hdH); ctx.stroke();
+        const scg = ctx.createLinearGradient(hdX,hdY,hdX,hdY+hdH);
+        scg.addColorStop(0,'rgba(18,55,140,0.85)'); scg.addColorStop(1,'rgba(8,28,80,0.85)');
+        ctx.fillStyle = scg;
+        ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(hdX+2,hdY+2,hdW-4,hdH-4,4); else ctx.rect(hdX+2,hdY+2,hdW-4,hdH-4); ctx.fill();
+        const svY = hdY+2+((_t*0.045)%(hdH-4));
+        const svg2 = ctx.createLinearGradient(hdX,svY,hdX,svY+4);
+        svg2.addColorStop(0,'rgba(80,200,255,0)'); svg2.addColorStop(0.5,'rgba(80,200,255,0.38)'); svg2.addColorStop(1,'rgba(80,200,255,0)');
+        ctx.fillStyle = svg2; ctx.fillRect(hdX+2,svY,hdW-4,4);
+        ctx.fillStyle = 'rgba(160,225,255,0.95)'; ctx.font = 'bold 13px monospace'; ctx.textAlign = 'center';
+        ctx.fillText('\u25b6  S.S. SKELD  \u2014  AWAITING CREW', hdX+hdW/2, hdY+20);
+        ctx.fillStyle = 'rgba(80,200,160,0.72)'; ctx.font = '9px monospace';
+        ctx.fillText('STATUS: DOCKED  \u25cf  LIFE SUPPORT: NOMINAL  \u25cf  ENGINES: STANDBY', hdX+hdW/2, hdY+36);
+        const pw = (hdW-20)*(0.5+0.5*Math.sin(_t*0.0008));
+        ctx.fillStyle = 'rgba(24,50,110,0.85)'; ctx.fillRect(hdX+10,hdY+44,hdW-20,9);
+        const pg2 = ctx.createLinearGradient(hdX+10,0,hdX+10+pw,0);
+        pg2.addColorStop(0,'rgba(60,155,255,0.85)'); pg2.addColorStop(1,'rgba(80,230,255,0.85)');
+        ctx.fillStyle = pg2; ctx.fillRect(hdX+10,hdY+44,pw,9);
+        ctx.strokeStyle = 'rgba(50,90,200,0.50)'; ctx.lineWidth = 1; ctx.strokeRect(hdX+10,hdY+44,hdW-20,9);
+        const hdgw = ctx.createLinearGradient(hdX,hdY-12,hdX,hdY);
+        hdgw.addColorStop(0,'rgba(40,100,255,0)'); hdgw.addColorStop(1,'rgba(40,100,255,0.14)');
+        ctx.fillStyle = hdgw; ctx.fillRect(hdX,hdY-12,hdW,12);
+      }
 
-      // Interact highlight
-      const highlightRect = dropshipHint === 'laptop' ? DS.laptop : dropshipHint === 'wardrobe' ? DS.wardrobe : null;
+      // === AIRLOCK DOOR (top center) ===
+      {
+        ctx.fillStyle = '#080c12'; ctx.fillRect(382,50,136,76);
+        const dfg = ctx.createLinearGradient(382,50,518,50);
+        dfg.addColorStop(0,'#304060'); dfg.addColorStop(0.5,'#5080a8'); dfg.addColorStop(1,'#304060');
+        ctx.strokeStyle = dfg; ctx.lineWidth = 3; ctx.strokeRect(383,51,134,74);
+        const ldg = ctx.createLinearGradient(385,52,449,52);
+        ldg.addColorStop(0,'#121828'); ldg.addColorStop(1,'#1c2c40');
+        ctx.fillStyle = ldg; ctx.fillRect(385,52,64,72);
+        const rdg = ctx.createLinearGradient(451,52,515,52);
+        rdg.addColorStop(0,'#1c2c40'); rdg.addColorStop(1,'#121828');
+        ctx.fillStyle = rdg; ctx.fillRect(451,52,64,72);
+        ctx.strokeStyle = '#4878a8'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(450,52); ctx.lineTo(450,124); ctx.stroke();
+        ctx.strokeStyle = 'rgba(70,130,190,0.28)'; ctx.lineWidth = 1;
+        for (let di = 0; di < 3; di++) {
+          const dy2 = 62+di*20;
+          ctx.beginPath(); ctx.moveTo(387,dy2); ctx.lineTo(449,dy2); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(451,dy2); ctx.lineTo(513,dy2); ctx.stroke();
+        }
+        for (const lx2 of [397,417,483,503]) {
+          const lp = Math.sin(_t*0.003+lx2*0.01)*0.5+0.5;
+          ctx.fillStyle = `rgba(80,200,255,${0.55+lp*0.45})`; ctx.beginPath(); ctx.arc(lx2,116,3,0,Math.PI*2); ctx.fill();
+        }
+        const alg = ctx.createLinearGradient(385,118,515,136);
+        alg.addColorStop(0,'rgba(60,160,200,0)'); alg.addColorStop(0.5,'rgba(80,200,255,0.48)'); alg.addColorStop(1,'rgba(60,160,200,0)');
+        ctx.fillStyle = alg; ctx.fillRect(385,118,130,20);
+        ctx.fillStyle = 'rgba(140,220,255,0.82)'; ctx.font = 'bold 8px monospace'; ctx.textAlign = 'center';
+        ctx.fillText('AIRLOCK', 450, 131);
+      }
+
+      // === CARGO ZONE HAZARD MARKINGS ===
+      ctx.save(); ctx.globalAlpha = 0.16;
+      ctx.fillStyle = '#ffc800';
+      for (let si2 = -8; si2 < 15; si2++) {
+        const sx2 = 200+si2*40;
+        ctx.beginPath(); ctx.moveTo(sx2,500); ctx.lineTo(sx2+20,500); ctx.lineTo(sx2-20,620); ctx.lineTo(sx2-40,620); ctx.closePath(); ctx.fill();
+      }
+      ctx.restore();
+      // Docking position markers
+      for (const dm of [{x:300,y:558},{x:450,y:558},{x:600,y:558}]) {
+        ctx.strokeStyle = 'rgba(80,180,255,0.28)'; ctx.lineWidth = 1;
+        ctx.strokeRect(dm.x-22,dm.y-22,44,44);
+        ctx.beginPath(); ctx.moveTo(dm.x-22,dm.y); ctx.lineTo(dm.x+22,dm.y); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(dm.x,dm.y-22); ctx.lineTo(dm.x,dm.y+22); ctx.stroke();
+        ctx.strokeStyle = 'rgba(80,200,255,0.58)'; ctx.lineWidth = 2;
+        const tl = 8;
+        [[dm.x-22,dm.y-22,1,0],[dm.x-22,dm.y-22,0,1],[dm.x+22,dm.y-22,-1,0],[dm.x+22,dm.y-22,0,1],
+         [dm.x-22,dm.y+22,1,0],[dm.x-22,dm.y+22,0,-1],[dm.x+22,dm.y+22,-1,0],[dm.x+22,dm.y+22,0,-1]
+        ].forEach(([cx2,cy2,dx2,dy2]) => { ctx.beginPath(); ctx.moveTo(cx2,cy2); ctx.lineTo(cx2+dx2*tl,cy2+dy2*tl); ctx.stroke(); });
+      }
+
+      // === INTERACT HIGHLIGHT ===
+      const highlightRect = dropshipHint==='laptop' ? DS.laptop : dropshipHint==='wardrobe' ? DS.wardrobe : null;
       if (highlightRect) {
-        ctx.strokeStyle = 'rgba(255,215,0,0.75)'; ctx.lineWidth = 2;
-        ctx.strokeRect(highlightRect.x-3, highlightRect.y-3, highlightRect.w+6, highlightRect.h+6);
+        const hp = Math.sin(_t*0.006)*0.5+0.5;
+        ctx.strokeStyle = `rgba(255,215,0,${0.6+hp*0.4})`; ctx.lineWidth = 2;
+        ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(highlightRect.x-4,highlightRect.y-4,highlightRect.w+8,highlightRect.h+8,3); else ctx.rect(highlightRect.x-4,highlightRect.y-4,highlightRect.w+8,highlightRect.h+8); ctx.stroke();
+        ctx.save(); ctx.shadowColor = '#ffd700'; ctx.shadowBlur = 14; ctx.stroke(); ctx.restore();
       }
 
-      // Remote multiplayer players
+      // === REMOTE PLAYERS ===
       for (const rp of mpGetDropshipRemotes()) {
-        drawCrewmate(ctx, rp.x - ox, rp.y - oy, 32, 40, rp.color, rp.name, false, null);
+        drawCrewmate(ctx, rp.x-ox, rp.y-oy, 32, 40, rp.color, rp.name, false, null);
       }
-
-      // Player
+      // === LOCAL PLAYER ===
       drawCrewmate(ctx, p.x-ox, p.y-oy, p.w, p.h, p.color, p.name, true, null);
+
       ctx.restore();
 
-      // HUD top bar
-      ctx.fillStyle = 'rgba(0,0,0,0.72)'; ctx.fillRect(0,0,cw,52);
-      ctx.fillStyle = '#fff'; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'center';
-      ctx.fillText('LOBBY', cw/2, 28);
-      ctx.fillStyle = '#666'; ctx.font = '12px Arial';
-      ctx.fillText('WASD \u2022 move    E \u2022 interact', cw/2, 46);
+      // === HUD TOP BAR ===
+      const hudBG = ctx.createLinearGradient(0,0,0,60);
+      hudBG.addColorStop(0,'rgba(6,10,22,0.97)'); hudBG.addColorStop(1,'rgba(6,10,22,0)');
+      ctx.fillStyle = hudBG; ctx.fillRect(0,0,cw,64);
+      ctx.strokeStyle = 'rgba(60,120,220,0.45)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0,56); ctx.lineTo(cw,56); ctx.stroke();
+      ctx.fillStyle = '#c8d8f8'; ctx.font = 'bold 17px "Courier New",monospace'; ctx.textAlign = 'center';
+      ctx.fillText('S.S. SKELD  \u25b6  LOBBY', cw/2, 24);
+      ctx.fillStyle = 'rgba(100,155,215,0.65)'; ctx.font = '11px Arial';
+      ctx.fillText('WASD \u2022 move    E \u2022 interact', cw/2, 42);
 
-      // Lobby panel (right side) — shown whenever in an MP lobby
+      // === LOBBY PANEL (MP) ===
       if (mpLobbyCode && dropshipCountdown < 0) {
         const players = Object.entries(mpPlayers);
-        const panW = 188, panX = cw - panW - 10, panY = 60;
-        const panH = 68 + players.length * 26 + (mpIsHost ? 0 : 24);
-        // Panel background
+        const panW=202, panX=cw-panW-12, panY=64;
+        const panH=76+players.length*28+(mpIsHost?0:28);
         ctx.save();
-        ctx.fillStyle = 'rgba(0,0,0,0.78)';
-        ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(panX, panY, panW, panH, 9); else ctx.rect(panX, panY, panW, panH); ctx.fill();
-        ctx.strokeStyle = 'rgba(78,205,196,0.35)'; ctx.lineWidth = 1;
-        ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(panX, panY, panW, panH, 9); else ctx.rect(panX, panY, panW, panH); ctx.stroke();
-        // Lobby code
+        const pbg = ctx.createLinearGradient(panX,panY,panX,panY+panH);
+        pbg.addColorStop(0,'rgba(6,14,38,0.94)'); pbg.addColorStop(1,'rgba(4,10,26,0.94)');
+        ctx.fillStyle = pbg;
+        ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(panX,panY,panW,panH,10); else ctx.rect(panX,panY,panW,panH); ctx.fill();
+        ctx.strokeStyle = 'rgba(80,155,255,0.45)'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(panX,panY,panW,panH,10); else ctx.rect(panX,panY,panW,panH); ctx.stroke();
+        const acg = ctx.createLinearGradient(panX,panY,panX+panW,panY);
+        acg.addColorStop(0,'rgba(40,120,255,0)'); acg.addColorStop(0.5,'rgba(80,180,255,0.85)'); acg.addColorStop(1,'rgba(40,120,255,0)');
+        ctx.strokeStyle = acg; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(panX+10,panY+1.5); ctx.lineTo(panX+panW-10,panY+1.5); ctx.stroke();
+        ctx.fillStyle = 'rgba(80,140,220,0.58)'; ctx.font = 'bold 8px monospace'; ctx.textAlign = 'left'; ctx.letterSpacing = '2px';
+        ctx.fillText('LOBBY CODE', panX+14,panY+19);
+        ctx.letterSpacing = '0px';
         const display = mpLobbyCode.replace(/-/g,'').substring(0,8).toUpperCase();
-        ctx.fillStyle = '#888'; ctx.font = 'bold 9px Arial'; ctx.textAlign = 'left'; ctx.letterSpacing = '1px';
-        ctx.fillText('LOBBY CODE', panX+12, panY+16);
+        ctx.fillStyle = '#ffd700'; ctx.font = 'bold 17px monospace';
+        ctx.fillText(display, panX+14,panY+38);
+        ctx.fillStyle = 'rgba(100,140,200,0.52)'; ctx.font = '9px Arial';
+        ctx.fillText('click to copy', panX+14,panY+52);
+        ctx.strokeStyle = 'rgba(50,90,170,0.32)'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(panX+8,panY+60); ctx.lineTo(panX+panW-8,panY+60); ctx.stroke();
+        ctx.fillStyle = 'rgba(80,165,220,0.72)'; ctx.font = 'bold 8px monospace'; ctx.letterSpacing = '1px';
+        ctx.fillText('CREW  '+players.length+'/10', panX+14,panY+74);
         ctx.letterSpacing = '0px';
-        ctx.fillStyle = '#ffd700'; ctx.font = 'bold 15px monospace';
-        ctx.fillText(display, panX+12, panY+32);
-        // Copy hint
-        ctx.fillStyle = '#555'; ctx.font = '10px Arial';
-        ctx.fillText('click to copy', panX+12, panY+46);
-        // Divider
-        ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(panX+8, panY+52); ctx.lineTo(panX+panW-8, panY+52); ctx.stroke();
-        // Players header
-        ctx.fillStyle = '#888'; ctx.font = 'bold 9px Arial'; ctx.letterSpacing = '1px';
-        ctx.fillText('PLAYERS  ' + players.length, panX+12, panY+64);
-        ctx.letterSpacing = '0px';
-        // Player rows
-        players.forEach(([pid, p], i) => {
-          const ry = panY + 78 + i * 26;
-          const isThisHost = (pid === mpLobbyCode);
-          // Color circle
-          ctx.beginPath(); ctx.arc(panX+18, ry, 7, 0, Math.PI*2);
-          ctx.fillStyle = p.color || '#888'; ctx.fill();
-          ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1; ctx.stroke();
-          // Name
-          ctx.fillStyle = pid === mpUserId ? '#fff' : '#ccc';
-          ctx.font = (pid === mpUserId ? 'bold ' : '') + '12px Arial';
-          ctx.textAlign = 'left';
-          const label = (p.name || 'Player').substring(0, 13) + (pid === mpUserId ? ' ★' : '');
-          ctx.fillText(label, panX+30, ry+4);
-          // Host badge
+        players.forEach(([pid, pl], i) => {
+          const ry = panY+88+i*28;
+          const isThisHost = (pid===mpLobbyCode);
+          ctx.beginPath(); ctx.arc(panX+20,ry,8,0,Math.PI*2);
+          ctx.fillStyle = pl.color||'#888'; ctx.fill();
+          ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 1; ctx.stroke();
+          ctx.fillStyle = pid===mpUserId ? '#e8f0ff' : '#a8b8cc';
+          ctx.font = (pid===mpUserId?'bold ':'')+' 12px Arial'; ctx.textAlign = 'left';
+          ctx.fillText((pl.name||'Player').substring(0,12)+(pid===mpUserId?' \u2605':''), panX+34, ry+4);
           if (isThisHost) {
-            ctx.fillStyle = '#ffd700'; ctx.font = 'bold 9px Arial';
-            ctx.textAlign = 'right';
-            ctx.fillText('HOST', panX+panW-8, ry+4);
+            ctx.fillStyle = '#ffd700'; ctx.font = 'bold 9px Arial'; ctx.textAlign = 'right';
+            ctx.fillText('HOST', panX+panW-10, ry+4);
           }
         });
-        // Waiting text for non-hosts
         if (!mpIsHost) {
-          ctx.fillStyle = '#555'; ctx.font = '10px Arial'; ctx.textAlign = 'center';
-          ctx.fillText('Waiting for host to start\u2026', panX + panW/2, panY + panH - 6);
+          ctx.fillStyle = 'rgba(100,155,215,0.55)'; ctx.font = '9px Arial'; ctx.textAlign = 'center';
+          ctx.fillText('Waiting for host\u2026', panX+panW/2, panY+panH-9);
         }
         ctx.restore();
-        // Click-to-copy hitbox stored alongside start btn
-        _mpLobbyCodeRect = { x: panX, y: panY, w: panW, h: 50, code: display };
+        _mpLobbyCodeRect = { x:panX, y:panY, w:panW, h:60, code:display };
       } else {
         _mpLobbyCodeRect = null;
       }
 
-      // Interaction hint bar
+      // === INTERACTION HINT ===
       if (!dropshipWardrobeOpen && dropshipCountdown < 0 && dropshipHint) {
-        const label = dropshipHint === 'laptop' ? 'Press E \u2014 Settings' : 'Press E \u2014 Change Appearance';
-        ctx.fillStyle = 'rgba(0,0,0,0.82)'; ctx.fillRect(cw/2-140, ch-88, 280, 34);
-        ctx.fillStyle = '#ffd700'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center';
-        ctx.fillText(label, cw/2, ch-65);
+        const label = dropshipHint==='laptop' ? 'Press E  \u2014  Settings' : 'Press E  \u2014  Change Appearance';
+        const hw=310, hh=36, hx=cw/2-hw/2, hy=ch-96;
+        const hhg = ctx.createLinearGradient(hx,hy,hx+hw,hy);
+        hhg.addColorStop(0,'rgba(0,0,0,0)'); hhg.addColorStop(0.18,'rgba(6,14,38,0.92)'); hhg.addColorStop(0.82,'rgba(6,14,38,0.92)'); hhg.addColorStop(1,'rgba(0,0,0,0)');
+        ctx.fillStyle = hhg; ctx.fillRect(hx,hy,hw,hh);
+        ctx.strokeStyle = 'rgba(80,155,255,0.32)'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(hx+hw*0.2,hy+hh); ctx.lineTo(hx+hw*0.8,hy+hh); ctx.stroke();
+        ctx.fillStyle = '#ffd700'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center';
+        ctx.fillText(label, cw/2, hy+24);
       }
 
-      // START GAME button — host (MP) or any player (solo)
+      // === START GAME BUTTON ===
       if (dropshipCountdown < 0 && (mpIsHost && mpLobbyCode || !mpLobbyCode)) {
         const pc = mpLobbyCode ? Object.keys(mpPlayers).length : 1;
-        const label = mpLobbyCode
-          ? 'START GAME  \u2014  ' + pc + ' player' + (pc !== 1 ? 's' : '')
-          : 'START GAME';
-        const btnW = 240, btnH = 44;
-        const bx = mpLobbyCode ? cw/2 - btnW/2 : cw/2 - btnW/2;
-        const by = ch - 62;
-        ctx.fillStyle = 'rgba(17,127,45,0.92)';
-        ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(bx, by, btnW, btnH, 9); else ctx.rect(bx, by, btnW, btnH); ctx.fill();
-        ctx.strokeStyle = '#00dd55'; ctx.lineWidth = 2;
-        ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(bx, by, btnW, btnH, 9); else ctx.rect(bx, by, btnW, btnH); ctx.stroke();
-        ctx.fillStyle = '#fff'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center';
-        ctx.fillText(label, cw/2, by + 28);
-        _mpStartBtnRect = { x: bx, y: by, w: btnW, h: btnH };
+        const label = mpLobbyCode ? 'LAUNCH  \u25b6  '+pc+' CREW' : 'START GAME  \u25b6';
+        const btnW=264, btnH=48, bx=cw/2-btnW/2, by=ch-66;
+        const pulse = Math.sin(_t*0.004)*0.5+0.5;
+        ctx.fillStyle = `rgba(0,160,60,${0.14+pulse*0.10})`;
+        ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(bx-5,by-5,btnW+10,btnH+10,15); else ctx.rect(bx-5,by-5,btnW+10,btnH+10); ctx.fill();
+        const bg = ctx.createLinearGradient(bx,by,bx,by+btnH);
+        bg.addColorStop(0,`rgba(22,190,75,${0.92+pulse*0.06})`);
+        bg.addColorStop(0.5,'rgba(14,148,52,0.90)');
+        bg.addColorStop(1,'rgba(8,108,36,0.92)');
+        ctx.fillStyle = bg;
+        ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(bx,by,btnW,btnH,10); else ctx.rect(bx,by,btnW,btnH); ctx.fill();
+        ctx.strokeStyle = `rgba(60,255,110,${0.55+pulse*0.45})`; ctx.lineWidth = 2;
+        ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(bx,by,btnW,btnH,10); else ctx.rect(bx,by,btnW,btnH); ctx.stroke();
+        const shi = ctx.createLinearGradient(bx,by,bx,by+btnH*0.5);
+        shi.addColorStop(0,'rgba(255,255,255,0.14)'); shi.addColorStop(1,'rgba(255,255,255,0)');
+        ctx.fillStyle = shi;
+        ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(bx+2,by+2,btnW-4,btnH*0.45,8); else ctx.rect(bx+2,by+2,btnW-4,btnH/2); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
+        ctx.fillText(label, cw/2, by+31);
+        _mpStartBtnRect = { x:bx, y:by, w:btnW, h:btnH };
       } else {
         _mpStartBtnRect = null;
       }
 
-      // Countdown overlay
+      // === COUNTDOWN OVERLAY ===
       if (dropshipCountdown > 0) {
-        ctx.fillStyle = 'rgba(0,0,0,0.85)'; ctx.fillRect(0,0,cw,ch);
-        ctx.fillStyle = '#4ecdc4'; ctx.font = 'bold 28px Arial'; ctx.textAlign = 'center';
-        ctx.fillText('LAUNCHING\u2026', cw/2, ch/2-55);
-        ctx.fillStyle = '#fff'; ctx.font = 'bold 110px Arial';
-        ctx.fillText(dropshipCountdown, cw/2, ch/2+45);
+        ctx.fillStyle = 'rgba(0,0,0,0.92)'; ctx.fillRect(0,0,cw,ch);
+        for (let sl = 0; sl < ch; sl += 4) { ctx.fillStyle = 'rgba(0,60,180,0.04)'; ctx.fillRect(0,sl,cw,2); }
+        const cpR2 = 60+((_t*0.10)%100);
+        for (let ri = 0; ri < 3; ri++) {
+          const rr2 = cpR2-ri*28;
+          if (rr2>0) { ctx.strokeStyle = `rgba(80,200,255,${0.30-ri*0.08})`; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cw/2,ch/2,rr2,0,Math.PI*2); ctx.stroke(); }
+        }
+        ctx.fillStyle = '#4ecdc4'; ctx.font = 'bold 22px "Courier New",monospace'; ctx.textAlign = 'center'; ctx.letterSpacing = '6px';
+        ctx.fillText('LAUNCHING', cw/2, ch/2-60);
+        ctx.letterSpacing = '0px';
+        ctx.save(); ctx.shadowColor = '#4ecdc4'; ctx.shadowBlur = 32;
+        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 120px Arial';
+        ctx.fillText(dropshipCountdown, cw/2, ch/2+50);
+        ctx.restore();
+        ctx.strokeStyle = 'rgba(80,220,200,0.65)'; ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.arc(cw/2, ch/2-10, 72, -Math.PI/2, -Math.PI/2+(1-((dropshipCountdown%1)||1))*Math.PI*2); ctx.stroke();
       }
     }
 

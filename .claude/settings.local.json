@@ -13,7 +13,9 @@
       "WebFetch(domain:github.com)",
       "Bash(curl -s \"https://among-us-wiki.fandom.com/api.php?action=parse&page=Hats&prop=wikitext&format=json\" -H \"User-Agent: Mozilla/5.0\")",
       "Bash(curl -s \"https://among-us-wiki.fandom.com/api.php?action=query&list=allimages&aiprefix=Propeller&ailimit=20&format=json\" -H \"User-Agent: Mozilla/5.0\")",
-      "Bash(head -5 __NEW_LINE_483d759c76421389__ curl -s \"https://among-us-wiki.fandom.com/api.php?action=query&list=allimages&aiprefix=Greatest_Headset&ailimit=10&format=json\" -H \"User-Agent: Mozilla/5.0\")"
+      "Bash(head -5 __NEW_LINE_483d759c76421389__ curl -s \"https://among-us-wiki.fandom.com/api.php?action=query&list=allimages&aiprefix=Greatest_Headset&ailimit=10&format=json\" -H \"User-Agent: Mozilla/5.0\")",
+      "Bash(node --check /tmp/extracted.js)",
+      "Bash(node --check \"C:/Users/User/AppData/Local/Temp/extracted.js\")"
     ]
   }
 }
