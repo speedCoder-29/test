@@ -2338,11 +2338,11 @@
           w.push({ x: 140, y: 1522, w: 16, h: 70 });   // left inner
           w.push({ x: 140, y: 1508, w: 120, h: 16 });  // bottom inner
 
-          // --- Reactor (wider — right wall moved from x:244 to x:310, ~66px wider interior) ---
+          // --- Reactor (right wall at x:260 — aligns with reactor floor end and corridor start) ---
           w.push({ x: 60,  y: 378, w: 16, h: 60 });    // top-left step
           // Right wall — gap y:700-780 for corridor door
-          w.push({ x: 310, y: 394, w: 16, h: 306 });   // right wall top (y:394-700, gap y:700-780 for corridor door)
-          w.push({ x: 310, y: 780, w: 16, h: 446 });   // right wall bottom (y:780-1226)
+          w.push({ x: 260, y: 394, w: 16, h: 306 });   // right wall top (y:394-700, gap y:700-780 for corridor door)
+          w.push({ x: 260, y: 780, w: 16, h: 446 });   // right wall bottom (y:780-1226)
           // --- UE-LE vertical corridor walls ---
           w.push({ x: 380, y: 394, w: 16, h: 176 });   // corridor right wall top (y:394-570, stops at Security top)
           w.push({ x: 380, y: 836, w: 16, h: 374 });   // corridor right wall bottom (y:836-1210, starts after Security bottom wall)
@@ -7690,14 +7690,24 @@
       if (!isBlockedAt(nx, ny, entity.w, entity.h)) { entity.x = nx; entity.y = ny; return true; }
 
       // Try horizontal only
-      nx = entity.x + dx;
-      ny = entity.y;
-      if (!isBlockedAt(nx, ny, entity.w, entity.h)) { entity.x = nx; return true; }
+      nx = entity.x + dx; ny = entity.y;
+      if (dx !== 0 && !isBlockedAt(nx, ny, entity.w, entity.h)) { entity.x = nx; return true; }
 
       // Try vertical only
-      nx = entity.x;
-      ny = entity.y + dy;
-      if (!isBlockedAt(nx, ny, entity.w, entity.h)) { entity.y = ny; return true; }
+      nx = entity.x; ny = entity.y + dy;
+      if (dy !== 0 && !isBlockedAt(nx, ny, entity.w, entity.h)) { entity.y = ny; return true; }
+
+      // Angular deflection — slide around corners at ±22.5°, ±45°, ±67.5°
+      const _spd = Math.sqrt(dx * dx + dy * dy);
+      if (_spd > 0.01) {
+        const _ang = Math.atan2(dy, dx);
+        for (const _dA of [0.392, -0.392, 0.785, -0.785, 1.178, -1.178]) {
+          const _a2 = _ang + _dA;
+          nx = entity.x + Math.cos(_a2) * _spd;
+          ny = entity.y + Math.sin(_a2) * _spd;
+          if (!isBlockedAt(nx, ny, entity.w, entity.h)) { entity.x = nx; entity.y = ny; return true; }
+        }
+      }
 
       return false;
     }
@@ -7761,7 +7771,7 @@
       // Stuck detection
       if (!moved || (Math.abs(npc.x - npc.lastX) < 0.5 && Math.abs(npc.y - npc.lastY) < 0.5)) {
         npc.stuckTimer++;
-        if (npc.stuckTimer > 4) {
+        if (npc.stuckTimer > 2) {
           // Look for the nearest door within 220px and steer through its centre
           const npcCX = npc.x + npc.w / 2, npcCY = npc.y + npc.h / 2;
           let bestDoor = null, bestDist = 220;
@@ -7785,7 +7795,7 @@
             }
           }
         }
-        if (npc.stuckTimer > 45) {
+        if (npc.stuckTimer > 20) {
           // Snap to the nearest walkable grid cell center so the NPC is never stuck
           // inside a wall or on a non-navigable tile before picking a new target.
           const cgx = Math.round((npc.x + npc.w / 2) / GRID_SIZE);
@@ -7845,7 +7855,7 @@
       if (!npc.navPath || npc.navRecalc-- <= 0) {
         npc.navPath = waypointAStar(cx2, cy2, tx, ty) || findPath(cx2, cy2, tx, ty);
         npc.navIndex = 0;
-        npc.navRecalc = _nearDoor ? 12 : 30;
+        npc.navRecalc = _nearDoor ? 8 : 20;
         npc._navTx = tx; npc._navTy = ty;
       }
 
@@ -9336,6 +9346,7 @@
     }
 
     function triggerNPCReport(reporter) {
+      if (inMeeting || gameOver) return;
       if (gameMode === 'hideseek') return;
       if (gameSettings.maxMeetings > 0 && meetingCount >= gameSettings.maxMeetings) return;
       deadBodies.forEach(b => b.reported = true);
@@ -10227,8 +10238,9 @@
 
     // --- Emergency Meeting ---
     function callEmergency() {
+      if (inMeeting || gameOver) return;
       if (gameMode === 'hideseek') return;
-      if (isGhost || emergencyCooldown > 0 || gameOver) return;
+      if (isGhost || emergencyCooldown > 0) return;
       if (gameSettings.maxMeetings > 0 && meetingCount >= gameSettings.maxMeetings) return;
       if (dist(player, EMERGENCY_BTN) < 60) {
         emergencyCooldown = 1800; // 30s cooldown
@@ -10764,6 +10776,7 @@
     }
 
     function reportBody() {
+      if (inMeeting || gameOver) return;
       if (gameMode === 'hideseek') return;
       if (isGhost) return; // ghosts cannot report
       if (gameSettings.maxMeetings > 0 && meetingCount >= gameSettings.maxMeetings) return;
@@ -11211,7 +11224,36 @@
       }
     }
 
+    // Called whenever a meeting ends and the game continues (no endGame triggered).
+    // Resets inMeeting, clears corpses/flags, and applies post-meeting cooldowns.
+    function _resumeAfterMeeting(ejectedName) {
+      inMeeting = false;
+      _lastMeetingEndFrame = frameCount;
+      deadBodies = [];
+      npcs.forEach(n => {
+        n.sawBody = false; n.bodyLocation = null;
+        n.completedVisualTasks = []; n.fixingSabotage = false;
+        // Impostors get half-cooldown so they can't kill the moment meeting ends
+        if (n.isImpostor && n.alive) {
+          const _halfCd = Math.round(gameSettings.killCooldown * 60 * 0.5);
+          if (n.killCooldown < _halfCd) n.killCooldown = _halfCd;
+        }
+        // Clear suspicion toward ejected player
+        if (ejectedName && n.suspicion) delete n.suspicion[ejectedName];
+      });
+      witnessedVisualTasks = new Set();
+      // Give a short post-meeting emergency cooldown (min 10 s) so meetings can't chain instantly
+      const _postMtgCd = Math.max(10 * 60, Math.round(gameSettings.emergencyCooldown * 30));
+      if (emergencyCooldown < _postMtgCd) emergencyCooldown = _postMtgCd;
+      // Player impostor: apply post-meeting kill cooldown
+      if (isImpostor && player.alive) {
+        const _halfCd = Math.round(gameSettings.killCooldown * 60 * 0.5);
+        if (killCooldown < _halfCd) killCooldown = _halfCd;
+      }
+    }
+
     function startVoting(reporterNPC) {
+      if (inMeeting || gameOver) return; // never nest meetings
       playSfx('meeting');
       // End any active sabotage (critical or not) when a meeting is called
       if (sabotage.active) endSabotage();
@@ -11824,12 +11866,8 @@
         setTimeout(() => {
           voteScreen.style.display = 'none';
           voteList.style.display = 'flex';
-          inMeeting = false;
-          _lastMeetingEndFrame = frameCount;
           _lastEjectedName = null; _lastEjectedWasImp = false;
-          deadBodies = [];
-          npcs.forEach(n => { n.sawBody = false; n.bodyLocation = null; n.completedVisualTasks = []; n.fixingSabotage = false; });
-          witnessedVisualTasks = new Set();
+          _resumeAfterMeeting(null);
         }, 2500);
         return;
       }
@@ -11867,10 +11905,7 @@
               endGame(false); // all impostors gone — crewmates win
             } else {
               // Other impostors still alive — game continues (player is dead/ghost)
-              _lastMeetingEndFrame = frameCount;
-              deadBodies = [];
-              npcs.forEach(n => { n.sawBody = false; n.bodyLocation = null; n.completedVisualTasks = []; n.fixingSabotage = false; });
-              witnessedVisualTasks = new Set();
+              _resumeAfterMeeting(ejected.name);
             }
           }, 3000);
         } else {
@@ -11879,14 +11914,11 @@
           showEjectionAnim(ejected.name, ejected.color, false, remainingImps);
           if (gameSettings.roleGuardianAngel && gameMode !== 'hideseek') {
             setTimeout(() => {
-              voteScreen.style.display = 'none'; inMeeting = false;
-              _lastMeetingEndFrame = frameCount;
+              voteScreen.style.display = 'none';
               isGhost = true;
               playerRole = 'guardian_angel'; player.role = 'guardian_angel';
               abilityCooldown = 0; abilityTimer = 0; abilityActive = false;
-              deadBodies = [];
-              npcs.forEach(n => { n.sawBody = false; n.bodyLocation = null; n.completedVisualTasks = []; n.fixingSabotage = false; });
-              witnessedVisualTasks = new Set();
+              _resumeAfterMeeting(ejected.name);
               // Show Guardian Angel role reveal
               showRoleReveal('guardian_angel');
             }, 3000);
@@ -11913,24 +11945,16 @@
               endGame(false); // all impostors gone — crewmates win
             } else {
               // Other impostors still alive — game continues
-              _lastMeetingEndFrame = frameCount;
-              deadBodies = [];
-              npcs.forEach(n => { n.sawBody = false; n.bodyLocation = null; n.completedVisualTasks = []; n.fixingSabotage = false; });
-              witnessedVisualTasks = new Set();
+              _resumeAfterMeeting(ejected.name);
               const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length + (player.alive && !isImpostor ? 1 : 0);
-              const aliveImpostors2 = remainingImps;
-              if (gameMode !== 'hideseek' && aliveImpostors2 >= aliveCrewmates) endGame(true);
+              if (gameMode !== 'hideseek' && remainingImps >= aliveCrewmates) endGame(true);
             }
           }, 3000);
         } else {
           setTimeout(() => {
             voteScreen.style.display = 'none';
             voteList.style.display = 'flex';
-            inMeeting = false;
-            _lastMeetingEndFrame = frameCount;
-            deadBodies = [];
-            npcs.forEach(n => { n.sawBody = false; n.bodyLocation = null; n.completedVisualTasks = []; n.fixingSabotage = false; });
-            witnessedVisualTasks = new Set();
+            _resumeAfterMeeting(ejected.name);
             const aliveCrewmates = npcs.filter(n => n.alive && !n.isImpostor).length + (player.alive && !isImpostor ? 1 : 0);
             const aliveImpostors = npcs.filter(n => n.alive && n.isImpostor).length + (player.alive && isImpostor ? 1 : 0);
             if (gameMode !== 'hideseek' && aliveImpostors >= aliveCrewmates) endGame(true);
