@@ -299,6 +299,115 @@
       92%  { opacity: 0.2; transform: scale(0.97) translateY(-10px); }
       100% { opacity: 0; transform: scale(0.94) translateY(-20px); }
     }
+    @keyframes shiftBoardIn {
+      0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.75); }
+      65%  { opacity: 1; transform: translate(-50%,-50%) scale(1.02); }
+      100% { transform: translate(-50%,-50%) scale(1); }
+    }
+    @keyframes morphFlashAnim {
+      0%   { opacity: 0; }
+      15%  { opacity: 0.9; }
+      100% { opacity: 0; }
+    }
+    @keyframes detectiveBoardIn {
+      0%   { opacity: 0; transform: translate(-50%,-50%) translateY(22px); }
+      100% { opacity: 1; transform: translate(-50%,-50%) translateY(0); }
+    }
+    @keyframes clueIn {
+      0%   { opacity: 0; transform: translateX(-10px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes roleAuraPulse {
+      0%,100% { opacity: 0.18; } 50% { opacity: 0.42; }
+    }
+    #morphFlashOverlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      pointer-events: none;
+    }
+    #shiftBoard {
+      display: none; position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      z-index: 186; width: 520px; max-width: 96vw; max-height: 88vh;
+      background: linear-gradient(160deg,#0e0618 0%,#1a0a22 60%,#0d0d1e 100%);
+      border: 2px solid #c44aff; border-radius: 16px;
+      box-shadow: 0 0 60px rgba(180,60,255,0.35), 0 12px 60px rgba(0,0,0,0.8);
+      overflow: hidden; flex-direction: column;
+      animation: shiftBoardIn 0.32s ease-out both;
+    }
+    #shiftBoard.visible { display: flex; }
+    #shiftBoardHeader {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 20px 10px; border-bottom: 1px solid rgba(180,60,255,0.25);
+      background: rgba(180,60,255,0.08);
+    }
+    #shiftBoardScroll { overflow-y: auto; padding: 14px 16px; flex: 1; }
+    #shiftBoardGrid {
+      display: grid; grid-template-columns: repeat(auto-fill,minmax(140px,1fr));
+      gap: 10px;
+    }
+    .shift-card {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 7px; padding: 13px 8px 10px;
+      background: rgba(180,60,255,0.07); border: 1px solid rgba(180,60,255,0.22);
+      border-radius: 12px; cursor: pointer; transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      position: relative; overflow: hidden;
+    }
+    .shift-card:hover { background: rgba(180,60,255,0.2); border-color: #c44aff; transform: translateY(-2px); }
+    .shift-card-swatch { width: 44px; height: 44px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.25); flex-shrink: 0; box-shadow: 0 0 16px rgba(0,0,0,0.5); }
+    .shift-card-name { color: #eee; font-size: 12px; font-weight: bold; text-align: center; }
+    .shift-card-detail { color: #999; font-size: 10px; text-align: center; }
+    .shift-card-btn {
+      margin-top: 3px; padding: 4px 12px; border-radius: 20px;
+      background: rgba(180,60,255,0.3); border: 1px solid #c44aff;
+      color: #e0a0ff; font-size: 10px; font-weight: bold; letter-spacing: 0.5px;
+      cursor: pointer; transition: background 0.12s;
+    }
+    .shift-card-btn:hover { background: rgba(180,60,255,0.55); }
+    #detectiveBoard {
+      display: none; position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      z-index: 181; width: 540px; max-width: 97vw; max-height: 90vh;
+      background: linear-gradient(160deg,#0c1018 0%,#111820 60%,#0d1115 100%);
+      border: 2px solid #ffd700; border-radius: 14px;
+      box-shadow: 0 0 50px rgba(255,215,0,0.22), 0 10px 50px rgba(0,0,0,0.85);
+      overflow: hidden; flex-direction: column;
+      animation: detectiveBoardIn 0.28s ease-out both;
+    }
+    #detectiveBoard.visible { display: flex; }
+    #detectiveBoardHeader {
+      display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+      padding: 14px 18px 10px; border-bottom: 1px solid rgba(255,215,0,0.2);
+      background: rgba(255,215,0,0.06);
+    }
+    #detectiveTabs {
+      display: flex; gap: 4px; padding: 8px 14px 0; flex-shrink: 0;
+      border-bottom: 1px solid rgba(255,215,0,0.15); overflow-x: auto;
+    }
+    .det-tab {
+      padding: 5px 12px; border-radius: 6px 6px 0 0; font-size: 11px;
+      font-weight: bold; cursor: pointer; border: 1px solid transparent;
+      border-bottom: none; color: #777; background: rgba(255,255,255,0.04);
+      white-space: nowrap; transition: color 0.12s, background 0.12s;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .det-tab.active { color: #ffd700; background: rgba(255,215,0,0.1); border-color: rgba(255,215,0,0.3); }
+    .det-tab:hover:not(.active) { color: #ccc; background: rgba(255,255,255,0.07); }
+    #detectiveBoardBody { overflow-y: auto; padding: 14px 18px; flex: 1; }
+    .det-section-label { font-size: 9px; color: #666; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 5px; margin-top: 12px; }
+    .det-suspect-row {
+      display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+      background: rgba(255,255,255,0.05); border-radius: 7px; margin-bottom: 4px;
+      animation: clueIn 0.2s ease both;
+    }
+    .det-suspect-row .det-swatch { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    .det-empty-slot { padding: 5px 10px; color: #333; font-size: 11px; font-style: italic; }
+    .det-pin-btn {
+      padding: 3px 10px; border-radius: 10px; font-size: 10px; font-weight: bold;
+      background: rgba(255,215,0,0.15); border: 1px solid rgba(255,215,0,0.4);
+      color: #ffd700; cursor: pointer; transition: background 0.12s;
+    }
+    .det-pin-btn:hover { background: rgba(255,215,0,0.3); }
+    .det-pin-btn.pinned { background: rgba(255,215,0,0.35); color: #fff; border-color: #ffd700; }
     #roleTag { display: none; }
     #interactHint {
       position: fixed; bottom: 78px; left: 50%; transform: translateX(-50%);
@@ -1406,22 +1515,41 @@
   <div id="ventHint"></div>
   <div id="abilityHUD"></div>
   <div id="vitalsPanel"><h3>VITALS</h3><div id="vitalsList"></div></div>
-  <div id="detectiveNotesPanel" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:80;background:#0d1520;border:2px solid #ffd700;border-radius:12px;padding:16px;min-width:300px;max-width:340px;max-height:80vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,0.7);">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-      <div style="color:#ffd700;font-size:15px;font-weight:bold;letter-spacing:1px;">📋 DETECTIVE NOTES</div>
-      <button onclick="toggleDetectiveNotes()" style="background:none;border:none;color:#888;font-size:18px;cursor:pointer;line-height:1;">&#215;</button>
+  <!-- Detective case board -->
+  <div id="detectiveBoardOverlay" onclick="closeDetectiveBoard()" style="display:none;position:fixed;inset:0;z-index:180;background:rgba(0,0,0,0.55);backdrop-filter:blur(2px);"></div>
+  <div id="detectiveBoard">
+    <div id="detectiveBoardHeader">
+      <span style="font-size:20px;">🔍</span>
+      <span style="color:#ffd700;font-size:15px;font-weight:bold;letter-spacing:1px;flex:1;">CASE FILES</span>
+      <span id="detectiveCaseCount" style="color:#888;font-size:11px;margin-right:8px;"></span>
+      <button onclick="closeDetectiveBoard()" style="background:none;border:none;color:#666;font-size:20px;cursor:pointer;line-height:1;padding:0 2px;">&#215;</button>
     </div>
-    <div id="detectiveNotesPanelInner"></div>
+    <div id="detectiveTabs"></div>
+    <div id="detectiveBoardBody"></div>
   </div>
   <div id="detectiveToast" style="display:block;position:fixed;bottom:180px;left:50%;transform:translateX(-50%);background:rgba(13,21,32,0.92);border:1px solid #ffd700;border-radius:8px;padding:7px 16px;color:#ffd700;font-size:13px;font-weight:bold;z-index:90;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;"></div>
-  <div id="shiftMenuOverlay" onclick="closeShiftMenu()" style="display:none;position:fixed;inset:0;z-index:84;background:rgba(0,0,0,0.45);"></div>
-  <div id="shiftMenu" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:85;background:#0a0d1a;border:2px solid #ff6b6b;border-radius:14px;padding:18px 20px;min-width:320px;max-width:400px;max-height:80vh;overflow-y:auto;box-shadow:0 10px 50px rgba(200,60,60,0.4);">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-      <div style="color:#ff6b6b;font-size:15px;font-weight:bold;letter-spacing:1px;">🎭 SHAPESHIFT — Select Target</div>
-      <button onclick="closeShiftMenu()" style="background:none;border:none;color:#888;font-size:18px;cursor:pointer;line-height:1;">&#215;</button>
+
+  <!-- Shapeshifter board -->
+  <div id="shiftBoardOverlay" onclick="closeShiftMenu()" style="display:none;position:fixed;inset:0;z-index:185;background:rgba(0,0,0,0.6);backdrop-filter:blur(3px);"></div>
+  <div id="shiftBoard">
+    <div id="shiftBoardHeader">
+      <span style="font-size:20px;">🧬</span>
+      <div style="flex:1;">
+        <div style="color:#d080ff;font-size:14px;font-weight:bold;letter-spacing:1px;">DNA TARGETS</div>
+        <div style="color:#887799;font-size:10px;margin-top:1px;">Select a crewmate to morph into</div>
+      </div>
+      <button onclick="closeShiftMenu()" style="background:none;border:none;color:#664477;font-size:20px;cursor:pointer;line-height:1;padding:0 2px;">&#215;</button>
     </div>
-    <div id="shiftMenuList" style="display:flex;flex-direction:column;gap:8px;"></div>
+    <div id="shiftBoardScroll"><div id="shiftBoardGrid"></div></div>
   </div>
+
+  <!-- Morph flash overlay -->
+  <div id="morphFlashOverlay"></div>
+
+  <!-- Legacy shiftMenu (hidden, kept for compatibility) -->
+  <div id="shiftMenuOverlay" style="display:none;"></div>
+  <div id="shiftMenu" style="display:none;"></div>
+  <div id="shiftMenuList" style="display:none;"></div>
   <div id="noisemakerAlert"></div>
   <div id="ghostMsg">YOU DIED — You are now a ghost!<br><span style="font-size:15px;font-weight:normal;color:#aaa">You can still complete tasks. Press WASD to move.</span></div>
   <div id="dangerMeter"><div class="danger-label">⚠ SEEKER NEARBY</div><div id="dangerMeterBar" style="width:0%"></div></div>
@@ -4669,8 +4797,8 @@
     // Sabotage system
     let sabotage = { active: false, type: null, timer: 0, maxTime: 0, cooldown: 0, fixProgress: 0, fixProgressB: 0 };
     const SABOTAGE_COOLDOWN = 1800; // legacy fallback, now uses gameSettings.sabotageCooldown
-    const VISION_NORMAL = 460;
-    const VISION_LIGHTS_OUT = 120;
+    const VISION_NORMAL = 700;
+    const VISION_LIGHTS_OUT = 180;
     let visionRadius = VISION_NORMAL;
 
     // Player task progress
@@ -4684,6 +4812,10 @@
     let emergencyCooldown = 0;
     let inMeeting = false;
     let gamePaused = false;
+    let _lastMeetingEndFrame = -9999; // frame when last meeting ended (for post-meeting NPC speech)
+    let _lastEjectedName = null;      // name of last ejected player
+    let _lastEjectedWasImp = false;   // whether they were an impostor
+    let _npcKillHotZones = [];        // recent kill locations for crewmate hot zone patrol [{x,y,frame}]
 
     // Special roles state
     let playerRole = 'crewmate';
@@ -5876,8 +6008,8 @@
       impostors: 1,
       playerCount: 9,
       playerSpeed: 1.0,
-      crewVision: 1.2,
-      impVision: 1.5,
+      crewVision: 1.5,
+      impVision: 2.0,
       killCooldown: 25,
       killDistance: 'Medium',
       commonTasks: 1, shortTasks: 2, longTasks: 1,
@@ -6429,53 +6561,60 @@
       const livingNpcs = npcs.filter(n => n.alive && !n.isImpostor);
       if (livingNpcs.length === 0) return;
       shiftMenuOpen = true;
-      document.getElementById('shiftMenuOverlay').style.display = 'block';
-      const menu = document.getElementById('shiftMenu');
-      const list = document.getElementById('shiftMenuList');
-      list.innerHTML = '';
+      document.getElementById('shiftBoardOverlay').style.display = 'block';
+      const board = document.getElementById('shiftBoard');
+      const grid  = document.getElementById('shiftBoardGrid');
+      grid.innerHTML = '';
       for (const npc of livingNpcs) {
-        const card = document.createElement('div');
-        card.style.cssText = 'display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,107,107,0.3);border-radius:9px;cursor:pointer;transition:background 0.15s;';
-        card.onmouseenter = () => card.style.background = 'rgba(255,107,107,0.15)';
-        card.onmouseleave = () => card.style.background = 'rgba(255,255,255,0.05)';
-        // Color dot
-        const dot = document.createElement('div');
-        dot.style.cssText = `width:22px;height:22px;border-radius:50%;background:${npc.color};flex-shrink:0;border:2px solid rgba(255,255,255,0.2);`;
-        // Info
-        const info = document.createElement('div');
-        info.style.cssText = 'flex:1;';
-        const nameEl = document.createElement('div');
-        nameEl.style.cssText = 'color:#eee;font-size:13px;font-weight:bold;';
-        nameEl.textContent = npc.name;
-        const detailEl = document.createElement('div');
-        detailEl.style.cssText = 'color:#888;font-size:11px;margin-top:2px;';
         const hatLabel = npc.hat && npc.hat !== 'none' ? (HAT_ICONS[npc.hat] || npc.hat) : '';
         const petLabel = npc.pet && npc.pet !== 'none' ? (PET_ICONS[npc.pet] || npc.pet) : '';
-        detailEl.textContent = [hatLabel, petLabel].filter(Boolean).join(' ') || 'No cosmetics';
-        info.appendChild(nameEl);
-        info.appendChild(detailEl);
-        card.appendChild(dot);
-        card.appendChild(info);
+        const cosmetic = [hatLabel, petLabel].filter(Boolean).join(' ') || 'No cosmetics';
+        const card = document.createElement('div');
+        card.className = 'shift-card';
+        card.innerHTML =
+          `<div class="shift-card-swatch" style="background:${npc.color};box-shadow:0 0 18px ${npc.color}88;"></div>` +
+          `<div class="shift-card-name">${npc.name}</div>` +
+          `<div class="shift-card-detail">${cosmetic}</div>` +
+          `<button class="shift-card-btn">MORPH INTO</button>`;
+        // Glow outline matches crewmate color
+        card.style.setProperty('--card-color', npc.color);
+        card.querySelector('.shift-card-btn').onclick = (e) => { e.stopPropagation(); selectShiftTarget(npc); };
         card.onclick = () => selectShiftTarget(npc);
-        list.appendChild(card);
+        grid.appendChild(card);
       }
-      menu.style.display = 'block';
+      // Reset animation
+      board.style.animation = 'none';
+      board.offsetHeight;
+      board.style.animation = 'shiftBoardIn 0.32s ease-out both';
+      board.classList.add('visible');
     }
 
     function closeShiftMenu() {
       shiftMenuOpen = false;
-      document.getElementById('shiftMenu').style.display = 'none';
-      document.getElementById('shiftMenuOverlay').style.display = 'none';
+      document.getElementById('shiftBoard').classList.remove('visible');
+      document.getElementById('shiftBoardOverlay').style.display = 'none';
     }
 
     function selectShiftTarget(npc) {
+      const _playerOrigName = player.name;
+      // Play morph flash animation then apply shift
+      const flash = document.getElementById('morphFlashOverlay');
+      // Two-color gradient: player color → target color
+      flash.style.cssText = `display:block;position:fixed;inset:0;z-index:200;pointer-events:none;` +
+        `background:radial-gradient(circle,${npc.color}cc 0%,${player.color || '#ffffff'}88 60%,transparent 100%);` +
+        `animation:morphFlashAnim 0.6s ease-out forwards;`;
+      flash.style.animation = 'none'; flash.offsetHeight;
+      flash.style.animation = 'morphFlashAnim 0.6s ease-out forwards';
       closeShiftMenu();
-      shiftTarget = { color: npc.color, name: npc.name, hat: npc.hat || 'none', pet: npc.pet || 'none', skin: npc.skin || 'none' };
-      abilityActive = true;
-      abilityTimer = (gameSettings.shapeshifterDuration || 15) * 60;
-      abilityCooldown = abilityTimer + 1800; // 30s cooldown after shift ends
-      // Leave evidence marker
-      shifterEvidence.push({ x: player.x + player.w/2, y: player.y + player.h/2, timer: 300, maxTimer: 300 });
+      // Slight delay so animation plays before state changes
+      setTimeout(() => {
+        shiftTarget = { color: npc.color, name: npc.name, hat: npc.hat || 'none', pet: npc.pet || 'none', skin: npc.skin || 'none' };
+        abilityActive = true;
+        abilityTimer = (gameSettings.shapeshifterDuration || 15) * 60;
+        abilityCooldown = abilityTimer + 1800; // 30s cooldown after shift ends
+        shifterEvidence.push({ x: player.x + player.w/2, y: player.y + player.h/2, timer: 300, maxTimer: 300 });
+        _notifyShiftWitnesses(player, _playerOrigName);
+      }, 200);
     }
 
     function doGuardianAngel() {
@@ -6613,62 +6752,143 @@
 
     function addDetectiveCase(victimName, victimColor, location, killerType) {
       if (playerRole !== 'detective') return;
-      // Don't duplicate cases for the same victim
       if (detectiveNotes.some(c => c.victimName === victimName && !c.closed)) return;
-      detectiveNotes.push({ victimName, victimColor, location: location || 'Unknown', killerType: killerType || 'IMPOSTOR?', suspects: [] });
+      detectiveNotes.push({
+        victimName, victimColor,
+        location: location || 'Unknown',
+        killerType: killerType || 'IMPOSTOR?',
+        suspects: [],
+        mapPinX: null, mapPinY: null,   // world coords of body (set when pinned)
+        meetingNotes: [],               // observations from meetings
+      });
       detectiveActiveCase = detectiveNotes.length - 1;
       showDetectiveToast('📋 New case: ' + victimName);
       if (detectiveNotesOpen) renderDetectiveNotes();
     }
 
+    function toggleDetectiveNotes() {
+      if (playerRole !== 'detective') return;
+      detectiveNotesOpen = !detectiveNotesOpen;
+      if (detectiveNotesOpen) openDetectiveBoard(); else closeDetectiveBoard();
+    }
+
+    function openDetectiveBoard() {
+      detectiveNotesOpen = true;
+      const board = document.getElementById('detectiveBoard');
+      document.getElementById('detectiveBoardOverlay').style.display = 'block';
+      board.style.animation = 'none'; board.offsetHeight;
+      board.style.animation = 'detectiveBoardIn 0.28s ease-out both';
+      board.classList.add('visible');
+      renderDetectiveNotes();
+    }
+
+    function closeDetectiveBoard() {
+      detectiveNotesOpen = false;
+      document.getElementById('detectiveBoard').classList.remove('visible');
+      document.getElementById('detectiveBoardOverlay').style.display = 'none';
+    }
+
+    // Called from meetings: mark a body location on the minimap for the active case
+    function detectivePinBody(caseIdx) {
+      const c = detectiveNotes[caseIdx];
+      if (!c) return;
+      // Find the dead body by name
+      const body = deadBodies.find(b => b.name === c.victimName)
+        || deadBodies[deadBodies.length - 1];
+      if (body) {
+        c.mapPinX = body.x; c.mapPinY = body.y;
+      } else if (c._bodyX !== undefined) {
+        c.mapPinX = c._bodyX; c.mapPinY = c._bodyY;
+      }
+      showDetectiveToast('📍 Body location pinned: ' + c.victimName);
+      renderDetectiveNotes();
+    }
+
     function renderDetectiveNotes() {
-      const panel = document.getElementById('detectiveNotesPanel');
-      if (!panel) return;
+      const tabs = document.getElementById('detectiveTabs');
+      const body = document.getElementById('detectiveBoardBody');
+      const counter = document.getElementById('detectiveCaseCount');
+      if (!tabs || !body) return;
+
+      counter.textContent = detectiveNotes.length + (detectiveNotes.length === 1 ? ' case' : ' cases');
+
+      // Build tab bar
+      tabs.innerHTML = '';
       if (detectiveNotes.length === 0) {
-        panel.innerHTML = '<div style="color:#aaa;font-size:13px;padding:10px;">No cases yet. Bodies will be logged automatically.</div>';
+        tabs.innerHTML = '';
+        body.innerHTML = '<div style="color:#555;font-size:13px;padding:18px 4px;text-align:center;">No cases yet.<br><span style="font-size:11px;color:#444;">Bodies are logged automatically when found.</span></div>';
         return;
       }
+      detectiveNotes.forEach((cas, i) => {
+        const tab = document.createElement('div');
+        tab.className = 'det-tab' + (i === detectiveActiveCase ? ' active' : '');
+        tab.innerHTML = `<div style="width:8px;height:8px;border-radius:50%;background:${cas.victimColor};flex-shrink:0;"></div>${cas.victimName}`;
+        tab.onclick = () => { detectiveActiveCase = i; renderDetectiveNotes(); };
+        tabs.appendChild(tab);
+      });
+
       const c = detectiveNotes[Math.max(0, Math.min(detectiveActiveCase, detectiveNotes.length - 1))];
-      let html = '';
-      // Case navigation
-      if (detectiveNotes.length > 1) {
-        html += '<div style="display:flex;gap:6px;margin-bottom:10px;align-items:center;">';
-        html += '<button onclick="if(detectiveActiveCase>0){detectiveActiveCase--;renderDetectiveNotes();}" style="background:rgba(255,255,255,0.1);border:1px solid #555;color:#fff;padding:3px 8px;border-radius:4px;cursor:pointer;">&#8249;</button>';
-        html += '<span style="flex:1;text-align:center;font-size:12px;color:#aaa;">Case ' + (detectiveActiveCase+1) + ' / ' + detectiveNotes.length + '</span>';
-        html += '<button onclick="if(detectiveActiveCase<detectiveNotes.length-1){detectiveActiveCase++;renderDetectiveNotes();}" style="background:rgba(255,255,255,0.1);border:1px solid #555;color:#fff;padding:3px 8px;border-radius:4px;cursor:pointer;">&#8250;</button>';
-        html += '</div>';
-      }
-      // Victim info
-      html += '<div style="display:flex;gap:10px;margin-bottom:10px;">';
-      html += '<div style="flex:1;">';
-      html += '<div style="font-size:10px;color:#888;letter-spacing:1px;margin-bottom:3px;">VICTIM</div>';
-      html += '<div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;border-radius:50%;background:' + c.victimColor + ';flex-shrink:0;"></div><span style="color:#fff;font-size:14px;font-weight:bold;">' + c.victimName + '</span></div>';
-      html += '<div style="margin-top:6px;font-size:10px;color:#888;">FOUND DEAD</div>';
-      html += '<div style="font-size:12px;color:#ddd;background:rgba(255,255,255,0.07);padding:4px 8px;border-radius:4px;margin-top:2px;">' + c.location + '</div>';
-      html += '</div>';
-      html += '<div style="flex:1;">';
-      html += '<div style="font-size:10px;color:#888;letter-spacing:1px;margin-bottom:3px;">KILLER</div>';
-      html += '<div style="font-size:13px;color:#ff9090;font-weight:bold;background:rgba(255,100,100,0.1);padding:4px 8px;border-radius:4px;">' + c.killerType + '</div>';
-      html += '</div>';
-      html += '</div>';
-      // Suspects
-      html += '<div style="font-size:10px;color:#888;letter-spacing:1px;margin-bottom:5px;">SUSPECTS — LOCATIONS AT TIME OF DEATH</div>';
+      if (!c) return;
       const maxSuspects = gameSettings.detectiveSuspectsPerCase || 4;
+
+      let html = '';
+
+      // ── Victim header ──
+      html += `<div style="display:flex;align-items:center;gap:14px;padding:10px 14px;background:rgba(255,100,100,0.07);border-radius:10px;border:1px solid rgba(255,100,100,0.15);margin-bottom:12px;">`;
+      html += `<div style="width:38px;height:38px;border-radius:50%;background:${c.victimColor};flex-shrink:0;box-shadow:0 0 14px ${c.victimColor}88;border:2px solid rgba(255,255,255,0.18);"></div>`;
+      html += `<div style="flex:1;">`;
+      html += `<div style="color:#fff;font-size:15px;font-weight:bold;">${c.victimName}</div>`;
+      html += `<div style="color:#888;font-size:11px;margin-top:2px;">Found dead in <span style="color:#ddd;">${c.location}</span></div>`;
+      html += `</div>`;
+      html += `<div style="text-align:right;">`;
+      html += `<div style="font-size:9px;color:#666;letter-spacing:1px;margin-bottom:3px;">KILLER TYPE</div>`;
+      html += `<div style="font-size:12px;color:#ff9090;font-weight:bold;background:rgba(255,80,80,0.12);padding:3px 9px;border-radius:6px;">${c.killerType}</div>`;
+      html += `</div>`;
+      html += `</div>`;
+
+      // ── Map pin ──
+      html += `<div class="det-section-label">BODY LOCATION</div>`;
+      if (c.mapPinX !== null) {
+        const pinRoom = getRoomAtPoint ? getRoomAtPoint(c.mapPinX, c.mapPinY) || 'Unknown' : 'Unknown';
+        html += `<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);border-radius:7px;margin-bottom:2px;">`;
+        html += `<span style="font-size:13px;">📍</span><span style="color:#ffd700;font-size:12px;flex:1;">${pinRoom}</span>`;
+        html += `<span style="color:#888;font-size:10px;">${Math.round(c.mapPinX)}, ${Math.round(c.mapPinY)}</span>`;
+        html += `</div>`;
+      } else {
+        const _ci = detectiveActiveCase;
+        html += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">`;
+        html += `<div style="color:#444;font-size:11px;font-style:italic;flex:1;">Not yet pinned</div>`;
+        html += `<button class="det-pin-btn" onclick="detectivePinBody(${_ci})">📍 PIN LOCATION</button>`;
+        html += `</div>`;
+      }
+
+      // ── Meeting notes ──
+      if (c.meetingNotes && c.meetingNotes.length > 0) {
+        html += `<div class="det-section-label" style="margin-top:12px;">MEETING OBSERVATIONS</div>`;
+        for (const note of c.meetingNotes) {
+          html += `<div style="display:flex;gap:7px;align-items:flex-start;padding:5px 8px;background:rgba(255,255,255,0.04);border-radius:6px;margin-bottom:3px;font-size:11px;color:#bbb;">`
+          html += `<span style="color:#666;flex-shrink:0;">—</span><span>${note}</span></div>`;
+        }
+      }
+
+      // ── Suspects from interrogation ──
+      html += `<div class="det-section-label" style="margin-top:12px;">INTERROGATED SUSPECTS</div>`;
       for (let i = 0; i < maxSuspects; i++) {
         const s = c.suspects[i];
         if (s) {
-          html += '<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:rgba(255,255,255,0.06);border-radius:6px;margin-bottom:4px;">';
-          html += '<span style="color:#888;font-size:11px;min-width:14px;">' + (i+1) + ':</span>';
-          html += '<div style="width:10px;height:10px;border-radius:50%;background:' + s.color + ';flex-shrink:0;"></div>';
-          html += '<span style="color:#fff;font-size:12px;flex:1;">' + s.name + '</span>';
-          html += '<span style="color:#aaa;font-size:11px;">' + s.room + '</span>';
-          html += '</div>';
+          html += `<div class="det-suspect-row">`;
+          html += `<span style="color:#555;font-size:10px;min-width:16px;">${i+1}</span>`;
+          html += `<div class="det-swatch" style="background:${s.color};box-shadow:0 0 6px ${s.color}66;"></div>`;
+          html += `<span style="color:#eee;font-size:12px;flex:1;font-weight:bold;">${s.name}</span>`;
+          html += `<span style="color:#aaa;font-size:11px;">${s.room}</span>`;
+          if (s.alibi) html += `<span style="font-size:10px;color:#4caf50;margin-left:4px;" title="${s.alibi}">✓</span>`;
+          html += `</div>`;
         } else {
-          html += '<div style="padding:5px 8px;background:rgba(255,255,255,0.03);border-radius:6px;margin-bottom:4px;color:#444;font-size:12px;">SUSPECT ' + (i+1) + '?</div>';
+          html += `<div class="det-empty-slot">Suspect ${i+1} — not interrogated yet</div>`;
         }
       }
-      const inner = document.getElementById('detectiveNotesPanelInner');
-      if (inner) inner.innerHTML = html;
+
+      body.innerHTML = html;
     }
 
     function doEngineerVent() {
@@ -7735,23 +7955,23 @@
       for (const e of nearby) {
         npc.lastSeen[e.name] = { x: e.x, y: e.y, time: Date.now() };
       }
-      // Hard: share suspicion intel with nearby allies every ~3s
-      if (_df.hard && !inMeeting) {
+      // Share suspicion intel with nearby allies (Hard: every 3s in 160px; Normal: every 6s in 100px; Easy: never)
+      if (_df.shareIntelRange > 0 && !inMeeting) {
         npc._intelTick = (npc._intelTick || 0) + 1;
-        if (npc._intelTick % 180 === 0) {
+        if (npc._intelTick % _df.shareIntelInterval === 0) {
           const allies = npcs.filter(n => n !== npc && n.alive && !n.isImpostor
             && Math.hypot(n.x - npc.x, n.y - npc.y) < _df.shareIntelRange);
           for (const ally of allies) {
             for (const [name, val] of Object.entries(npc.suspicion)) {
-              ally.suspicion[name] = Math.max(ally.suspicion[name] || 0, val * 0.6);
+              ally.suspicion[name] = Math.max(ally.suspicion[name] || 0, val * _df.shareIntelFraction);
             }
           }
         }
       }
-      // Easy: suspicion slowly decays (NPCs forget easily)
-      if (_df.easy) {
+      // Suspicion decay: Easy forgets fast, Normal forgets slowly, Hard never forgets
+      if (_df.suspDecayRate > 0) {
         for (const name of Object.keys(npc.suspicion)) {
-          npc.suspicion[name] = Math.max(0, (npc.suspicion[name] || 0) - 0.05);
+          npc.suspicion[name] = Math.max(0, (npc.suspicion[name] || 0) - _df.suspDecayRate);
         }
       }
 
@@ -8032,10 +8252,46 @@
               const hasTask = npc.taskList.some(t => !t.npcDone);
               const roll = Math.random();
 
+              // Strategy: Safety in numbers during sabotage — alone crewmates seek a group instead of solo tasks
+              if (sabotage.active && hasTask) {
+                const _nearbyAllies = getNearbyEntities(npc, 250).filter(e => e !== npc && e.alive && !e.isImpostor);
+                if (_nearbyAllies.length === 0) {
+                  let _grpTarget = null, _grpBestSz = 0;
+                  for (const _gn of npcs) {
+                    if (_gn === npc || !_gn.alive || _gn.isImpostor) continue;
+                    const _gsz = npcs.filter(x => x.alive && !x.isImpostor && dist(x, _gn) < 150).length;
+                    if (_gsz > _grpBestSz) { _grpBestSz = _gsz; _grpTarget = _gn; }
+                  }
+                  if (_grpTarget) {
+                    npc.companionTarget = _grpTarget;
+                    npc.state = AI_STATE.FOLLOWING;
+                    npc.stateTimer = 300 + Math.random() * 200;
+                    break;
+                  }
+                }
+              }
+
+              // Strategy: Emergency button meeting — Hard crewmates near EMERGENCY_BTN with high suspicion call a meeting
+              if (_df.hard && !inMeeting && !sabotage.active && EMERGENCY_BTN
+                && Math.hypot(npc.x - EMERGENCY_BTN.x, npc.y - EMERGENCY_BTN.y) < 140) {
+                const _topSuspect = Object.entries(npc.suspicion)
+                  .filter(([,v]) => v > 72).sort(([,a],[,b]) => b - a)[0];
+                if (_topSuspect && Math.random() < 0.08) {
+                  startVoting(npc);
+                  break;
+                }
+              }
+
               if (hasTask && roll < _df.taskChance) {
-                // Go do nearest unfinished task first
+                // Strategy: Task room clustering — prefer tasks in current room before moving on
                 const pending = npc.taskList.filter(t => !t.npcDone);
-                const nextTask = pending.sort((a, b) =>
+                const _curRoom = _npcCurrentRoom(npc);
+                const _sameRoom = _curRoom ? pending.filter(t =>
+                  Math.hypot(t.x - npc.x, t.y - npc.y) < 300
+                  && mapTheme.floors.some(f => t.x >= f.x && t.x <= f.x + f.w && t.y >= f.y && t.y <= f.y + f.h
+                    && npc.x >= f.x && npc.x <= f.x + f.w && npc.y >= f.y && npc.y <= f.y + f.h)) : [];
+                const _taskPool = _sameRoom.length > 0 ? _sameRoom : pending;
+                const nextTask = _taskPool.sort((a, b) =>
                   Math.hypot(a.x - npc.x, a.y - npc.y) - Math.hypot(b.x - npc.x, b.y - npc.y))[0];
                 if (nextTask) {
                   npc.targetX = nextTask.x + (Math.random() - 0.5) * 20;
@@ -8045,11 +8301,12 @@
                 }
               } else if (roll < 0.9 && npc.personality.sociability > 0.5) {
                 // Follow someone — prefer unsuspected companions; also consider player
+                const _followThresh = _df.followSuspThreshold;
                 const others = npcs.filter(n => n !== npc && n.alive && dist(npc, n) < 400
-                  && (npc.suspicion[n.name] || 0) < 20);
+                  && (npc.suspicion[n.name] || 0) < _followThresh);
                 const candidates = [...others];
                 if (player.alive && !player.isImpostor && dist(npc, player) < 400
-                  && (npc.suspicion[player.name] || 0) < 20) candidates.push(player);
+                  && (npc.suspicion[player.name] || 0) < _followThresh) candidates.push(player);
                 if (candidates.length > 0) {
                   npc.companionTarget = candidates[Math.floor(Math.random() * candidates.length)];
                   npc.state = AI_STATE.FOLLOWING;
@@ -8066,6 +8323,19 @@
                   npc.stateTimer = 180 + Math.random() * 240;
                 }
               } else {
+                // Strategy: Hot zone patrol — Hard crewmates investigate recent kill locations
+                if (_df.hard && _npcKillHotZones.length > 0 && Math.random() < 0.20) {
+                  const _recentHZ = _npcKillHotZones.filter(hz => frameCount - hz.frame < 3600); // within last 60s
+                  if (_recentHZ.length > 0) {
+                    const _hz = _recentHZ[Math.floor(Math.random() * _recentHZ.length)];
+                    npc.targetX = _hz.x + (Math.random() - 0.5) * 80;
+                    npc.targetY = _hz.y + (Math.random() - 0.5) * 80;
+                    npc.state = AI_STATE.WALKING_RANDOM;
+                    npc.stateTimer = 240 + Math.floor(Math.random() * 200);
+                    break;
+                  }
+                }
+
                 // Patrol toward a known map waypoint for natural-looking routes
                 const m = MAPS[selectedMap];
                 let _wpPool = m && m.waypoints && m.waypoints.length ? [...m.waypoints] : null;
@@ -8116,7 +8386,8 @@
         case AI_STATE.DOING_TASK:
           // Block task progress during H&S final hide (hiders can't do tasks in final phase)
           if (gameMode === 'hideseek' && finalHide && !npc.fixingSabotage) { npc.state = AI_STATE.IDLE; break; }
-          npc.taskProgress += npc.fixingSabotage ? 1.8 : npc.personality.taskSpeed;
+          const _tdf = _npcDiff();
+          npc.taskProgress += npc.fixingSabotage ? 1.8 : npc.personality.taskSpeed * _tdf.taskSpeedMult;
           npc.stateTimer++;
           if (npc.taskProgress >= 100) {
             if (npc.fixingSabotage) {
@@ -8170,6 +8441,29 @@
             npc.companionTarget = null;
             npc.state = AI_STATE.IDLE;
             break;
+          }
+          // Strategy: High-suspicion avoidance — flee to safety if alone with a highly-suspected companion
+          if ((npc.suspicion[npc.companionTarget.name] || 0) > 50) {
+            const _othersNear = getNearbyEntities(npc, 250).filter(e => e !== npc && e !== npc.companionTarget).length;
+            if (_othersNear === 0) {
+              // Find nearest group to flee toward
+              let _safeGrp = null, _safeGrpD = Infinity;
+              for (const _sn of npcs) {
+                if (_sn === npc || !_sn.alive) continue;
+                const _sgd = dist(npc, _sn);
+                if (_sgd < _safeGrpD) { _safeGrpD = _sgd; _safeGrp = _sn; }
+              }
+              npc.companionTarget = null;
+              npc.state = AI_STATE.FLEEING;
+              if (_safeGrp) {
+                npc.targetX = _safeGrp.x + (Math.random() - 0.5) * 60;
+                npc.targetY = _safeGrp.y + (Math.random() - 0.5) * 60;
+              } else {
+                npc.targetX = EMERGENCY_BTN.x; npc.targetY = EMERGENCY_BTN.y;
+              }
+              npc.stateTimer = 150;
+              break;
+            }
           }
           {
             const followDist = dist(npc, npc.companionTarget);
@@ -8287,10 +8581,12 @@
               const _cm = npcs.filter(n => !n.isImpostor && n.alive && n !== npc.companionTarget);
               if (_cm.length > 0) {
                 const _st = _cm[Math.floor(Math.random() * _cm.length)];
+                const _origShiftName = npc.name;
                 npc._shiftColor = npc.color; npc._shiftName = npc.name;
                 npc.color = _st.color; npc.name = _st.name;
                 npc._shiftActive = true;
                 npc._shiftTimer  = (gameSettings.shapeshifterDuration || 15) * 60;
+                _notifyShiftWitnesses(npc, _origShiftName);
               }
             }
           }
@@ -8389,6 +8685,43 @@
               const roll = Math.random();
 
               const _dfi = _npcDiff();
+
+              // Strategy: Lights-out aggression — during lights sabotage always hunt nearest crewmate
+              if (sabotage.active && sabotage.type === 'lights' && npc.killCooldown <= 0 && nearbyCrewmates.length >= 1) {
+                const _lt = nearbyCrewmates.reduce((b,c) => (!b || dist(npc,c) < dist(npc,b)) ? c : b, null);
+                if (_lt) { npc.companionTarget = _lt; npc.state = AI_STATE.HUNTING; npc.stateTimer = 200; break; }
+              }
+
+              // Strategy: Taskbar panic — when tasks nearly done, hunt aggressively regardless of roll
+              const _tbPct = (tasksCompleted / Math.max(1, totalTasks) + npcTasksDone / Math.max(1, npcTasksTotal)) / 2;
+              if (_tbPct > 0.72 && npc.killCooldown <= 0 && nearbyCrewmates.length >= 1) {
+                const _pt = nearbyCrewmates.reduce((b,c) => (!b || dist(npc,c) < dist(npc,b)) ? c : b, null);
+                if (_pt) { npc.companionTarget = _pt; npc.state = AI_STATE.HUNTING; npc.stateTimer = 300; break; }
+              }
+
+              // Strategy: Coordinated kill — if another impostor is also ready and nearby, both hunt simultaneously
+              if (_dfi.hard && npc.killCooldown <= 0 && nearbyCrewmates.length >= 1) {
+                const _coImp = npcs.find(n => n !== npc && n.alive && n.isImpostor && n.killCooldown <= 0
+                  && Math.hypot(n.x - npc.x, n.y - npc.y) < 300 && n.state === AI_STATE.IDLE);
+                if (_coImp && Math.random() < 0.35) {
+                  const _ct = nearbyCrewmates.reduce((b,c) => (!b || dist(npc,c) < dist(npc,b)) ? c : b, null);
+                  if (_ct) { npc.companionTarget = _ct; npc.state = AI_STATE.HUNTING; npc.stateTimer = 200; break; }
+                }
+              }
+
+              // Strategy: Zone reset after meeting — Hard impostors relocate to opposite map quadrant to dodge suspicion
+              if (_dfi.hard && _lastMeetingEndFrame > 0 && npc._zoneResetAtMeeting !== _lastMeetingEndFrame
+                && frameCount - _lastMeetingEndFrame < 60) {
+                npc._zoneResetAtMeeting = _lastMeetingEndFrame;
+                const _qx = npc.x < MAP_W / 2 ? MAP_W * 0.65 : MAP_W * 0.25;
+                const _qy = npc.y < MAP_H / 2 ? MAP_H * 0.65 : MAP_H * 0.25;
+                npc.targetX = _qx + (Math.random() - 0.5) * 200;
+                npc.targetY = _qy + (Math.random() - 0.5) * 200;
+                npc.state = AI_STATE.WALKING_RANDOM;
+                npc.stateTimer = 300 + Math.floor(Math.random() * 200);
+                break;
+              }
+
               if (npc.killCooldown <= 0 && nearbyCrewmates.length >= 1 && roll < _dfi.huntIdleRoll) {
                 // Score targets: isolation + proximity; Hard also weights task progress (finish them first)
                 let bestTarget = null, bestScore = Infinity;
@@ -8541,8 +8874,9 @@
           }
           moveToward(npc, npc.companionTarget.x, npc.companionTarget.y);
 
-          // Try to close doors on victim to trap them (only if doors sabotage is enabled)
-          if (gameSettings.doorsSabotage && doorCooldown <= 0 && dist(npc, npc.companionTarget) < 150) {
+          // Try to close doors on victim to trap them (gated by difficulty: Easy never, Normal 50%, Hard always)
+          if (gameSettings.doorsSabotage && doorCooldown <= 0 && dist(npc, npc.companionTarget) < 150
+              && Math.random() < _npcDiff().doorCloseChance) {
             const victimRoom = getEntityRoom(npc.companionTarget);
             if (victimRoom) {
               let _npcClosedDoor = false;
@@ -8573,6 +8907,16 @@
                 npc._frameTarget = _frameCands[0];
               }
 
+              // Strategy: Framing walk-by — Hard impostors walk near frame target before fleeing
+              if (_dfh.hard && npc._frameTarget && npc._frameTarget.alive && Math.random() < 0.40) {
+                npc._framingWalkby = true;
+                npc.targetX = npc._frameTarget.x + (Math.random() - 0.5) * 40;
+                npc.targetY = npc._frameTarget.y + (Math.random() - 0.5) * 40;
+                npc.state = AI_STATE.WALKING_RANDOM;
+                npc.stateTimer = 80 + Math.floor(Math.random() * 60);
+                break;
+              }
+
               // Self-report strategy: Hard impostors sometimes stay and "discover" the body
               const _selfRepChance = _dfh.hard ? 0.25 : 0.06;
               if (Math.random() < _selfRepChance) {
@@ -8586,6 +8930,7 @@
                   return (!best || vd < best.d) ? { v, d: vd } : best;
                 }, null);
                 if (_nearVent && _nearVent.d < 100) {
+                  _notifyVentWitnesses(npc);
                   npc.inVent = true;
                   npc.x = _nearVent.v.x; npc.y = _nearVent.v.y;
                   npc.ventTimer = 120 + Math.floor(Math.random() * 120);
@@ -8962,7 +9307,9 @@
         }
         if (npcVictim.role === 'noisemaker') triggerNoisemakerAlert(npcVictim);
         notifyWitnessesOfKill(impostor.name, impostor.x, impostor.y, npcVictim.name);
-        impostor.killCooldown = (gameMode === 'hideseek' ? gameSettings.seekerKillCooldown : gameSettings.killCooldown) * 60;
+        _npcKillHotZones.push({ x: npcVictim.x, y: npcVictim.y, frame: frameCount });
+        if (_npcKillHotZones.length > 8) _npcKillHotZones.shift(); // keep only recent 8
+        impostor.killCooldown = Math.round((gameMode === 'hideseek' ? gameSettings.seekerKillCooldown : gameSettings.killCooldown) * 60 * _npcDiff().killCdMult);
         if (gameSettings.killFlash && dist(player, npcVictim) < 300) {
           const flashEl = document.getElementById('killFlashOverlay');
           if (flashEl) { flashEl.style.opacity = '0.5'; setTimeout(() => { flashEl.style.opacity = '0'; }, 300); }
@@ -9001,35 +9348,132 @@
       }, 2000);
     }
 
-    // Idle / ambient NPC speech lines
-    const IDLE_CHAT_LINES = [
-      // General idle
-      () => 'Has anyone checked the cameras?',
-      () => 'Something feels off today...',
-      () => 'Stay safe everyone.',
-      () => "I don't trust anyone right now.",
-      () => 'Keep your comms open.',
-      () => 'Did you hear that?',
-      () => 'Everyone stick together!',
-      () => 'This ship gives me the creeps.',
-      () => "I'm keeping my eye on everyone.",
-      () => 'The reactor was making weird noises...',
-    ];
-    const TASK_CHAT_LINES = [
-      () => 'Almost done with my tasks.',
-      () => 'Just fixing up some wires.',
-      () => 'Routine maintenance. Nothing to see.',
-      () => 'The O2 filters needed a clean.',
-      () => 'Uploading the data now...',
-      () => 'Card reader is acting up again.',
-    ];
-    const IMPOSTOR_IDLE_LINES = [
-      () => "I've been in Electrical the whole time.",
-      () => 'Totally doing tasks. Yep.',
-      () => 'Who else was in Admin just now?',
-      () => "I saw someone by the vents... sketchy.",
-      () => "Nothing suspicious here, move along.",
-    ];
+    // ── Contextual NPC speech helpers ────────────────────────────────────────
+    // Returns the room name the NPC is currently standing in, or null.
+    function _npcCurrentRoom(npc) {
+      if (!mapTheme || !mapTheme.floors || !rooms) return null;
+      const cx = npc.x + npc.w / 2, cy = npc.y + npc.h / 2;
+      for (let i = 0; i < rooms.length && i < mapTheme.floors.length; i++) {
+        const f = mapTheme.floors[i];
+        if (cx >= f.x && cx <= f.x + f.w && cy >= f.y && cy <= f.y + f.h) return rooms[i].name;
+      }
+      return null;
+    }
+
+    // Returns the most contextually appropriate line for this NPC right now,
+    // or null if there is nothing relevant to say (NPC stays quiet).
+    function _pickContextualNPCSpeech(npc) {
+      const sabActive  = sabotage && sabotage.active;
+      const sabType    = sabActive ? sabotage.type : null;
+      const hasBodies  = deadBodies && deadBodies.length > 0;
+      const postMtg    = (frameCount - _lastMeetingEndFrame) < 480; // within ~8 s of meeting end
+      const doingTask  = npc.state === AI_STATE.DOING_TASK || npc.state === AI_STATE.WALKING_TO_TASK;
+      const nearbyAlive = npcs.filter(n => n !== npc && n.alive && dist(n, npc) < 220);
+      const alone      = nearbyAlive.length === 0;
+      const roomName   = _npcCurrentRoom(npc);
+      const candidates = [];
+
+      if (npc.isImpostor) {
+        // Impostors only speak when blending in makes tactical sense
+        if (sabActive) {
+          // Pretend to care about the sabotage
+          if (sabType === 'reactor') candidates.push('Someone fix the reactor!', 'Get to reactor — now!');
+          else if (sabType === 'lights') candidates.push("I can't see anything!", 'Lights are out!');
+          else if (sabType === 'o2') candidates.push("We're losing air!", 'Someone get to O2!');
+          else if (sabType === 'comms') candidates.push('Comms are dead.', "Can't reach anyone.");
+        }
+        if (hasBodies && postMtg && roomName) {
+          // Alibi after a meeting
+          candidates.push(`I was in ${roomName} the whole time.`, `Ask anyone — I was at ${roomName}.`);
+        } else if (hasBodies && roomName) {
+          // Casual alibi near scene
+          candidates.push(`Nothing weird in ${roomName}.`, `Just came from ${roomName}.`);
+        }
+        if (postMtg && !hasBodies) {
+          candidates.push("Who should we watch next?", "I'm still suspicious of a few people.");
+        }
+        // Impostors stay silent if nothing warrants speech
+        return candidates.length > 0 ? candidates[Math.floor(Math.random() * candidates.length)] : null;
+      }
+
+      // ── Crewmate ──────────────────────────────────────────────────────────
+      // Sabotage — highest urgency, always say something
+      if (sabActive) {
+        if (sabType === 'reactor') candidates.push(
+          'REACTOR meltdown — go fix it!', 'Get to the reactor NOW!', 'Reactor is critical!');
+        else if (sabType === 'lights') candidates.push(
+          'Lights are out — stay together!', "I can't see a thing!", 'Stay close, no lights!');
+        else if (sabType === 'o2') candidates.push(
+          "We're running out of air!", 'O2 is failing — hurry!', 'Someone fix oxygen!');
+        else if (sabType === 'comms') candidates.push(
+          'Comms are down.', "Can't reach anyone.", 'Communications are out.');
+      }
+
+      // Bodies on the map
+      if (hasBodies) {
+        candidates.push(
+          'Something feels off...', "I don't trust anyone right now.",
+          'Stay alert.', 'Watch each other.');
+      }
+
+      // Alone and exposed
+      if (alone) {
+        candidates.push('Everyone stick together!', "Don't go anywhere alone.", 'Where is everyone?');
+      }
+
+      // Doing a task — comment on the specific room/task
+      if (doingTask && roomName) {
+        const taskLines = {
+          'Cafeteria':      ['Download started.', 'Fixing the dispenser.'],
+          'Electrical':     ['These wires are a mess.', 'Rerouting power now.'],
+          'Reactor':        ['Running a reactor check.', 'Core looks stable.'],
+          'MedBay':         ['Just a routine scan.', 'Medbay checks out.'],
+          'Navigation':     ['Charting the course.', 'Updating star charts.'],
+          'O2':             ['Cleaning the O2 filters.', 'Life support nominal.'],
+          'Admin':          ['Uploading the data.', 'Card reader acting up again.'],
+          'Weapons':        ['Calibrating the turret.', 'Clearing asteroids.'],
+          'Security':       ['Checking the cameras.', 'All clear on cams.'],
+          'Communications': ['Fixing the antenna.', 'Comms are back up.'],
+          'Shields':        ['Shields are holding.', 'Deflectors nominal.'],
+          'Storage':        ['Taking inventory.', 'Moving supplies.'],
+          'Upper Engine':   ['Upper engine running hot.', 'Diverting power.'],
+          'Lower Engine':   ['Lower engine nominal.', 'Fueling up down here.'],
+        };
+        const rl = taskLines[roomName];
+        if (rl) candidates.push(...rl);
+        else candidates.push('Almost done here.', 'Routine maintenance.');
+      } else if (doingTask) {
+        candidates.push('Almost done with my tasks.', 'Just finishing something up.');
+      }
+
+      // Post-meeting reactions
+      if (postMtg) {
+        if (_lastEjectedWasImp) {
+          candidates.push('Good call on that ejection.', 'We got one of them.', 'One down.');
+        } else if (_lastEjectedName) {
+          candidates.push(
+            `I still think ${_lastEjectedName} was innocent.`,
+            'That might have been the wrong call.',
+            "We need to be more careful.");
+        } else {
+          // Tie / skip
+          candidates.push("I'm keeping my eye on everyone.", 'Stay together from here.', 'No one is safe yet.');
+        }
+      }
+
+      // Truly calm — say something only occasionally (35% roll) to avoid chatter spam
+      if (candidates.length === 0 && !sabActive && !hasBodies) {
+        if (Math.random() < 0.35) {
+          candidates.push(
+            'Has anyone checked the cameras?',
+            'The reactor was making noises earlier...',
+            'Stick to your tasks.',
+            'Finish up and regroup.');
+        }
+      }
+
+      return candidates.length > 0 ? candidates[Math.floor(Math.random() * candidates.length)] : null;
+    }
 
     const WITNESS_LINES = [
       n => `${n} just killed someone!`,
@@ -9079,6 +9523,47 @@
       }
     }
 
+    // Called when any entity enters a vent. Crewmate NPCs within LOS that witness
+    // the event immediately spike suspicion and call an emergency meeting —
+    // but ONLY if no engineer or shapeshifter role is in play (otherwise venting is ambiguous).
+    function _notifyVentWitnesses(venterEntity) {
+      if (inMeeting || gameOver || gameMode === 'hideseek') return;
+      const _hasEngineer = (playerRole === 'engineer') || npcs.some(n => n.role === 'engineer');
+      const _hasShifter  = (playerRole === 'shapeshifter') || npcs.some(n => n.role === 'shapeshifter');
+      if (_hasEngineer || _hasShifter) return; // venting is ambiguous — don't react
+      const WITNESS_RANGE = Math.round(260 * (gameSettings.crewVision || 1));
+      const witnesses = npcs.filter(n =>
+        n.alive && !n.isImpostor && n !== venterEntity
+        && dist(n, venterEntity) < WITNESS_RANGE
+        && hasLineOfSight(n.x + 16, n.y + 20, venterEntity.x + 16, venterEntity.y + 20, 4, 4));
+      if (witnesses.length === 0) return;
+      const venterName = venterEntity.name || 'Someone';
+      for (const w of witnesses) {
+        w.suspicion[venterName] = 100;
+      }
+      const caller = witnesses[0];
+      caller.speechBubble = { text: venterName + ' just vented!!', timer: 240 };
+      setTimeout(() => { if (!inMeeting && !gameOver) startVoting(caller); }, 1000);
+    }
+
+    // Called when a shapeshifter transforms. Crewmate NPCs with LOS see the shift
+    // and immediately spike suspicion on the original impostor, then call a meeting.
+    function _notifyShiftWitnesses(shifterEntity, origName) {
+      if (inMeeting || gameOver || gameMode === 'hideseek') return;
+      const WITNESS_RANGE = Math.round(260 * (gameSettings.crewVision || 1));
+      const witnesses = npcs.filter(n =>
+        n.alive && !n.isImpostor && n !== shifterEntity
+        && dist(n, shifterEntity) < WITNESS_RANGE
+        && hasLineOfSight(n.x + 16, n.y + 20, shifterEntity.x + 16, shifterEntity.y + 20, 4, 4));
+      if (witnesses.length === 0) return;
+      for (const w of witnesses) {
+        w.suspicion[origName] = 100;
+      }
+      const caller = witnesses[0];
+      caller.speechBubble = { text: 'I saw ' + origName + ' shapeshift!!', timer: 260 };
+      setTimeout(() => { if (!inMeeting && !gameOver) startVoting(caller); }, 1000);
+    }
+
     // Returns a config object tuned to the current NPC difficulty setting.
     // Call once per AI update where multiple diff-gated values are needed.
     function _npcDiff() {
@@ -9086,20 +9571,29 @@
       const easy = d === 'Easy', hard = d === 'Hard';
       return {
         easy, hard,
-        // Crewmate
+        // ── Crewmate ──────────────────────────────────────────────────────────
         taskChance:          easy ? 0.50 : hard ? 0.95 : 0.80,  // prob IDLE → goto task
         bodyRange:           easy ?   70 : hard ?  175 :  120,  // body detection radius
         suspMult:            easy ? 0.30 : hard ? 1.80 : 1.00,  // suspicion accumulation scalar
+        suspDecayRate:       easy ? 0.08 : hard ?  0.0 : 0.02,  // suspicion lost per frame (hard remembers everything)
         sabChanceCrit:       easy ? 0.01 : hard ? 0.18 : 0.08,  // per-frame chance: fix critical sabotage
         sabChanceNorm:       easy ? 0.00 : hard ? 0.08 : 0.02,  // per-frame chance: fix normal sabotage
-        shareIntelRange:     hard ?  160 : 0,                    // radius for Hard NPC suspicion sharing
+        shareIntelRange:     easy ?    0 : hard ?  160 :  100,  // radius for suspicion sharing (normal shares less far)
+        shareIntelInterval:  easy ? 9e9 : hard ?  180 :  360,  // frames between suspicion shares
+        shareIntelFraction:  easy ? 0.0 : hard ? 0.60 : 0.35,  // fraction of suspicion shared to allies
         awarenessRange:      easy ?  100 : hard ?  300 :  200,  // getNearbyEntities radius
         panicBase:           easy ?  120 : hard ?   30 :   70,  // base panic timer ticks before reporting
-        // Impostor
+        followSuspThreshold: easy ?   40 : hard ?    8 :   20,  // max suspicion to follow someone
+        taskSpeedMult:       easy ? 0.70 : hard ? 1.40 : 1.00,  // task-progress ticks per frame scalar
+        crewSpeedMult:       easy ? 0.85 : hard ? 1.10 : 1.00,  // crewmate base-speed scalar
+        // ── Impostor ──────────────────────────────────────────────────────────
         killWitnessMax:      easy ?    2 : hard ?    0 :    1,  // max witnesses tolerated for kill
         witnessCheckRange:   easy ?  100 : hard ?  280 :  220,  // witness scan radius
         huntIdleRoll:        easy ? 0.30 : hard ? 0.75 : 0.55,  // roll threshold to start hunting
         fakeTaskDuration:    easy ?   40 : hard ?  130 :   80,  // ticks faking a task
+        doorCloseChance:     easy ?  0.0 : hard ?  1.0 :  0.5,  // prob to close doors when cornering victim
+        killCdMult:          easy ? 1.25 : hard ? 0.72 : 1.00,  // multiplier on kill cooldown after each kill
+        impSpeedMult:        easy ? 0.90 : hard ? 1.15 : 1.00,  // impostor base-speed scalar
         useVentsAggressively: hard,                              // vent-escape every kill on hard
         strategicSabotage:   hard,                              // sabotage to isolate kill target
         targetTaskers:       hard,                              // prefer high-task-progress victims
@@ -9116,31 +9610,24 @@
         if (npc.alive && !npc.speechBubble) {
           npc.chatCooldown--;
           if (npc.chatCooldown <= 0) {
-            // Reset cooldown (2–5 seconds)
-            npc.chatCooldown = 120 + Math.floor(Math.random() * 180);
-            // Only chat during calm states, not while panicking / reporting / voting
+            // Longer cooldown (4–9 s) to avoid chatter spam
+            npc.chatCooldown = 240 + Math.floor(Math.random() * 300);
             const calmState = npc.state === AI_STATE.IDLE ||
                               npc.state === AI_STATE.FOLLOWING ||
                               npc.state === AI_STATE.WALKING_TO_TASK ||
                               npc.state === AI_STATE.DOING_TASK ||
                               npc.state === AI_STATE.WALKING_RANDOM;
             if (calmState && !gameOver && !inMeeting) {
-              let lines;
-              if (npc.isImpostor) {
-                lines = IMPOSTOR_IDLE_LINES;
-              } else if ((npc.state === AI_STATE.DOING_TASK || npc.state === AI_STATE.WALKING_TO_TASK) && Math.random() < 0.5) {
-                lines = TASK_CHAT_LINES;
-              } else {
-                lines = IDLE_CHAT_LINES;
-              }
-              npc.speechBubble = { text: lines[Math.floor(Math.random() * lines.length)](), timer: 210 };
+              const _line = _pickContextualNPCSpeech(npc);
+              if (_line) npc.speechBubble = { text: _line, timer: 210 };
             }
           }
         }
         if (!npc.alive) continue;
-        // Keep NPC base speed proportional to playerSpeed setting (without overriding per-role offsets)
+        // Keep NPC base speed proportional to playerSpeed setting and difficulty
         {
-          const _baseSpd = npc.isImpostor ? 2.5 : 2.2;
+          const _spd = _npcDiff();
+          const _baseSpd = npc.isImpostor ? 2.5 * _spd.impSpeedMult : 2.2 * _spd.crewSpeedMult;
           const _targetSpd = _baseSpd * (gameSettings.playerSpeed || 1);
           if (Math.abs(npc.speed - _targetSpd) > 0.05) npc.speed = _targetSpd;
         }
@@ -9437,6 +9924,24 @@
     }
 
     // --- Sabotage System ---
+    function _npcSabotageReaction(type) {
+      // Immediately trigger speech from 1-3 random crewmate NPCs when sabotage starts
+      const lines = {
+        reactor: ['REACTOR meltdown — go fix it!', 'Get to the reactor!', 'Reactor is critical!'],
+        lights:  ['Lights are out!', "I can't see anything!", 'Stick together — no lights!'],
+        o2:      ["We're losing air!", 'O2 is failing!', 'Someone fix oxygen NOW!'],
+        comms:   ['Comms are down.', 'Lost communications.', "Can't reach anyone!"],
+      };
+      const pool = lines[type] || ['Sabotage!', 'Something is wrong!'];
+      const eligible = npcs.filter(n => n.alive && !n.isImpostor && !n.speechBubble);
+      const count = Math.min(eligible.length, 1 + Math.floor(Math.random() * 2)); // 1 or 2 NPCs
+      for (let i = 0; i < count; i++) {
+        const npc = eligible[Math.floor(Math.random() * eligible.length)];
+        npc.speechBubble = { text: pool[Math.floor(Math.random() * pool.length)], timer: 240 };
+        npc.chatCooldown = 300;
+      }
+    }
+
     function npcTriggerSabotage(type) {
       if (gameMode === 'hideseek') return;
       if (sabotage.active || sabotage.cooldown > 0 || gameOver) return;
@@ -9468,6 +9973,7 @@
         document.getElementById('sabotageHUD').style.display = 'block';
         document.getElementById('sabotageBar').style.display = 'none';
       }
+      _npcSabotageReaction(type);
     }
 
     function startSabotage(type) {
@@ -9512,6 +10018,7 @@
       }
       document.getElementById('sabotageControls').style.display = 'none';
       mpPublishEvent('sabotage', null, { saboType: type, timer: sabotage.timer, maxTime: sabotage.maxTime });
+      _npcSabotageReaction(type);
     }
 
     function updateSabotage() {
@@ -9636,6 +10143,7 @@
       if ((!isImpostor && playerRole !== 'engineer') || inVent || !player.alive) return;
       const vent = getNearbyVent();
       if (vent) {
+        if (isImpostor) _notifyVentWitnesses(player);
         inVent = true;
         player.visible = false;
         spawnVentEffect(vent.x, vent.y);
@@ -10728,13 +11236,26 @@
       // Mark all bodies as reported so no further reports trigger
       deadBodies.forEach(b => b.reported = true);
 
-      // Detective: auto-log new dead bodies as cases
+      // Detective: auto-log new dead bodies as cases and store world coords for pinning
       if (playerRole === 'detective') {
         for (const body of deadBodies) {
           if (!body.detectiveLogged) {
             body.detectiveLogged = true;
             const loc = getRoomAtPoint ? getRoomAtPoint(body.x, body.y) : (getEntityRoom({x: body.x, y: body.y}) || 'Unknown');
             addDetectiveCase(body.name, body.color, loc, body.killerType || 'IMPOSTOR?');
+            // Store coords so detective can pin it
+            const _nc = detectiveNotes[detectiveNotes.length - 1];
+            if (_nc) { _nc._bodyX = body.x; _nc._bodyY = body.y; _nc.mapPinX = body.x; _nc.mapPinY = body.y; }
+          }
+        }
+        // Add meeting observation: who was ejected last time (post-first meeting)
+        if (_lastEjectedName) {
+          for (const _dc of detectiveNotes) {
+            if (!_dc.meetingNotes) _dc.meetingNotes = [];
+            const _obs = _lastEjectedWasImp
+              ? `Meeting ejected ${_lastEjectedName} — confirmed Impostor`
+              : `Meeting ejected ${_lastEjectedName} — was Crewmate`;
+            if (!_dc.meetingNotes.includes(_obs)) _dc.meetingNotes.push(_obs);
           }
         }
       }
@@ -11293,6 +11814,9 @@
           ejected = c;
         }
       }
+      // Record ejection context so post-meeting NPC speech is relevant
+      _lastEjectedName = ejected ? ejected.name : null;
+      _lastEjectedWasImp = ejected ? !!ejected.isImpostor : false;
 
       // Check for tie with skip
       if (!ejected || votes['skip'] >= maxVotes) {
@@ -11301,6 +11825,8 @@
           voteScreen.style.display = 'none';
           voteList.style.display = 'flex';
           inMeeting = false;
+          _lastMeetingEndFrame = frameCount;
+          _lastEjectedName = null; _lastEjectedWasImp = false;
           deadBodies = [];
           npcs.forEach(n => { n.sawBody = false; n.bodyLocation = null; n.completedVisualTasks = []; n.fixingSabotage = false; });
           witnessedVisualTasks = new Set();
@@ -11341,6 +11867,7 @@
               endGame(false); // all impostors gone — crewmates win
             } else {
               // Other impostors still alive — game continues (player is dead/ghost)
+              _lastMeetingEndFrame = frameCount;
               deadBodies = [];
               npcs.forEach(n => { n.sawBody = false; n.bodyLocation = null; n.completedVisualTasks = []; n.fixingSabotage = false; });
               witnessedVisualTasks = new Set();
@@ -11353,6 +11880,7 @@
           if (gameSettings.roleGuardianAngel && gameMode !== 'hideseek') {
             setTimeout(() => {
               voteScreen.style.display = 'none'; inMeeting = false;
+              _lastMeetingEndFrame = frameCount;
               isGhost = true;
               playerRole = 'guardian_angel'; player.role = 'guardian_angel';
               abilityCooldown = 0; abilityTimer = 0; abilityActive = false;
@@ -11385,6 +11913,7 @@
               endGame(false); // all impostors gone — crewmates win
             } else {
               // Other impostors still alive — game continues
+              _lastMeetingEndFrame = frameCount;
               deadBodies = [];
               npcs.forEach(n => { n.sawBody = false; n.bodyLocation = null; n.completedVisualTasks = []; n.fixingSabotage = false; });
               witnessedVisualTasks = new Set();
@@ -11398,6 +11927,7 @@
             voteScreen.style.display = 'none';
             voteList.style.display = 'flex';
             inMeeting = false;
+            _lastMeetingEndFrame = frameCount;
             deadBodies = [];
             npcs.forEach(n => { n.sawBody = false; n.bodyLocation = null; n.completedVisualTasks = []; n.fixingSabotage = false; });
             witnessedVisualTasks = new Set();
@@ -19040,6 +19570,29 @@
         mc.globalAlpha = 1;
       }
 
+      // Detective body pins — gold starred markers
+      if (playerRole === 'detective') {
+        const _pinPulse = 0.7 + 0.3 * Math.sin(frameCount * 0.08);
+        for (const _dc of detectiveNotes) {
+          if (_dc.mapPinX === null || _dc.mapPinX === undefined) continue;
+          const _px = _dc.mapPinX * sc, _py = _dc.mapPinY * sc;
+          mc.save();
+          mc.globalAlpha = _pinPulse;
+          mc.fillStyle = '#ffd700';
+          mc.shadowColor = '#ffd700'; mc.shadowBlur = 6;
+          mc.beginPath(); mc.arc(_px, _py, 4, 0, Math.PI * 2); mc.fill();
+          mc.globalAlpha = 1; mc.shadowBlur = 0;
+          // Pin stem
+          mc.strokeStyle = '#ffd700'; mc.lineWidth = 1;
+          mc.beginPath(); mc.moveTo(_px, _py + 4); mc.lineTo(_px, _py + 8); mc.stroke();
+          // Victim color ring
+          mc.globalAlpha = 0.7;
+          mc.strokeStyle = _dc.victimColor || '#fff'; mc.lineWidth = 1;
+          mc.beginPath(); mc.arc(_px, _py, 4, 0, Math.PI * 2); mc.stroke();
+          mc.restore();
+        }
+      }
+
       // NPC dots on minimap (impostors get a glow)
       if (isGhost || isImpostor) {
         for (const _mn of npcs) {
@@ -19545,6 +20098,170 @@
         drawCrewmate(ctx, player.x - ox, player.y - oy, player.w, player.h, drawColor, drawName, true,
           _playerState, drawAlpha, playerRole, drawHat, player.protectionTimer, drawSkin);
 
+        // ── Per-role visual effects ──────────────────────────────────────────
+        if (!isGhost && player.alive) {
+          const _rpx = player.x - ox + player.w / 2;
+          const _rpy = player.y - oy + player.h / 2;
+          const _rNow = Date.now();
+          const _rPulse = 0.5 + 0.5 * Math.sin(_rNow / 400);
+
+          if (playerRole === 'impostor' || playerRole === 'shapeshifter' || playerRole === 'phantom' || playerRole === 'viper') {
+            // All impostor roles: dark crimson underbelly glow
+            ctx.save();
+            ctx.globalAlpha = 0.12 + 0.08 * _rPulse;
+            ctx.fillStyle = playerRole === 'viper' ? '#00cc44' : playerRole === 'phantom' ? '#8822cc' : '#cc0000';
+            ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 22;
+            ctx.beginPath(); ctx.ellipse(_rpx, _rpy + player.h * 0.35, player.w * 0.7, player.h * 0.25, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+          }
+
+          if (playerRole === 'shapeshifter' && abilityActive) {
+            // Active shift: purple DNA helix orbiting particles
+            for (let _si = 0; _si < 6; _si++) {
+              const _sa = (_rNow / 500 + _si * Math.PI / 3);
+              const _sr = 22 + Math.sin(_sa * 2) * 4;
+              const _sx = _rpx + Math.cos(_sa) * _sr;
+              const _sy = _rpy + Math.sin(_sa) * _sr * 0.5;
+              ctx.save();
+              ctx.globalAlpha = 0.55 + 0.3 * Math.sin(_sa + _rNow / 300);
+              const _sc2 = _si % 2 === 0 ? '#d080ff' : (shiftTarget ? shiftTarget.color : '#ff80d0');
+              ctx.fillStyle = _sc2; ctx.shadowColor = _sc2; ctx.shadowBlur = 7;
+              ctx.beginPath(); ctx.arc(_sx, _sy, 2.5, 0, Math.PI * 2); ctx.fill();
+              ctx.restore();
+            }
+          }
+
+          if (playerRole === 'phantom' && abilityActive) {
+            // Invisible shimmer: silver smoke ring
+            ctx.save();
+            ctx.globalAlpha = 0.2 + 0.15 * _rPulse;
+            ctx.strokeStyle = '#cc88ff'; ctx.lineWidth = 1.5;
+            ctx.shadowColor = '#9944cc'; ctx.shadowBlur = 12;
+            ctx.beginPath(); ctx.arc(_rpx, _rpy, 20 + _rPulse * 5, 0, Math.PI * 2); ctx.stroke();
+            ctx.restore();
+          }
+
+          if (playerRole === 'viper') {
+            // Green acid drips at feet
+            for (let _vi = 0; _vi < 3; _vi++) {
+              const _vPhase = (_rNow / 600 + _vi * 1.2) % (Math.PI * 2);
+              const _vx = _rpx + Math.cos(_vPhase * 3) * (player.w * 0.3);
+              const _vy = _rpy + player.h * 0.35 + Math.abs(Math.sin(_vPhase)) * 4;
+              ctx.save();
+              ctx.globalAlpha = 0.5 + 0.3 * Math.sin(_vPhase);
+              ctx.fillStyle = '#33ee55'; ctx.shadowColor = '#00cc33'; ctx.shadowBlur = 8;
+              ctx.beginPath(); ctx.arc(_vx, _vy, 2, 0, Math.PI * 2); ctx.fill();
+              ctx.restore();
+            }
+          }
+
+          if (playerRole === 'engineer') {
+            // Orange spark trail rising from feet
+            for (let _ei = 0; _ei < 4; _ei++) {
+              const _ePhase = (_rNow / 350 + _ei * 0.9) % (Math.PI * 2);
+              const _ex = _rpx + (Math.random() - 0.5) * player.w * 0.8;
+              const _ey = _rpy + player.h * 0.3 - Math.abs(Math.sin(_ePhase)) * 14;
+              ctx.save();
+              ctx.globalAlpha = (1 - Math.abs(Math.sin(_ePhase))) * 0.55;
+              ctx.fillStyle = '#ff8800'; ctx.shadowColor = '#ff6600'; ctx.shadowBlur = 5;
+              ctx.beginPath(); ctx.arc(_ex, _ey, 1.5, 0, Math.PI * 2); ctx.fill();
+              ctx.restore();
+            }
+          }
+
+          if (playerRole === 'detective') {
+            // Gold magnifying glass icon above head + investigation scanning arc
+            const _diy = _rpy - player.h * 0.7;
+            ctx.save();
+            ctx.font = '14px Arial'; ctx.textAlign = 'center';
+            ctx.globalAlpha = 0.7 + 0.2 * _rPulse;
+            ctx.fillStyle = '#ffd700'; ctx.shadowColor = '#ffd700'; ctx.shadowBlur = 8;
+            ctx.fillText('🔍', _rpx, _diy);
+            // Scanning arc
+            const _dArc = (_rNow / 1200) % (Math.PI * 2);
+            ctx.globalAlpha = 0.18;
+            ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 1.5;
+            ctx.shadowBlur = 6;
+            ctx.beginPath(); ctx.arc(_rpx, _rpy, 28, _dArc, _dArc + Math.PI * 0.7); ctx.stroke();
+            ctx.restore();
+          }
+
+          if (playerRole === 'sheriff') {
+            // Gold star badge beside player + shine ray
+            ctx.save();
+            ctx.font = '16px Arial'; ctx.textAlign = 'center';
+            ctx.globalAlpha = 0.8 + 0.15 * _rPulse;
+            ctx.fillStyle = '#ffd700'; ctx.shadowColor = '#ffe44d'; ctx.shadowBlur = 10;
+            ctx.fillText('⭐', _rpx + player.w * 0.7, _rpy - player.h * 0.15);
+            ctx.restore();
+          }
+
+          if (playerRole === 'guardian_angel') {
+            // White/gold halo ring above head
+            const _haloY = _rpy - player.h * 0.65;
+            ctx.save();
+            ctx.globalAlpha = 0.55 + 0.3 * _rPulse;
+            ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 2;
+            ctx.shadowColor = '#ffffffcc'; ctx.shadowBlur = 14;
+            ctx.beginPath(); ctx.ellipse(_rpx, _haloY, player.w * 0.45, 5, 0, 0, Math.PI * 2); ctx.stroke();
+            // Inner glow
+            ctx.globalAlpha = 0.15 + 0.12 * _rPulse;
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath(); ctx.ellipse(_rpx, _haloY, player.w * 0.45, 5, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+          }
+
+          if (playerRole === 'tracker') {
+            // Green radar sweep arc
+            const _tArc = (_rNow / 900) % (Math.PI * 2);
+            ctx.save();
+            ctx.globalAlpha = 0.28 + 0.12 * _rPulse;
+            const _tGrad = ctx.createConicalGradient ? null : null; // fallback below
+            ctx.strokeStyle = '#44ff88'; ctx.lineWidth = 2;
+            ctx.shadowColor = '#00ff66'; ctx.shadowBlur = 8;
+            ctx.beginPath(); ctx.arc(_rpx, _rpy, 26, _tArc, _tArc + Math.PI * 0.6); ctx.stroke();
+            ctx.restore();
+          }
+
+          if (playerRole === 'scientist') {
+            // Blue data stream particles orbiting
+            for (let _sci = 0; _sci < 5; _sci++) {
+              const _scA = (_rNow / 700 + _sci * Math.PI * 0.4) % (Math.PI * 2);
+              const _scR = 18 + Math.sin(_scA * 3) * 3;
+              ctx.save();
+              ctx.globalAlpha = 0.4 + 0.3 * Math.sin(_scA + _rNow / 400);
+              ctx.fillStyle = '#44aaff'; ctx.shadowColor = '#2288ff'; ctx.shadowBlur = 7;
+              ctx.beginPath(); ctx.arc(_rpx + Math.cos(_scA) * _scR, _rpy + Math.sin(_scA) * _scR * 0.5, 2, 0, Math.PI * 2); ctx.fill();
+              ctx.restore();
+            }
+          }
+
+          if (playerRole === 'noisemaker') {
+            // Pink sound wave rings
+            for (let _ni = 0; _ni < 2; _ni++) {
+              const _nPhase = ((_rNow / 700) + _ni * 0.5) % 1;
+              const _nr = 14 + _nPhase * 20;
+              ctx.save();
+              ctx.globalAlpha = (1 - _nPhase) * 0.35;
+              ctx.strokeStyle = '#ff88ff'; ctx.lineWidth = 1.5;
+              ctx.shadowColor = '#ff44cc'; ctx.shadowBlur = 6;
+              ctx.beginPath(); ctx.arc(_rpx, _rpy, _nr, 0, Math.PI * 2); ctx.stroke();
+              ctx.restore();
+            }
+          }
+
+          if (playerRole === 'jester') {
+            // Rainbow hue-rotating ring
+            const _jHue = (_rNow / 20) % 360;
+            ctx.save();
+            ctx.globalAlpha = 0.4 + 0.2 * _rPulse;
+            ctx.strokeStyle = `hsl(${_jHue},100%,65%)`; ctx.lineWidth = 2;
+            ctx.shadowColor = `hsl(${_jHue},100%,65%)`; ctx.shadowBlur = 10;
+            ctx.beginPath(); ctx.arc(_rpx, _rpy, 22 + _rPulse * 4, 0, Math.PI * 2); ctx.stroke();
+            ctx.restore();
+          }
+        }
+
         // Ghost ethereal mist
         if (isGhost && player.alive === false) {
           const _gNow = Date.now();
@@ -19999,6 +20716,7 @@
           ctx.fillStyle = `rgb(${_sr},${_sg},${_sb})`;
           ctx.letterSpacing = '12px';
           ctx.fillText('SABOTAGE', canvas.width / 2, canvas.height / 2);
+          ctx.letterSpacing = '0px';
           ctx.restore();
         }
       }
@@ -21235,7 +21953,7 @@
           ctx.fillStyle = pl.color||'#888'; ctx.fill();
           ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 1; ctx.stroke();
           ctx.fillStyle = pid===mpUserId ? '#e8f0ff' : '#a8b8cc';
-          ctx.font = (pid===mpUserId?'bold ':'')+' 12px Arial'; ctx.textAlign = 'left';
+          ctx.font = (pid===mpUserId ? 'bold 12px Arial' : '12px Arial'); ctx.textAlign = 'left';
           ctx.fillText((pl.name||'Player').substring(0,12)+(pid===mpUserId?' \u2605':''), panX+34, ry+4);
           if (isThisHost) {
             ctx.fillStyle = '#ffd700'; ctx.font = 'bold 9px Arial'; ctx.textAlign = 'right';
