@@ -2617,6 +2617,121 @@
           w.push({ x: 162, y: 1368, w: 86, h: 64, obj: true });  // engine block
           w.push({ x: 290, y: 1390, w: 48, h: 36, obj: true });  // output dial console
 
+          // ============ ADDITIONAL ROOM OBJECTS ============
+
+          // --- Cafeteria: vending machine, bulletin board, serving counter ---
+          w.push({ x: 1826, y: 336, w: 22, h: 44, obj: true });  // vending machine (right wall)
+          w.push({ x: 988,  y: 175, w: 14, h: 36, obj: true });  // bulletin board (left wall, above door gap)
+          w.push({ x: 1756, y: 494, w: 72, h: 16, obj: true });  // serving counter (bottom-right area)
+
+          // --- Security: filing cabinet (right side of desk) ---
+          w.push({ x: 614, y: 622, w: 28, h: 50, obj: true });
+
+          // --- MedBay: medicine cabinet (right wall), lab counter (left bottom) ---
+          w.push({ x: 826, y: 298, w: 20, h: 52, obj: true });   // medicine cabinet
+          w.push({ x: 540, y: 490, w: 52, h: 18, obj: true });   // lab counter / supply shelf
+
+          // --- Admin: filing cabinet (right wall, below door gap y:700-780) ---
+          w.push({ x: 1812, y: 800, w: 20, h: 54, obj: true });
+
+          // --- Storage: wall shelving (left wall, split around door gap y:1280-1370) ---
+          w.push({ x: 1040, y: 1134, w: 18, h: 132, obj: true }); // upper shelving
+          w.push({ x: 1040, y: 1384, w: 18, h: 110, obj: true }); // lower shelving
+
+          // --- Electrical: hazard panel (top area), floor cable conduit ---
+          w.push({ x: 808,  y: 958,  w: 32, h: 20, obj: true });  // hazard panel
+          w.push({ x: 650,  y: 1258, w: 50, h: 14, obj: true });  // floor cable conduit
+
+          // --- O2: air recycler unit (right side, above door gap) ---
+          w.push({ x: 2256, y: 622, w: 36, h: 56, obj: true });
+
+          // --- Weapons: targeting display (top area), ammo crate (bottom area) ---
+          w.push({ x: 2382, y: 136, w: 52, h: 24, obj: true });   // targeting display
+          w.push({ x: 2392, y: 356, w: 36, h: 28, obj: true });   // ammo crate
+
+          // --- Navigation: star chart board (left wall, above door gap y:700-780) ---
+          w.push({ x: 2568, y: 648, w: 14, h: 46, obj: true });
+
+          // --- Reactor: coolant conduit column (right-side, vertical) ---
+          w.push({ x: 220,  y: 520, w: 14, h: 216, obj: true });
+
+          // --- Communications: server rack (right wall), satellite dish control (bottom) ---
+          w.push({ x: 2056, y: 1472, w: 18, h: 100, obj: true }); // server rack
+          w.push({ x: 1748, y: 1640, w: 50, h: 22,  obj: true }); // dish control terminal
+
+          // --- Shields: power conduit (top area), shield control terminal (upper-right) ---
+          w.push({ x: 2296, y: 1132, w: 100, h: 14, obj: true }); // top power conduit
+          w.push({ x: 2464, y: 1150, w: 40,  h: 44, obj: true }); // shield control terminal
+
+          // --- Upper Engine / Lower Engine: pressure gauge panel (right-top area) ---
+          w.push({ x: 354, y: 200,  w: 22, h: 32, obj: true });   // UE pressure gauge
+          w.push({ x: 354, y: 1374, w: 22, h: 32, obj: true });   // LE pressure gauge
+
+          // --- Task backing objects: one per floating task location ---
+          // Cafeteria
+          w.push({ x: 1789, y: 188, w: 30, h: 22, obj: true }); // Cafeteria upload terminal (Upload Data)
+          w.push({ x: 1408, y: 156, w: 24, h: 26, obj: true }); // Cafeteria wiring panel top (Fix Wiring)
+          w.push({ x: 1408, y: 508, w: 24, h: 26, obj: true }); // Cafeteria wiring panel floor (Fix Wiring)
+          // Navigation
+          w.push({ x: 2768, y: 733, w: 28, h: 28, obj: true }); // Navigation power relay (Accept Diverted Power)
+          // O2
+          w.push({ x: 2168, y: 810, w: 28, h: 22, obj: true }); // O2 data terminal (Download Data)
+          // Admin
+          w.push({ x: 1392, y: 744, w: 16, h: 32, obj: true }); // Admin card reader (Swipe Card)
+          w.push({ x: 1458, y: 890, w: 24, h: 26, obj: true }); // Admin wiring panel (Fix Wiring)
+          w.push({ x: 1688, y: 888, w: 28, h: 28, obj: true }); // Admin power box (Accept Diverted Power)
+          // Communications
+          w.push({ x: 1770, y: 1440, w: 28, h: 22, obj: true }); // Comms wall terminal (Download Data)
+          // Storage
+          w.push({ x: 1448, y: 1298, w: 28, h: 28, obj: true }); // Storage fuel port right (Fuel Engines)
+          w.push({ x: 1388, y: 1180, w: 26, h: 22, obj: true }); // Storage trash chute (Empty Garbage)
+          w.push({ x: 1090, y: 1460, w: 24, h: 26, obj: true }); // Storage wiring panel (Fix Wiring)
+          w.push({ x: 1378, y: 1450, w: 28, h: 22, obj: true }); // Storage data terminal (Download Data)
+          // Electrical
+          w.push({ x: 818,  y: 998,  w: 28, h: 32, obj: true }); // Electrical diverter panel (Divert Power)
+          // Upper Engine
+          w.push({ x: 182,  y: 324,  w: 24, h: 26, obj: true }); // UE wiring panel (Fix Wiring)
+          // Reactor
+          w.push({ x: 42,   y: 950,  w: 26, h: 26, obj: true }); // Reactor wiring panel (Fix Wiring)
+          w.push({ x: 40,   y: 1132, w: 32, h: 36, obj: true }); // Reactor breaker box (Reset Breakers)
+          // Security
+          w.push({ x: 524,  y: 748,  w: 28, h: 22, obj: true }); // Security data terminal (Download Data)
+          w.push({ x: 594,  y: 682,  w: 28, h: 28, obj: true }); // Security power box (Accept Diverted Power)
+          // Wave 3 task backing
+          w.push({ x: 1726, y: 482,  w: 30, h: 28, obj: true }); // Cafeteria vending machine (Buy Beverage)
+          // Decor object collision walls
+          w.push({ x: 1152, y: 172,  w: 26, h: 24, obj: true }); // Cafeteria coffee machine
+          w.push({ x: 1390, y: 378,  w: 60, h: 20, obj: true }); // Cafeteria dining table
+          w.push({ x: 2082, y: 362,  w: 28, h: 26, obj: true }); // Weapons ammo rack
+          w.push({ x: 2512, y: 162,  w: 28, h: 26, obj: true }); // Weapons blast door ctrl
+          w.push({ x: 2608, y: 888,  w: 36, h: 26, obj: true }); // Navigation captain's chair
+          w.push({ x: 3002, y: 732,  w: 36, h: 36, obj: true }); // Navigation radar scope
+          w.push({ x: 2270, y: 820,  w: 26, h: 42, obj: true }); // O2 cylinder
+          w.push({ x: 2196, y: 1158, w: 36, h: 30, obj: true }); // Shields left gen
+          w.push({ x: 2508, y: 1158, w: 36, h: 30, obj: true }); // Shields right gen
+          w.push({ x: 2046, y: 1640, w: 48, h: 38, obj: true }); // Comms radio rack
+          w.push({ x: 1264, y: 1218, w: 44, h: 30, obj: true }); // Storage supply crates
+          w.push({ x: 1472, y: 1528, w: 40, h: 40, obj: true }); // Storage barrel cluster
+          w.push({ x: 852,  y: 1132, w: 46, h: 34, obj: true }); // Electrical main generator
+          w.push({ x: 266,  y: 266,  w: 44, h: 26, obj: true }); // UE engine cowling
+          w.push({ x: 266,  y: 1278, w: 44, h: 26, obj: true }); // LE engine cowling
+          w.push({ x: 536,  y: 298,  w: 30, h: 30, obj: true }); // MedBay medicine cabinet
+          w.push({ x: 640,  y: 488,  w: 44, h: 22, obj: true }); // MedBay medical bed
+          w.push({ x: 470,  y: 806,  w: 44, h: 22, obj: true }); // Security guard desk
+          w.push({ x: 1738, y: 746,  w: 30, h: 26, obj: true }); // Admin filing cabinet
+          // Wave 2 task backing objects
+          w.push({ x: 1598, y: 450,  w: 24, h: 22, obj: true }); // Cafeteria manifest board (Check Manifest)
+          w.push({ x: 2218, y: 700,  w: 26, h: 22, obj: true }); // O2 air sensor panel (Test Air Quality)
+          w.push({ x: 1910, y: 1466, w: 30, h: 22, obj: true }); // Comms router unit (Reboot WiFi)
+          w.push({ x: 816,  y: 470,  w: 28, h: 24, obj: true }); // MedBay HVAC panel (Replace Filters)
+          w.push({ x: 172,  y: 850,  w: 26, h: 26, obj: true }); // Reactor pipe junction (Lubricate Valves)
+          w.push({ x: 604,  y: 956,  w: 28, h: 22, obj: true }); // Electrical patch panel (Patch Cables)
+          w.push({ x: 2642, y: 780,  w: 28, h: 24, obj: true }); // Navigation velocity console (Log Velocity)
+          w.push({ x: 1230, y: 1368, w: 28, h: 22, obj: true }); // Storage sample rack (Sort Samples)
+          w.push({ x: 444,  y: 760,  w: 26, h: 22, obj: true }); // Security VCR unit (Rewind Tapes)
+          w.push({ x: 2338, y: 1300, w: 28, h: 24, obj: true }); // Shields deflect panel (Deflect Meteorites)
+          w.push({ x: 2142, y: 336,  w: 28, h: 22, obj: true }); // Weapons battery rack (Charge Batteries)
+
           return w;
         })(),
         rooms: [
@@ -2676,7 +2791,7 @@
         ],
         tasks: [
           // Cafeteria (floor x:986-1850, y:112-572, center 1418,342)
-          { x: 1040, y: 200, name: 'Download Data',      room: 'Cafeteria' },
+          { x: 995,  y: 193, name: 'Download Data',      room: 'Cafeteria' },
           { x: 1800, y: 200, name: 'Upload Data',        room: 'Cafeteria' },
           { x: 1420, y: 168, name: 'Fix Wiring',         room: 'Cafeteria' },
           { x: 1038, y: 430, name: 'Empty Garbage',      room: 'Cafeteria' },  // near trash bin (bottom-left)
@@ -2684,16 +2799,16 @@
           // Weapons (floor x:2066-2544, y:112-454, center 2305,283)
           { x: 2200, y: 200, name: 'Clear Asteroids',    room: 'Weapons', visual: true },  // turret
           { x: 2450, y: 160, name: 'Download Data',      room: 'Weapons' },
-          { x: 2480, y: 340, name: 'Accept Diverted Power', room: 'Weapons' },
+          { x: 2410, y: 370, name: 'Accept Diverted Power', room: 'Weapons' },
           // Navigation (floor x:2566-3046, y:566-934, center 2806,750)
-          { x: 2620, y: 640, name: 'Chart Course',       room: 'Navigation' },
+          { x: 2575, y: 671, name: 'Chart Course',       room: 'Navigation' },
           { x: 2940, y: 640, name: 'Fix Wiring',         room: 'Navigation' },
-          { x: 2620, y: 840, name: 'Stabilize Steering', room: 'Navigation' },
+          { x: 2768, y: 857, name: 'Stabilize Steering', room: 'Navigation' },
           { x: 2940, y: 840, name: 'Download Data',      room: 'Navigation' },
           { x: 2780, y: 745, name: 'Accept Diverted Power', room: 'Navigation' },
           // O2 (floor x:1936-2310, y:596-904, center 2110,750)
           { x: 1960, y: 648, name: 'Clean O2 Filter',    room: 'O2' },   // left plant tank
-          { x: 2128, y: 648, name: 'Water Plants',        room: 'O2' },   // right plant tank
+          { x: 2066, y: 664, name: 'Water Plants',        room: 'O2' },   // right plant tank
           { x: 1960, y: 820, name: 'Fix Wiring',          room: 'O2' },
           { x: 2180, y: 820, name: 'Download Data',       room: 'O2' },
           // Admin (floor x:1396-1784, y:676-974, center 1590,825)
@@ -2708,9 +2823,9 @@
           { x: 2460, y: 1380, name: 'Download Data',      room: 'Shields' },
           // Communications (floor x:1740-2084, y:1370-1750, center 1912,1560)
           { x: 1780, y: 1450, name: 'Download Data',      room: 'Communications' },
-          { x: 1980, y: 1460, name: 'Fix Wiring',         room: 'Communications' },
+          { x: 2020, y: 1510, name: 'Fix Wiring',         room: 'Communications' },
           { x: 1860, y: 1560, name: 'Restore Comms',      room: 'Communications' },
-          { x: 1990, y: 1620, name: 'Upload Data',        room: 'Communications' },
+          { x: 2045, y: 1618, name: 'Upload Data',        room: 'Communications' },
           { x: 1800, y: 1650, name: 'Accept Diverted Power', room: 'Communications' },
           // Storage (floor x:1036-1524, y:1116-1614, center 1280,1365)
           { x: 1070, y: 1190, name: 'Fuel Engines',       room: 'Storage' },  // fuel canisters top-left
@@ -2724,8 +2839,8 @@
           { x: 700, y: 1080,  name: 'Calibrate Distributor', room: 'Electrical' },
           { x: 830, y: 1210,  name: 'Download Data',      room: 'Electrical' },
           // Lower Engine (floor x:156-414, y:1226-1508, center 285,1367)
-          { x: 196, y: 1296,  name: 'Fuel Engines',       room: 'Lower Engine' },
-          { x: 340, y: 1296,  name: 'Align Engine Output',room: 'Lower Engine' },
+          { x: 200, y: 1400,  name: 'Fuel Engines',       room: 'Lower Engine' },
+          { x: 314, y: 1408,  name: 'Align Engine Output',room: 'Lower Engine' },
           { x: 196, y: 1428,  name: 'Fix Wiring',         room: 'Lower Engine' },
           // Upper Engine (floor x:156-414, y:146-394, center 285,270)
           { x: 196, y: 196,   name: 'Fuel Engines',       room: 'Upper Engine' },
@@ -2745,6 +2860,78 @@
           { x: 764, y: 366,   name: 'Inspect Sample',     room: 'MedBay' },  // sample station
           { x: 600, y: 510,   name: 'Fix Wiring',         room: 'MedBay' },
           { x: 762, y: 510,   name: 'Download Data',      room: 'MedBay' },
+          // Additional tasks
+          { x: 988,  y: 216,  name: 'Swipe Card',           room: 'Cafeteria' },
+          { x: 538,  y: 758,  name: 'Download Data',         room: 'Security' },
+          { x: 606,  y: 694,  name: 'Accept Diverted Power', room: 'Security' },
+          { x: 830,  y: 325,  name: 'Reset Breakers',        room: 'MedBay' },
+          { x: 1822, y: 827,  name: 'Calibrate Distributor', room: 'Admin' },
+          { x: 1058, y: 1448, name: 'Calibrate Distributor', room: 'Storage' },
+          { x: 820,  y: 968,  name: 'Reset Breakers',        room: 'Electrical' },
+          { x: 2262, y: 644,  name: 'Accept Diverted Power', room: 'O2' },
+          { x: 2310, y: 188,  name: 'Calibrate Distributor', room: 'Weapons' },
+          { x: 2950, y: 730,  name: 'Upload Data',           room: 'Navigation' },
+          { x: 2388, y: 1144, name: 'Accept Diverted Power', room: 'Shields' },
+          { x: 220,  y: 648,  name: 'Download Data',         room: 'Reactor' },
+          { x: 356,  y: 218,  name: 'Accept Diverted Power', room: 'Upper Engine' },
+          { x: 356,  y: 1392, name: 'Accept Diverted Power', room: 'Lower Engine' },
+          { x: 2060, y: 1492, name: 'Reset Breakers',        room: 'Communications' },
+          // Wave 2 — new tasks
+          { x: 1610, y: 460,  name: 'Check Manifest',      room: 'Cafeteria' },
+          { x: 2230, y: 710,  name: 'Test Air Quality',    room: 'O2' },
+          { x: 1924, y: 1476, name: 'Reboot WiFi',         room: 'Communications' },
+          { x: 830,  y: 480,  name: 'Replace Filters',     room: 'MedBay' },
+          { x: 185,  y: 860,  name: 'Lubricate Valves',    room: 'Reactor' },
+          { x: 618,  y: 966,  name: 'Patch Cables',        room: 'Electrical' },
+          { x: 2656, y: 790,  name: 'Log Velocity',        room: 'Navigation' },
+          { x: 1244, y: 1378, name: 'Sort Samples',        room: 'Storage' },
+          { x: 456,  y: 770,  name: 'Rewind Tapes',        room: 'Security' },
+          { x: 2352, y: 1310, name: 'Deflect Meteorites',  room: 'Shields' },
+          { x: 2156, y: 346,  name: 'Charge Batteries',    room: 'Weapons' },
+          // Wave 3 — room-unique tasks
+          { x: 1740, y: 495,  name: 'Buy Beverage',        room: 'Cafeteria' },
+        ],
+        decObjects: [
+          // Cafeteria
+          { x: 1165, y: 185, type: 'coffee_machine' },
+          { x: 1420, y: 390, type: 'dining_table' },
+          // Weapons
+          { x: 2095, y: 375, type: 'ammo_rack' },
+          { x: 2525, y: 175, type: 'blast_door_ctrl' },
+          // Navigation
+          { x: 2625, y: 900, type: 'captains_chair' },
+          { x: 3020, y: 748, type: 'radar_scope' },
+          // O2
+          { x: 2282, y: 840, type: 'o2_cylinder' },
+          { x: 2150, y: 878, type: 'plant_shelf' },
+          // Admin
+          { x: 1752, y: 756, type: 'filing_cabinet' },
+          { x: 1590, y: 830, type: 'admin_table' },
+          // Shields
+          { x: 2210, y: 1170, type: 'shield_gen' },
+          { x: 2522, y: 1170, type: 'shield_gen' },
+          // Communications
+          { x: 2068, y: 1658, type: 'radio_rack' },
+          // Storage
+          { x: 1285, y: 1235, type: 'supply_crates' },
+          { x: 1490, y: 1550, type: 'barrel_cluster' },
+          // Electrical
+          { x: 874,  y: 1148, type: 'main_generator' },
+          { x: 582,  y: 952,  type: 'warning_sign' },
+          // Upper Engine
+          { x: 286,  y: 278,  type: 'engine_cowling' },
+          { x: 390,  y: 356,  type: 'temp_gauge' },
+          // Lower Engine
+          { x: 286,  y: 1290, type: 'engine_cowling' },
+          { x: 390,  y: 1474, type: 'temp_gauge' },
+          // Reactor
+          { x: 105,  y: 770,  type: 'reactor_core' },
+          { x: 218,  y: 435,  type: 'hazard_sign' },
+          // Security
+          { x: 490,  y: 815,  type: 'guard_desk' },
+          // MedBay
+          { x: 660,  y: 498,  type: 'medical_bed' },
+          { x: 548,  y: 312,  type: 'medicine_cabinet' },
         ],
         vents: [
           // Official Skeld vent network — all positioned in open floor space away from furniture/walls
@@ -4209,7 +4396,7 @@
 
     // Active map data (loaded from selected map)
     let selectedMap = 'skeld';
-    let MAP_W, MAP_H, walls, rooms, taskLocations, vents, EMERGENCY_BTN, cameras = [], exteriorFeatures = null;
+    let MAP_W, MAP_H, walls, rooms, taskLocations, decObjectLocations = [], vents, EMERGENCY_BTN, cameras = [], exteriorFeatures = null;
     let viewingCameras = false;
     // Security monitor location (where player stands to use cameras)
     const SECURITY_MONITOR = { x: 490, y: 700 };
@@ -4239,6 +4426,7 @@
       walls = m.walls;
       rooms = m.rooms;
       taskLocations = m.tasks.map(t => ({ ...t, done: false }));
+      decObjectLocations = m.decObjects || [];
       vents = m.vents;
       EMERGENCY_BTN = m.emergencyBtn;
       mapTheme = { bg: m.bgColor, wall: m.wallColor, floor: m.floorColor, grid: m.gridColor, floors: m.floors, sabFix: m.sabotageFixLocations, terrain: m.terrain, terrainColor: m.terrainColor, extraLabels: m.extraLabels || [] };
@@ -4714,7 +4902,7 @@
       }
 
       // 3D Walls
-      for (const w of walls) draw3DWall(w.x, w.y, w.w, w.h);
+      for (const w of walls) draw3DWall(w.x, w.y, w.w, w.h, w.obj);
 
       // Polus: blue-tinted ice patches on the floor
       if (selectedMap === 'polus') {
@@ -13774,7 +13962,7 @@
       }
     }
 
-    function draw3DWall(x, y, w, h) {
+    function draw3DWall(x, y, w, h, isObj) {
       // Solid wall — map-themed color
       ctx.fillStyle = mapTheme.wall;
       ctx.fillRect(x, y, w, h);
@@ -13801,32 +13989,65 @@
         }
         return;
       }
-      // Skeld: polished steel panels with bright top edge and bolt details
+      // Skeld: polished steel panels — equipment walls get amber/teal treatment
       if (selectedMap === 'skeld') {
-        ctx.fillStyle = 'rgba(220,228,240,0.18)';
-        if (w > h) { ctx.fillRect(x, y, w, 2); } else { ctx.fillRect(x, y, 2, h); }
-        ctx.fillStyle = 'rgba(0,0,0,0.40)';
-        if (w > h) { ctx.fillRect(x, y + h - 2, w, 2); } else { ctx.fillRect(x + w - 2, y, 2, h); }
-        // Panel seam lines
-        ctx.fillStyle = 'rgba(0,0,0,0.18)';
-        if (w > h) {
-          for (let px = 64; px < w; px += 64) ctx.fillRect(x + px, y + 2, 1, h - 4);
-        } else {
-          for (let py = 64; py < h; py += 64) ctx.fillRect(x + 2, y + py, w - 4, 1);
-        }
-        // Bolt heads at seam ends
-        ctx.fillStyle = 'rgba(200,210,225,0.22)';
-        if (w > h && h >= 8) {
-          for (let px = 64; px < w; px += 64) {
-            ctx.fillRect(x + px - 1, y + 2, 2, 2);
-            ctx.fillRect(x + px - 1, y + h - 4, 2, 2);
+        if (isObj) {
+          // Equipment / object walls — warm amber surface to distinguish from structure
+          ctx.fillStyle = 'rgba(200,140,40,0.14)'; ctx.fillRect(x, y, w, h);
+          // Bright amber top edge
+          ctx.fillStyle = 'rgba(255,180,60,0.60)';
+          if (w > h) { ctx.fillRect(x, y, w, 3); } else { ctx.fillRect(x, y, 3, h); }
+          // Teal left/bottom accent strip
+          ctx.fillStyle = 'rgba(40,200,180,0.30)';
+          if (w > h) { ctx.fillRect(x, y+h-2, w, 2); } else { ctx.fillRect(x+w-2, y, 2, h); }
+          // Thin bright top-line sheen
+          ctx.fillStyle = 'rgba(255,230,140,0.22)';
+          if (w > h) { ctx.fillRect(x, y, w, 1); } else { ctx.fillRect(x, y, 1, h); }
+          // Corner rivet dots
+          ctx.fillStyle = 'rgba(255,200,80,0.40)';
+          if (w >= 8 && h >= 8) {
+            [[x+2,y+2],[x+w-4,y+2],[x+2,y+h-4],[x+w-4,y+h-4]].forEach(([rx,ry]) => ctx.fillRect(rx,ry,2,2));
           }
-        } else if (w <= h && w >= 8) {
-          for (let py = 64; py < h; py += 64) {
-            ctx.fillRect(x + 2, y + py - 1, 2, 2);
-            ctx.fillRect(x + w - 4, y + py - 1, 2, 2);
-          }
+          return;
         }
+        // Structural wall — layered steel panel look
+        // Horizontal-vs-vertical face colors
+        const _horiz = w > h;
+        // Main face tint (steel blue for horizontal tops, slightly warmer for vertical sides)
+        ctx.fillStyle = _horiz ? 'rgba(160,185,220,0.16)' : 'rgba(140,165,200,0.12)';
+        ctx.fillRect(x, y, w, h);
+        // Bright top/left highlight
+        ctx.fillStyle = _horiz ? 'rgba(210,230,255,0.38)' : 'rgba(200,220,250,0.32)';
+        if (_horiz) { ctx.fillRect(x, y, w, 3); } else { ctx.fillRect(x, y, 3, h); }
+        // Sheen line on very edge
+        ctx.fillStyle = 'rgba(255,255,255,0.18)';
+        if (_horiz) { ctx.fillRect(x, y, w, 1); } else { ctx.fillRect(x, y, 1, h); }
+        // Deep shadow opposite edge
+        ctx.fillStyle = 'rgba(0,4,20,0.55)';
+        if (_horiz) { ctx.fillRect(x, y+h-3, w, 3); } else { ctx.fillRect(x+w-3, y, 3, h); }
+        // Coloured accent corner caps
+        ctx.fillStyle = 'rgba(80,130,220,0.28)';
+        if (_horiz && h >= 6) { ctx.fillRect(x, y+h-3, 4, 3); ctx.fillRect(x+w-4, y+h-3, 4, 3); }
+        else if (!_horiz && w >= 6) { ctx.fillRect(x+w-3, y, 3, 4); ctx.fillRect(x+w-3, y+h-4, 3, 4); }
+        // Panel seam lines — darker grooves
+        const _ps = 60;
+        ctx.fillStyle = 'rgba(0,5,25,0.28)';
+        if (_horiz) { for (let px=_ps; px<w; px+=_ps) ctx.fillRect(x+px, y+3, 1, h-6); }
+        else        { for (let py=_ps; py<h; py+=_ps) ctx.fillRect(x+3, y+py, w-6, 1); }
+        // Seam highlight (bright side of groove)
+        ctx.fillStyle = 'rgba(180,210,255,0.14)';
+        if (_horiz) { for (let px=_ps; px<w; px+=_ps) ctx.fillRect(x+px+1, y+3, 1, h-6); }
+        else        { for (let py=_ps; py<h; py+=_ps) ctx.fillRect(x+3, y+py+1, w-6, 1); }
+        // Bolt heads — 3px squares at seam intersections
+        ctx.fillStyle = 'rgba(200,215,240,0.35)';
+        if (_horiz && h >= 8) {
+          for (let px=_ps; px<w; px+=_ps) { ctx.fillRect(x+px-1, y+3, 3, 3); ctx.fillRect(x+px-1, y+h-6, 3, 3); }
+        } else if (!_horiz && w >= 8) {
+          for (let py=_ps; py<h; py+=_ps) { ctx.fillRect(x+3, y+py-1, 3, 3); ctx.fillRect(x+w-6, y+py-1, 3, 3); }
+        }
+        // Mid-panel groove on thick walls
+        if (_horiz && h >= 14) { ctx.fillStyle='rgba(0,0,20,0.15)'; ctx.fillRect(x+2, y+Math.floor(h/2), w-4, 1); }
+        if (!_horiz && w >= 14) { ctx.fillStyle='rgba(0,0,20,0.15)'; ctx.fillRect(x+Math.floor(w/2), y+2, 1, h-4); }
         return;
       }
       // Other maps: subtle white/shadow edge
@@ -17081,34 +17302,284 @@
           break;
         }
         case 'Campfire': {
-          ctx.fillStyle = '#4a3020'; ctx.beginPath(); ctx.arc(cx, cy, 20, 0, Math.PI*2); ctx.fill();
-          ctx.fillStyle = '#ff6620'; ctx.globalAlpha = 0.4;
-          ctx.beginPath(); ctx.arc(cx, cy, 12, 0, Math.PI*2); ctx.fill();
-          ctx.fillStyle = '#ffaa30'; ctx.beginPath(); ctx.arc(cx, cy-4, 6, 0, Math.PI*2); ctx.fill();
-          ctx.globalAlpha = 0.5; ctx.fillStyle = '#3a2a15';
-          ctx.fillRect(cx-35, cy-8, 14, 6); ctx.fillRect(cx+22, cy-8, 14, 6);
-          ctx.fillRect(cx-6, cy+26, 14, 6); ctx.fillRect(cx-6, cy-32, 14, 6);
+          // === FUNGLE CAMPFIRE: rich outdoor fire hub with benches, wood pile, totem ===
+          ctx.globalAlpha = 1.0;
+          // Organic earthen floor (dirt patch around fire)
+          const cfDirt = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(w,h)*0.42);
+          cfDirt.addColorStop(0, 'rgba(80,50,20,0.55)');
+          cfDirt.addColorStop(0.55, 'rgba(60,38,15,0.30)');
+          cfDirt.addColorStop(1, 'rgba(40,28,10,0)');
+          ctx.fillStyle = cfDirt; ctx.beginPath(); ctx.arc(cx, cy, Math.min(w,h)*0.42, 0, Math.PI*2); ctx.fill();
+          // Stone fire ring
+          const cfR = Math.min(w,h)*0.09;
+          ctx.fillStyle = '#2a2210'; ctx.beginPath(); ctx.arc(cx, cy, cfR+7, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#5a4a28'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, cfR+7, 0, Math.PI*2); ctx.stroke();
+          // Individual stones around ring
+          for (let si = 0; si < 10; si++) {
+            const sa = si * Math.PI*2/10, sr = cfR+4;
+            ctx.fillStyle = si%2===0 ? '#4a3a20' : '#3a2e18';
+            ctx.beginPath(); ctx.ellipse(cx+Math.cos(sa)*sr, cy+Math.sin(sa)*sr, 5, 4, sa, 0, Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#6a5a30'; ctx.lineWidth = 0.5; ctx.stroke();
+          }
+          // Fire glow ambient
+          const cfGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, cfR*3.5);
+          cfGlow.addColorStop(0, 'rgba(255,140,30,0.30)');
+          cfGlow.addColorStop(0.4, 'rgba(200,80,10,0.14)');
+          cfGlow.addColorStop(1, 'rgba(100,30,0,0)');
+          ctx.fillStyle = cfGlow; ctx.beginPath(); ctx.arc(cx, cy, cfR*3.5, 0, Math.PI*2); ctx.fill();
+          // Logs in fire (crossed)
+          ctx.strokeStyle = '#6a3a10'; ctx.lineWidth = 6;
+          ctx.beginPath(); ctx.moveTo(cx-cfR*0.8, cy+cfR*0.5); ctx.lineTo(cx+cfR*0.8, cy-cfR*0.5); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx+cfR*0.8, cy+cfR*0.5); ctx.lineTo(cx-cfR*0.8, cy-cfR*0.5); ctx.stroke();
+          ctx.strokeStyle = '#3a1a08'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.moveTo(cx-cfR*0.8, cy+cfR*0.5); ctx.lineTo(cx+cfR*0.8, cy-cfR*0.5); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx+cfR*0.8, cy+cfR*0.5); ctx.lineTo(cx-cfR*0.8, cy-cfR*0.5); ctx.stroke();
+          // Ember core
+          const cfEmber = ctx.createRadialGradient(cx, cy+3, 0, cx, cy, cfR*0.85);
+          cfEmber.addColorStop(0, 'rgba(255,220,80,0.90)');
+          cfEmber.addColorStop(0.3, 'rgba(255,120,20,0.75)');
+          cfEmber.addColorStop(0.7, 'rgba(200,50,10,0.45)');
+          cfEmber.addColorStop(1, 'rgba(100,20,0,0)');
+          ctx.fillStyle = cfEmber; ctx.beginPath(); ctx.arc(cx, cy, cfR*0.85, 0, Math.PI*2); ctx.fill();
+          // Flame tips (3 overlapping)
+          for (let fi = 0; fi < 3; fi++) {
+            const foff = (fi-1)*cfR*0.25;
+            const fFlame = ctx.createRadialGradient(cx+foff, cy-cfR*0.4, 0, cx+foff, cy, cfR*0.7);
+            fFlame.addColorStop(0, 'rgba(255,240,120,0.80)');
+            fFlame.addColorStop(0.4, 'rgba(255,100,20,0.55)');
+            fFlame.addColorStop(1, 'rgba(200,30,0,0)');
+            ctx.fillStyle = fFlame;
+            ctx.beginPath(); ctx.ellipse(cx+foff, cy-cfR*0.25, cfR*0.35, cfR*0.62, 0, 0, Math.PI*2); ctx.fill();
+          }
+          // Log benches — 4 around fire (log stumps at corners)
+          const cfBenches = [[cx-w*0.27, cy-10, w*0.18, 14, -0.1],[cx+w*0.10, cy-10, w*0.18, 14, 0.1],
+                              [cx-w*0.12, cy+h*0.18, w*0.18, 14, 0.05],[cx-w*0.12, cy-h*0.22, w*0.18, 14, -0.05]];
+          for (const [bx2,by2,bw2,bh2,rot] of cfBenches) {
+            ctx.save(); ctx.translate(bx2+bw2/2, by2+bh2/2); ctx.rotate(rot);
+            ctx.fillStyle = '#5a3a18'; ctx.fillRect(-bw2/2, -bh2/2, bw2, bh2);
+            ctx.strokeStyle = '#8a6030'; ctx.lineWidth = 1.5; ctx.strokeRect(-bw2/2, -bh2/2, bw2, bh2);
+            // Log wood grain lines
+            ctx.strokeStyle = '#3a2008'; ctx.lineWidth = 0.5;
+            for (let lg = 1; lg < 4; lg++) { ctx.beginPath(); ctx.moveTo(-bw2/2, -bh2/2+bh2*lg/4); ctx.lineTo(bw2/2, -bh2/2+bh2*lg/4); ctx.stroke(); }
+            // End grain circles
+            ctx.strokeStyle = '#7a5020'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.ellipse(-bw2/2+5, 0, 4, bh2/2-1, 0, 0, Math.PI*2); ctx.stroke();
+            ctx.beginPath(); ctx.ellipse(bw2/2-5, 0, 4, bh2/2-1, 0, 0, Math.PI*2); ctx.stroke();
+            ctx.restore();
+          }
+          // Wood pile (bottom-right)
+          const cfWpX = x+w*0.62, cfWpY = y+h*0.60;
+          for (let wl = 0; wl < 3; wl++) {
+            for (let wp = 0; wp < 4-wl; wp++) {
+              ctx.fillStyle = wl%2===0?'#5a3818':'#4a2e14';
+              ctx.fillRect(cfWpX+wp*14, cfWpY-wl*8, 13, 8);
+              ctx.strokeStyle = '#7a5828'; ctx.lineWidth = 0.5;
+              ctx.strokeRect(cfWpX+wp*14, cfWpY-wl*8, 13, 8);
+            }
+          }
+          ctx.fillStyle = '#2a1a08'; ctx.fillRect(cfWpX-2, cfWpY+2, 56, 5); // base shadow
+          // Totem pole (top-left corner)
+          const tpX = x+w*0.08, tpY = y+h*0.12, tpW = 14, tpH = h*0.55;
+          ctx.fillStyle = '#4a3018'; ctx.fillRect(tpX, tpY, tpW, tpH);
+          ctx.strokeStyle = '#6a4a28'; ctx.lineWidth = 1; ctx.strokeRect(tpX, tpY, tpW, tpH);
+          // Totem face carvings
+          const tpFaces = [0.15, 0.42, 0.68];
+          for (const tf of tpFaces) {
+            ctx.fillStyle = '#5a3820'; ctx.fillRect(tpX+1, tpY+tpH*tf, tpW-2, tpH*0.22);
+            ctx.strokeStyle = '#3a2010'; ctx.lineWidth = 0.5; ctx.strokeRect(tpX+1, tpY+tpH*tf, tpW-2, tpH*0.22);
+            // Eyes
+            ctx.fillStyle = '#cc4422'; ctx.beginPath(); ctx.arc(tpX+4, tpY+tpH*(tf+0.07), 2, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(tpX+10, tpY+tpH*(tf+0.07), 2, 0, Math.PI*2); ctx.fill();
+            // Mouth
+            ctx.strokeStyle = '#3a1808'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(tpX+3, tpY+tpH*(tf+0.17)); ctx.lineTo(tpX+11, tpY+tpH*(tf+0.17)); ctx.stroke();
+          }
+          // Totem wings
+          ctx.fillStyle = '#3a2414';
+          ctx.fillRect(tpX-8, tpY+tpH*0.10, 8, 12); ctx.fillRect(tpX+tpW, tpY+tpH*0.10, 8, 12);
+          // Scattered leaves on floor
+          ctx.fillStyle = 'rgba(40,120,20,0.18)';
+          for (let lf = 0; lf < 8; lf++) {
+            const lfx = x + (lf*113+30)%(w-20), lfy = y + (lf*89+50)%(h-20);
+            ctx.beginPath(); ctx.ellipse(lfx, lfy, 6, 3, lf*0.8, 0, Math.PI*2); ctx.fill();
+          }
+          ctx.globalAlpha = 0.5;
           break;
         }
         case 'Splash Zone': {
-          ctx.strokeStyle = '#3388cc'; ctx.lineWidth = 2;
-          for (let wy = 0; wy < 4; wy++) {
+          // === FUNGLE SPLASH ZONE: tropical pool/beach with dock, fishing, palm shadows ===
+          ctx.globalAlpha = 1.0;
+          // Sandy shore (bottom half of room — warm tan)
+          const szSand = ctx.createLinearGradient(x, y+h*0.55, x, y+h);
+          szSand.addColorStop(0, 'rgba(180,148,90,0.30)');
+          szSand.addColorStop(1, 'rgba(160,128,70,0.45)');
+          ctx.fillStyle = szSand; ctx.fillRect(x, y+h*0.55, w, h*0.45);
+          // Pebble/rock detail on shore
+          ctx.fillStyle = 'rgba(120,100,60,0.25)';
+          for (let p = 0; p < 12; p++) {
+            const px2 = x+(p*83+14)%(w-16), py2 = y+h*0.58+(p*47)%(h*0.30);
+            ctx.beginPath(); ctx.ellipse(px2, py2, 4+p%3, 3, p*0.5, 0, Math.PI*2); ctx.fill();
+          }
+          // Water area (top half — tropical blue-green)
+          const szWater = ctx.createLinearGradient(x, y, x, y+h*0.58);
+          szWater.addColorStop(0, 'rgba(10,80,140,0.55)');
+          szWater.addColorStop(0.6, 'rgba(20,120,160,0.45)');
+          szWater.addColorStop(1, 'rgba(30,140,130,0.30)');
+          ctx.fillStyle = szWater; ctx.fillRect(x, y, w, h*0.58);
+          // Water shimmer lines
+          ctx.strokeStyle = 'rgba(80,200,220,0.22)'; ctx.lineWidth = 1.5;
+          for (let wy2 = 0; wy2 < 5; wy2++) {
             ctx.beginPath();
-            for (let wx = 0; wx < w; wx += 5) {
-              const yy = y + h*0.3 + wy*h*0.15 + Math.sin(wx*0.1)*8;
-              wx === 0 ? ctx.moveTo(x+wx, yy) : ctx.lineTo(x+wx, yy);
+            for (let wx2 = 0; wx2 < w; wx2 += 6) {
+              const wyy = y + h*(0.08+wy2*0.09) + Math.sin(wx2*0.08+wy2*0.7)*6;
+              wx2===0 ? ctx.moveTo(x+wx2, wyy) : ctx.lineTo(x+wx2, wyy);
             }
             ctx.stroke();
           }
+          // Water-sand boundary line (wave lapping)
+          ctx.strokeStyle = 'rgba(140,220,200,0.35)'; ctx.lineWidth = 3;
+          ctx.beginPath();
+          for (let wex = 0; wex < w; wex += 4) {
+            const wey = y+h*0.55 + Math.sin(wex*0.05)*5;
+            wex===0 ? ctx.moveTo(x+wex, wey) : ctx.lineTo(x+wex, wey);
+          }
+          ctx.stroke();
+          // Wooden fishing dock (right side, extends into water)
+          const dkX = x+w*0.58, dkY = y+h*0.28, dkW = w*0.36, dkH = h*0.30;
+          // Dock planks
+          ctx.fillStyle = '#5a4a28';
+          ctx.fillRect(dkX, dkY, dkW, dkH);
+          ctx.strokeStyle = '#7a6a3a'; ctx.lineWidth = 1; ctx.strokeRect(dkX, dkY, dkW, dkH);
+          ctx.strokeStyle = '#3a2a14'; ctx.lineWidth = 0.8;
+          for (let dk = 1; dk < 5; dk++) { ctx.beginPath(); ctx.moveTo(dkX, dkY+dkH*dk/5); ctx.lineTo(dkX+dkW, dkY+dkH*dk/5); ctx.stroke(); }
+          // Dock posts
+          for (let dp = 0; dp < 3; dp++) {
+            const dpx = dkX+(dp*dkW/2);
+            ctx.fillStyle = '#3a2810'; ctx.fillRect(dpx-4, dkY+dkH-4, 8, h*0.18);
+            ctx.strokeStyle = '#5a4020'; ctx.lineWidth = 1; ctx.strokeRect(dpx-4, dkY+dkH-4, 8, h*0.18);
+          }
+          // Fishing rod leaning on dock
+          ctx.strokeStyle = '#8a6a30'; ctx.lineWidth = 2.5;
+          ctx.beginPath(); ctx.moveTo(dkX+dkW*0.12, dkY+dkH*0.90); ctx.lineTo(dkX+dkW*0.45, dkY-h*0.15); ctx.stroke();
+          // Fishing line
+          ctx.strokeStyle = 'rgba(200,200,200,0.40)'; ctx.lineWidth = 0.8;
+          ctx.beginPath(); ctx.moveTo(dkX+dkW*0.45, dkY-h*0.15); ctx.quadraticCurveTo(dkX+dkW*0.30, dkY-h*0.05, dkX+dkW*0.20, dkY+h*0.03); ctx.stroke();
+          // Fish bucket on dock
+          ctx.fillStyle = '#2a3a4a'; ctx.fillRect(dkX+dkW*0.60, dkY+dkH*0.30, 14, 16);
+          ctx.strokeStyle = '#4a6070'; ctx.lineWidth = 1; ctx.strokeRect(dkX+dkW*0.60, dkY+dkH*0.30, 14, 16);
+          ctx.strokeStyle = '#5a7080'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(dkX+dkW*0.60+2, dkY+dkH*0.30); ctx.quadraticCurveTo(dkX+dkW*0.60+7, dkY+dkH*0.25, dkX+dkW*0.60+12, dkY+dkH*0.30); ctx.stroke();
+          // Inflatable float (left side of pool)
+          ctx.fillStyle = 'rgba(220,60,60,0.55)';
+          ctx.beginPath(); ctx.ellipse(x+w*0.20, y+h*0.28, w*0.10, h*0.06, 0, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = 'rgba(255,100,80,0.50)'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.ellipse(x+w*0.20, y+h*0.28, w*0.10, h*0.06, 0, 0, Math.PI*2); ctx.stroke();
+          // Pool depth stripe
+          ctx.fillStyle = 'rgba(255,255,255,0.08)';
+          ctx.fillRect(x, y+h*0.44, w*0.55, 4);
+          // Palm tree shadow (top-left, silhouette)
+          ctx.fillStyle = 'rgba(30,80,20,0.22)';
+          ctx.fillRect(x+w*0.04, y, 10, h*0.48); // trunk shadow
+          for (let pl = 0; pl < 4; pl++) {
+            const pla = pl*Math.PI/2+0.4;
+            ctx.beginPath(); ctx.ellipse(x+w*0.04+5+Math.cos(pla)*26, y+h*0.06+Math.sin(pla)*14, 22, 7, pla, 0, Math.PI*2); ctx.fill();
+          }
+          // Life ring on wall
+          ctx.strokeStyle = 'rgba(220,60,30,0.50)'; ctx.lineWidth = 5;
+          ctx.beginPath(); ctx.arc(x+w*0.08, y+h*0.82, 10, 0, Math.PI*2); ctx.stroke();
+          ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.arc(x+w*0.08, y+h*0.82, 10, -0.4, 0.4); ctx.stroke();
+          ctx.beginPath(); ctx.arc(x+w*0.08, y+h*0.82, 10, Math.PI-0.4, Math.PI+0.4); ctx.stroke();
+          ctx.globalAlpha = 0.5;
           break;
         }
         case 'Mining Pit': {
-          ctx.fillStyle = '#4a4040';
-          ctx.beginPath(); ctx.arc(x+w*0.2, y+h*0.3, 15, 0, Math.PI*2); ctx.fill();
-          ctx.beginPath(); ctx.arc(x+w*0.7, y+h*0.6, 18, 0, Math.PI*2); ctx.fill();
-          ctx.beginPath(); ctx.arc(x+w*0.4, y+h*0.7, 12, 0, Math.PI*2); ctx.fill();
-          ctx.fillStyle = '#44aaff'; ctx.globalAlpha = 0.4; ctx.fillRect(x+w*0.22, y+h*0.28, 6, 6);
-          ctx.fillStyle = '#ff44aa'; ctx.fillRect(x+w*0.68, y+h*0.58, 6, 6);
+          // === FUNGLE MINING PIT: underground mine with cart, tracks, ore veins, drill rig ===
+          ctx.globalAlpha = 1.0;
+          // Dark rocky floor overlay
+          const mpRock = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.6);
+          mpRock.addColorStop(0, 'rgba(60,40,20,0.20)');
+          mpRock.addColorStop(1, 'rgba(20,15,8,0)');
+          ctx.fillStyle = mpRock; ctx.fillRect(x, y, w, h);
+          // Mine shaft opening (dark oval in floor center-left)
+          ctx.fillStyle = '#0a0808';
+          ctx.beginPath(); ctx.ellipse(x+w*0.25, cy, w*0.14, h*0.22, 0, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#3a2a18'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.ellipse(x+w*0.25, cy, w*0.14, h*0.22, 0, 0, Math.PI*2); ctx.stroke();
+          // Shaft support timber frame
+          ctx.strokeStyle = '#6a4a1a'; ctx.lineWidth = 5;
+          ctx.beginPath(); ctx.moveTo(x+w*0.12, cy-h*0.22); ctx.lineTo(x+w*0.12, cy+h*0.22); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x+w*0.38, cy-h*0.22); ctx.lineTo(x+w*0.38, cy+h*0.22); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x+w*0.12, cy-h*0.22); ctx.lineTo(x+w*0.38, cy-h*0.22); ctx.stroke();
+          ctx.strokeStyle = '#4a3010'; ctx.lineWidth = 8;
+          ctx.beginPath(); ctx.moveTo(x+w*0.12, cy-h*0.22); ctx.lineTo(x+w*0.38, cy-h*0.22); ctx.stroke();
+          // Mine cart tracks (horizontal, right side of room)
+          ctx.strokeStyle = '#5a5a60'; ctx.lineWidth = 2.5;
+          const trY1 = cy-6, trY2 = cy+6, trX1 = x+w*0.40, trX2 = x+w*0.96;
+          ctx.beginPath(); ctx.moveTo(trX1, trY1); ctx.lineTo(trX2, trY1); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(trX1, trY2); ctx.lineTo(trX2, trY2); ctx.stroke();
+          // Track crossties
+          ctx.strokeStyle = '#4a3818'; ctx.lineWidth = 4;
+          for (let ti2 = 0; ti2 < 6; ti2++) {
+            const tx2 = trX1 + (trX2-trX1)*ti2/5;
+            ctx.beginPath(); ctx.moveTo(tx2, trY1-4); ctx.lineTo(tx2, trY2+4); ctx.stroke();
+          }
+          // Mine cart body
+          const mcX = x+w*0.60, mcY = cy-18, mcW = w*0.22, mcH = 28;
+          ctx.fillStyle = '#3a3030'; ctx.fillRect(mcX, mcY, mcW, mcH);
+          ctx.strokeStyle = '#5a5050'; ctx.lineWidth = 1.5; ctx.strokeRect(mcX, mcY, mcW, mcH);
+          // Cart rivet lines
+          ctx.strokeStyle = '#6a6060'; ctx.lineWidth = 0.5;
+          ctx.beginPath(); ctx.moveTo(mcX+mcW*0.33, mcY); ctx.lineTo(mcX+mcW*0.33, mcY+mcH); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(mcX+mcW*0.66, mcY); ctx.lineTo(mcX+mcW*0.66, mcY+mcH); ctx.stroke();
+          // Cart ore contents (jagged pile)
+          ctx.fillStyle = '#4a3820';
+          ctx.beginPath();
+          ctx.moveTo(mcX+2, mcY+mcH-2); ctx.lineTo(mcX+2, mcY+8);
+          ctx.lineTo(mcX+mcW*0.15, mcY+4); ctx.lineTo(mcX+mcW*0.30, mcY+10);
+          ctx.lineTo(mcX+mcW*0.45, mcY+2); ctx.lineTo(mcX+mcW*0.60, mcY+8);
+          ctx.lineTo(mcX+mcW*0.80, mcY+3); ctx.lineTo(mcX+mcW-2, mcY+8);
+          ctx.lineTo(mcX+mcW-2, mcY+mcH-2); ctx.closePath(); ctx.fill();
+          // Glinting gems in ore
+          const mpGems = [['#44aaff',0.15,0.3],['#ff44aa',0.50,0.2],['#ffcc00',0.75,0.35]];
+          for (const [gc,gx2,gy2] of mpGems) {
+            ctx.fillStyle = gc; ctx.globalAlpha = 0.55;
+            ctx.beginPath(); ctx.arc(mcX+mcW*gx2, mcY+mcH*gy2, 3.5, 0, Math.PI*2); ctx.fill();
+            ctx.globalAlpha = 1.0;
+          }
+          // Cart wheels
+          for (const wx3 of [mcX+mcW*0.18, mcX+mcW*0.82]) {
+            ctx.fillStyle = '#2a2828'; ctx.beginPath(); ctx.arc(wx3, trY2+2, 7, 0, Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#5a5050'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(wx3, trY2+2, 7, 0, Math.PI*2); ctx.stroke();
+            ctx.strokeStyle = '#3a3838'; ctx.lineWidth = 1;
+            for (let sp = 0; sp < 4; sp++) { const sa=sp*Math.PI/2; ctx.beginPath(); ctx.moveTo(wx3,trY2+2); ctx.lineTo(wx3+Math.cos(sa)*5,trY2+2+Math.sin(sa)*5); ctx.stroke(); }
+            ctx.fillStyle = '#4a4848'; ctx.beginPath(); ctx.arc(wx3, trY2+2, 2.5, 0, Math.PI*2); ctx.fill();
+          }
+          // Ore vein on right wall (sparkling gems in rock)
+          const oveins = [[x+w*0.88,y+h*0.14,'#44aaff'],[x+w*0.82,y+h*0.35,'#ff44aa'],[x+w*0.90,y+h*0.62,'#ffcc00'],[x+w*0.78,y+h*0.78,'#44ff88']];
+          for (const [vx2,vy2,vc] of oveins) {
+            ctx.fillStyle = 'rgba(40,30,20,0.55)'; ctx.beginPath(); ctx.arc(vx2, vy2, 11, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = vc; ctx.globalAlpha = 0.40;
+            ctx.beginPath(); ctx.arc(vx2, vy2, 5, 0, Math.PI*2); ctx.fill();
+            ctx.globalAlpha = 0.65;
+            ctx.strokeStyle = vc; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(vx2, vy2, 8, 0, Math.PI*2); ctx.stroke();
+            ctx.globalAlpha = 1.0;
+          }
+          // Rock boulders scattered on floor
+          const mpBoulders = [[0.08,0.20,14],[0.70,0.75,16],[0.42,0.82,11],[0.55,0.15,13]];
+          for (const [bx3,by3,br] of mpBoulders) {
+            ctx.fillStyle = '#3a3028';
+            ctx.beginPath(); ctx.arc(x+w*bx3, y+h*by3, br, 0, Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#5a4a38'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x+w*bx3, y+h*by3, br, 0, Math.PI*2); ctx.stroke();
+            ctx.fillStyle = 'rgba(255,255,255,0.06)'; ctx.beginPath(); ctx.arc(x+w*bx3-br*0.3, y+h*by3-br*0.3, br*0.5, 0, Math.PI*2); ctx.fill();
+          }
+          // Overhead mining light (lantern)
+          ctx.fillStyle = 'rgba(220,180,60,0.18)';
+          ctx.beginPath(); ctx.arc(cx, y+h*0.06, Math.min(w,h)*0.28, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = '#aa8820'; ctx.fillRect(cx-4, y, 8, 16);
+          ctx.fillStyle = 'rgba(255,220,80,0.70)'; ctx.fillRect(cx-5, y+12, 10, 10);
+          ctx.strokeStyle = '#cc9a30'; ctx.lineWidth = 1; ctx.strokeRect(cx-5, y+12, 10, 10);
+          ctx.globalAlpha = 0.5;
           break;
         }
         case 'Upper Engine': case 'Lower Engine': case 'Engine Room': {
@@ -17733,10 +18204,49 @@
             ctx.fillStyle = 'rgba(40,180,120,0.06)';
             ctx.fillRect(x, y+h*0.5, w, h*0.5);
           } else {
-            // Non-MIRA simple railing
-            ctx.strokeStyle = '#556'; ctx.lineWidth = 2;
-            ctx.beginPath(); ctx.moveTo(x+10, y+h-20); ctx.lineTo(x+w-10, y+h-20); ctx.stroke();
-            for (let p = 0; p < 5; p++) { ctx.beginPath(); ctx.moveTo(x+20+p*(w-40)/4, y+h-20); ctx.lineTo(x+20+p*(w-40)/4, y+h-8); ctx.stroke(); }
+            // === POLUS BALCONY: snow-dusted outdoor viewing platform with frost railing ===
+            ctx.globalAlpha = 1.0;
+            // Snow dusting on floor (scattered white patches)
+            ctx.fillStyle = 'rgba(220,240,255,0.15)';
+            for (let sp = 0; sp < 10; sp++) {
+              const sx2 = x+(sp*137+20)%(w-30), sy2 = y+(sp*89+20)%(h-14);
+              ctx.beginPath(); ctx.ellipse(sx2, sy2, 12+sp%5, 4, sp*0.4, 0, Math.PI*2); ctx.fill();
+            }
+            // Ice patches (glassy blue-white)
+            ctx.fillStyle = 'rgba(160,200,240,0.18)';
+            for (let ip = 0; ip < 4; ip++) {
+              ctx.beginPath(); ctx.ellipse(x+w*(0.14+ip*0.22), y+h*0.60, 18+ip*4, 8, ip*0.3, 0, Math.PI*2); ctx.fill();
+            }
+            // Metal safety railing — main horizontal bars (frost-white metallic)
+            ctx.fillStyle = '#4a5560'; ctx.fillRect(x+6, y+h-18, w-12, 7);
+            ctx.strokeStyle = '#7a8a9a'; ctx.lineWidth = 1; ctx.strokeRect(x+6, y+h-18, w-12, 7);
+            // Railing highlight (frost accumulation on top)
+            ctx.fillStyle = 'rgba(220,235,255,0.40)'; ctx.fillRect(x+6, y+h-18, w-12, 2);
+            // Railing posts
+            const bRailPosts = Math.floor((w-12)/18);
+            for (let rp = 0; rp <= bRailPosts; rp++) {
+              const rpx = x+6+rp*(w-12)/bRailPosts;
+              ctx.fillStyle = '#3a4450'; ctx.fillRect(rpx-3, y+h*0.40, 6, h*0.60-16);
+              ctx.strokeStyle = '#6a7a8a'; ctx.lineWidth = 0.5; ctx.strokeRect(rpx-3, y+h*0.40, 6, h*0.60-16);
+              // Frost on post tops
+              ctx.fillStyle = 'rgba(220,235,255,0.45)'; ctx.fillRect(rpx-3, y+h*0.40, 6, 3);
+            }
+            // Mid-rail bar
+            ctx.fillStyle = '#3a4450'; ctx.fillRect(x+6, y+h*0.62, w-12, 4);
+            ctx.strokeStyle = '#5a6a7a'; ctx.lineWidth = 0.5; ctx.strokeRect(x+6, y+h*0.62, w-12, 4);
+            // Distant crater view (dark horizon at top of room)
+            ctx.fillStyle = 'rgba(15,30,50,0.30)'; ctx.fillRect(x, y, w, h*0.35);
+            // Horizon craters (distant landscape)
+            ctx.fillStyle = 'rgba(80,60,50,0.22)';
+            for (let cr = 0; cr < 4; cr++) {
+              ctx.beginPath(); ctx.ellipse(x+w*(0.12+cr*0.24), y+h*0.30, 20+cr*8, 6, 0, 0, Math.PI*2); ctx.fill();
+            }
+            // Snow accumulation on railing (blobs)
+            ctx.fillStyle = 'rgba(240,248,255,0.55)';
+            for (let sw = 0; sw < 6; sw++) {
+              ctx.beginPath(); ctx.ellipse(x+w*0.10+sw*(w*0.80)/5, y+h-19, 8+sw%3, 3, 0, 0, Math.PI*2); ctx.fill();
+            }
+            ctx.globalAlpha = 0.5;
           }
           break;
         }
@@ -18140,12 +18650,472 @@
           break;
         }
         case 'Lookout': {
-          ctx.fillStyle = '#0a2010'; ctx.fillRect(x+w*0.6, y+10, w*0.35, h*0.5);
-          ctx.strokeStyle = '#2a4a2a'; ctx.lineWidth = 1; ctx.strokeRect(x+w*0.6, y+10, w*0.35, h*0.5);
-          // Telescope
-          ctx.strokeStyle = '#666'; ctx.lineWidth = 3;
-          ctx.beginPath(); ctx.moveTo(x+w*0.3, cy+20); ctx.lineTo(x+w*0.3, cy-30); ctx.stroke();
-          ctx.beginPath(); ctx.moveTo(x+w*0.22, cy-30); ctx.lineTo(x+w*0.38, cy-30); ctx.stroke();
+          // === FUNGLE LOOKOUT: elevated observation post with telescope, star charts, binoculars ===
+          ctx.globalAlpha = 1.0;
+          // Wooden elevated platform feel (dark hardwood planks)
+          const loPlank = 20;
+          for (let lp = 0; lp < Math.ceil(h/loPlank); lp++) {
+            ctx.fillStyle = lp%2===0 ? 'rgba(60,40,18,0.22)' : 'rgba(50,32,14,0.16)';
+            ctx.fillRect(x, y+lp*loPlank, w, loPlank);
+          }
+          // Plank grain lines
+          ctx.strokeStyle = 'rgba(30,20,8,0.15)'; ctx.lineWidth = 0.5;
+          for (let lp = 0; lp <= Math.ceil(h/loPlank); lp++) { ctx.beginPath(); ctx.moveTo(x, y+lp*loPlank); ctx.lineTo(x+w, y+lp*loPlank); ctx.stroke(); }
+          // Railing along top and bottom edges (safety barrier)
+          ctx.fillStyle = '#3a2a14';
+          ctx.fillRect(x+4, y+4, w-8, 8); ctx.fillRect(x+4, y+h-12, w-8, 8);
+          ctx.strokeStyle = '#6a4a28'; ctx.lineWidth = 1;
+          ctx.strokeRect(x+4, y+4, w-8, 8); ctx.strokeRect(x+4, y+h-12, w-8, 8);
+          const railPosts = 6;
+          for (let rp = 0; rp <= railPosts; rp++) {
+            const rpx = x+4+rp*(w-8)/railPosts;
+            ctx.fillStyle = '#2e2010'; ctx.fillRect(rpx-3, y+4, 6, h-8);
+            ctx.strokeStyle = '#5a3a20'; ctx.lineWidth = 0.5; ctx.strokeRect(rpx-3, y+4, 6, h-8);
+          }
+          // Telescope mount — prominent center-left
+          const telX = x+w*0.28, telY = cy;
+          // Tripod legs
+          ctx.strokeStyle = '#5a5050'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.moveTo(telX, telY+10); ctx.lineTo(telX-22, telY+h*0.30); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(telX, telY+10); ctx.lineTo(telX+22, telY+h*0.30); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(telX, telY+10); ctx.lineTo(telX, telY+h*0.32); ctx.stroke();
+          // Tripod foot cross-bar
+          ctx.strokeStyle = '#4a4040'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(telX-18, telY+h*0.27); ctx.lineTo(telX+18, telY+h*0.27); ctx.stroke();
+          // Central column
+          ctx.fillStyle = '#4a4a52'; ctx.fillRect(telX-4, telY-30, 8, 40);
+          ctx.strokeStyle = '#6a6a72'; ctx.lineWidth = 1; ctx.strokeRect(telX-4, telY-30, 8, 40);
+          // Telescope barrel (angled upward-right)
+          ctx.save(); ctx.translate(telX, telY-30); ctx.rotate(-0.55);
+          ctx.fillStyle = '#3a3840';
+          ctx.fillRect(-5, -26, 10, 28);
+          ctx.strokeStyle = '#6a6870'; ctx.lineWidth = 1.5; ctx.strokeRect(-5, -26, 10, 28);
+          // Eyepiece
+          ctx.fillStyle = '#2a2830'; ctx.fillRect(-6, 0, 12, 6);
+          // Lens ring (objective end)
+          ctx.strokeStyle = '#8a8890'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, -26, 6, 0, Math.PI*2); ctx.stroke();
+          ctx.fillStyle = 'rgba(60,80,140,0.25)'; ctx.beginPath(); ctx.arc(0, -26, 5, 0, Math.PI*2); ctx.fill();
+          // Barrel band rings
+          ctx.strokeStyle = '#7a7880'; ctx.lineWidth = 1;
+          for (let br2 = 0; br2 < 3; br2++) { ctx.beginPath(); ctx.arc(0, -22+br2*9, 5.5, -Math.PI/2, Math.PI/2); ctx.stroke(); }
+          ctx.restore();
+          // Star chart / map on right wall
+          const scX = x+w*0.60, scY = y+8, scW = w*0.35, scH = h*0.52;
+          ctx.fillStyle = '#0e1828'; ctx.fillRect(scX, scY, scW, scH);
+          ctx.strokeStyle = '#2a4060'; ctx.lineWidth = 1.5; ctx.strokeRect(scX-2, scY-2, scW+4, scH+4);
+          // Frame
+          ctx.strokeStyle = '#3a5a2a'; ctx.lineWidth = 1; ctx.strokeRect(scX, scY, scW, scH);
+          // Grid lines on chart
+          ctx.strokeStyle = 'rgba(80,160,100,0.22)'; ctx.lineWidth = 0.6;
+          for (let cg = 1; cg < 5; cg++) {
+            ctx.beginPath(); ctx.moveTo(scX+scW*cg/5, scY); ctx.lineTo(scX+scW*cg/5, scY+scH); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(scX, scY+scH*cg/5); ctx.lineTo(scX+scW, scY+scH*cg/5); ctx.stroke();
+          }
+          // Stars on chart
+          ctx.fillStyle = 'rgba(220,230,255,0.60)';
+          const loStars = [[0.12,0.10],[0.38,0.18],[0.72,0.08],[0.55,0.32],[0.20,0.45],[0.80,0.38],[0.44,0.62],[0.15,0.72],[0.68,0.70],[0.30,0.88]];
+          for (const [sx4,sy4] of loStars) {
+            const ss = (sx4+sy4>1.0) ? 2.5 : 1.5;
+            ctx.beginPath(); ctx.arc(scX+scW*sx4, scY+scH*sy4, ss, 0, Math.PI*2); ctx.fill();
+          }
+          // Constellation lines
+          ctx.strokeStyle = 'rgba(140,200,160,0.25)'; ctx.lineWidth = 0.8;
+          ctx.beginPath(); ctx.moveTo(scX+scW*0.12, scY+scH*0.10); ctx.lineTo(scX+scW*0.38, scY+scH*0.18); ctx.lineTo(scX+scW*0.55, scY+scH*0.32); ctx.lineTo(scX+scW*0.44, scY+scH*0.62); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(scX+scW*0.72, scY+scH*0.08); ctx.lineTo(scX+scW*0.80, scY+scH*0.38); ctx.lineTo(scX+scW*0.68, scY+scH*0.70); ctx.stroke();
+          // Binoculars resting on railing (bottom edge)
+          const bnX = x+w*0.42, bnY = y+h-30;
+          // Two lens barrels
+          for (let bi2 = 0; bi2 < 2; bi2++) {
+            const bix = bnX+bi2*20;
+            ctx.fillStyle = '#2a2828'; ctx.fillRect(bix, bnY, 16, 22);
+            ctx.strokeStyle = '#4a4848'; ctx.lineWidth = 1; ctx.strokeRect(bix, bnY, 16, 22);
+            // Lens
+            ctx.fillStyle = '#0e1428'; ctx.beginPath(); ctx.arc(bix+8, bnY+6, 6, 0, Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#5a6880'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(bix+8, bnY+6, 6, 0, Math.PI*2); ctx.stroke();
+            ctx.fillStyle = 'rgba(80,120,200,0.20)'; ctx.beginPath(); ctx.arc(bix+8, bnY+6, 4, 0, Math.PI*2); ctx.fill();
+            // Band ring
+            ctx.strokeStyle = '#5a5858'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(bix, bnY+14); ctx.lineTo(bix+16, bnY+14); ctx.stroke();
+          }
+          // Bridge connecting barrels
+          ctx.fillStyle = '#3a3838'; ctx.fillRect(bnX+14, bnY+8, 8, 8);
+          // Viewing window (top edge — large panoramic opening)
+          ctx.fillStyle = 'rgba(10,25,50,0.45)';
+          ctx.fillRect(x+4, y+4, w-8, 10);
+          ctx.strokeStyle = 'rgba(80,160,200,0.22)'; ctx.lineWidth = 0.8; ctx.strokeRect(x+4, y+4, w-8, 10);
+          // Distant stars visible through window
+          ctx.fillStyle = 'rgba(220,230,255,0.45)';
+          for (let ws = 0; ws < 10; ws++) { ctx.beginPath(); ctx.arc(x+w*0.06+ws*w*0.09, y+8, ws%3===0?1.5:1, 0, Math.PI*2); ctx.fill(); }
+          ctx.globalAlpha = 0.5;
+          break;
+        }
+        case 'The Dorm': {
+          // === FUNGLE DORM: jungle bunk room with beds, lockers, hammock, personal gear ===
+          ctx.globalAlpha = 1.0;
+          // Warm wooden floor with grain
+          ctx.fillStyle = 'rgba(80,55,25,0.20)'; ctx.fillRect(x, y, w, h);
+          // Bunk beds — 2 sets, one on each side
+          const dormBunks = [[x+10, cy-h*0.38, w*0.30, h*0.72], [x+w*0.62, cy-h*0.38, w*0.30, h*0.72]];
+          for (const [bx2,by2,bw2,bh2] of dormBunks) {
+            // Bunk frame (dark wood)
+            ctx.fillStyle = '#3a2810'; ctx.fillRect(bx2, by2, bw2, bh2);
+            ctx.strokeStyle = '#6a4828'; ctx.lineWidth = 1.5; ctx.strokeRect(bx2, by2, bw2, bh2);
+            // Bottom bunk mattress
+            ctx.fillStyle = '#4a6a8a'; ctx.fillRect(bx2+4, by2+bh2*0.52, bw2-8, bh2*0.38);
+            ctx.strokeStyle = '#3a5070'; ctx.lineWidth = 0.8; ctx.strokeRect(bx2+4, by2+bh2*0.52, bw2-8, bh2*0.38);
+            // Bottom bunk pillow
+            ctx.fillStyle = '#d8cfc0'; ctx.fillRect(bx2+6, by2+bh2*0.54, bw2*0.35, bh2*0.12);
+            ctx.strokeStyle = '#b0a898'; ctx.lineWidth = 0.5; ctx.strokeRect(bx2+6, by2+bh2*0.54, bw2*0.35, bh2*0.12);
+            // Top bunk mattress
+            ctx.fillStyle = '#7a4a5a'; ctx.fillRect(bx2+4, by2+8, bw2-8, bh2*0.38);
+            ctx.strokeStyle = '#5a3040'; ctx.lineWidth = 0.8; ctx.strokeRect(bx2+4, by2+8, bw2-8, bh2*0.38);
+            // Top bunk pillow
+            ctx.fillStyle = '#e0d8c8'; ctx.fillRect(bx2+6, by2+10, bw2*0.35, bh2*0.10);
+            ctx.strokeStyle = '#c0b8a8'; ctx.lineWidth = 0.5; ctx.strokeRect(bx2+6, by2+10, bw2*0.35, bh2*0.10);
+            // Ladder bars on side
+            ctx.strokeStyle = '#5a3820'; ctx.lineWidth = 2.5;
+            ctx.beginPath(); ctx.moveTo(bx2+bw2-8, by2+bh2*0.15); ctx.lineTo(bx2+bw2-8, by2+bh2*0.92); ctx.stroke();
+            for (let lr = 0; lr < 3; lr++) {
+              ctx.beginPath(); ctx.moveTo(bx2+bw2-14, by2+bh2*(0.22+lr*0.22)); ctx.lineTo(bx2+bw2-2, by2+bh2*(0.22+lr*0.22)); ctx.stroke();
+            }
+            // Middle shelf divider
+            ctx.fillStyle = '#2e2010'; ctx.fillRect(bx2, by2+bh2*0.48, bw2, 5);
+            // Mosquito net (top bunk) — subtle translucent drape
+            ctx.fillStyle = 'rgba(220,220,180,0.08)'; ctx.fillRect(bx2+3, by2+6, bw2-6, bh2*0.42);
+            ctx.strokeStyle = 'rgba(200,200,160,0.20)'; ctx.lineWidth = 0.8;
+            for (let mn = 0; mn < 4; mn++) { ctx.beginPath(); ctx.moveTo(bx2+3+mn*(bw2-6)/3, by2+6); ctx.lineTo(bx2+3+mn*(bw2-6)/3, by2+bh2*0.48); ctx.stroke(); }
+          }
+          // Foot locker at end of each bunk
+          for (const bx2 of [x+10, x+w*0.62]) {
+            ctx.fillStyle = '#4a3820'; ctx.fillRect(bx2, cy+h*0.36, w*0.30, h*0.14);
+            ctx.strokeStyle = '#7a5a30'; ctx.lineWidth = 1; ctx.strokeRect(bx2, cy+h*0.36, w*0.30, h*0.14);
+            ctx.fillStyle = '#6a4820'; ctx.fillRect(bx2+w*0.05, cy+h*0.38, w*0.20, h*0.05);
+            ctx.strokeStyle = '#9a6830'; ctx.lineWidth = 0.5; ctx.strokeRect(bx2+w*0.05, cy+h*0.38, w*0.20, h*0.05);
+            ctx.fillStyle = '#8a7a40'; ctx.fillRect(bx2+w*0.12, cy+h*0.39, w*0.06, h*0.03);
+          }
+          // Hammock strung across center (diagonal)
+          ctx.strokeStyle = 'rgba(180,140,60,0.50)'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(x+w*0.42, y+h*0.25); ctx.lineTo(x+w*0.56, y+h*0.25); ctx.stroke();
+          ctx.strokeStyle = 'rgba(160,120,50,0.40)'; ctx.lineWidth = 1;
+          for (let hm = 0; hm < 6; hm++) {
+            ctx.beginPath();
+            ctx.moveTo(x+w*0.42+hm*(w*0.14)/5, y+h*0.25);
+            ctx.quadraticCurveTo(x+w*0.49, y+h*0.34, x+w*0.42+(hm+1)*(w*0.14)/5, y+h*0.25);
+            ctx.stroke();
+          }
+          // Rope attachment points
+          ctx.fillStyle = '#5a4020'; ctx.fillRect(x+w*0.40, y+h*0.21, 6, 10); ctx.fillRect(x+w*0.54, y+h*0.21, 6, 10);
+          // Personal gear on floor (backpack, boots)
+          ctx.fillStyle = '#5a4030'; ctx.fillRect(x+w*0.44, cy+h*0.20, 18, 22);
+          ctx.strokeStyle = '#8a6050'; ctx.lineWidth = 1; ctx.strokeRect(x+w*0.44, cy+h*0.20, 18, 22);
+          ctx.strokeStyle = '#3a2820'; ctx.lineWidth = 0.8;
+          ctx.beginPath(); ctx.moveTo(x+w*0.44, cy+h*0.20+5); ctx.lineTo(x+w*0.44+18, cy+h*0.20+5); ctx.stroke();
+          // Boots
+          for (let bt = 0; bt < 2; bt++) {
+            ctx.fillStyle = '#2a2018'; ctx.fillRect(x+w*0.50+bt*14, cy+h*0.25, 11, 14);
+            ctx.strokeStyle = '#4a3828'; ctx.lineWidth = 0.8; ctx.strokeRect(x+w*0.50+bt*14, cy+h*0.25, 11, 14);
+          }
+          // Wall notice board (center top)
+          ctx.fillStyle = '#8a6030'; ctx.fillRect(cx-22, y+6, 44, 28);
+          ctx.strokeStyle = '#aa8040'; ctx.lineWidth = 1; ctx.strokeRect(cx-22, y+6, 44, 28);
+          ctx.fillStyle = '#d8c890'; ctx.fillRect(cx-20, y+7, 40, 26);
+          for (let nb = 0; nb < 4; nb++) {
+            ctx.fillStyle = nb%2===0 ? 'rgba(255,240,180,0.65)' : 'rgba(180,220,255,0.65)';
+            ctx.fillRect(cx-18+nb*10, y+9, 8, 6);
+          }
+          // Thumbtack dots
+          ctx.fillStyle = '#cc2222';
+          for (let nb = 0; nb < 4; nb++) ctx.fillRect(cx-15+nb*10, y+9, 2, 2);
+          ctx.globalAlpha = 0.5;
+          break;
+        }
+        case 'Jungle': {
+          // === FUNGLE JUNGLE: dense tropical forest with giant trees, mushrooms, vines ===
+          ctx.globalAlpha = 1.0;
+          // Lush green jungle floor (leaf litter and undergrowth)
+          const jgAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.7);
+          jgAmb.addColorStop(0, 'rgba(30,100,20,0.18)');
+          jgAmb.addColorStop(1, 'rgba(10,50,8,0)');
+          ctx.fillStyle = jgAmb; ctx.fillRect(x, y, w, h);
+          // Leaf litter on floor
+          ctx.fillStyle = 'rgba(40,100,20,0.20)';
+          for (let lf2 = 0; lf2 < 16; lf2++) {
+            const lfx = x+(lf2*137+20)%(w-14), lfy = y+(lf2*97+30)%(h-14);
+            const lfr = lf2*0.6;
+            ctx.beginPath(); ctx.ellipse(lfx, lfy, 7+lf2%4, 3, lfr, 0, Math.PI*2); ctx.fill();
+          }
+          // Giant tree trunks (left and right sides)
+          const jgTrees = [[x+w*0.06, y, 26, h], [x+w*0.85, y, 26, h], [x+w*0.45, y, 20, h*0.55]];
+          for (const [tx2,ty2,tw2,th2] of jgTrees) {
+            // Root flares at base
+            ctx.fillStyle = '#2e1a08';
+            ctx.beginPath();
+            ctx.moveTo(tx2, ty2+th2);
+            ctx.quadraticCurveTo(tx2-14, ty2+th2*0.85, tx2-18, ty2+th2*0.70);
+            ctx.lineTo(tx2, ty2+th2*0.55); ctx.closePath(); ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(tx2+tw2, ty2+th2);
+            ctx.quadraticCurveTo(tx2+tw2+14, ty2+th2*0.85, tx2+tw2+18, ty2+th2*0.70);
+            ctx.lineTo(tx2+tw2, ty2+th2*0.55); ctx.closePath(); ctx.fill();
+            // Trunk body
+            const tgrad = ctx.createLinearGradient(tx2, 0, tx2+tw2, 0);
+            tgrad.addColorStop(0, '#4a3018'); tgrad.addColorStop(0.3, '#6a4a28'); tgrad.addColorStop(0.7, '#5a3a1a'); tgrad.addColorStop(1, '#3a2010');
+            ctx.fillStyle = tgrad; ctx.fillRect(tx2, ty2, tw2, th2);
+            ctx.strokeStyle = '#3a2010'; ctx.lineWidth = 1.5; ctx.strokeRect(tx2, ty2, tw2, th2);
+            // Bark texture (vertical lines)
+            ctx.strokeStyle = 'rgba(30,20,8,0.25)'; ctx.lineWidth = 0.8;
+            for (let bk = 1; bk < 5; bk++) { ctx.beginPath(); ctx.moveTo(tx2+tw2*bk/5, ty2); ctx.lineTo(tx2+tw2*bk/5+3, ty2+th2); ctx.stroke(); }
+            // Horizontal bark rings
+            ctx.strokeStyle = 'rgba(80,50,20,0.20)'; ctx.lineWidth = 1;
+            for (let br3 = 0; br3 < 5; br3++) { ctx.beginPath(); ctx.moveTo(tx2, ty2+th2*br3/4); ctx.lineTo(tx2+tw2, ty2+th2*br3/4+2); ctx.stroke(); }
+          }
+          // Giant mushrooms (colorful caps)
+          const jgMushrooms = [[x+w*0.25, y+h*0.35, '#cc3344', 20], [x+w*0.68, y+h*0.20, '#ff8820', 16],
+                                [x+w*0.38, y+h*0.72, '#882288', 14], [x+w*0.78, y+h*0.65, '#cc2222', 12]];
+          for (const [mx2,my2,mc,mr] of jgMushrooms) {
+            // Stem
+            ctx.fillStyle = '#e8dcc0'; ctx.fillRect(mx2-mr*0.22, my2, mr*0.44, mr*1.0);
+            ctx.strokeStyle = '#c8bca0'; ctx.lineWidth = 0.8; ctx.strokeRect(mx2-mr*0.22, my2, mr*0.44, mr*1.0);
+            // Cap
+            ctx.fillStyle = mc;
+            ctx.beginPath(); ctx.ellipse(mx2, my2, mr, mr*0.58, 0, Math.PI, 0); ctx.fill();
+            ctx.strokeStyle = 'rgba(0,0,0,0.25)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(mx2, my2, mr, mr*0.58, 0, Math.PI, 0); ctx.stroke();
+            // White spots on cap
+            ctx.fillStyle = 'rgba(255,255,255,0.55)';
+            for (let sp2 = 0; sp2 < 4; sp2++) {
+              const sx5 = mx2+(sp2%2===0?-mr*0.35:mr*0.35)+(sp2<2?-mr*0.05:mr*0.05);
+              const sy5 = my2-mr*(0.20+sp2*0.08);
+              ctx.beginPath(); ctx.arc(sx5, sy5, mr*0.10, 0, Math.PI*2); ctx.fill();
+            }
+            // Cap underside (gill shadow)
+            ctx.fillStyle = 'rgba(0,0,0,0.18)';
+            ctx.beginPath(); ctx.ellipse(mx2, my2, mr*0.88, mr*0.22, 0, 0, Math.PI); ctx.fill();
+          }
+          // Hanging vines from top
+          ctx.strokeStyle = 'rgba(30,120,30,0.45)'; ctx.lineWidth = 2.5;
+          for (let vn2 = 0; vn2 < 7; vn2++) {
+            const vx2 = x+w*(0.08+vn2*0.13);
+            const vLen2 = h*(0.28+Math.sin(vn2*1.7)*0.15);
+            ctx.beginPath(); ctx.moveTo(vx2, y);
+            ctx.bezierCurveTo(vx2+8, y+vLen2*0.35, vx2-6, y+vLen2*0.65, vx2+4, y+vLen2); ctx.stroke();
+            // Leaf clusters on vine
+            ctx.fillStyle = 'rgba(40,160,40,0.45)';
+            for (let vl = 0; vl < 3; vl++) {
+              ctx.beginPath(); ctx.ellipse(vx2+3, y+vLen2*(0.3+vl*0.25), 8, 4, 0.6, 0, Math.PI*2); ctx.fill();
+            }
+          }
+          // Ground ferns/undergrowth clusters
+          ctx.fillStyle = 'rgba(50,150,30,0.30)';
+          for (let fg = 0; fg < 5; fg++) {
+            const fgx = x+(fg*181+50)%(w-30), fgy = y+(fg*113+40)%(h-16);
+            for (let fl = 0; fl < 5; fl++) {
+              const fla = fl*Math.PI*2/5;
+              ctx.beginPath();
+              ctx.moveTo(fgx, fgy);
+              ctx.quadraticCurveTo(fgx+Math.cos(fla)*10, fgy+Math.sin(fla)*10-5, fgx+Math.cos(fla)*20, fgy+Math.sin(fla)*16);
+              ctx.stroke();
+            }
+          }
+          // Ancient stone ruins (mossy stone blocks, bottom center)
+          const ruinBlocks = [[x+w*0.30, y+h*0.80, 28, 18], [x+w*0.46, y+h*0.78, 32, 20], [x+w*0.55, y+h*0.82, 22, 16]];
+          for (const [rx2,ry2,rw2,rh2] of ruinBlocks) {
+            ctx.fillStyle = '#3a3828'; ctx.fillRect(rx2, ry2, rw2, rh2);
+            ctx.strokeStyle = '#5a5840'; ctx.lineWidth = 1; ctx.strokeRect(rx2, ry2, rw2, rh2);
+            // Moss growth
+            ctx.fillStyle = 'rgba(40,100,20,0.30)'; ctx.fillRect(rx2+2, ry2+2, rw2-4, rh2*0.40);
+            // Stone texture cracks
+            ctx.strokeStyle = 'rgba(20,18,10,0.35)'; ctx.lineWidth = 0.5;
+            ctx.beginPath(); ctx.moveTo(rx2+rw2*0.3, ry2); ctx.lineTo(rx2+rw2*0.4, ry2+rh2); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(rx2, ry2+rh2*0.6); ctx.lineTo(rx2+rw2, ry2+rh2*0.55); ctx.stroke();
+          }
+          // Firefly glow hints (small ambient yellow dots)
+          ctx.fillStyle = 'rgba(220,240,80,0.30)';
+          for (let ff2 = 0; ff2 < 5; ff2++) {
+            ctx.beginPath(); ctx.arc(x+w*(0.15+ff2*0.17), y+h*(0.20+ff2%3*0.22), 2, 0, Math.PI*2); ctx.fill();
+          }
+          ctx.globalAlpha = 0.5;
+          break;
+        }
+        case 'Highlands': {
+          // === FUNGLE HIGHLANDS: elevated rocky terrain with boulders, wind sensor, stone outcrops ===
+          ctx.globalAlpha = 1.0;
+          // Rocky/stony floor texture
+          const hlAmb = ctx.createLinearGradient(x, y, x, y+h);
+          hlAmb.addColorStop(0, 'rgba(80,70,50,0.22)');
+          hlAmb.addColorStop(1, 'rgba(50,45,30,0.14)');
+          ctx.fillStyle = hlAmb; ctx.fillRect(x, y, w, h);
+          // Stone tile pattern
+          ctx.strokeStyle = 'rgba(100,90,60,0.20)'; ctx.lineWidth = 1;
+          const hlTile = 30;
+          for (let hx = 0; hx < w; hx += hlTile) {
+            for (let hy = 0; hy < h; hy += hlTile) {
+              const hoff = (Math.floor(hx/hlTile)%2)*hlTile*0.5;
+              ctx.strokeRect(x+hx, y+hy+hoff, hlTile, hlTile);
+            }
+          }
+          // Large rock formations (3 prominent)
+          const hlRocks = [
+            {bx:x+w*0.06, by:y+h*0.10, pts:[[0,30],[10,0],[30,5],[40,25],[32,40],[8,38]]},
+            {bx:x+w*0.62, by:y+h*0.55, pts:[[0,20],[8,0],[22,4],[28,18],[20,32],[4,28]]},
+            {bx:x+w*0.20, by:y+h*0.65, pts:[[0,18],[6,2],[18,0],[24,14],[16,28],[2,26]]},
+          ];
+          for (const {bx,by,pts} of hlRocks) {
+            ctx.fillStyle = '#4a4030';
+            ctx.beginPath(); ctx.moveTo(bx+pts[0][0], by+pts[0][1]);
+            for (let p = 1; p < pts.length; p++) ctx.lineTo(bx+pts[p][0], by+pts[p][1]);
+            ctx.closePath(); ctx.fill();
+            ctx.strokeStyle = '#6a5a40'; ctx.lineWidth = 1.5; ctx.stroke();
+            // Highlight edge
+            ctx.fillStyle = 'rgba(255,255,255,0.08)';
+            ctx.beginPath(); ctx.moveTo(bx+pts[0][0], by+pts[0][1]);
+            for (let p = 1; p < 3; p++) ctx.lineTo(bx+pts[p][0], by+pts[p][1]);
+            ctx.stroke();
+            // Rock cracks
+            ctx.strokeStyle = 'rgba(30,25,15,0.35)'; ctx.lineWidth = 0.7;
+            ctx.beginPath(); ctx.moveTo(bx+6, by+10); ctx.lineTo(bx+18, by+22); ctx.stroke();
+          }
+          // Wind speed/direction sensor on tall pole (center-right)
+          const wsX = x+w*0.75, wsY = y;
+          // Pole
+          ctx.strokeStyle = '#5a5a60'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.moveTo(wsX, wsY); ctx.lineTo(wsX, wsY+h*0.70); ctx.stroke();
+          // Anemometer cup assembly (at top)
+          const wnY = wsY+h*0.10;
+          ctx.fillStyle = '#6a6a70'; ctx.fillRect(wsX-8, wnY-3, 16, 6);
+          ctx.strokeStyle = '#8a8a90'; ctx.lineWidth = 1; ctx.strokeRect(wsX-8, wnY-3, 16, 6);
+          for (let cup = 0; cup < 3; cup++) {
+            const ca = cup*Math.PI*2/3;
+            const cpx = wsX+Math.cos(ca)*14, cpy = wnY+Math.sin(ca)*8;
+            ctx.fillStyle = '#7a7a80'; ctx.beginPath(); ctx.arc(cpx, cpy, 5, 0, Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#9a9aa0'; ctx.lineWidth = 0.8; ctx.stroke();
+            ctx.strokeStyle = '#5a5a60'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(wsX, wnY); ctx.lineTo(cpx, cpy); ctx.stroke();
+          }
+          // Direction vane below anemometer
+          ctx.fillStyle = '#8a8890';
+          ctx.beginPath(); ctx.moveTo(wsX, wnY+18); ctx.lineTo(wsX+22, wnY+26); ctx.lineTo(wsX, wnY+22); ctx.closePath(); ctx.fill();
+          ctx.beginPath(); ctx.moveTo(wsX, wnY+18); ctx.lineTo(wsX-8, wnY+24); ctx.lineTo(wsX, wnY+22); ctx.closePath(); ctx.fill();
+          // Small weather station panel (bottom of pole)
+          ctx.fillStyle = '#2a3028'; ctx.fillRect(wsX-16, wsY+h*0.58, 32, 22);
+          ctx.strokeStyle = '#4a5040'; ctx.lineWidth = 1; ctx.strokeRect(wsX-16, wsY+h*0.58, 32, 22);
+          ctx.fillStyle = 'rgba(80,200,100,0.22)'; ctx.fillRect(wsX-14, wsY+h*0.59, 28, 8);
+          ctx.fillStyle = 'rgba(80,200,100,0.55)'; ctx.fillRect(wsX-14, wsY+h*0.59, 18, 8);
+          // Small flag/wind sock on secondary pole (left)
+          const flagX = x+w*0.18, flagY = y+h*0.15;
+          ctx.strokeStyle = '#5a5060'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(flagX, flagY); ctx.lineTo(flagX, flagY+h*0.45); ctx.stroke();
+          // Wind sock
+          ctx.fillStyle = 'rgba(200,80,30,0.55)';
+          ctx.beginPath(); ctx.moveTo(flagX, flagY+5); ctx.lineTo(flagX+28, flagY+10); ctx.lineTo(flagX+26, flagY+20); ctx.lineTo(flagX, flagY+16); ctx.closePath(); ctx.fill();
+          ctx.strokeStyle = 'rgba(220,100,40,0.45)'; ctx.lineWidth = 0.8; ctx.stroke();
+          // White stripe on windsock
+          ctx.fillStyle = 'rgba(255,255,255,0.30)'; ctx.fillRect(flagX+8, flagY+6, 4, 14);
+          // Scattered small stones on ground
+          ctx.fillStyle = 'rgba(100,90,60,0.35)';
+          for (let gs2 = 0; gs2 < 10; gs2++) {
+            const gsx = x+(gs2*113+30)%(w-10), gsy = y+(gs2*79+40)%(h-10);
+            ctx.beginPath(); ctx.ellipse(gsx, gsy, 3+gs2%3, 2, gs2*0.4, 0, Math.PI*2); ctx.fill();
+          }
+          // Elevation marker post (bottom-left)
+          ctx.fillStyle = '#3a3028'; ctx.fillRect(x+w*0.08, y+h*0.60, 8, h*0.36);
+          ctx.strokeStyle = '#5a5040'; ctx.lineWidth = 1; ctx.strokeRect(x+w*0.08, y+h*0.60, 8, h*0.36);
+          // Elevation markings on post
+          ctx.strokeStyle = 'rgba(255,255,255,0.30)'; ctx.lineWidth = 0.8;
+          for (let em = 0; em < 4; em++) { ctx.beginPath(); ctx.moveTo(x+w*0.08+2, y+h*(0.62+em*0.08)); ctx.lineTo(x+w*0.08+9, y+h*(0.62+em*0.08)); ctx.stroke(); }
+          // Horizon glow (subtle — representing high altitude open sky)
+          ctx.fillStyle = 'rgba(80,140,200,0.06)'; ctx.fillRect(x, y, w, h*0.30);
+          ctx.globalAlpha = 0.5;
+          break;
+        }
+        case 'Precision Drilling': {
+          // === FUNGLE PRECISION DRILLING: industrial drill rig with bore hole, core samples, equipment ===
+          ctx.globalAlpha = 1.0;
+          // Gritty industrial floor — dark stone with metallic dust
+          ctx.fillStyle = 'rgba(50,35,20,0.25)'; ctx.fillRect(x, y, w, h);
+          // Metal grate floor markings
+          ctx.strokeStyle = 'rgba(100,80,40,0.15)'; ctx.lineWidth = 0.8;
+          for (let gx2 = 0; gx2 < w; gx2 += 22) { ctx.beginPath(); ctx.moveTo(x+gx2, y); ctx.lineTo(x+gx2, y+h); ctx.stroke(); }
+          for (let gy2 = 0; gy2 < h; gy2 += 22) { ctx.beginPath(); ctx.moveTo(x, y+gy2); ctx.lineTo(x+w, y+gy2); ctx.stroke(); }
+          // Central bore hole in floor (large dark circle)
+          const drX = cx-w*0.10, drY = cy;
+          ctx.fillStyle = '#080808';
+          ctx.beginPath(); ctx.arc(drX, drY, Math.min(w,h)*0.14, 0, Math.PI*2); ctx.fill();
+          // Bore hole ring / collar
+          ctx.strokeStyle = '#5a5050'; ctx.lineWidth = 4;
+          ctx.beginPath(); ctx.arc(drX, drY, Math.min(w,h)*0.14, 0, Math.PI*2); ctx.stroke();
+          ctx.strokeStyle = '#7a7060'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(drX, drY, Math.min(w,h)*0.16, 0, Math.PI*2); ctx.stroke();
+          // Depth markings around hole
+          for (let dm = 0; dm < 8; dm++) {
+            const dma = dm*Math.PI/4;
+            const dr2 = Math.min(w,h)*0.16;
+            ctx.strokeStyle = 'rgba(200,160,60,0.35)'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(drX+Math.cos(dma)*dr2, drY+Math.sin(dma)*dr2); ctx.lineTo(drX+Math.cos(dma)*(dr2+6), drY+Math.sin(dma)*(dr2+6)); ctx.stroke();
+          }
+          // Drill rig tower (tall vertical structure, center)
+          const rig_x = cx+w*0.05, rigH = h*0.82, rigW = w*0.06;
+          // Rig legs (A-frame)
+          ctx.strokeStyle = '#5a5a60'; ctx.lineWidth = 4;
+          ctx.beginPath(); ctx.moveTo(rig_x, y+h); ctx.lineTo(rig_x+rigW/2, y+h-rigH); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(rig_x+rigW, y+h); ctx.lineTo(rig_x+rigW/2, y+h-rigH); ctx.stroke();
+          // Cross-bracing
+          ctx.strokeStyle = '#4a4a50'; ctx.lineWidth = 2;
+          for (let rb = 1; rb < 4; rb++) {
+            const rby = y+h-rigH*rb/4;
+            const rbw2 = rigW*(1-rb*0.18);
+            const rbx2 = rig_x+(rigW-rbw2)/2;
+            ctx.beginPath(); ctx.moveTo(rbx2, rby); ctx.lineTo(rbx2+rbw2, rby); ctx.stroke();
+          }
+          // Drill head / crown block at top
+          ctx.fillStyle = '#6a6870'; ctx.fillRect(rig_x+rigW/2-10, y+h-rigH-6, 20, 10);
+          ctx.strokeStyle = '#8a8a90'; ctx.lineWidth = 1.5; ctx.strokeRect(rig_x+rigW/2-10, y+h-rigH-6, 20, 10);
+          // Drill string hanging down
+          ctx.strokeStyle = '#4a4848'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.moveTo(rig_x+rigW/2, y+h-rigH+4); ctx.lineTo(drX, drY-Math.min(w,h)*0.14); ctx.stroke();
+          ctx.strokeStyle = '#6a6a70'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(rig_x+rigW/2, y+h-rigH+4); ctx.lineTo(drX, drY-Math.min(w,h)*0.14); ctx.stroke();
+          // Mud pump / motor box (left side)
+          ctx.fillStyle = '#3a3028'; ctx.fillRect(x+8, cy-22, w*0.18, 44);
+          ctx.strokeStyle = '#5a5040'; ctx.lineWidth = 1.5; ctx.strokeRect(x+8, cy-22, w*0.18, 44);
+          ctx.fillStyle = '#1a1a1a'; ctx.fillRect(x+12, cy-16, w*0.12, 16);
+          ctx.fillStyle = 'rgba(255,120,30,0.30)'; ctx.fillRect(x+13, cy-14, w*0.10, 12);
+          // Indicator lights on pump
+          ctx.fillStyle = '#33ff33'; ctx.beginPath(); ctx.arc(x+12, cy+10, 4, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = '#ff6600'; ctx.beginPath(); ctx.arc(x+22, cy+10, 4, 0, Math.PI*2); ctx.fill();
+          // Core sample tray (right side — long horizontal rack)
+          const csX = x+w*0.60, csY = y+h*0.15, csW = w*0.35, csH = h*0.25;
+          ctx.fillStyle = '#2a2820'; ctx.fillRect(csX, csY, csW, csH);
+          ctx.strokeStyle = '#4a4838'; ctx.lineWidth = 1; ctx.strokeRect(csX, csY, csW, csH);
+          // Core sample cylinders in tray
+          const coreColors = ['#5a4030','#6a4a20','#7a5a30','#4a3820','#5a5030'];
+          for (let ci = 0; ci < 5; ci++) {
+            const cox = csX+4+ci*(csW-8)/5, coh = csH-8;
+            ctx.fillStyle = coreColors[ci]; ctx.fillRect(cox, csY+4, (csW-8)/5-3, coh);
+            ctx.strokeStyle = '#7a6040'; ctx.lineWidth = 0.5; ctx.strokeRect(cox, csY+4, (csW-8)/5-3, coh);
+            // Core layer bands
+            for (let cl = 0; cl < 4; cl++) {
+              ctx.fillStyle = cl%2===0 ? 'rgba(180,140,60,0.20)' : 'rgba(100,80,40,0.20)';
+              ctx.fillRect(cox, csY+4+cl*(coh/4), (csW-8)/5-3, coh/4);
+            }
+          }
+          ctx.fillStyle = '#8a7060'; ctx.fillRect(csX, csY-8, csW, 8);
+          ctx.strokeStyle = '#aa9070'; ctx.lineWidth = 0.8; ctx.strokeRect(csX, csY-8, csW, 8);
+          // Pipe rack (bottom)
+          ctx.strokeStyle = '#4a4a50'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(x+8, y+h-16); ctx.lineTo(x+w*0.50, y+h-16); ctx.stroke();
+          for (let pipe = 0; pipe < 4; pipe++) {
+            const px3 = x+14+pipe*w*0.11;
+            ctx.strokeStyle = '#6a5a3a'; ctx.lineWidth = 5;
+            ctx.beginPath(); ctx.moveTo(px3, y+h-8); ctx.lineTo(px3, y+h-24); ctx.stroke();
+            ctx.strokeStyle = '#8a7050'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.arc(px3, y+h-24, 4, 0, Math.PI*2); ctx.stroke();
+          }
+          // Dust/rock chips on floor
+          ctx.fillStyle = 'rgba(140,110,60,0.20)';
+          for (let dc = 0; dc < 8; dc++) {
+            ctx.beginPath(); ctx.arc(x+(dc*139+40)%(w-10), y+(dc*97+30)%(h-10), 2+dc%3, 0, Math.PI*2); ctx.fill();
+          }
+          ctx.globalAlpha = 0.5;
           break;
         }
       }
@@ -18469,6 +19439,1340 @@
       ctx.lineTo(cx + 7, cy + 20);
       ctx.stroke();
 
+      ctx.restore();
+    }
+
+    // Draw a detailed physical prop at every task location
+    function drawDecorObject(sx, sy, type) {
+      ctx.save();
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      switch (type) {
+        case 'coffee_machine': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#2a2a2e'; ctx.fillRect(sx-12,sy-14,24,26);
+          ctx.strokeStyle = '#555'; ctx.lineWidth=1; ctx.strokeRect(sx-12,sy-14,24,26);
+          ctx.fillStyle = '#1a4a8a'; ctx.fillRect(sx-7,sy-20,14,8);
+          ctx.strokeStyle = '#2a6acc'; ctx.lineWidth=1; ctx.strokeRect(sx-7,sy-20,14,8);
+          ctx.fillStyle = '#3a3a42'; ctx.fillRect(sx-10,sy-10,20,10);
+          ctx.strokeStyle='#aaa'; ctx.lineWidth=2;
+          ctx.beginPath();ctx.moveTo(sx-5,sy+4);ctx.lineTo(sx-5,sy+10);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx+5,sy+4);ctx.lineTo(sx+5,sy+10);ctx.stroke();
+          ctx.strokeStyle='#888'; ctx.lineWidth=2;
+          ctx.beginPath();ctx.moveTo(sx-12,sy-2);ctx.lineTo(sx-18,sy+4);ctx.stroke();
+          ctx.fillStyle='#00ff44';ctx.beginPath();ctx.arc(sx+8,sy-8,2,0,Math.PI*2);ctx.fill();
+          ctx.fillStyle='#444';ctx.fillRect(sx-11,sy+10,22,3);
+          break;
+        }
+        case 'dining_table': {
+          ctx.globalAlpha = 0.87;
+          ctx.fillStyle='#8b5e3c';ctx.fillRect(sx-22,sy-8,44,14);
+          ctx.strokeStyle='#5c3d1e';ctx.lineWidth=1.5;ctx.strokeRect(sx-22,sy-8,44,14);
+          ctx.fillStyle='#a0713a';ctx.fillRect(sx-22,sy-8,44,3);
+          ctx.fillStyle='#6b4623';
+          ctx.fillRect(sx-20,sy+6,4,8);ctx.fillRect(sx+16,sy+6,4,8);
+          ctx.fillRect(sx-20,sy-12,4,4);ctx.fillRect(sx+16,sy-12,4,4);
+          ctx.fillStyle='#c9a97a';
+          for(let i=-2;i<=2;i++){ctx.beginPath();ctx.arc(sx+i*8,sy-1,2,0,Math.PI*2);ctx.fill();}
+          break;
+        }
+        case 'ammo_rack': {
+          ctx.globalAlpha=0.90;
+          ctx.fillStyle='#333';ctx.fillRect(sx-14,sy-18,28,36);
+          ctx.strokeStyle='#555';ctx.lineWidth=2;ctx.strokeRect(sx-14,sy-18,28,36);
+          ctx.strokeStyle='#666';ctx.lineWidth=1.5;
+          ctx.beginPath();ctx.moveTo(sx-14,sy-6);ctx.lineTo(sx+14,sy-6);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx-14,sy+6);ctx.lineTo(sx+14,sy+6);ctx.stroke();
+          ['#d4a820','#c8961e','#d4b030'].forEach((c,i)=>{
+            const bx=sx-8+i*8,by=sy-16;
+            ctx.fillStyle=c;ctx.fillRect(bx-3,by,6,20);
+            ctx.fillStyle='#cc2222';ctx.fillRect(bx-3,by,6,5);
+            ctx.strokeStyle='#aa7700';ctx.lineWidth=1;ctx.strokeRect(bx-3,by,6,20);
+          });
+          ctx.fillStyle='#ffcc00';ctx.fillRect(sx-14,sy+14,28,6);
+          break;
+        }
+        case 'blast_door_ctrl': {
+          ctx.globalAlpha=0.90;
+          ctx.fillStyle='#222';ctx.fillRect(sx-16,sy-18,32,36);
+          ctx.strokeStyle='#444';ctx.lineWidth=1.5;ctx.strokeRect(sx-16,sy-18,32,36);
+          ctx.lineWidth=4;
+          for(let i=0;i<6;i++){
+            ctx.strokeStyle=i%2===0?'#f5c400':'#111';
+            ctx.beginPath();ctx.moveTo(sx-16+i*7,sy-18);ctx.lineTo(sx-16+(i-2)*7,sy+18);ctx.stroke();
+          }
+          ctx.strokeStyle='#888';ctx.lineWidth=1.5;ctx.strokeRect(sx-16,sy-18,32,36);
+          ctx.fillStyle='#444';ctx.fillRect(sx-8,sy-6,16,5);
+          ctx.strokeStyle='#666';ctx.lineWidth=1;ctx.strokeRect(sx-8,sy-6,16,5);
+          ctx.fillStyle='#dd1111';ctx.beginPath();ctx.arc(sx,sy+4,7,0,Math.PI*2);ctx.fill();
+          ctx.strokeStyle='#ff4444';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(sx,sy+4,7,0,Math.PI*2);ctx.stroke();
+          ctx.fillStyle='rgba(255,180,180,0.4)';ctx.beginPath();ctx.arc(sx-2,sy+2,3,0,Math.PI*2);ctx.fill();
+          break;
+        }
+        case 'captains_chair': {
+          ctx.globalAlpha=0.88;
+          ctx.fillStyle='#333';ctx.fillRect(sx-5,sy+10,10,6);
+          ctx.fillStyle='#444';ctx.fillRect(sx-10,sy+14,20,4);
+          ctx.fillStyle='#1a3a6e';ctx.fillRect(sx-13,sy+2,26,10);
+          ctx.strokeStyle='#2a5aaa';ctx.lineWidth=1;ctx.strokeRect(sx-13,sy+2,26,10);
+          ctx.fillStyle='#1a3a6e';ctx.fillRect(sx-11,sy-14,22,18);
+          ctx.strokeStyle='#2a5aaa';ctx.lineWidth=1;ctx.strokeRect(sx-11,sy-14,22,18);
+          ctx.fillStyle='#0d2550';ctx.fillRect(sx-7,sy-20,14,8);
+          ctx.strokeStyle='#1a4080';ctx.lineWidth=1;ctx.strokeRect(sx-7,sy-20,14,8);
+          ctx.fillStyle='#254070';ctx.fillRect(sx-18,sy+2,6,7);ctx.fillRect(sx+12,sy+2,6,7);
+          ctx.fillStyle='#0a1a40';ctx.fillRect(sx-17,sy+3,4,3);ctx.fillRect(sx+13,sy+3,4,3);
+          ctx.fillStyle='#00aaff';
+          ctx.beginPath();ctx.arc(sx-15,sy+4,1,0,Math.PI*2);ctx.fill();
+          ctx.beginPath();ctx.arc(sx+15,sy+4,1,0,Math.PI*2);ctx.fill();
+          break;
+        }
+        case 'radar_scope': {
+          ctx.globalAlpha=0.90;
+          ctx.fillStyle='#1a1a1e';ctx.fillRect(sx-18,sy-18,36,36);
+          ctx.strokeStyle='#444';ctx.lineWidth=1.5;ctx.strokeRect(sx-18,sy-18,36,36);
+          ctx.fillStyle='#001a00';ctx.beginPath();ctx.arc(sx,sy,13,0,Math.PI*2);ctx.fill();
+          ctx.strokeStyle='#004400';ctx.lineWidth=1;
+          ctx.beginPath();ctx.moveTo(sx-13,sy);ctx.lineTo(sx+13,sy);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx,sy-13);ctx.lineTo(sx,sy+13);ctx.stroke();
+          ctx.strokeStyle='#00cc00';ctx.lineWidth=1.5;
+          ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(sx+11,sy-6);ctx.stroke();
+          ctx.fillStyle='#00ff44';
+          ctx.beginPath();ctx.arc(sx+6,sy-8,1.5,0,Math.PI*2);ctx.fill();
+          ctx.beginPath();ctx.arc(sx-5,sy+4,1.5,0,Math.PI*2);ctx.fill();
+          ctx.beginPath();ctx.arc(sx+3,sy+9,1.5,0,Math.PI*2);ctx.fill();
+          break;
+        }
+        case 'o2_cylinder': {
+          ctx.globalAlpha=0.88;
+          ctx.fillStyle='#d8dce0';ctx.fillRect(sx-8,sy-18,16,32);
+          ctx.strokeStyle='#888';ctx.lineWidth=1.5;ctx.strokeRect(sx-8,sy-18,16,32);
+          ctx.fillStyle='rgba(255,255,255,0.4)';ctx.fillRect(sx-5,sy-16,3,26);
+          ctx.strokeStyle='#999';ctx.lineWidth=2;
+          ctx.beginPath();ctx.moveTo(sx-8,sy-6);ctx.lineTo(sx+8,sy-6);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx-8,sy+6);ctx.lineTo(sx+8,sy+6);ctx.stroke();
+          ctx.fillStyle='#1155cc';ctx.fillRect(sx-6,sy-3,12,8);
+          ctx.fillStyle='#fff';ctx.fillRect(sx-4,sy-1,3,4);ctx.fillRect(sx+1,sy-1,3,4);
+          ctx.fillStyle='#aaa';ctx.fillRect(sx-5,sy-22,10,5);
+          ctx.strokeStyle='#777';ctx.lineWidth=1;ctx.strokeRect(sx-5,sy-22,10,5);
+          ctx.strokeStyle='#666';ctx.lineWidth=3;
+          ctx.beginPath();ctx.moveTo(sx-7,sy-24);ctx.lineTo(sx+7,sy-24);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx,sy-24);ctx.lineTo(sx,sy-22);ctx.stroke();
+          break;
+        }
+        case 'plant_shelf': {
+          ctx.globalAlpha=0.87;
+          ctx.fillStyle='#7a5c3a';ctx.fillRect(sx-20,sy-2,40,5);
+          ctx.strokeStyle='#5c3d1e';ctx.lineWidth=1;ctx.strokeRect(sx-20,sy-2,40,5);
+          ctx.fillStyle='#5c3d1e';ctx.fillRect(sx-20,sy+3,4,8);ctx.fillRect(sx+16,sy+3,4,8);
+          [sx-13,sx,sx+13].forEach(px=>{
+            ctx.fillStyle='#b05030';ctx.fillRect(px-4,sy-10,8,9);
+            ctx.strokeStyle='#8a3a1a';ctx.lineWidth=1;ctx.strokeRect(px-4,sy-10,8,9);
+            ctx.fillStyle='#4a2e10';ctx.fillRect(px-4,sy-10,8,3);
+            ctx.fillStyle='#228833';
+            ctx.beginPath();ctx.moveTo(px,sy-10);ctx.bezierCurveTo(px-6,sy-18,px-8,sy-22,px-2,sy-20);ctx.lineTo(px,sy-10);ctx.fill();
+            ctx.beginPath();ctx.moveTo(px,sy-10);ctx.bezierCurveTo(px+6,sy-18,px+8,sy-22,px+2,sy-20);ctx.lineTo(px,sy-10);ctx.fill();
+          });
+          break;
+        }
+        case 'filing_cabinet': {
+          ctx.globalAlpha=0.88;
+          ctx.fillStyle='#778899';ctx.fillRect(sx-12,sy-20,24,40);
+          ctx.strokeStyle='#556677';ctx.lineWidth=1.5;ctx.strokeRect(sx-12,sy-20,24,40);
+          [sy-18,sy-4,sy+10].forEach(dy=>{
+            ctx.fillStyle='#8899aa';ctx.fillRect(sx-11,dy,22,12);
+            ctx.strokeStyle='#556677';ctx.lineWidth=1;ctx.strokeRect(sx-11,dy,22,12);
+            ctx.fillStyle='#aabbcc';ctx.fillRect(sx-7,dy+4,14,3);
+            ctx.fillStyle='#ccd6e0';ctx.fillRect(sx-7,dy+1,8,2.5);
+          });
+          ctx.fillStyle='#333';ctx.beginPath();ctx.arc(sx+6,sy-12,2,0,Math.PI*2);ctx.fill();
+          break;
+        }
+        case 'admin_table': {
+          ctx.globalAlpha=0.87;
+          ctx.fillStyle='#0a0f1a';ctx.fillRect(sx-22,sy-10,44,20);
+          ctx.strokeStyle='#1a2a4a';ctx.lineWidth=2;ctx.strokeRect(sx-22,sy-10,44,20);
+          ctx.strokeStyle='#2244aa';ctx.lineWidth=1;ctx.strokeRect(sx-20,sy-8,40,16);
+          ctx.strokeStyle='#00cc44';ctx.lineWidth=0.8;
+          for(let gy=-4;gy<=4;gy+=4){ctx.beginPath();ctx.moveTo(sx-19,sy+gy);ctx.lineTo(sx+19,sy+gy);ctx.stroke();}
+          for(let gx=-16;gx<=16;gx+=8){ctx.beginPath();ctx.moveTo(sx+gx,sy-8);ctx.lineTo(sx+gx,sy+8);ctx.stroke();}
+          ctx.strokeStyle='#00aa33';ctx.lineWidth=0.6;
+          for(let h=-1;h<=1;h++){ctx.beginPath();ctx.arc(sx+h*10,sy,4,0,Math.PI*2);ctx.stroke();}
+          break;
+        }
+        case 'shield_gen': {
+          ctx.globalAlpha=0.90;
+          ctx.strokeStyle='#00aaff';ctx.lineWidth=2;
+          ctx.beginPath();
+          for(let i=0;i<6;i++){const a=(Math.PI/3)*i-Math.PI/6;i===0?ctx.moveTo(sx+18*Math.cos(a),sy+18*Math.sin(a)):ctx.lineTo(sx+18*Math.cos(a),sy+18*Math.sin(a));}
+          ctx.closePath();ctx.stroke();
+          ctx.fillStyle='rgba(0,150,255,0.18)';
+          ctx.beginPath();
+          for(let i=0;i<6;i++){const a=(Math.PI/3)*i-Math.PI/6;i===0?ctx.moveTo(sx+18*Math.cos(a),sy+18*Math.sin(a)):ctx.lineTo(sx+18*Math.cos(a),sy+18*Math.sin(a));}
+          ctx.closePath();ctx.fill();
+          ctx.fillStyle='#44ccff';ctx.beginPath();ctx.arc(sx,sy,6,0,Math.PI*2);ctx.fill();
+          ctx.fillStyle='rgba(120,220,255,0.7)';ctx.beginPath();ctx.arc(sx,sy,3,0,Math.PI*2);ctx.fill();
+          ctx.strokeStyle='#225577';ctx.lineWidth=2;
+          ctx.beginPath();ctx.moveTo(sx-5,sy+15);ctx.lineTo(sx-5,sy+22);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx+5,sy+15);ctx.lineTo(sx+5,sy+22);ctx.stroke();
+          ['#00ff44','#00aaff','#ffaa00'].forEach((c,i)=>{ctx.fillStyle=c;ctx.beginPath();ctx.arc(sx-6+i*6,sy-20,2,0,Math.PI*2);ctx.fill();});
+          break;
+        }
+        case 'radio_rack': {
+          ctx.globalAlpha=0.88;
+          ctx.fillStyle='#1c1c22';ctx.fillRect(sx-14,sy-20,28,40);
+          ctx.strokeStyle='#444';ctx.lineWidth=1.5;ctx.strokeRect(sx-14,sy-20,28,40);
+          for(let r=0;r<5;r++){
+            const ry=sy-18+r*7;
+            ctx.fillStyle=r%2===0?'#252530':'#1e1e28';ctx.fillRect(sx-13,ry,26,6);
+            ctx.strokeStyle='#333';ctx.lineWidth=0.5;ctx.strokeRect(sx-13,ry,26,6);
+            ctx.fillStyle='#555';
+            ctx.beginPath();ctx.arc(sx-9,ry+3,2,0,Math.PI*2);ctx.fill();
+            ctx.beginPath();ctx.arc(sx-3,ry+3,2,0,Math.PI*2);ctx.fill();
+            ctx.fillStyle=r<3?'#00ff44':'#ff4400';ctx.beginPath();ctx.arc(sx+8,ry+3,1.5,0,Math.PI*2);ctx.fill();
+            ctx.fillStyle='#0088ff';ctx.beginPath();ctx.arc(sx+11,ry+3,1.5,0,Math.PI*2);ctx.fill();
+          }
+          ctx.strokeStyle='#333';ctx.lineWidth=3;
+          [-5,0,5].forEach(dx=>{ctx.beginPath();ctx.moveTo(sx+dx,sy+20);ctx.lineTo(sx+dx,sy+22);ctx.stroke();});
+          break;
+        }
+        case 'supply_crates': {
+          ctx.globalAlpha=0.88;
+          ctx.fillStyle='#c8a060';ctx.fillRect(sx-20,sy-2,18,18);
+          ctx.strokeStyle='#7a5a20';ctx.lineWidth=1.5;ctx.strokeRect(sx-20,sy-2,18,18);
+          ctx.strokeStyle='#a07830';ctx.lineWidth=1;
+          ctx.beginPath();ctx.moveTo(sx-20,sy+7);ctx.lineTo(sx-2,sy+7);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx-11,sy-2);ctx.lineTo(sx-11,sy+16);ctx.stroke();
+          ctx.fillStyle='#c0984a';ctx.fillRect(sx+2,sy-2,18,18);
+          ctx.strokeStyle='#7a5a20';ctx.lineWidth=1.5;ctx.strokeRect(sx+2,sy-2,18,18);
+          ctx.strokeStyle='#9a7828';ctx.lineWidth=1;
+          ctx.beginPath();ctx.moveTo(sx+2,sy+7);ctx.lineTo(sx+20,sy+7);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx+11,sy-2);ctx.lineTo(sx+11,sy+16);ctx.stroke();
+          ctx.fillStyle='#d4aa70';ctx.fillRect(sx-10,sy-20,20,18);
+          ctx.strokeStyle='#7a5a20';ctx.lineWidth=1.5;ctx.strokeRect(sx-10,sy-20,20,18);
+          ctx.strokeStyle='#a07830';ctx.lineWidth=1;
+          ctx.beginPath();ctx.moveTo(sx-10,sy-11);ctx.lineTo(sx+10,sy-11);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx,sy-20);ctx.lineTo(sx,sy-2);ctx.stroke();
+          ctx.strokeStyle='#7a5a20';ctx.lineWidth=2;
+          ctx.beginPath();ctx.moveTo(sx,sy-18);ctx.lineTo(sx,sy-8);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx-3,sy-14);ctx.lineTo(sx,sy-8);ctx.lineTo(sx+3,sy-14);ctx.stroke();
+          break;
+        }
+        case 'barrel_cluster': {
+          ctx.globalAlpha=0.88;
+          ctx.fillStyle='#556677';ctx.fillRect(sx-18,sy-18,16,36);
+          ctx.strokeStyle='#334455';ctx.lineWidth=1.5;ctx.strokeRect(sx-18,sy-18,16,36);
+          ctx.fillStyle='#4a5f6e';ctx.fillRect(sx+2,sy-18,16,36);
+          ctx.strokeStyle='#334455';ctx.lineWidth=1.5;ctx.strokeRect(sx+2,sy-18,16,36);
+          ctx.strokeStyle='#778899';ctx.lineWidth=2;
+          [-10,-2,6,14].forEach(ry=>{
+            ctx.beginPath();ctx.moveTo(sx-18,sy+ry);ctx.lineTo(sx-2,sy+ry);ctx.stroke();
+            ctx.beginPath();ctx.moveTo(sx+2,sy+ry);ctx.lineTo(sx+18,sy+ry);ctx.stroke();
+          });
+          ctx.fillStyle='#cc4400';ctx.fillRect(sx-16,sy-6,12,8);ctx.fillRect(sx+4,sy-6,12,8);
+          ctx.fillStyle='rgba(180,230,180,0.5)';ctx.fillRect(sx-15,sy-14,5,8);ctx.fillRect(sx+10,sy-14,5,8);
+          ctx.strokeStyle='#888';ctx.lineWidth=1;
+          ctx.strokeRect(sx-15,sy-14,5,8);ctx.strokeRect(sx+10,sy-14,5,8);
+          break;
+        }
+        case 'main_generator': {
+          ctx.globalAlpha=0.88;
+          ctx.fillStyle='#2a3a2a';ctx.fillRect(sx-20,sy-16,40,32);
+          ctx.strokeStyle='#3a5a3a';ctx.lineWidth=2;ctx.strokeRect(sx-20,sy-16,40,32);
+          ctx.strokeStyle='#445544';ctx.lineWidth=1;
+          for(let r=4;r<=12;r+=4){ctx.beginPath();ctx.arc(sx-8,sy,r,0,Math.PI*2);ctx.stroke();}
+          ctx.strokeStyle='#556655';ctx.lineWidth=1;
+          ctx.beginPath();ctx.moveTo(sx-8,sy-12);ctx.lineTo(sx-8,sy+12);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx-20,sy);ctx.lineTo(sx+4,sy);ctx.stroke();
+          ctx.fillStyle='#111';ctx.fillRect(sx+4,sy-10,14,12);
+          ctx.strokeStyle='#444';ctx.lineWidth=1;ctx.strokeRect(sx+4,sy-10,14,12);
+          ctx.strokeStyle='#888';ctx.lineWidth=1;
+          ctx.beginPath();ctx.arc(sx+11,sy+2,7,Math.PI,0);ctx.stroke();
+          ctx.strokeStyle='#ff4400';ctx.lineWidth=1.5;
+          ctx.beginPath();ctx.moveTo(sx+11,sy+2);ctx.lineTo(sx+17,sy-3);ctx.stroke();
+          ctx.fillStyle='#00ff44';ctx.beginPath();ctx.arc(sx+16,sy+8,2.5,0,Math.PI*2);ctx.fill();
+          break;
+        }
+        case 'warning_sign': {
+          ctx.globalAlpha=0.92;
+          ctx.fillStyle='#f5c400';
+          ctx.beginPath();ctx.moveTo(sx,sy-20);ctx.lineTo(sx+16,sy);ctx.lineTo(sx,sy+20);ctx.lineTo(sx-16,sy);ctx.closePath();ctx.fill();
+          ctx.strokeStyle='#cc9900';ctx.lineWidth=2;
+          ctx.beginPath();ctx.moveTo(sx,sy-20);ctx.lineTo(sx+16,sy);ctx.lineTo(sx,sy+20);ctx.lineTo(sx-16,sy);ctx.closePath();ctx.stroke();
+          ctx.fillStyle='#111';
+          ctx.beginPath();ctx.moveTo(sx+4,sy-13);ctx.lineTo(sx-4,sy-1);ctx.lineTo(sx+1,sy-1);ctx.lineTo(sx-3,sy+13);ctx.lineTo(sx+5,sy);ctx.lineTo(sx-1,sy);ctx.lineTo(sx+6,sy-13);ctx.closePath();ctx.fill();
+          break;
+        }
+        case 'engine_cowling': {
+          ctx.globalAlpha=0.88;
+          ctx.fillStyle='#2a2a2e';
+          ctx.beginPath();ctx.moveTo(sx-8,sy-20);ctx.lineTo(sx+8,sy-20);ctx.lineTo(sx+20,sy-8);ctx.lineTo(sx+20,sy+8);ctx.lineTo(sx+8,sy+20);ctx.lineTo(sx-8,sy+20);ctx.lineTo(sx-20,sy+8);ctx.lineTo(sx-20,sy-8);ctx.closePath();ctx.fill();
+          ctx.strokeStyle='#cc5500';ctx.lineWidth=3;
+          ctx.beginPath();ctx.moveTo(sx-8,sy-20);ctx.lineTo(sx+8,sy-20);ctx.lineTo(sx+20,sy-8);ctx.lineTo(sx+20,sy+8);ctx.lineTo(sx+8,sy+20);ctx.lineTo(sx-8,sy+20);ctx.lineTo(sx-20,sy+8);ctx.lineTo(sx-20,sy-8);ctx.closePath();ctx.stroke();
+          ctx.strokeStyle='#111';ctx.lineWidth=2;
+          for(let i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(sx-8,sy+i*4);ctx.lineTo(sx+8,sy+i*4);ctx.stroke();}
+          ctx.fillStyle='#666';
+          [[sx-8,sy-20],[sx+8,sy-20],[sx+20,sy-8],[sx+20,sy+8],[sx+8,sy+20],[sx-8,sy+20],[sx-20,sy+8],[sx-20,sy-8]].forEach(([rx,ry])=>{ctx.beginPath();ctx.arc(rx,ry,1.5,0,Math.PI*2);ctx.fill();});
+          break;
+        }
+        case 'temp_gauge': {
+          ctx.globalAlpha=0.90;
+          ctx.fillStyle='#ddd';ctx.beginPath();ctx.arc(sx,sy,18,0,Math.PI*2);ctx.fill();
+          ctx.strokeStyle='#888';ctx.lineWidth=2;ctx.beginPath();ctx.arc(sx,sy,18,0,Math.PI*2);ctx.stroke();
+          ctx.fillStyle='#f5f5f5';ctx.beginPath();ctx.arc(sx,sy,15,0,Math.PI*2);ctx.fill();
+          ctx.strokeStyle='#dd2200';ctx.lineWidth=4;
+          ctx.beginPath();ctx.arc(sx,sy,12,-Math.PI*0.1,Math.PI*0.5);ctx.stroke();
+          ctx.strokeStyle='#555';ctx.lineWidth=1;
+          for(let m=0;m<=8;m++){const a=Math.PI*0.75+m*(Math.PI*1.5/8);ctx.beginPath();ctx.moveTo(sx+10*Math.cos(a),sy+10*Math.sin(a));ctx.lineTo(sx+14*Math.cos(a),sy+14*Math.sin(a));ctx.stroke();}
+          const _na=Math.PI*0.75+(Math.PI*1.5*0.78);
+          ctx.strokeStyle='#cc1100';ctx.lineWidth=2;
+          ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(sx+12*Math.cos(_na),sy+12*Math.sin(_na));ctx.stroke();
+          ctx.fillStyle='#444';ctx.beginPath();ctx.arc(sx,sy,2.5,0,Math.PI*2);ctx.fill();
+          break;
+        }
+        case 'reactor_core': {
+          const _rPulse=0.5+0.5*Math.sin(Date.now()/600);
+          ctx.globalAlpha=0.82+0.10*_rPulse;
+          ctx.strokeStyle=`rgba(0,${Math.floor(180+60*_rPulse)},255,0.6)`;ctx.lineWidth=3;
+          ctx.beginPath();ctx.arc(sx,sy,20,0,Math.PI*2);ctx.stroke();
+          ctx.strokeStyle=`rgba(80,${Math.floor(200+55*_rPulse)},255,0.75)`;ctx.lineWidth=3;
+          ctx.beginPath();ctx.arc(sx,sy,13,0,Math.PI*2);ctx.stroke();
+          ctx.strokeStyle='rgba(180,240,255,0.9)';ctx.lineWidth=2;
+          ctx.beginPath();ctx.arc(sx,sy,7,0,Math.PI*2);ctx.stroke();
+          ctx.strokeStyle='#3399ff';ctx.lineWidth=1.5;
+          for(let i=0;i<6;i++){const a=(Math.PI/3)*i;ctx.beginPath();ctx.moveTo(sx+7*Math.cos(a),sy+7*Math.sin(a));ctx.lineTo(sx+18*Math.cos(a),sy+18*Math.sin(a));ctx.stroke();}
+          ctx.fillStyle=`rgba(200,240,255,${0.7+0.3*_rPulse})`;ctx.beginPath();ctx.arc(sx,sy,5,0,Math.PI*2);ctx.fill();
+          ctx.fillStyle=`rgba(255,255,255,${0.5+0.5*_rPulse})`;ctx.beginPath();ctx.arc(sx,sy,2.5,0,Math.PI*2);ctx.fill();
+          ctx.globalAlpha=0.12*_rPulse;ctx.fillStyle='#44aaff';ctx.beginPath();ctx.arc(sx,sy,22,0,Math.PI*2);ctx.fill();
+          break;
+        }
+        case 'hazard_sign': {
+          ctx.globalAlpha=0.90;
+          ctx.fillStyle='#f5dd00';ctx.beginPath();ctx.arc(sx,sy,18,0,Math.PI*2);ctx.fill();
+          ctx.strokeStyle='#ffaa00';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(sx,sy,18,0,Math.PI*2);ctx.stroke();
+          ctx.fillStyle='#111';ctx.beginPath();ctx.arc(sx,sy,3,0,Math.PI*2);ctx.fill();
+          for(let i=0;i<3;i++){
+            const a=(Math.PI*2/3)*i-Math.PI/2;
+            ctx.beginPath();
+            ctx.moveTo(sx+3*Math.cos(a),sy+3*Math.sin(a));
+            ctx.arc(sx,sy,3,a,a+Math.PI*2/3,false);
+            ctx.arc(sx+11*Math.cos(a+Math.PI/3),sy+11*Math.sin(a+Math.PI/3),5.5,a+Math.PI/3+Math.PI*0.7,a+Math.PI/3-Math.PI*0.7,true);
+            ctx.closePath();ctx.fill();
+          }
+          break;
+        }
+        case 'guard_desk': {
+          ctx.globalAlpha=0.87;
+          ctx.fillStyle='#5a4a30';ctx.fillRect(sx-22,sy-4,44,10);
+          ctx.strokeStyle='#3a2a10';ctx.lineWidth=1.5;ctx.strokeRect(sx-22,sy-4,44,10);
+          ctx.fillStyle='#4a3a20';ctx.fillRect(sx-22,sy+6,44,10);
+          ctx.strokeStyle='#3a2a10';ctx.lineWidth=1;ctx.strokeRect(sx-22,sy+6,44,10);
+          ctx.fillStyle='#111';ctx.fillRect(sx+6,sy-14,14,10);
+          ctx.strokeStyle='#333';ctx.lineWidth=1;ctx.strokeRect(sx+6,sy-14,14,10);
+          ctx.fillStyle='#003311';ctx.fillRect(sx+7,sy-13,12,8);
+          ctx.fillStyle='#222';ctx.fillRect(sx+12,sy-4,3,2);
+          ctx.fillStyle='#e8e0cc';ctx.fillRect(sx-18,sy-12,10,8);
+          ctx.fillStyle='#d8d0bc';ctx.fillRect(sx-17,sy-11,10,8);
+          ctx.strokeStyle='#aaa';ctx.lineWidth=0.5;ctx.strokeRect(sx-17,sy-11,10,8);
+          ctx.fillStyle='#e4dcc8';ctx.fillRect(sx-8,sy-12,10,8);
+          ctx.strokeStyle='#aaa';ctx.lineWidth=0.5;ctx.strokeRect(sx-8,sy-12,10,8);
+          break;
+        }
+        case 'medical_bed': {
+          ctx.globalAlpha=0.88;
+          ctx.fillStyle='#c8d8d8';ctx.fillRect(sx-20,sy-10,40,20);
+          ctx.strokeStyle='#8aa8a8';ctx.lineWidth=2;ctx.strokeRect(sx-20,sy-10,40,20);
+          ctx.fillStyle='#e8eeee';ctx.fillRect(sx-18,sy-8,32,16);
+          ctx.strokeStyle='#aababa';ctx.lineWidth=1;ctx.strokeRect(sx-18,sy-8,32,16);
+          ctx.fillStyle='#fff';ctx.fillRect(sx+10,sy-7,7,7);
+          ctx.strokeStyle='#ccc';ctx.lineWidth=1;ctx.strokeRect(sx+10,sy-7,7,7);
+          ctx.strokeStyle='#8aa8a8';ctx.lineWidth=2;
+          ctx.beginPath();ctx.moveTo(sx-20,sy-4);ctx.lineTo(sx-20,sy+4);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx-16,sy-9);ctx.lineTo(sx-16,sy+9);ctx.stroke();
+          ctx.fillStyle='#c8a060';ctx.fillRect(sx-22,sy-6,4,10);
+          ctx.strokeStyle='#7a5a20';ctx.lineWidth=1;ctx.strokeRect(sx-22,sy-6,4,10);
+          ctx.fillStyle='#fff';ctx.fillRect(sx-21,sy-5,3,7);
+          ctx.fillStyle='#888';ctx.fillRect(sx-21,sy-7,3,2);
+          break;
+        }
+        case 'medicine_cabinet': {
+          ctx.globalAlpha=0.88;
+          ctx.fillStyle='#ccddcc';ctx.fillRect(sx-16,sy-20,32,40);
+          ctx.strokeStyle='#7aaa7a';ctx.lineWidth=2;ctx.strokeRect(sx-16,sy-20,32,40);
+          ctx.fillStyle='rgba(180,220,240,0.35)';ctx.fillRect(sx-13,sy-17,26,34);
+          ctx.strokeStyle='#aacccc';ctx.lineWidth=1;ctx.strokeRect(sx-13,sy-17,26,34);
+          ctx.fillStyle='#cc1111';ctx.fillRect(sx-2,sy-14,4,12);ctx.fillRect(sx-6,sy-10,12,4);
+          ctx.strokeStyle='#aabb99';ctx.lineWidth=1.5;
+          ctx.beginPath();ctx.moveTo(sx-13,sy-2);ctx.lineTo(sx+13,sy-2);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx-13,sy+10);ctx.lineTo(sx+13,sy+10);ctx.stroke();
+          [sx-10,sx-4,sx+2,sx+8].forEach((bx,i)=>{
+            const byOff=i%2===0?sy-14:sy-2;
+            ctx.fillStyle=i%2===0?'#4488cc':'#cc8844';ctx.fillRect(bx,byOff+2,4,8);
+            ctx.strokeStyle='#336688';ctx.lineWidth=0.5;ctx.strokeRect(bx,byOff+2,4,8);
+          });
+          break;
+        }
+      }
+      ctx.restore();
+    }
+
+    function drawTaskDecor(sx, sy, name, room, done) {
+      ctx.save();
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      const _tdPulse = 0.5 + 0.5 * Math.sin(Date.now() / 700);
+      const _tdGlow = done ? '#4ecdc4' : '#ffe140';
+
+      // ── Room-specific accent palette ─────────────────────────────────
+      const _roomPalette = {
+        'Cafeteria':     { bg:'#1e1408', border:'#c86820', strip:'#e07830', screw:'#d08040' },
+        'Weapons':       { bg:'#1a0808', border:'#cc2828', strip:'#e03838', screw:'#d04040' },
+        'Navigation':    { bg:'#08101e', border:'#2858c8', strip:'#3068e0', screw:'#4080d8' },
+        'O2':            { bg:'#081808', border:'#28a050', strip:'#38c060', screw:'#40b868' },
+        'Admin':         { bg:'#161610', border:'#989030', strip:'#b0a840', screw:'#c0b850' },
+        'Shields':       { bg:'#120818', border:'#8830c0', strip:'#9840d8', screw:'#a850e0' },
+        'Communications':{ bg:'#081818', border:'#2898a0', strip:'#38b0b8', screw:'#48c0c8' },
+        'Storage':       { bg:'#140c04', border:'#a05828', strip:'#b87040', screw:'#c08050' },
+        'Electrical':    { bg:'#181200', border:'#c89000', strip:'#e0a810', screw:'#d8b020' },
+        'Upper Engine':  { bg:'#180e04', border:'#c05820', strip:'#d87030', screw:'#e08840' },
+        'Lower Engine':  { bg:'#180e04', border:'#c05820', strip:'#d87030', screw:'#e08840' },
+        'Reactor':       { bg:'#041818', border:'#18b8c8', strip:'#28d0e0', screw:'#40d8e8' },
+        'Security':      { bg:'#101418', border:'#607090', strip:'#7888a8', screw:'#8898b8' },
+        'MedBay':        { bg:'#041018', border:'#3898b8', strip:'#48b0d0', screw:'#58c0e0' },
+      };
+      const _pal = _roomPalette[room] || { bg:'#0e1420', border:'#304060', strip:'#405878', screw:'#607090' };
+
+      // ── Wall-mount anchor strip (room-coloured) ──────────────────────
+      ctx.globalAlpha = 0.80;
+      ctx.fillStyle = _pal.strip;
+      ctx.fillRect(sx - 22, sy - 24, 44, 5);
+      ctx.strokeStyle = _pal.border;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(sx - 22, sy - 24, 44, 5);
+      // Sheen line on strip
+      ctx.fillStyle = 'rgba(255,255,255,0.18)';
+      ctx.fillRect(sx - 22, sy - 24, 44, 1);
+      // bolt heads along strip
+      ctx.fillStyle = _pal.screw;
+      [sx - 14, sx, sx + 14].forEach(bx => {
+        ctx.beginPath(); ctx.arc(bx, sy - 21.5, 2, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.20)'; ctx.lineWidth = 0.6;
+        ctx.beginPath(); ctx.arc(bx, sy - 21.5, 2, 0, Math.PI * 2); ctx.stroke();
+      });
+
+      // ── Backing plate (room-tinted) ──────────────────────────────────
+      ctx.globalAlpha = 0.92;
+      ctx.fillStyle = _pal.bg;
+      ctx.fillRect(sx - 19, sy - 19, 38, 38);
+      // Coloured border
+      ctx.strokeStyle = _pal.border;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(sx - 19, sy - 19, 38, 38);
+      // Inner inset frame (lighter)
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+      ctx.lineWidth = 0.7;
+      ctx.strokeRect(sx - 17, sy - 17, 34, 34);
+      // corner screws (room-coloured)
+      ctx.fillStyle = _pal.screw;
+      [[sx-16,sy-16],[sx+16,sy-16],[sx+16,sy+16],[sx-16,sy+16]].forEach(([cx,cy]) => {
+        ctx.beginPath(); ctx.arc(cx, cy, 2, 0, Math.PI * 2); ctx.fill();
+        // Screw slot cross mark
+        ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = 0.8;
+        ctx.beginPath(); ctx.moveTo(cx-1.5,cy); ctx.lineTo(cx+1.5,cy); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx,cy-1.5); ctx.lineTo(cx,cy+1.5); ctx.stroke();
+      });
+
+      // ── Task-highlight glow (yellow pending / teal done) ────────────
+      // Room accent bleed — faint room colour behind the device
+      ctx.globalAlpha = 0.10 + 0.06 * _tdPulse;
+      ctx.fillStyle = _pal.strip;
+      ctx.fillRect(sx-19, sy-19, 38, 38);
+      // Soft glow fill (task colour)
+      ctx.globalAlpha = 0.08 + 0.10 * _tdPulse;
+      ctx.fillStyle = _tdGlow;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(sx-22, sy-22, 44, 44, 5);
+      else ctx.rect(sx-22, sy-22, 44, 44);
+      ctx.fill();
+      // Thick outer glow stroke
+      ctx.globalAlpha = 0.10 + 0.08 * _tdPulse;
+      ctx.strokeStyle = _tdGlow;
+      ctx.lineWidth = 7;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(sx-22, sy-22, 44, 44, 5);
+      else ctx.rect(sx-22, sy-22, 44, 44);
+      ctx.stroke();
+      // Medium glow stroke
+      ctx.globalAlpha = 0.25 + 0.18 * _tdPulse;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(sx-21, sy-21, 42, 42, 4);
+      else ctx.rect(sx-21, sy-21, 42, 42);
+      ctx.stroke();
+      // Sharp crisp outline
+      ctx.globalAlpha = 0.60 + 0.35 * _tdPulse;
+      ctx.strokeStyle = _tdGlow;
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(sx-20, sy-20, 40, 40, 3);
+      else ctx.rect(sx-20, sy-20, 40, 40);
+      ctx.stroke();
+
+      switch (name) {
+        case 'Swipe Card': {
+          ctx.globalAlpha = 0.88;
+          // Card slot groove
+          ctx.fillStyle = '#080c18'; ctx.fillRect(sx-5, sy-10, 10, 3);
+          ctx.strokeStyle = '#2030508'; ctx.lineWidth = 0.7; ctx.strokeRect(sx-5, sy-10, 10, 3);
+          // Guide rails inside slot
+          ctx.strokeStyle = 'rgba(80,120,200,0.35)'; ctx.lineWidth = 0.5;
+          ctx.beginPath();ctx.moveTo(sx-4,sy-9);ctx.lineTo(sx-4,sy-8);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx+4,sy-9);ctx.lineTo(sx+4,sy-8);ctx.stroke();
+          // LCD screen
+          ctx.fillStyle = 'rgba(20,80,200,0.40)'; ctx.fillRect(sx-5, sy-5, 10, 10);
+          ctx.strokeStyle = 'rgba(60,140,255,0.55)'; ctx.lineWidth = 0.7; ctx.strokeRect(sx-5, sy-5, 10, 10);
+          ctx.strokeStyle = 'rgba(100,180,255,0.45)'; ctx.lineWidth = 0.6;
+          for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(sx-3,sy-3+i*3);ctx.lineTo(sx+2,sy-3+i*3);ctx.stroke();}
+          // Status LED
+          ctx.fillStyle='rgba(80,240,80,0.95)';ctx.beginPath();ctx.arc(sx,sy+11,2.5,0,Math.PI*2);ctx.fill();
+          ctx.fillStyle='rgba(80,240,80,0.22)';ctx.beginPath();ctx.arc(sx,sy+11,6,0,Math.PI*2);ctx.fill();
+          break;
+        }
+        case 'Download Data': {
+          ctx.globalAlpha = 0.85;
+          // Monitor casing
+          ctx.fillStyle = '#1a1c28'; ctx.fillRect(sx-15, sy-13, 30, 22);
+          ctx.strokeStyle = '#3a3c52'; ctx.lineWidth = 1; ctx.strokeRect(sx-15, sy-13, 30, 22);
+          // Screen
+          ctx.fillStyle = '#040c08'; ctx.fillRect(sx-12, sy-10, 24, 14);
+          const _dGl=ctx.createRadialGradient(sx,sy-3,0,sx,sy-3,14);
+          _dGl.addColorStop(0,'rgba(0,255,100,0.22)');_dGl.addColorStop(1,'rgba(0,80,40,0)');
+          ctx.fillStyle=_dGl;ctx.fillRect(sx-12,sy-10,24,14);
+          ctx.strokeStyle='rgba(0,200,100,0.35)';ctx.lineWidth=0.7;ctx.strokeRect(sx-12,sy-10,24,14);
+          // Data cascade lines
+          ctx.strokeStyle='rgba(40,255,120,0.60)';ctx.lineWidth=0.8;
+          ctx.beginPath();ctx.moveTo(sx-10,sy-7);ctx.lineTo(sx-2,sy-7);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx-10,sy-4);ctx.lineTo(sx+3,sy-4);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx-10,sy-1);ctx.lineTo(sx-1,sy-1);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx-10,sy+2);ctx.lineTo(sx+4,sy+2);ctx.stroke();
+          // Download arrow (↓)
+          ctx.strokeStyle='rgba(80,255,140,0.75)';ctx.lineWidth=1.2;
+          ctx.beginPath();ctx.moveTo(sx+8,sy-8);ctx.lineTo(sx+8,sy-2);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx+6,sy-4);ctx.lineTo(sx+8,sy-2);ctx.lineTo(sx+10,sy-4);ctx.stroke();
+          // Stand
+          ctx.fillStyle='#252738';ctx.fillRect(sx-5,sy+9,10,4);
+          ctx.fillStyle='#303248';ctx.fillRect(sx-7,sy+13,14,2);
+          break;
+        }
+        case 'Upload Data': {
+          ctx.globalAlpha = 0.85;
+          ctx.fillStyle = '#1a1c2a'; ctx.fillRect(sx-15, sy-13, 30, 22);
+          ctx.strokeStyle = '#2a3058'; ctx.lineWidth = 1; ctx.strokeRect(sx-15, sy-13, 30, 22);
+          ctx.fillStyle = '#040810'; ctx.fillRect(sx-12, sy-10, 24, 14);
+          const _uGl=ctx.createRadialGradient(sx,sy-3,0,sx,sy-3,14);
+          _uGl.addColorStop(0,'rgba(0,140,255,0.25)');_uGl.addColorStop(1,'rgba(0,40,120,0)');
+          ctx.fillStyle=_uGl;ctx.fillRect(sx-12,sy-10,24,14);
+          ctx.strokeStyle='rgba(40,160,255,0.45)';ctx.lineWidth=0.7;ctx.strokeRect(sx-12,sy-10,24,14);
+          ctx.strokeStyle='rgba(60,180,255,0.45)';ctx.lineWidth=0.7;
+          for(let i=0;i<4;i++){ctx.beginPath();ctx.moveTo(sx-10,sy-8+i*3);ctx.lineTo(sx+5,sy-8+i*3);ctx.stroke();}
+          // Upload arrow (↑) + side progress bar
+          ctx.strokeStyle='rgba(80,200,255,0.85)';ctx.lineWidth=1.2;
+          ctx.beginPath();ctx.moveTo(sx+8,sy-2);ctx.lineTo(sx+8,sy-8);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx+6,sy-6);ctx.lineTo(sx+8,sy-9);ctx.lineTo(sx+10,sy-6);ctx.stroke();
+          // Antenna
+          ctx.strokeStyle='#4a6090';ctx.lineWidth=1.5;
+          ctx.beginPath();ctx.moveTo(sx+12,sy-13);ctx.lineTo(sx+14,sy-20);ctx.stroke();
+          ctx.fillStyle='#607090';ctx.beginPath();ctx.arc(sx+14,sy-21,2,0,Math.PI*2);ctx.fill();
+          ctx.fillStyle='#252738';ctx.fillRect(sx-5,sy+9,10,4);
+          ctx.fillStyle='#303248';ctx.fillRect(sx-7,sy+13,14,2);
+          break;
+        }
+        case 'Accept Diverted Power': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#14141e'; ctx.fillRect(sx-14, sy-14, 28, 28);
+          ctx.strokeStyle = '#c0a000'; ctx.lineWidth = 1.5; ctx.strokeRect(sx-14, sy-14, 28, 28);
+          // Warning corner fills
+          ctx.fillStyle='rgba(255,200,0,0.18)';
+          ctx.fillRect(sx-14,sy-14,7,7);ctx.fillRect(sx+7,sy+7,7,7);
+          ctx.fillRect(sx+7,sy-14,7,7);ctx.fillRect(sx-14,sy+7,7,7);
+          // Lightning bolt
+          ctx.fillStyle='rgba(255,220,0,0.88)';
+          ctx.beginPath();
+          ctx.moveTo(sx+3,sy-10);ctx.lineTo(sx-4,sy-1);ctx.lineTo(sx+2,sy-1);
+          ctx.lineTo(sx-3,sy+10);ctx.lineTo(sx+4,sy+1);ctx.lineTo(sx-2,sy+1);
+          ctx.closePath();ctx.fill();
+          ctx.strokeStyle='rgba(255,255,100,0.45)';ctx.lineWidth=0.5;ctx.stroke();
+          // Port LEDs
+          const _pC=['rgba(255,70,70,0.9)','rgba(80,230,80,0.9)','rgba(80,230,80,0.9)'];
+          for(let i=0;i<3;i++){ctx.fillStyle=_pC[i];ctx.fillRect(sx-11+i*9,sy+11,6,3);}
+          // Input cable stubs
+          ctx.strokeStyle='#806000';ctx.lineWidth=2;
+          ctx.beginPath();ctx.moveTo(sx-14,sy-4);ctx.lineTo(sx-19,sy-4);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx-14,sy+4);ctx.lineTo(sx-19,sy+4);ctx.stroke();
+          break;
+        }
+        case 'Reset Breakers': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#1a1e2a'; ctx.fillRect(sx-16, sy-18, 32, 36);
+          ctx.strokeStyle = '#485068'; ctx.lineWidth = 1.2; ctx.strokeRect(sx-16, sy-18, 32, 36);
+          // Header bar
+          ctx.fillStyle='#252c3e';ctx.fillRect(sx-14,sy-16,28,6);
+          ctx.strokeStyle='#404858';ctx.lineWidth=0.5;ctx.strokeRect(sx-14,sy-16,28,6);
+          ctx.fillStyle='rgba(160,180,220,0.40)';
+          ctx.fillRect(sx-10,sy-14,8,2);ctx.fillRect(sx-10,sy-12,5,2);
+          // 3 breaker switch assemblies
+          for(let i=0;i<3;i++){
+            const bx=sx-11+i*11,by=sy-8;
+            ctx.fillStyle=i===1?'rgba(255,60,60,0.95)':'rgba(60,230,80,0.95)';
+            ctx.fillRect(bx+1,by,5,4);
+            ctx.fillStyle=i===1?'rgba(255,60,60,0.18)':'rgba(60,230,80,0.18)';
+            ctx.fillRect(bx-1,by-1,9,6);
+            ctx.fillStyle='#2c3444';ctx.fillRect(bx,by+5,7,13);
+            ctx.strokeStyle='#505c72';ctx.lineWidth=0.7;ctx.strokeRect(bx,by+5,7,13);
+            ctx.fillStyle='#7088a0';
+            if(i===1){ctx.fillRect(bx+1,by+6,5,5);}else{ctx.fillRect(bx+1,by+12,5,5);}
+            ctx.strokeStyle='rgba(180,200,230,0.25)';ctx.lineWidth=0.5;
+            ctx.beginPath();ctx.moveTo(bx,by+11);ctx.lineTo(bx+7,by+11);ctx.stroke();
+          }
+          break;
+        }
+        case 'Calibrate Distributor': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#181a28'; ctx.fillRect(sx-18, sy-14, 36, 28);
+          ctx.strokeStyle = '#384860'; ctx.lineWidth = 1; ctx.strokeRect(sx-18, sy-14, 36, 28);
+          // Circular dial
+          ctx.strokeStyle='rgba(60,160,255,0.55)';ctx.lineWidth=1.8;
+          ctx.beginPath();ctx.arc(sx-6,sy,9,0,Math.PI*2);ctx.stroke();
+          // Orange arc range
+          ctx.strokeStyle='rgba(255,120,40,0.45)';ctx.lineWidth=3;
+          ctx.beginPath();ctx.arc(sx-6,sy,7,Math.PI*0.1,Math.PI*0.9);ctx.stroke();
+          // Tick marks
+          ctx.strokeStyle='rgba(140,200,255,0.45)';ctx.lineWidth=0.8;
+          for(let i=0;i<8;i++){
+            const a=i*Math.PI/4;
+            ctx.beginPath();ctx.moveTo(sx-6+Math.cos(a)*7,sy+Math.sin(a)*7);
+            ctx.lineTo(sx-6+Math.cos(a)*9,sy+Math.sin(a)*9);ctx.stroke();
+          }
+          // Needle
+          ctx.strokeStyle='rgba(255,160,40,0.95)';ctx.lineWidth=1.5;
+          ctx.beginPath();ctx.moveTo(sx-6,sy);ctx.lineTo(sx-6+7,sy-4);ctx.stroke();
+          ctx.fillStyle='#8898aa';ctx.beginPath();ctx.arc(sx-6,sy,2,0,Math.PI*2);ctx.fill();
+          // LCD readout
+          ctx.fillStyle='#040e18';ctx.fillRect(sx+5,sy-10,11,20);
+          ctx.strokeStyle='rgba(60,140,220,0.45)';ctx.lineWidth=0.7;ctx.strokeRect(sx+5,sy-10,11,20);
+          ctx.strokeStyle='rgba(80,200,255,0.55)';ctx.lineWidth=0.8;
+          const _bars=[9,5,11,7,4];
+          for(let i=0;i<5;i++){ctx.beginPath();ctx.moveTo(sx+6,sy-7+i*4);ctx.lineTo(sx+6+_bars[i],sy-7+i*4);ctx.stroke();}
+          // Tuning knobs
+          for(let k=0;k<2;k++){
+            const kx=sx-13+k*24;
+            ctx.fillStyle='#2a3a4a';ctx.beginPath();ctx.arc(kx,sy+13,4,0,Math.PI*2);ctx.fill();
+            ctx.strokeStyle='#4a6080';ctx.lineWidth=1;ctx.stroke();
+            ctx.strokeStyle='rgba(180,220,255,0.4)';ctx.lineWidth=0.8;
+            ctx.beginPath();ctx.moveTo(kx,sy+9);ctx.lineTo(kx,sy+13);ctx.stroke();
+          }
+          break;
+        }
+        case 'Fix Wiring': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#14141e'; ctx.fillRect(sx-14, sy-13, 28, 26);
+          ctx.strokeStyle = '#484050'; ctx.lineWidth = 1; ctx.strokeRect(sx-14, sy-13, 28, 26);
+          ctx.fillStyle = '#0a080e'; ctx.fillRect(sx-11, sy-10, 22, 18);
+          // Screw heads at 4 corners
+          ctx.fillStyle='#3a3845';ctx.strokeStyle='#505060';ctx.lineWidth=0.7;
+          [[-12,-12],[10,-12],[-12,8],[10,8]].forEach(([dx,dy])=>{
+            ctx.beginPath();ctx.arc(sx+dx,sy+dy,2.5,0,Math.PI*2);ctx.fill();ctx.stroke();
+            ctx.strokeStyle='rgba(100,100,120,0.4)';ctx.lineWidth=0.5;
+            ctx.beginPath();ctx.moveTo(sx+dx-1.5,sy+dy);ctx.lineTo(sx+dx+1.5,sy+dy);ctx.stroke();
+            ctx.strokeStyle='#505060';ctx.lineWidth=0.7;
+          });
+          // 4 coloured wires
+          const _wC=['#ff4040','#3888ff','#ffee30','#40ee80'];
+          for(let wi=0;wi<4;wi++){
+            ctx.strokeStyle=_wC[wi];ctx.lineWidth=1.8;
+            const wy=sy-7+wi*5,cpY=wy+(wi%2===0?4:-4);
+            ctx.beginPath();ctx.moveTo(sx-9,wy);
+            ctx.bezierCurveTo(sx-3,cpY,sx+3,wy,sx+9,wy);ctx.stroke();
+            ctx.fillStyle=_wC[wi];
+            ctx.beginPath();ctx.arc(sx-9,wy,1.5,0,Math.PI*2);ctx.fill();
+            ctx.beginPath();ctx.arc(sx+9,wy,1.5,0,Math.PI*2);ctx.fill();
+          }
+          break;
+        }
+        case 'Empty Garbage': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#1e1c10'; ctx.fillRect(sx-13, sy-11, 26, 22);
+          ctx.strokeStyle = '#5a4818'; ctx.lineWidth = 1.2; ctx.strokeRect(sx-13, sy-11, 26, 22);
+          ctx.fillStyle = '#080808'; ctx.fillRect(sx-8, sy-8, 16, 12);
+          ctx.strokeStyle = '#302010'; ctx.lineWidth = 0.8; ctx.strokeRect(sx-8, sy-8, 16, 12);
+          ctx.fillStyle = '#5a4818'; ctx.fillRect(sx-8, sy-9, 16, 2);
+          ctx.strokeStyle = '#906c28'; ctx.lineWidth = 2.5;
+          ctx.beginPath();ctx.moveTo(sx-6,sy+6);ctx.lineTo(sx+6,sy+6);ctx.stroke();
+          ctx.fillStyle='#706020';ctx.beginPath();ctx.arc(sx-6,sy+6,2,0,Math.PI*2);ctx.fill();
+          ctx.beginPath();ctx.arc(sx+6,sy+6,2,0,Math.PI*2);ctx.fill();
+          // Biohazard ring + 3 arms
+          ctx.strokeStyle='rgba(255,180,0,0.55)';ctx.lineWidth=1;
+          ctx.beginPath();ctx.arc(sx,sy-2,4,0,Math.PI*2);ctx.stroke();
+          for(let b=0;b<3;b++){
+            const ba=b*Math.PI*2/3;
+            ctx.beginPath();ctx.arc(sx+Math.cos(ba)*4,sy-2+Math.sin(ba)*4,2,ba+Math.PI/2,ba+Math.PI*1.5);ctx.stroke();
+          }
+          break;
+        }
+        case 'Submit Scan': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#081428'; ctx.fillRect(sx-18, sy-9, 36, 18);
+          ctx.strokeStyle = '#1a4468'; ctx.lineWidth = 1.2; ctx.strokeRect(sx-18, sy-9, 36, 18);
+          const _scGl=ctx.createLinearGradient(sx-14,sy,sx+14,sy);
+          _scGl.addColorStop(0,'rgba(0,120,200,0.08)');_scGl.addColorStop(0.5,'rgba(0,200,255,0.25)');_scGl.addColorStop(1,'rgba(0,120,200,0.08)');
+          ctx.fillStyle=_scGl;ctx.fillRect(sx-14,sy-6,28,12);
+          // Scan beam line
+          ctx.strokeStyle='rgba(0,220,255,0.75)';ctx.lineWidth=1.5;
+          ctx.beginPath();ctx.moveTo(sx-14,sy);ctx.lineTo(sx+14,sy);ctx.stroke();
+          ctx.strokeStyle='rgba(0,200,255,0.20)';ctx.lineWidth=6;
+          ctx.beginPath();ctx.moveTo(sx-12,sy);ctx.lineTo(sx+12,sy);ctx.stroke();
+          // Corner brackets
+          [[-16,-8],[8,-8],[-16,3],[8,3]].forEach(([dx,dy])=>{
+            const bx=sx+dx,by=sy+dy,fs=dx<0?1:-1,vs=dy<0?1:-1;
+            ctx.strokeStyle='rgba(40,180,255,0.70)';ctx.lineWidth=1.8;
+            ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(bx+fs*6,by);ctx.moveTo(bx,by);ctx.lineTo(bx,by+vs*5);ctx.stroke();
+          });
+          ctx.fillStyle='rgba(0,230,255,0.75)';ctx.beginPath();ctx.arc(sx,sy-6,2.5,0,Math.PI*2);ctx.fill();
+          ctx.fillStyle='rgba(0,200,255,0.20)';ctx.beginPath();ctx.arc(sx,sy-6,6,0,Math.PI*2);ctx.fill();
+          break;
+        }
+        case 'Inspect Sample': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#141820'; ctx.fillRect(sx-11, sy-15, 22, 30);
+          ctx.strokeStyle = '#384050'; ctx.lineWidth = 1; ctx.strokeRect(sx-11, sy-15, 22, 30);
+          ctx.fillStyle = '#222c36'; ctx.fillRect(sx-2, sy-13, 8, 22);
+          ctx.strokeStyle = '#405060'; ctx.lineWidth = 0.8; ctx.strokeRect(sx-2, sy-13, 8, 22);
+          // Angled eyepiece
+          ctx.fillStyle = '#3a4a58';
+          ctx.beginPath();ctx.moveTo(sx-2,sy-12);ctx.lineTo(sx-7,sy-16);ctx.lineTo(sx-5,sy-14);ctx.lineTo(sx,sy-10);ctx.closePath();ctx.fill();
+          ctx.strokeStyle='#506070';ctx.lineWidth=0.7;ctx.stroke();
+          ctx.fillStyle='#4a5a68';ctx.beginPath();ctx.arc(sx-6,sy-15,3,0,Math.PI*2);ctx.fill();
+          // Objective lens with shimmer
+          ctx.strokeStyle='rgba(180,230,255,0.65)';ctx.lineWidth=1.8;
+          ctx.beginPath();ctx.arc(sx+2,sy+8,5,0,Math.PI*2);ctx.stroke();
+          ctx.fillStyle='rgba(100,180,255,0.15)';ctx.beginPath();ctx.arc(sx+2,sy+8,5,0,Math.PI*2);ctx.fill();
+          ctx.fillStyle='rgba(220,240,255,0.35)';ctx.beginPath();ctx.arc(sx,sy+6,2,0,Math.PI*2);ctx.fill();
+          // Stage + sample slide
+          ctx.fillStyle='#2a3440';ctx.fillRect(sx-9,sy+14,18,4);
+          ctx.strokeStyle='#405060';ctx.lineWidth=0.7;ctx.strokeRect(sx-9,sy+14,18,4);
+          ctx.fillStyle='rgba(180,210,240,0.30)';ctx.fillRect(sx-5,sy+14,10,3);
+          break;
+        }
+        case 'Start Reactor': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#180808'; ctx.fillRect(sx-17, sy-15, 34, 30);
+          ctx.strokeStyle = '#7a1818'; ctx.lineWidth = 1.2; ctx.strokeRect(sx-17, sy-15, 34, 30);
+          const _srGl=ctx.createRadialGradient(sx,sy,0,sx,sy,17);
+          _srGl.addColorStop(0,'rgba(255,100,30,0.18)');_srGl.addColorStop(1,'rgba(200,40,0,0)');
+          ctx.fillStyle=_srGl;ctx.fillRect(sx-17,sy-15,34,30);
+          // Hand-pad circle
+          ctx.strokeStyle='rgba(255,140,40,0.70)';ctx.lineWidth=2.5;
+          ctx.beginPath();ctx.arc(sx,sy,10,0,Math.PI*2);ctx.stroke();
+          ctx.strokeStyle='rgba(255,180,80,0.30)';ctx.lineWidth=5;
+          ctx.beginPath();ctx.arc(sx,sy,10,0,Math.PI*2);ctx.stroke();
+          ctx.fillStyle='rgba(255,140,40,0.28)';ctx.beginPath();ctx.arc(sx,sy,7,0,Math.PI*2);ctx.fill();
+          // 5 finger-pad marks
+          ctx.strokeStyle='rgba(255,160,60,0.45)';ctx.lineWidth=1;
+          for(let f=0;f<5;f++){
+            const fa=(f-2)*0.35-Math.PI/2;
+            ctx.beginPath();ctx.moveTo(sx+Math.cos(fa)*5,sy+Math.sin(fa)*5);
+            ctx.lineTo(sx+Math.cos(fa)*9,sy+Math.sin(fa)*9);ctx.stroke();
+          }
+          // Status lights
+          const _siC=['rgba(255,60,60,0.9)','rgba(255,160,40,0.8)','rgba(60,230,80,0.9)'];
+          for(let si=0;si<3;si++){
+            ctx.fillStyle=_siC[si];ctx.beginPath();ctx.arc(sx-8+si*8,sy-11,2.5,0,Math.PI*2);ctx.fill();
+            const _sic2=_siC[si].replace(/[\d.]+\)$/,'0.2)');
+            ctx.fillStyle=_sic2;ctx.beginPath();ctx.arc(sx-8+si*8,sy-11,5,0,Math.PI*2);ctx.fill();
+          }
+          break;
+        }
+        case 'Unlock Manifolds': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#161820'; ctx.fillRect(sx-16, sy-14, 32, 28);
+          ctx.strokeStyle = '#384050'; ctx.lineWidth = 1; ctx.strokeRect(sx-16, sy-14, 32, 28);
+          // Horizontal pipe
+          ctx.fillStyle='#303848';ctx.fillRect(sx-14,sy-3,28,6);
+          ctx.strokeStyle='#506070';ctx.lineWidth=0.8;ctx.strokeRect(sx-14,sy-3,28,6);
+          ctx.fillStyle='rgba(180,210,230,0.10)';ctx.fillRect(sx-14,sy-2,28,2);
+          // Vertical pipe stubs
+          ctx.fillStyle='#303848';
+          ctx.fillRect(sx-8,sy-13,6,10);ctx.fillRect(sx-8,sy+3,6,10);
+          ctx.strokeStyle='#506070';ctx.lineWidth=0.7;
+          ctx.strokeRect(sx-8,sy-13,6,10);ctx.strokeRect(sx-8,sy+3,6,10);
+          // Valve wheel
+          ctx.strokeStyle='rgba(100,200,230,0.70)';ctx.lineWidth=2;
+          ctx.beginPath();ctx.arc(sx+6,sy,7,0,Math.PI*2);ctx.stroke();
+          for(let v=0;v<4;v++){
+            const va=v*Math.PI/2;
+            ctx.beginPath();ctx.moveTo(sx+6,sy);ctx.lineTo(sx+6+Math.cos(va)*7,sy+Math.sin(va)*7);ctx.stroke();
+          }
+          ctx.fillStyle='#5a7080';ctx.beginPath();ctx.arc(sx+6,sy,2.5,0,Math.PI*2);ctx.fill();
+          // Pressure gauge (left)
+          ctx.strokeStyle='rgba(180,200,220,0.40)';ctx.lineWidth=1;
+          ctx.beginPath();ctx.arc(sx-8,sy-10,4,0,Math.PI*2);ctx.stroke();
+          ctx.strokeStyle='rgba(255,160,40,0.60)';ctx.lineWidth=1;
+          ctx.beginPath();ctx.moveTo(sx-8,sy-10);ctx.lineTo(sx-6,sy-12);ctx.stroke();
+          break;
+        }
+        case 'Clean O2 Filter': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#0a1820'; ctx.fillRect(sx-10, sy-18, 20, 36);
+          ctx.strokeStyle = '#1a4860'; ctx.lineWidth = 1.2; ctx.strokeRect(sx-10, sy-18, 20, 36);
+          // Ribbed bands
+          ctx.strokeStyle='#2a6888';ctx.lineWidth=1;
+          for(let r=0;r<3;r++){ctx.beginPath();ctx.moveTo(sx-10,sy-10+r*8);ctx.lineTo(sx+10,sy-10+r*8);ctx.stroke();}
+          // O2 label zone
+          ctx.fillStyle='rgba(0,180,255,0.18)';ctx.fillRect(sx-7,sy-15,14,8);
+          ctx.strokeStyle='rgba(0,180,255,0.45)';ctx.lineWidth=0.6;ctx.strokeRect(sx-7,sy-15,14,8);
+          ctx.strokeStyle='rgba(80,200,255,0.65)';ctx.lineWidth=0.8;
+          ctx.beginPath();ctx.arc(sx-2,sy-11,2.5,0,Math.PI*2);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx+2,sy-14);ctx.lineTo(sx+5,sy-14);ctx.moveTo(sx+2,sy-11);ctx.lineTo(sx+5,sy-11);ctx.moveTo(sx+5,sy-14);ctx.lineTo(sx+2,sy-11);ctx.stroke();
+          // Filter mesh
+          ctx.fillStyle='rgba(60,180,240,0.12)';ctx.fillRect(sx-7,sy-6,14,12);
+          ctx.strokeStyle='rgba(40,160,220,0.35)';ctx.lineWidth=0.6;
+          for(let mx=0;mx<5;mx++){ctx.beginPath();ctx.moveTo(sx-7+mx*3.5,sy-6);ctx.lineTo(sx-7+mx*3.5,sy+6);ctx.stroke();}
+          for(let my=0;my<4;my++){ctx.beginPath();ctx.moveTo(sx-7,sy-6+my*4);ctx.lineTo(sx+7,sy-6+my*4);ctx.stroke();}
+          ctx.fillStyle='rgba(80,240,80,0.85)';ctx.beginPath();ctx.arc(sx,sy+14,2.5,0,Math.PI*2);ctx.fill();
+          break;
+        }
+        case 'Water Plants': {
+          ctx.globalAlpha = 0.88;
+          // Planter base
+          ctx.fillStyle='#0e1808';ctx.fillRect(sx-12,sy+4,24,12);
+          ctx.strokeStyle='#304820';ctx.lineWidth=1;ctx.strokeRect(sx-12,sy+4,24,12);
+          ctx.fillStyle='rgba(80,50,20,0.55)';ctx.fillRect(sx-10,sy+5,20,4);
+          // Plant stems
+          ctx.strokeStyle='#40a030';ctx.lineWidth=1.5;
+          ctx.beginPath();ctx.moveTo(sx,sy+5);ctx.bezierCurveTo(sx-2,sy-2,sx-5,sy-8,sx-7,sy-14);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx,sy+5);ctx.bezierCurveTo(sx+2,sy-4,sx+4,sy-6,sx+6,sy-12);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx,sy+5);ctx.lineTo(sx,sy-10);ctx.stroke();
+          // Leaves
+          ctx.fillStyle='rgba(40,160,60,0.75)';
+          ctx.beginPath();ctx.ellipse(sx-9,sy-16,5,3,-0.5,0,Math.PI*2);ctx.fill();
+          ctx.beginPath();ctx.ellipse(sx+8,sy-14,5,3,0.5,0,Math.PI*2);ctx.fill();
+          ctx.beginPath();ctx.ellipse(sx,sy-11,4,2.5,-0.1,0,Math.PI*2);ctx.fill();
+          // Water droplet
+          ctx.fillStyle='rgba(60,160,255,0.55)';
+          ctx.beginPath();ctx.moveTo(sx+9,sy-2);ctx.bezierCurveTo(sx+12,sy-6,sx+14,sy-2,sx+9,sy-2);ctx.fill();
+          break;
+        }
+        case 'Fuel Engines': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#161416'; ctx.fillRect(sx-12, sy-14, 24, 28);
+          ctx.strokeStyle = '#403840'; ctx.lineWidth = 1; ctx.strokeRect(sx-12, sy-14, 24, 28);
+          // Nozzle tube
+          ctx.fillStyle='#2c2830';ctx.fillRect(sx-12,sy-4,18,8);
+          ctx.strokeStyle='#504858';ctx.lineWidth=0.8;ctx.strokeRect(sx-12,sy-4,18,8);
+          // Nozzle tip flare
+          ctx.fillStyle='#383440';
+          ctx.beginPath();ctx.moveTo(sx+6,sy-6);ctx.lineTo(sx+12,sy-8);ctx.lineTo(sx+12,sy+8);ctx.lineTo(sx+6,sy+6);ctx.closePath();ctx.fill();
+          ctx.strokeStyle='#605868';ctx.lineWidth=0.7;ctx.stroke();
+          // Collar rings
+          ctx.strokeStyle='#605868';ctx.lineWidth=1.5;
+          ctx.beginPath();ctx.moveTo(sx-8,sy-4);ctx.lineTo(sx-8,sy+4);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx-3,sy-4);ctx.lineTo(sx-3,sy+4);ctx.stroke();
+          // Fuel level gauge
+          ctx.fillStyle='#0a080c';ctx.fillRect(sx+4,sy-12,6,12);
+          ctx.strokeStyle='#484050';ctx.lineWidth=0.7;ctx.strokeRect(sx+4,sy-12,6,12);
+          ctx.fillStyle='rgba(255,140,20,0.75)';ctx.fillRect(sx+5,sy-5,4,5);
+          ctx.strokeStyle='rgba(200,120,20,0.55)';ctx.lineWidth=0.5;
+          ctx.beginPath();ctx.moveTo(sx+4,sy-7);ctx.lineTo(sx+10,sy-7);ctx.stroke();
+          ctx.fillStyle='rgba(255,200,0,0.45)';ctx.fillRect(sx-10,sy+10,12,3);
+          break;
+        }
+        case 'Align Engine Output': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#14121e'; ctx.fillRect(sx-15, sy-14, 30, 28);
+          ctx.strokeStyle = '#383050'; ctx.lineWidth = 1; ctx.strokeRect(sx-15, sy-14, 30, 28);
+          // 2 side-by-side dials
+          for(let dg=0;dg<2;dg++){
+            const dgx=sx-7+dg*14;
+            ctx.strokeStyle='rgba(100,200,255,0.50)';ctx.lineWidth=1.5;
+            ctx.beginPath();ctx.arc(dgx,sy-2,7,0,Math.PI*2);ctx.stroke();
+            ctx.strokeStyle='rgba(60,160,220,0.35)';ctx.lineWidth=3;
+            ctx.beginPath();ctx.arc(dgx,sy-2,5.5,Math.PI*0.75,Math.PI*2.25);ctx.stroke();
+            const na=dg===0?-0.8:0.4;
+            ctx.strokeStyle='rgba(255,180,40,0.90)';ctx.lineWidth=1.2;
+            ctx.beginPath();ctx.moveTo(dgx,sy-2);ctx.lineTo(dgx+Math.cos(na-Math.PI/2)*5.5,sy-2+Math.sin(na-Math.PI/2)*5.5);ctx.stroke();
+            ctx.fillStyle='#7880a0';ctx.beginPath();ctx.arc(dgx,sy-2,1.5,0,Math.PI*2);ctx.fill();
+          }
+          ctx.fillStyle='rgba(140,160,200,0.25)';ctx.fillRect(sx-12,sy+7,24,5);
+          ctx.strokeStyle='rgba(140,160,200,0.20)';ctx.lineWidth=0.5;ctx.strokeRect(sx-12,sy+7,24,5);
+          break;
+        }
+        case 'Prime Shields': {
+          ctx.globalAlpha = 0.88;
+          // Hexagonal emitter
+          const _hex=[];
+          for(let h=0;h<6;h++){const ha=h*Math.PI/3-Math.PI/6;_hex.push([sx+Math.cos(ha)*14,sy+Math.sin(ha)*14]);}
+          ctx.fillStyle='#0c0e18';
+          ctx.beginPath();ctx.moveTo(_hex[0][0],_hex[0][1]);_hex.forEach(p=>ctx.lineTo(p[0],p[1]));ctx.closePath();ctx.fill();
+          ctx.strokeStyle='#2a5080';ctx.lineWidth=1.5;
+          ctx.beginPath();ctx.moveTo(_hex[0][0],_hex[0][1]);_hex.forEach(p=>ctx.lineTo(p[0],p[1]));ctx.closePath();ctx.stroke();
+          // Inner hex ring
+          const _hex2=[];
+          for(let h=0;h<6;h++){const ha=h*Math.PI/3-Math.PI/6;_hex2.push([sx+Math.cos(ha)*9,sy+Math.sin(ha)*9]);}
+          ctx.strokeStyle='rgba(60,140,255,0.45)';ctx.lineWidth=1;
+          ctx.beginPath();ctx.moveTo(_hex2[0][0],_hex2[0][1]);_hex2.forEach(p=>ctx.lineTo(p[0],p[1]));ctx.closePath();ctx.stroke();
+          // Energy glow
+          const _sgGl=ctx.createRadialGradient(sx,sy,0,sx,sy,9);
+          _sgGl.addColorStop(0,'rgba(80,180,255,0.30)');_sgGl.addColorStop(1,'rgba(20,80,200,0)');
+          ctx.fillStyle=_sgGl;ctx.beginPath();ctx.moveTo(_hex2[0][0],_hex2[0][1]);_hex2.forEach(p=>ctx.lineTo(p[0],p[1]));ctx.closePath();ctx.fill();
+          // Power lines center to vertices
+          ctx.strokeStyle='rgba(80,160,255,0.35)';ctx.lineWidth=0.8;
+          for(let h=0;h<6;h++){ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(_hex[h][0],_hex[h][1]);ctx.stroke();}
+          ctx.fillStyle='rgba(140,200,255,0.80)';ctx.beginPath();ctx.arc(sx,sy,3,0,Math.PI*2);ctx.fill();
+          // Status dots
+          const _piC=['rgba(255,60,60,0.9)','rgba(60,230,80,0.9)','rgba(60,230,80,0.9)'];
+          for(let pi=0;pi<3;pi++){
+            const pa=(pi-1)*0.6-Math.PI/2;
+            ctx.fillStyle=_piC[pi];ctx.beginPath();ctx.arc(sx+Math.cos(pa)*17,sy+Math.sin(pa)*17,2.5,0,Math.PI*2);ctx.fill();
+          }
+          break;
+        }
+        case 'Restore Comms': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#0e1218'; ctx.fillRect(sx-16, sy-13, 32, 26);
+          ctx.strokeStyle = '#2a3a4c'; ctx.lineWidth = 1; ctx.strokeRect(sx-16, sy-13, 32, 26);
+          // Satellite dish arc
+          ctx.strokeStyle='rgba(160,200,230,0.65)';ctx.lineWidth=1.5;
+          ctx.beginPath();ctx.arc(sx-8,sy-5,6,Math.PI*1.1,Math.PI*2.0);ctx.stroke();
+          ctx.strokeStyle='#506070';ctx.lineWidth=1;
+          ctx.beginPath();ctx.moveTo(sx-8,sy-5);ctx.lineTo(sx-6,sy+3);ctx.stroke();
+          ctx.fillStyle='#607888';ctx.beginPath();ctx.arc(sx-4,sy-10,2,0,Math.PI*2);ctx.fill();
+          // Frequency waveform display
+          ctx.fillStyle='#04080c';ctx.fillRect(sx+1,sy-10,13,18);
+          ctx.strokeStyle='rgba(60,160,255,0.35)';ctx.lineWidth=0.7;ctx.strokeRect(sx+1,sy-10,13,18);
+          ctx.strokeStyle='rgba(80,200,255,0.55)';ctx.lineWidth=0.8;
+          ctx.beginPath();
+          ctx.moveTo(sx+2,sy-5);ctx.lineTo(sx+4,sy-5);ctx.lineTo(sx+4,sy-8);ctx.lineTo(sx+6,sy-8);ctx.lineTo(sx+6,sy-2);
+          ctx.lineTo(sx+8,sy-2);ctx.lineTo(sx+8,sy-7);ctx.lineTo(sx+10,sy-7);ctx.lineTo(sx+10,sy-4);ctx.lineTo(sx+13,sy-4);
+          ctx.stroke();
+          // Signal strength bars
+          for(let sb=0;sb<4;sb++){
+            const sh=3+sb*2;
+            ctx.fillStyle=sb<3?'rgba(60,220,80,0.75)':'rgba(255,80,80,0.40)';
+            ctx.fillRect(sx+2+sb*3,sy+5,2,sh);
+          }
+          break;
+        }
+        case 'Chart Course': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#080812'; ctx.fillRect(sx-15, sy-13, 30, 26);
+          ctx.strokeStyle = '#1a2a40'; ctx.lineWidth = 1; ctx.strokeRect(sx-15, sy-13, 30, 26);
+          ctx.fillStyle='rgba(20,40,100,0.30)';ctx.fillRect(sx-12,sy-10,24,20);
+          // Grid lines
+          ctx.strokeStyle='rgba(60,100,180,0.25)';ctx.lineWidth=0.6;
+          for(let gx=0;gx<4;gx++){ctx.beginPath();ctx.moveTo(sx-12+gx*8,sy-10);ctx.lineTo(sx-12+gx*8,sy+10);ctx.stroke();}
+          for(let gy=0;gy<3;gy++){ctx.beginPath();ctx.moveTo(sx-12,sy-10+gy*10);ctx.lineTo(sx+12,sy-10+gy*10);ctx.stroke();}
+          // Stars
+          ctx.fillStyle='rgba(200,220,255,0.80)';
+          [[sx-9,sy-7],[sx+3,sy-5],[sx+8,sy-2],[sx-4,sy+2],[sx+6,sy+6],[sx-7,sy+5],[sx+1,sy-9]].forEach(([x2,y2])=>{
+            ctx.beginPath();ctx.arc(x2,y2,1,0,Math.PI*2);ctx.fill();
+          });
+          // Course line + markers
+          ctx.strokeStyle='rgba(255,160,40,0.80)';ctx.lineWidth=1.2;
+          ctx.beginPath();ctx.moveTo(sx-2,sy+4);ctx.lineTo(sx+8,sy-6);ctx.stroke();
+          ctx.fillStyle='rgba(80,200,255,0.80)';ctx.beginPath();ctx.arc(sx-2,sy+4,2.5,0,Math.PI*2);ctx.fill();
+          ctx.strokeStyle='rgba(255,120,40,0.80)';ctx.lineWidth=1.2;
+          ctx.beginPath();ctx.moveTo(sx+6,sy-8);ctx.lineTo(sx+10,sy-4);ctx.moveTo(sx+10,sy-8);ctx.lineTo(sx+6,sy-4);ctx.stroke();
+          break;
+        }
+        case 'Stabilize Steering': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#0e1020'; ctx.fillRect(sx-16, sy-16, 32, 32);
+          ctx.strokeStyle = '#2c3060'; ctx.lineWidth = 1; ctx.strokeRect(sx-16, sy-16, 32, 32);
+          // Outer wheel
+          ctx.strokeStyle='rgba(100,180,255,0.65)';ctx.lineWidth=2.5;
+          ctx.beginPath();ctx.arc(sx,sy,11,0,Math.PI*2);ctx.stroke();
+          // Hub
+          ctx.strokeStyle='rgba(80,150,220,0.55)';ctx.lineWidth=1.5;
+          ctx.beginPath();ctx.arc(sx,sy,4,0,Math.PI*2);ctx.stroke();
+          // 6 spokes with grips
+          for(let sp=0;sp<6;sp++){
+            const spa=sp*Math.PI/3;
+            ctx.strokeStyle='rgba(100,180,255,0.50)';ctx.lineWidth=1.5;
+            ctx.beginPath();ctx.moveTo(sx+Math.cos(spa)*4,sy+Math.sin(spa)*4);
+            ctx.lineTo(sx+Math.cos(spa)*11,sy+Math.sin(spa)*11);ctx.stroke();
+            ctx.fillStyle='rgba(80,140,200,0.40)';
+            ctx.beginPath();ctx.arc(sx+Math.cos(spa)*11,sy+Math.sin(spa)*11,2,0,Math.PI*2);ctx.fill();
+          }
+          // Course deviation bar
+          ctx.fillStyle='#080c18';ctx.fillRect(sx-10,sy+14,20,4);
+          ctx.strokeStyle='#3040a0';ctx.lineWidth=0.6;ctx.strokeRect(sx-10,sy+14,20,4);
+          ctx.fillStyle='rgba(140,200,255,0.70)';ctx.fillRect(sx-1,sy+15,2,2);
+          ctx.fillStyle='rgba(255,200,60,0.80)';ctx.fillRect(sx+3,sy+15,2,2);
+          break;
+        }
+        case 'Clear Asteroids': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#100c0c'; ctx.fillRect(sx-15, sy-14, 30, 28);
+          ctx.strokeStyle = '#502020'; ctx.lineWidth = 1.2; ctx.strokeRect(sx-15, sy-14, 30, 28);
+          // Targeting reticle
+          ctx.strokeStyle='rgba(255,80,40,0.70)';ctx.lineWidth=1.5;
+          ctx.beginPath();ctx.arc(sx,sy-1,10,0,Math.PI*2);ctx.stroke();
+          ctx.strokeStyle='rgba(255,100,60,0.35)';ctx.lineWidth=4;
+          ctx.beginPath();ctx.arc(sx,sy-1,10,0,Math.PI*2);ctx.stroke();
+          // Crosshair lines
+          ctx.strokeStyle='rgba(255,80,40,0.75)';ctx.lineWidth=1;
+          ctx.beginPath();ctx.moveTo(sx-13,sy-1);ctx.lineTo(sx-12,sy-1);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx+12,sy-1);ctx.lineTo(sx+13,sy-1);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx,sy-14);ctx.lineTo(sx,sy-13);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx,sy+11);ctx.lineTo(sx,sy+12);ctx.stroke();
+          ctx.fillStyle='rgba(255,100,40,0.80)';ctx.beginPath();ctx.arc(sx,sy-1,2.5,0,Math.PI*2);ctx.fill();
+          ctx.fillStyle='rgba(255,80,40,0.22)';ctx.beginPath();ctx.arc(sx,sy-1,5,0,Math.PI*2);ctx.fill();
+          // Lock bar
+          ctx.fillStyle='rgba(255,200,0,0.60)';ctx.fillRect(sx-6,sy+12,12,4);
+          ctx.strokeStyle='rgba(255,200,0,0.40)';ctx.lineWidth=0.7;ctx.strokeRect(sx-6,sy+12,12,4);
+          break;
+        }
+        case 'View Camera': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#181820'; ctx.fillRect(sx-17, sy-13, 34, 24);
+          ctx.strokeStyle = '#404058'; ctx.lineWidth = 1; ctx.strokeRect(sx-17, sy-13, 34, 24);
+          ctx.fillStyle='#020408';ctx.fillRect(sx-14,sy-10,28,17);
+          // 2×2 camera feed grid
+          ctx.strokeStyle='#303048';ctx.lineWidth=0.7;
+          ctx.beginPath();ctx.moveTo(sx,sy-10);ctx.lineTo(sx,sy+7);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx-14,sy-1);ctx.lineTo(sx+14,sy-1);ctx.stroke();
+          [[sx-13,sy-9],[sx+1,sy-9],[sx-13,sy],[sx+1,sy]].forEach(([fx,fy],fi)=>{
+            ctx.fillStyle=['rgba(40,60,100,0.50)','rgba(30,50,80,0.50)','rgba(50,70,110,0.50)','rgba(35,55,90,0.50)'][fi];
+            ctx.fillRect(fx,fy,13,9);
+            ctx.fillStyle='rgba(255,200,100,0.45)';
+            ctx.beginPath();ctx.arc(fx+3+fi*2,fy+4,1.5,0,Math.PI*2);ctx.fill();
+          });
+          // Blinking recording dot
+          const _blV=Math.floor(Date.now()/800)%2===0;
+          ctx.fillStyle=_blV?'rgba(255,50,50,0.95)':'rgba(80,80,80,0.40)';
+          ctx.beginPath();ctx.arc(sx+14,sy-11,2,0,Math.PI*2);ctx.fill();
+          if(_blV){ctx.fillStyle='rgba(255,50,50,0.20)';ctx.beginPath();ctx.arc(sx+14,sy-11,5,0,Math.PI*2);ctx.fill();}
+          break;
+        }
+        case 'Divert Power': {
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#0e1418'; ctx.fillRect(sx-14, sy-16, 28, 32);
+          ctx.strokeStyle = '#304050'; ctx.lineWidth = 1; ctx.strokeRect(sx-14, sy-16, 28, 32);
+          // Power flow diagram
+          ctx.strokeStyle='rgba(255,200,40,0.55)';ctx.lineWidth=1.2;
+          ctx.beginPath();ctx.moveTo(sx,sy-14);ctx.lineTo(sx,sy-6);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx-10,sy-6);ctx.lineTo(sx+10,sy-6);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx-10,sy-6);ctx.lineTo(sx-10,sy+4);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx,sy-6);ctx.lineTo(sx,sy+4);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(sx+10,sy-6);ctx.lineTo(sx+10,sy+4);ctx.stroke();
+          // 3 switches
+          for(let di=0;di<3;di++){
+            const dx=sx-10+di*10,dy=sy+4;
+            ctx.fillStyle='#1c2830';ctx.fillRect(dx-4,dy,8,10);
+            ctx.strokeStyle='#3a5060';ctx.lineWidth=0.7;ctx.strokeRect(dx-4,dy,8,10);
+            ctx.lineWidth=2;
+            if(di===0){
+              ctx.strokeStyle='rgba(255,180,40,0.85)';
+              ctx.beginPath();ctx.moveTo(dx,dy+5);ctx.lineTo(dx+3,dy+1);ctx.stroke();
+            }else{
+              ctx.strokeStyle='rgba(60,180,255,0.75)';
+              ctx.beginPath();ctx.moveTo(dx,dy+8);ctx.lineTo(dx,dy+1);ctx.stroke();
+            }
+            ctx.lineWidth=0.7;ctx.strokeStyle='#3a5060';
+            ctx.fillStyle=di===0?'rgba(255,150,0,0.85)':'rgba(60,200,80,0.85)';
+            ctx.beginPath();ctx.arc(dx,dy+12,2,0,Math.PI*2);ctx.fill();
+          }
+          break;
+        }
+        case 'Buy Beverage': {
+          ctx.globalAlpha = 0.88;
+          // Vending machine body
+          ctx.fillStyle = '#1a2a3a'; ctx.fillRect(sx-14, sy-18, 28, 36);
+          ctx.strokeStyle = '#2a4060'; ctx.lineWidth = 1.2; ctx.strokeRect(sx-14, sy-18, 28, 36);
+          // Selection window
+          ctx.fillStyle = '#0a0f18'; ctx.fillRect(sx-11, sy-16, 22, 20);
+          ctx.strokeStyle = '#1a3050'; ctx.lineWidth = 0.8; ctx.strokeRect(sx-11, sy-16, 22, 20);
+          // Can items in window (2 rows × 3 cols)
+          const _bvCols = ['#cc2222','#2266cc','#22aa44'];
+          for(let row=0;row<2;row++){
+            for(let col=0;col<3;col++){
+              const cx=sx-8+col*7, cy=sy-13+row*8;
+              ctx.fillStyle=_bvCols[col]; ctx.fillRect(cx,cy,5,6);
+              ctx.fillStyle='rgba(255,255,255,0.25)'; ctx.fillRect(cx,cy,2,6);
+            }
+          }
+          // Coin slot
+          ctx.fillStyle='#0a0f18'; ctx.fillRect(sx-3, sy+8, 6, 2);
+          ctx.strokeStyle='#4a6080'; ctx.lineWidth=0.7; ctx.strokeRect(sx-3, sy+8, 6, 2);
+          // Selection buttons (3)
+          ['#ff4444','#4488ff','#44cc66'].forEach((c,i)=>{
+            ctx.fillStyle=c; ctx.beginPath(); ctx.arc(sx-6+i*6, sy+14, 2.5, 0, Math.PI*2); ctx.fill();
+          });
+          // Dispensing tray
+          ctx.fillStyle='#0a1020'; ctx.fillRect(sx-11, sy+17, 22, 4);
+          ctx.strokeStyle='#3a5070'; ctx.lineWidth=0.6; ctx.strokeRect(sx-11, sy+17, 22, 4);
+          break;
+        }
+        case 'Check Manifest': {
+          ctx.globalAlpha = 0.87;
+          // Clipboard backing
+          ctx.fillStyle = '#c8a96e'; ctx.fillRect(sx-11, sy-14, 22, 27);
+          ctx.strokeStyle = '#8a6a30'; ctx.lineWidth = 1; ctx.strokeRect(sx-11, sy-14, 22, 27);
+          // Clip at top
+          ctx.fillStyle = '#666'; ctx.fillRect(sx-5, sy-17, 10, 5);
+          ctx.strokeStyle = '#444'; ctx.lineWidth = 0.8; ctx.strokeRect(sx-5, sy-17, 10, 5);
+          // Paper inside
+          ctx.fillStyle = '#f0ead0'; ctx.fillRect(sx-9, sy-12, 18, 23);
+          // List rows
+          ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = 0.7;
+          for(let ri=0;ri<4;ri++){ctx.beginPath();ctx.moveTo(sx-6,sy-8+ri*5);ctx.lineTo(sx+7,sy-8+ri*5);ctx.stroke();}
+          // Checkboxes
+          const _cmChk=[true,true,false,false];
+          _cmChk.forEach((c,i)=>{
+            ctx.fillStyle='#fff';ctx.fillRect(sx-8,sy-10+i*5,3,3);
+            ctx.strokeStyle='rgba(0,0,0,0.4)';ctx.lineWidth=0.5;ctx.strokeRect(sx-8,sy-10+i*5,3,3);
+            if(c){ctx.strokeStyle='rgba(20,180,60,0.95)';ctx.lineWidth=0.8;ctx.beginPath();ctx.moveTo(sx-8,sy-8.5+i*5);ctx.lineTo(sx-7,sy-7.5+i*5);ctx.lineTo(sx-5.5,sy-9.5+i*5);ctx.stroke();}
+          });
+          break;
+        }
+        case 'Test Air Quality': {
+          ctx.globalAlpha = 0.87;
+          // Sensor housing (tall cylinder rendered as rect with rounded top)
+          ctx.fillStyle = '#1c2230'; ctx.fillRect(sx-10, sy-14, 20, 26);
+          ctx.strokeStyle = '#3a4860'; ctx.lineWidth = 1; ctx.strokeRect(sx-10, sy-14, 20, 26);
+          // Sensor mesh grille
+          ctx.strokeStyle = 'rgba(100,180,255,0.30)'; ctx.lineWidth = 0.6;
+          for(let gi=0;gi<4;gi++){ctx.beginPath();ctx.moveTo(sx-8,sy-11+gi*4);ctx.lineTo(sx+8,sy-11+gi*4);ctx.stroke();}
+          for(let gj=0;gj<5;gj++){ctx.beginPath();ctx.moveTo(sx-8+gj*4,sy-11);ctx.lineTo(sx-8+gj*4,sy+1);ctx.stroke();}
+          // LCD readout strip
+          ctx.fillStyle = '#040f08'; ctx.fillRect(sx-8, sy+4, 16, 8);
+          ctx.strokeStyle = 'rgba(0,220,100,0.45)'; ctx.lineWidth = 0.6; ctx.strokeRect(sx-8, sy+4, 16, 8);
+          ctx.fillStyle = 'rgba(0,255,110,0.80)'; ctx.font = 'bold 5px monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+          ctx.fillText('O₂ 21%', sx, sy+8);
+          // Status LED
+          ctx.fillStyle='rgba(80,255,140,0.95)'; ctx.beginPath(); ctx.arc(sx+7,sy-12,2,0,Math.PI*2); ctx.fill();
+          break;
+        }
+        case 'Reboot WiFi': {
+          ctx.globalAlpha = 0.87;
+          // Router body
+          ctx.fillStyle = '#202838'; ctx.fillRect(sx-14, sy-10, 28, 18);
+          ctx.strokeStyle = '#38485c'; ctx.lineWidth = 1; ctx.strokeRect(sx-14, sy-10, 28, 18);
+          // Antenna
+          ctx.strokeStyle = '#5a7090'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(sx+10, sy-10); ctx.lineTo(sx+10, sy-20); ctx.stroke();
+          ctx.fillStyle = '#8ab0d0'; ctx.beginPath(); ctx.arc(sx+10, sy-21, 2, 0, Math.PI*2); ctx.fill();
+          // Status LEDs row
+          const _wfLeds=['rgba(0,220,80,0.95)','rgba(255,160,0,0.95)','rgba(0,150,255,0.95)','rgba(255,80,80,0.70)'];
+          _wfLeds.forEach((c,i)=>{
+            ctx.fillStyle=c; ctx.beginPath(); ctx.arc(sx-10+i*7, sy-4, 2, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle=c.replace('0.95','0.15').replace('0.70','0.10');
+            ctx.beginPath(); ctx.arc(sx-10+i*7, sy-4, 5, 0, Math.PI*2); ctx.fill();
+          });
+          // Ventilation slots
+          ctx.strokeStyle = 'rgba(255,255,255,0.07)'; ctx.lineWidth = 0.6;
+          for(let vs=0;vs<5;vs++){ctx.beginPath();ctx.moveTo(sx-12,sy+2+vs*2);ctx.lineTo(sx+4,sy+2+vs*2);ctx.stroke();}
+          // Reset button
+          ctx.fillStyle='rgba(255,80,80,0.85)'; ctx.fillRect(sx+7, sy+2, 5, 5);
+          ctx.strokeStyle='rgba(200,0,0,0.6)'; ctx.lineWidth=0.6; ctx.strokeRect(sx+7, sy+2, 5, 5);
+          break;
+        }
+        case 'Replace Filters': {
+          ctx.globalAlpha = 0.86;
+          // Filter housing frame
+          ctx.fillStyle = '#1e2430'; ctx.fillRect(sx-13, sy-13, 26, 26);
+          ctx.strokeStyle = '#50697a'; ctx.lineWidth = 1.2; ctx.strokeRect(sx-13, sy-13, 26, 26);
+          // Filter mesh (clogged = orange tint)
+          ctx.fillStyle = 'rgba(200,120,30,0.18)'; ctx.fillRect(sx-11, sy-11, 22, 22);
+          ctx.strokeStyle = 'rgba(200,140,50,0.45)'; ctx.lineWidth = 0.8;
+          for(let fx=0;fx<5;fx++){ctx.beginPath();ctx.moveTo(sx-11+fx*5.5,sy-11);ctx.lineTo(sx-11+fx*5.5,sy+11);ctx.stroke();}
+          for(let fy=0;fy<5;fy++){ctx.beginPath();ctx.moveTo(sx-11,sy-11+fy*5.5);ctx.lineTo(sx+11,sy-11+fy*5.5);ctx.stroke();}
+          // Clog warning dot
+          ctx.fillStyle='rgba(255,140,0,0.95)'; ctx.beginPath(); ctx.arc(sx+10,sy-10,3,0,Math.PI*2); ctx.fill();
+          ctx.strokeStyle='rgba(255,200,0,0.5)'; ctx.lineWidth=1; ctx.beginPath(); ctx.arc(sx+10,sy-10,5,0,Math.PI*2); ctx.stroke();
+          // Handle tab
+          ctx.fillStyle='#3a4a5a'; ctx.fillRect(sx-3,sy+10,6,5);
+          ctx.strokeStyle='#5a7080'; ctx.lineWidth=0.7; ctx.strokeRect(sx-3,sy+10,6,5);
+          break;
+        }
+        case 'Lubricate Valves': {
+          ctx.globalAlpha = 0.87;
+          // Horizontal pipe
+          ctx.fillStyle = '#3a4a5a'; ctx.fillRect(sx-14, sy-4, 28, 8);
+          ctx.strokeStyle = '#607888'; ctx.lineWidth = 0.8; ctx.strokeRect(sx-14, sy-4, 28, 8);
+          // Vertical pipe
+          ctx.fillStyle = '#3a4a5a'; ctx.fillRect(sx-4, sy-14, 8, 28);
+          ctx.strokeStyle = '#607888'; ctx.lineWidth = 0.8; ctx.strokeRect(sx-4, sy-14, 8, 28);
+          // Center junction cap
+          ctx.fillStyle = '#506070'; ctx.beginPath(); ctx.arc(sx, sy, 6, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#88aacc'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(sx, sy, 6, 0, Math.PI*2); ctx.stroke();
+          // Valve handle (horizontal bar)
+          ctx.fillStyle = '#c8a030'; ctx.fillRect(sx-8, sy-2, 16, 4);
+          ctx.strokeStyle = '#ffcc44'; ctx.lineWidth = 0.8; ctx.strokeRect(sx-8, sy-2, 16, 4);
+          // Oil drips
+          ctx.fillStyle = 'rgba(200,150,0,0.75)';
+          ctx.beginPath(); ctx.ellipse(sx-2, sy+17, 2, 3, 0, 0, Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.ellipse(sx+4, sy+15, 1.5, 2, 0, 0, Math.PI*2); ctx.fill();
+          break;
+        }
+        case 'Patch Cables': {
+          ctx.globalAlpha = 0.87;
+          // Panel body
+          ctx.fillStyle = '#181e2c'; ctx.fillRect(sx-15, sy-12, 30, 24);
+          ctx.strokeStyle = '#304058'; ctx.lineWidth = 1; ctx.strokeRect(sx-15, sy-12, 30, 24);
+          // Two rows of ports (4 each)
+          const _pcCols=['#ff4444','#44ff88','#4488ff','#ffcc00'];
+          for(let row=0;row<2;row++){
+            for(let col=0;col<4;col++){
+              const px=sx-11+col*7, py=sy-8+row*10;
+              ctx.fillStyle='#080c18'; ctx.beginPath(); ctx.arc(px,py,2.5,0,Math.PI*2); ctx.fill();
+              ctx.strokeStyle='#607080'; ctx.lineWidth=0.6; ctx.beginPath(); ctx.arc(px,py,2.5,0,Math.PI*2); ctx.stroke();
+            }
+          }
+          // Patch cables (bezier curves connecting ports)
+          _pcCols.forEach((c,i)=>{
+            ctx.strokeStyle=c; ctx.lineWidth=1.2; ctx.globalAlpha=0.80;
+            const x1=sx-11+i*7, y1=sy-8;
+            const x2=sx-11+((i+2)%4)*7, y2=sy+2;
+            ctx.beginPath(); ctx.moveTo(x1,y1); ctx.bezierCurveTo(x1,y1+6,x2,y2-6,x2,y2); ctx.stroke();
+          });
+          ctx.globalAlpha=0.87;
+          break;
+        }
+        case 'Log Velocity': {
+          ctx.globalAlpha = 0.87;
+          // Console body
+          ctx.fillStyle = '#16202e'; ctx.fillRect(sx-14, sy-13, 28, 26);
+          ctx.strokeStyle = '#2a4060'; ctx.lineWidth = 1; ctx.strokeRect(sx-14, sy-13, 28, 26);
+          // Dial gauge face
+          ctx.fillStyle = '#0a1220'; ctx.beginPath(); ctx.arc(sx-4, sy-2, 9, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#4488cc'; ctx.lineWidth = 0.8; ctx.beginPath(); ctx.arc(sx-4, sy-2, 9, 0, Math.PI*2); ctx.stroke();
+          // Speed marks
+          ctx.strokeStyle = 'rgba(100,200,255,0.55)'; ctx.lineWidth = 0.6;
+          for(let sm=0;sm<8;sm++){
+            const a=-2.4+sm*0.6;
+            ctx.beginPath(); ctx.moveTo(sx-4+Math.cos(a)*6,sy-2+Math.sin(a)*6); ctx.lineTo(sx-4+Math.cos(a)*8,sy-2+Math.sin(a)*8); ctx.stroke();
+          }
+          // Needle
+          ctx.strokeStyle = 'rgba(255,180,0,0.90)'; ctx.lineWidth = 1.2;
+          ctx.beginPath(); ctx.moveTo(sx-4,sy-2); ctx.lineTo(sx-4+Math.cos(-1.0)*7,sy-2+Math.sin(-1.0)*7); ctx.stroke();
+          // Digital readout
+          ctx.fillStyle = '#030a10'; ctx.fillRect(sx+3, sy-10, 11, 8);
+          ctx.strokeStyle = 'rgba(0,200,255,0.45)'; ctx.lineWidth = 0.6; ctx.strokeRect(sx+3, sy-10, 11, 8);
+          ctx.fillStyle = 'rgba(0,220,255,0.85)'; ctx.font = 'bold 5px monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+          ctx.fillText('28.4', sx+8.5, sy-6);
+          // Vector arrows
+          ctx.strokeStyle = 'rgba(0,200,255,0.60)'; ctx.lineWidth = 0.9;
+          ctx.beginPath(); ctx.moveTo(sx+4, sy+2); ctx.lineTo(sx+11, sy+2); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(sx+9, sy); ctx.lineTo(sx+11, sy+2); ctx.lineTo(sx+9, sy+4); ctx.stroke();
+          break;
+        }
+        case 'Sort Samples': {
+          ctx.globalAlpha = 0.87;
+          // Rack frame
+          ctx.fillStyle = '#282838'; ctx.fillRect(sx-13, sy-12, 26, 24);
+          ctx.strokeStyle = '#4a4a6a'; ctx.lineWidth = 1; ctx.strokeRect(sx-13, sy-12, 26, 24);
+          // Rack bars
+          ctx.strokeStyle = '#606080'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(sx-11, sy-5); ctx.lineTo(sx+11, sy-5); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(sx-11, sy+8); ctx.lineTo(sx+11, sy+8); ctx.stroke();
+          // Test tubes (4)
+          const _stCols=['rgba(255,80,80,0.88)','rgba(80,220,120,0.88)','rgba(80,140,255,0.88)','rgba(220,200,50,0.88)'];
+          _stCols.forEach((c,i)=>{
+            const tx=sx-9+i*6;
+            // Tube glass
+            ctx.strokeStyle='rgba(200,220,255,0.50)'; ctx.lineWidth=0.8;
+            ctx.beginPath(); ctx.moveTo(tx-1.5,sy-8); ctx.lineTo(tx-1.5,sy+6); ctx.arc(tx,sy+6,1.5,Math.PI,0); ctx.lineTo(tx+1.5,sy-8); ctx.stroke();
+            // Liquid fill
+            ctx.fillStyle=c; ctx.fillRect(tx-1.5,sy,3,6);
+            ctx.beginPath(); ctx.arc(tx,sy+6,1.5,Math.PI,0); ctx.fill();
+          });
+          break;
+        }
+        case 'Rewind Tapes': {
+          ctx.globalAlpha = 0.87;
+          // Device body
+          ctx.fillStyle = '#1a1a2a'; ctx.fillRect(sx-14, sy-10, 28, 20);
+          ctx.strokeStyle = '#404060'; ctx.lineWidth = 1; ctx.strokeRect(sx-14, sy-10, 28, 20);
+          // Cassette tape housing
+          ctx.fillStyle = '#2a2a3c'; ctx.fillRect(sx-10, sy-7, 20, 13);
+          ctx.strokeStyle = '#5a5a7a'; ctx.lineWidth = 0.7; ctx.strokeRect(sx-10, sy-7, 20, 13);
+          // Two reels
+          [sx-5, sx+5].forEach(rx=>{
+            ctx.fillStyle='#333348'; ctx.beginPath(); ctx.arc(rx,sy-1,4,0,Math.PI*2); ctx.fill();
+            ctx.strokeStyle='#6060a0'; ctx.lineWidth=0.7; ctx.beginPath(); ctx.arc(rx,sy-1,4,0,Math.PI*2); ctx.stroke();
+            ctx.fillStyle='#505070'; ctx.beginPath(); ctx.arc(rx,sy-1,1.5,0,Math.PI*2); ctx.fill();
+          });
+          // Tape window strip
+          ctx.fillStyle='rgba(80,60,20,0.60)'; ctx.fillRect(sx-8,sy-5,16,8);
+          ctx.strokeStyle='rgba(100,80,30,0.40)'; ctx.lineWidth=0.5; ctx.strokeRect(sx-8,sy-5,16,8);
+          // Rewind button
+          ctx.fillStyle='rgba(60,160,255,0.88)'; ctx.fillRect(sx-2, sy+5, 6, 4);
+          ctx.strokeStyle='rgba(40,120,200,0.7)'; ctx.lineWidth=0.6; ctx.strokeRect(sx-2,sy+5,6,4);
+          break;
+        }
+        case 'Deflect Meteorites': {
+          ctx.globalAlpha = 0.87;
+          // Panel body
+          ctx.fillStyle = '#0e1830'; ctx.fillRect(sx-14, sy-14, 28, 28);
+          ctx.strokeStyle = '#204080'; ctx.lineWidth = 1; ctx.strokeRect(sx-14, sy-14, 28, 28);
+          // Hex shield display (3 hexagons)
+          ctx.strokeStyle = 'rgba(0,160,255,0.55)'; ctx.lineWidth = 0.8;
+          [[sx,sy-5,6],[sx,sy-5,10],[sx,sy-5,14]].forEach(([hx,hy,r])=>{
+            ctx.beginPath();
+            for(let hi=0;hi<6;hi++){const a=hi*Math.PI/3-Math.PI/6;ctx.lineTo(hx+Math.cos(a)*r,hy+Math.sin(a)*r);}
+            ctx.closePath(); ctx.stroke();
+          });
+          // Shield glow fill
+          ctx.fillStyle = 'rgba(0,120,255,0.10)'; ctx.beginPath();
+          for(let hi=0;hi<6;hi++){const a=hi*Math.PI/3-Math.PI/6;ctx.lineTo(sx+Math.cos(a)*14,sy-5+Math.sin(a)*14);}
+          ctx.closePath(); ctx.fill();
+          // Targeting dot (incoming meteorite)
+          ctx.fillStyle='rgba(255,80,50,0.90)'; ctx.beginPath(); ctx.arc(sx+8,sy-11,2.5,0,Math.PI*2); ctx.fill();
+          ctx.strokeStyle='rgba(255,100,50,0.50)'; ctx.lineWidth=1; ctx.beginPath(); ctx.arc(sx+8,sy-11,5,0,Math.PI*2); ctx.stroke();
+          // Power bar
+          ctx.fillStyle='rgba(0,80,160,0.40)'; ctx.fillRect(sx-12,sy+7,24,5);
+          ctx.fillStyle='rgba(0,200,255,0.85)'; ctx.fillRect(sx-12,sy+7,18,5);
+          ctx.strokeStyle='rgba(0,140,200,0.40)'; ctx.lineWidth=0.6; ctx.strokeRect(sx-12,sy+7,24,5);
+          break;
+        }
+        case 'Charge Batteries': {
+          ctx.globalAlpha = 0.87;
+          // Rack frame
+          ctx.fillStyle = '#181c24'; ctx.fillRect(sx-13, sy-12, 26, 24);
+          ctx.strokeStyle = '#383c50'; ctx.lineWidth = 1; ctx.strokeRect(sx-13, sy-12, 26, 24);
+          // 4 battery cells
+          const _batFill=[0.95,0.70,0.40,0.15];
+          _batFill.forEach((f,i)=>{
+            const bx=sx-11+i*6, by=sy-9;
+            // Battery body
+            ctx.fillStyle='#252535'; ctx.fillRect(bx,by,5,18);
+            ctx.strokeStyle='#505070'; ctx.lineWidth=0.6; ctx.strokeRect(bx,by,5,18);
+            // Charge level fill (bottom-up)
+            const fillH=Math.round(16*f);
+            const fillCol=f>0.6?'rgba(80,230,80,0.88)':f>0.25?'rgba(255,180,0,0.88)':'rgba(255,60,60,0.88)';
+            ctx.fillStyle=fillCol; ctx.fillRect(bx+1,by+1+16-fillH,3,fillH);
+            // Terminal nub
+            ctx.fillStyle='#606070'; ctx.fillRect(bx+1,by-2,3,2);
+          });
+          // Charging indicator (lightning bolt)
+          ctx.strokeStyle='rgba(255,220,0,0.85)'; ctx.lineWidth=1.2;
+          ctx.beginPath(); ctx.moveTo(sx+4,sy-8); ctx.lineTo(sx+1,sy-2); ctx.lineTo(sx+4,sy-2); ctx.lineTo(sx+1,sy+4); ctx.stroke();
+          break;
+        }
+        default: {
+          ctx.globalAlpha = 0.82;
+          ctx.fillStyle = '#1a1e2c'; ctx.fillRect(sx-14, sy-12, 28, 24);
+          ctx.strokeStyle = '#3c4060'; ctx.lineWidth = 1; ctx.strokeRect(sx-14, sy-12, 28, 24);
+          const _gc=['rgba(255,80,80,0.75)','rgba(80,200,80,0.75)','rgba(80,130,255,0.75)','rgba(255,200,50,0.70)'];
+          for(let bi=0;bi<4;bi++){
+            const bx=sx-10+(bi%2)*12,by=sy-8+Math.floor(bi/2)*12;
+            ctx.fillStyle=_gc[bi];ctx.fillRect(bx,by,8,8);
+            ctx.strokeStyle='rgba(255,255,255,0.12)';ctx.lineWidth=0.5;ctx.strokeRect(bx,by,8,8);
+            ctx.fillStyle='rgba(255,255,255,0.10)';ctx.fillRect(bx,by,8,3);
+          }
+          ctx.fillStyle='rgba(80,200,255,0.22)';ctx.fillRect(sx-12,sy+5,24,4);
+          ctx.strokeStyle='rgba(80,200,255,0.18)';ctx.lineWidth=0.5;ctx.strokeRect(sx-12,sy+5,24,4);
+          break;
+        }
+      }
       ctx.restore();
     }
 
@@ -19255,6 +21559,20 @@
         ctx.restore();
       }
 
+      // Room decor objects — unique props per room (non-task, always visible)
+      for (const _do of decObjectLocations) {
+        const _dox = _do.x - ox, _doy = _do.y - oy;
+        if (_dox > -44 && _dox < canvas.width + 44 && _doy > -44 && _doy < canvas.height + 44)
+          drawDecorObject(_dox, _doy, _do.type);
+      }
+
+      // Task decor — physical props at every task location (always visible in world)
+      for (const _td of taskLocations) {
+        const _tdx = _td.x - ox, _tdy = _td.y - oy;
+        if (_tdx > -44 && _tdx < canvas.width + 44 && _tdy > -44 && _tdy < canvas.height + 44)
+          drawTaskDecor(_tdx, _tdy, _td.name, _td.room, _td.done);
+      }
+
       // Tasks — type-specific icons with pulsing glow (hidden during H&S final hunt)
       // Only show tasks assigned to the player (not every task on the map)
       const _tPulse = 0.55 + 0.45 * Math.sin(Date.now() / 600);
@@ -19265,69 +21583,172 @@
         const _ttype = getTaskType(t.name);
         ctx.save();
         if (t.done) {
-          // Done task — teal with fading checkmark
-          ctx.globalAlpha = 0.55;
-          ctx.fillStyle = 'rgba(78,205,196,0.18)';
-          ctx.beginPath(); ctx.arc(_ttx, _tty, 18, 0, Math.PI * 2); ctx.fill();
-          ctx.globalAlpha = 0.8;
-          ctx.fillStyle = '#4ecdc4';
-          ctx.strokeStyle = 'rgba(0,0,0,0.4)';
-          ctx.lineWidth = 2;
-          ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          // Done — teal corner brackets + checkmark
+          ctx.globalAlpha = 0.45;
+          ctx.fillStyle = 'rgba(78,205,196,0.12)'; ctx.fillRect(_ttx-26,_tty-26,52,52);
+          ctx.strokeStyle = '#4ecdc4'; ctx.lineWidth = 2; ctx.lineCap = 'square';
+          [[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([fx,fy])=>{
+            const bx=_ttx+fx*24, by=_tty+fy*24;
+            ctx.beginPath();ctx.moveTo(bx,by-fy*9);ctx.lineTo(bx,by);ctx.lineTo(bx-fx*9,by);ctx.stroke();
+          });
+          ctx.lineCap='round'; ctx.globalAlpha=0.92;
+          ctx.fillStyle='#4ecdc4'; ctx.font='bold 16px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle';
           ctx.fillText('✓', _ttx, _tty);
         } else {
           const _tisVisual = t.visual;
           const _tc = _tisVisual ? '#cc66ff' : (_ttype === 'common' ? '#c87eff' : _ttype === 'long' ? '#ff9944' : '#ffe140');
-          const _tcAlpha = isImpostor ? 0.04 : 0.12;
-          // Proximity interaction glow: bright ring when player is close enough to interact
+          // Proximity aura (soft fill when close)
           if (!isImpostor) {
-            const _tpd = Math.hypot(t.x - (player.x + player.w/2), t.y - (player.y + player.h/2));
-            if (_tpd < 60) {
-              const _tpf = Math.max(0, 1 - _tpd / 60);
-              ctx.globalAlpha = _tpf * 0.5;
-              ctx.shadowColor = _tc; ctx.shadowBlur = 18;
-              ctx.strokeStyle = _tc; ctx.lineWidth = 2;
-              ctx.beginPath(); ctx.arc(_ttx, _tty, 18 + _tPulse * 4, 0, Math.PI * 2); ctx.stroke();
-              ctx.shadowBlur = 0;
+            const _tpd = Math.hypot(t.x-(player.x+player.w/2), t.y-(player.y+player.h/2));
+            if (_tpd < 70) {
+              const _tpf = Math.max(0, 1-_tpd/70);
+              ctx.globalAlpha = _tpf * 0.28;
+              ctx.fillStyle = _tc;
+              ctx.beginPath(); ctx.arc(_ttx,_tty,22+_tPulse*5,0,Math.PI*2); ctx.fill();
+              ctx.globalAlpha = _tpf * 0.60;
+              ctx.strokeStyle = _tc; ctx.lineWidth = 1.5;
+              ctx.beginPath(); ctx.arc(_ttx,_tty,18+_tPulse*3,0,Math.PI*2); ctx.stroke();
             }
           }
-          // Outer glow ring (pulsing)
-          ctx.globalAlpha = _tPulse * (isImpostor ? 0.07 : 0.18);
+          // HUD corner brackets (pulsing) — larger
+          ctx.globalAlpha = isImpostor ? 0.07 : (0.45 + 0.35*_tPulse);
+          ctx.strokeStyle = _tc; ctx.lineWidth = 2.5; ctx.lineCap = 'square';
+          const _cbHW=28, _cbArm=11;
+          [[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([fx,fy])=>{
+            const bx=_ttx+fx*_cbHW, by=_tty+fy*_cbHW;
+            ctx.beginPath();ctx.moveTo(bx,by-fy*_cbArm);ctx.lineTo(bx,by);ctx.lineTo(bx-fx*_cbArm,by);ctx.stroke();
+          });
+          ctx.lineCap='round';
+          // Badge disc
+          ctx.globalAlpha = isImpostor ? 0.07 : 0.25;
           ctx.fillStyle = _tc;
-          ctx.beginPath(); ctx.arc(_ttx, _tty, 26, 0, Math.PI * 2); ctx.fill();
-          // Inner marker disc
-          ctx.globalAlpha = isImpostor ? 0.12 : 0.35;
+          ctx.beginPath(); ctx.arc(_ttx,_tty,15,0,Math.PI*2); ctx.fill();
+          ctx.globalAlpha = isImpostor ? 0.12 : 0.70;
+          ctx.strokeStyle = _tc; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(_ttx,_tty,15,0,Math.PI*2); ctx.stroke();
+          // Icon in badge
+          drawTaskIcon(_ttx, _tty, t.name, isImpostor ? _tc : '#fff', isImpostor ? 0.2 : 1.0);
+          // Task type dot (top-right corner of badge)
+          ctx.globalAlpha = isImpostor ? 0.08 : 0.88;
           ctx.fillStyle = _tc;
-          ctx.beginPath(); ctx.arc(_ttx, _tty, 14, 0, Math.PI * 2); ctx.fill();
-          // Disc border
-          ctx.globalAlpha = isImpostor ? 0.15 : 0.7;
-          ctx.strokeStyle = _tc;
-          ctx.lineWidth = 1.5;
-          ctx.beginPath(); ctx.arc(_ttx, _tty, 14, 0, Math.PI * 2); ctx.stroke();
-          // Task-specific icon
-          drawTaskIcon(_ttx, _tty, t.name, isImpostor ? _tc : '#fff', isImpostor ? 0.2 : 0.9);
-          // Proximity label: show task name when player is close
+          ctx.beginPath(); ctx.arc(_ttx+12,_tty-12,4,0,Math.PI*2); ctx.fill();
+          ctx.strokeStyle='rgba(0,0,0,0.6)'; ctx.lineWidth=0.8;
+          ctx.beginPath(); ctx.arc(_ttx+12,_tty-12,4,0,Math.PI*2); ctx.stroke();
+          // Proximity label + tip — wider range
           if (!isImpostor) {
-            const _tDist = Math.hypot(t.x - (player.x + player.w / 2), t.y - (player.y + player.h / 2));
-            if (_tDist < 90) {
-              const _tfade = Math.max(0, 1 - _tDist / 90);
-              ctx.globalAlpha = _tfade * 0.92;
-              ctx.font = 'bold 10px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-              const _tlabel = t.name.length > 18 ? t.name.slice(0, 17) + '…' : t.name;
-              const _tlw = ctx.measureText(_tlabel).width + 8;
-              // Label pill background
-              ctx.fillStyle = 'rgba(0,0,0,0.7)';
+            const _tDist = Math.hypot(t.x-(player.x+player.w/2), t.y-(player.y+player.h/2));
+            if (_tDist < 200) {
+              const _tfade = Math.max(0, 1-_tDist/200);
+              ctx.globalAlpha = Math.min(0.97, _tfade*1.2);
+              const _fSz = _tDist < 60 ? 13 : 12;
+              ctx.font = `bold ${_fSz}px Arial`; ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+              const _tlabel = t.name.length>20 ? t.name.slice(0,19)+'…' : t.name;
+              const _tlw = ctx.measureText(_tlabel).width + 14;
+              const _pillY = _tty + 22;
+              // Pill background
+              ctx.fillStyle = `rgba(0,0,0,${0.82*_tfade})`;
               ctx.beginPath();
-              if (ctx.roundRect) { ctx.roundRect(_ttx - _tlw / 2, _tty + 18, _tlw, 14, 4); }
-              else { ctx.rect(_ttx - _tlw / 2, _tty + 18, _tlw, 14); }
+              if(ctx.roundRect){ctx.roundRect(_ttx-_tlw/2,_pillY,_tlw,18,6);}
+              else{ctx.rect(_ttx-_tlw/2,_pillY,_tlw,18);}
               ctx.fill();
-              ctx.fillStyle = _tc;
-              ctx.textBaseline = 'middle';
-              ctx.fillText(_tlabel, _ttx, _tty + 25);
+              // Left accent bar on pill
+              ctx.fillStyle = _tc; ctx.globalAlpha = _tfade*0.92;
+              ctx.fillRect(_ttx-_tlw/2, _pillY, 3, 18);
+              // Label text
+              ctx.fillStyle = '#ffffff'; ctx.textBaseline='middle';
+              ctx.globalAlpha = _tfade*0.97;
+              ctx.fillText(_tlabel, _ttx+1, _pillY+9);
+              // "Press E" tip when very close
+              if (_tDist < 55) {
+                const _tipFade = Math.max(0, 1-_tDist/55);
+                const _tipY = _pillY + 22;
+                ctx.globalAlpha = _tipFade * 0.92;
+                ctx.font = '10px Arial'; ctx.textAlign='center';
+                const _tipW = ctx.measureText('[E] Interact').width + 10;
+                ctx.fillStyle = 'rgba(0,0,0,0.70)';
+                ctx.beginPath();
+                if(ctx.roundRect){ctx.roundRect(_ttx-_tipW/2,_tipY,_tipW,14,4);}
+                else{ctx.rect(_ttx-_tipW/2,_tipY,_tipW,14);}
+                ctx.fill();
+                ctx.fillStyle='rgba(255,255,255,0.65)'; ctx.textBaseline='middle';
+                ctx.fillText('[E] Interact', _ttx, _tipY+7);
+              }
             }
           }
         }
         ctx.restore();
+      }
+
+      // Guiding arrows — HUD edge indicators pointing toward pending off-screen tasks
+      if (!isImpostor && gameMode !== 'hideseek' && player.taskList && player.taskList.length) {
+        const _pCx = canvas.width / 2, _pCy = canvas.height / 2;
+        const _arM = 52; // margin from screen edge
+        const _arW = canvas.width / 2 - _arM;
+        const _arH = canvas.height / 2 - _arM;
+        const _arPulse = 0.6 + 0.4 * Math.sin(Date.now() / 420);
+        // Group closest pending task per room to avoid clutter
+        const _arSeen = new Set();
+        for (const _at of player.taskList) {
+          if (_at.done) continue;
+          const _atSx = _at.x - ox, _atSy = _at.y - oy;
+          const _atDist = Math.hypot(_at.x-(player.x+player.w/2), _at.y-(player.y+player.h/2));
+          // Only show arrow when task is far away or off-screen
+          const _onScreen = _atSx > _arM && _atSx < canvas.width-_arM && _atSy > _arM && _atSy < canvas.height-_arM;
+          if (_onScreen && _atDist < 320) continue;
+          // Deduplicate per room
+          if (_arSeen.has(_at.room)) continue;
+          _arSeen.add(_at.room);
+          // Direction from player (screen center) to task screen coords
+          const _dx = _atSx - _pCx, _dy = _atSy - _pCy;
+          const _ang = Math.atan2(_dy, _dx);
+          // Clamp arrow position to screen edge rect
+          const _tanA = Math.tan(_ang), _ax_r = _dx >= 0 ? 1 : -1, _ay_r = _dy >= 0 ? 1 : -1;
+          let _ax, _ay;
+          if (Math.abs(_dx) * _arH > Math.abs(_dy) * _arW) {
+            _ax = _pCx + _ax_r * _arW;
+            _ay = _pCy + _ax_r * _arW * _tanA;
+          } else {
+            _ay = _pCy + _ay_r * _arH;
+            _ax = _pCx + _ay_r * _arH / (_tanA || 0.001);
+          }
+          const _tCol = '#ffe140';
+          ctx.save();
+          ctx.globalAlpha = _arPulse * 0.88;
+          ctx.translate(_ax, _ay);
+          ctx.rotate(_ang);
+          // Arrow chevron
+          ctx.fillStyle = _tCol;
+          ctx.strokeStyle = 'rgba(0,0,0,0.65)';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(16, 0);
+          ctx.lineTo(-7, -8);
+          ctx.lineTo(-3, 0);
+          ctx.lineTo(-7, 8);
+          ctx.closePath();
+          ctx.fill(); ctx.stroke();
+          // Room label + distance badge
+          ctx.rotate(-_ang);
+          const _distTiles = Math.round(_atDist / 32);
+          ctx.font = 'bold 10px Arial'; ctx.textAlign = 'center';
+          const _lblW = Math.max(ctx.measureText(_at.room).width, ctx.measureText(_distTiles+'m').width) + 14;
+          // Badge bg
+          ctx.fillStyle = 'rgba(0,0,0,0.72)';
+          ctx.beginPath();
+          if(ctx.roundRect){ctx.roundRect(-_lblW/2, -36, _lblW, 28, 5);}
+          else{ctx.rect(-_lblW/2, -36, _lblW, 28);}
+          ctx.fill();
+          // Color accent
+          ctx.fillStyle = _tCol;
+          ctx.fillRect(-_lblW/2, -36, 3, 28);
+          // Room name
+          ctx.fillStyle = '#fff'; ctx.textBaseline = 'middle';
+          ctx.fillText(_at.room, 1, -27);
+          // Distance
+          ctx.font = '9px Arial'; ctx.fillStyle = 'rgba(255,220,100,0.85)';
+          ctx.fillText(_distTiles + 'm', 1, -15);
+          ctx.restore();
+        }
       }
 
       // Floating room name labels (visible near room transitions)
