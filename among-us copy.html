@@ -17628,13 +17628,84 @@
           break;
         }
         case 'Cockpit': {
-          ctx.fillStyle = '#0a1525'; ctx.fillRect(x+10, y+h*0.15, w*0.35, h*0.6);
-          ctx.strokeStyle = '#334455'; ctx.lineWidth = 1; ctx.strokeRect(x+10, y+h*0.15, w*0.35, h*0.6);
-          ctx.fillStyle = '#fff'; ctx.globalAlpha = 0.4;
-          for (const [sx,sy] of [[0.08,0.25],[0.15,0.5],[0.25,0.35],[0.1,0.65],[0.2,0.2]])
-            ctx.fillRect(x+w*sx, y+h*sy, 2, 2);
-          ctx.globalAlpha = 0.5; ctx.strokeStyle = '#666'; ctx.lineWidth = 2;
-          ctx.beginPath(); ctx.arc(x+w*0.7, cy, 20, 0, Math.PI*2); ctx.stroke();
+          // Deep space ambient glow behind the windshield
+          const ckAmb = ctx.createLinearGradient(x+w*0.45, y, x+w, y+h);
+          ckAmb.addColorStop(0, 'rgba(5,15,40,0.70)');
+          ckAmb.addColorStop(1, 'rgba(10,25,60,0.35)');
+          ctx.fillStyle = ckAmb; ctx.fillRect(x+w*0.40, y, w*0.60, h);
+          // Large wraparound windshield (3 panes)
+          const ckWins = [[w*0.42,0.05,w*0.18,0.88],[w*0.61,0.05,w*0.22,0.88],[w*0.84,0.10,w*0.14,0.80]];
+          for (const [wox,woy_r,wwi,whi_r] of ckWins) {
+            const wwy = y + h*woy_r, wwh = h*whi_r;
+            ctx.fillStyle = '#020812'; ctx.fillRect(x+wox, wwy, wwi, wwh);
+            ctx.strokeStyle = '#2a4060'; ctx.lineWidth = 2; ctx.strokeRect(x+wox, wwy, wwi, wwh);
+            // Stars through windshield
+            ctx.fillStyle = 'rgba(255,255,255,0.45)';
+            for (let cs = 0; cs < 20; cs++) {
+              const csx = x+wox + (cs*47+11)%Math.floor(wwi);
+              const csy = wwy + (cs*37+7)%Math.floor(wwh);
+              ctx.fillRect(csx, csy, cs%5===0?2:1, cs%5===0?2:1);
+            }
+            // Nebula smear
+            const ckNeb = ctx.createRadialGradient(x+wox+wwi*0.55,wwy+wwh*0.45,0,x+wox+wwi*0.55,wwy+wwh*0.45,wwi*0.45);
+            ckNeb.addColorStop(0,'rgba(60,40,120,0.12)'); ckNeb.addColorStop(1,'rgba(10,5,40,0)');
+            ctx.fillStyle=ckNeb; ctx.fillRect(x+wox, wwy, wwi, wwh);
+          }
+          // Cockpit instrument cluster (left side — 3 panels)
+          ctx.fillStyle = '#0a1525'; ctx.fillRect(x+8, y+h*0.12, w*0.36, h*0.75);
+          ctx.strokeStyle = '#334455'; ctx.lineWidth = 1.5; ctx.strokeRect(x+8, y+h*0.12, w*0.36, h*0.75);
+          // Top status strip
+          ctx.fillStyle = '#060f1e'; ctx.fillRect(x+10, y+h*0.14, w*0.32, h*0.10);
+          ctx.strokeStyle = '#1a3050'; ctx.lineWidth = 0.8; ctx.strokeRect(x+10, y+h*0.14, w*0.32, h*0.10);
+          // Status dots
+          const ckLights = ['#44ff44','#ffcc00','#44ff44','#ff4444','#44ff44','#44aaff'];
+          for (let cl = 0; cl < 6; cl++) {
+            ctx.fillStyle = ckLights[cl];
+            ctx.beginPath(); ctx.arc(x+16+cl*w*0.05, y+h*0.19, 3, 0, Math.PI*2); ctx.fill();
+          }
+          // Altimeter / flight data screen
+          ctx.fillStyle = '#040c18'; ctx.fillRect(x+14, y+h*0.28, w*0.14, h*0.20);
+          ctx.strokeStyle = '#1a4070'; ctx.lineWidth = 0.8; ctx.strokeRect(x+14, y+h*0.28, w*0.14, h*0.20);
+          ctx.fillStyle = 'rgba(40,140,255,0.18)'; ctx.fillRect(x+15, y+h*0.29, w*0.12, h*0.18);
+          ctx.strokeStyle = 'rgba(80,180,255,0.35)'; ctx.lineWidth = 0.6;
+          for (let al = 0; al < 4; al++) { ctx.beginPath(); ctx.moveTo(x+16, y+h*0.31+al*h*0.04); ctx.lineTo(x+14+w*0.12, y+h*0.31+al*h*0.04); ctx.stroke(); }
+          // Circular speed gauge
+          ctx.fillStyle = '#040c18'; ctx.beginPath(); ctx.arc(x+w*0.22, y+h*0.38, 14, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#2060a0'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x+w*0.22, y+h*0.38, 14, 0, Math.PI*2); ctx.stroke();
+          ctx.strokeStyle = '#80c0ff'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.arc(x+w*0.22, y+h*0.38, 10, Math.PI*0.75, Math.PI*0.25); ctx.stroke();
+          ctx.strokeStyle = '#ff8844'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(x+w*0.22, y+h*0.38); ctx.lineTo(x+w*0.22+9*Math.cos(-Math.PI*0.15), y+h*0.38+9*Math.sin(-Math.PI*0.15)); ctx.stroke();
+          // Vertical throttle lever
+          ctx.fillStyle = '#1a2530'; ctx.fillRect(x+w*0.30, y+h*0.28, 8, h*0.35);
+          ctx.strokeStyle = '#2a4060'; ctx.lineWidth = 0.8; ctx.strokeRect(x+w*0.30, y+h*0.28, 8, h*0.35);
+          ctx.fillStyle = '#cc4422'; ctx.fillRect(x+w*0.29, y+h*0.30, 10, 8); // throttle handle
+          ctx.strokeStyle = '#ff6644'; ctx.lineWidth = 0.7; ctx.strokeRect(x+w*0.29, y+h*0.30, 10, 8);
+          // Keypad / flight computer (bottom panel)
+          ctx.fillStyle = '#070f1a'; ctx.fillRect(x+12, y+h*0.62, w*0.32, h*0.20);
+          ctx.strokeStyle = '#1a3050'; ctx.lineWidth = 0.8; ctx.strokeRect(x+12, y+h*0.62, w*0.32, h*0.20);
+          for (let ky = 0; ky < 3; ky++) for (let kx2 = 0; kx2 < 5; kx2++) {
+            ctx.fillStyle = '#1a2840';
+            ctx.fillRect(x+14+kx2*w*0.063, y+h*0.64+ky*h*0.06, w*0.05, h*0.045);
+            ctx.strokeStyle = '#2a3850'; ctx.lineWidth = 0.5;
+            ctx.strokeRect(x+14+kx2*w*0.063, y+h*0.64+ky*h*0.06, w*0.05, h*0.045);
+          }
+          // Pilot seat (spinning chair center-left)
+          ctx.fillStyle = '#1e2a35';
+          ctx.beginPath(); ctx.arc(x+w*0.70, cy, 16, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#3a4a55'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x+w*0.70, cy, 16, 0, Math.PI*2); ctx.stroke();
+          ctx.fillStyle = '#0e1820'; ctx.fillRect(x+w*0.68, cy-22, 14, 14); // seat back
+          ctx.strokeStyle = '#2a3a44'; ctx.lineWidth = 0.8; ctx.strokeRect(x+w*0.68, cy-22, 14, 14);
+          // Seat wheel spokes
+          for (let sw = 0; sw < 4; sw++) {
+            const swa = sw*Math.PI/2+Math.PI/4;
+            ctx.strokeStyle = '#1a2830'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(x+w*0.70, cy); ctx.lineTo(x+w*0.70+Math.cos(swa)*18, cy+Math.sin(swa)*18); ctx.stroke();
+          }
+          // Armrest
+          ctx.fillStyle = '#2a3a45'; ctx.fillRect(x+w*0.65, cy-4, 6, 8);
+          ctx.fillRect(x+w*0.70+10, cy-4, 6, 8);
+          ctx.globalAlpha = 0.5;
           break;
         }
         case 'Locker Room': {
@@ -17952,11 +18023,62 @@
           break;
         }
         case 'Gap Room': {
-          ctx.fillStyle = '#1a1510'; ctx.fillRect(cx-20, y+h*0.3, 40, h*0.4);
+          // Dark chasm ambient — this is the exposed gap in the Airship
+          const grAmb = ctx.createLinearGradient(x, y, x, y+h);
+          grAmb.addColorStop(0, 'rgba(30,25,10,0.40)');
+          grAmb.addColorStop(0.5, 'rgba(5,5,2,0.60)');
+          grAmb.addColorStop(1, 'rgba(20,15,5,0.30)');
+          ctx.fillStyle = grAmb; ctx.fillRect(x, y, w, h);
+          // Left platform
+          ctx.fillStyle = '#2a2018'; ctx.fillRect(x+4, y+h*0.05, cx-x-28, h*0.90);
+          ctx.strokeStyle = '#5a4828'; ctx.lineWidth = 1.5; ctx.strokeRect(x+4, y+h*0.05, cx-x-28, h*0.90);
+          // Right platform
+          ctx.fillStyle = '#2a2018'; ctx.fillRect(cx+24, y+h*0.05, x+w-cx-28, h*0.90);
+          ctx.strokeStyle = '#5a4828'; ctx.lineWidth = 1.5; ctx.strokeRect(cx+24, y+h*0.05, x+w-cx-28, h*0.90);
+          // Platform edge strips (brighter border on inner edge)
+          ctx.fillStyle = 'rgba(200,160,60,0.20)';
+          ctx.fillRect(cx-30, y+h*0.05, 6, h*0.90);
+          ctx.fillRect(cx+24, y+h*0.05, 6, h*0.90);
+          // Warning stripe bands on platform edges
+          ctx.strokeStyle = 'rgba(240,180,0,0.22)'; ctx.lineWidth = 4;
+          ctx.setLineDash([8, 6]);
+          ctx.beginPath(); ctx.moveTo(cx-24, y+h*0.06); ctx.lineTo(cx-24, y+h*0.94); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx+24, y+h*0.06); ctx.lineTo(cx+24, y+h*0.94); ctx.stroke();
+          ctx.setLineDash([]);
+          // Central ladder/scaffold across the gap
+          ctx.fillStyle = '#1a1510'; ctx.fillRect(cx-22, y+h*0.25, 44, h*0.50);
           ctx.strokeStyle = '#4a4030'; ctx.lineWidth = 2;
-          ctx.beginPath(); ctx.moveTo(cx-15, y+h*0.35); ctx.lineTo(cx-15, y+h*0.65); ctx.stroke();
-          ctx.beginPath(); ctx.moveTo(cx+15, y+h*0.35); ctx.lineTo(cx+15, y+h*0.65); ctx.stroke();
-          for (let r = 0; r < 4; r++) { ctx.beginPath(); ctx.moveTo(cx-15, y+h*0.38+r*h*0.07); ctx.lineTo(cx+15, y+h*0.38+r*h*0.07); ctx.stroke(); }
+          // Vertical rails
+          ctx.beginPath(); ctx.moveTo(cx-16, y+h*0.27); ctx.lineTo(cx-16, y+h*0.73); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx+16, y+h*0.27); ctx.lineTo(cx+16, y+h*0.73); ctx.stroke();
+          // Rungs
+          ctx.lineWidth = 1.5;
+          for (let r = 0; r < 5; r++) {
+            ctx.beginPath(); ctx.moveTo(cx-16, y+h*0.30+r*h*0.08); ctx.lineTo(cx+16, y+h*0.30+r*h*0.08); ctx.stroke();
+          }
+          // Chain rail on sides (looped chain dots)
+          ctx.strokeStyle = 'rgba(180,150,60,0.30)'; ctx.lineWidth = 1;
+          for (let ch = 0; ch < 6; ch++) {
+            const chY = y + h*0.10 + ch*h*0.13;
+            ctx.beginPath(); ctx.arc(cx-26, chY, 3, 0, Math.PI*2); ctx.stroke();
+            ctx.beginPath(); ctx.arc(cx+26, chY, 3, 0, Math.PI*2); ctx.stroke();
+            if (ch > 0) {
+              ctx.beginPath(); ctx.moveTo(cx-26, chY-h*0.13+3); ctx.lineTo(cx-26, chY-3); ctx.stroke();
+              ctx.beginPath(); ctx.moveTo(cx+26, chY-h*0.13+3); ctx.lineTo(cx+26, chY-3); ctx.stroke();
+            }
+          }
+          // Dark void below ladder (chasm effect)
+          const voidGrad = ctx.createLinearGradient(cx, y+h*0.25, cx, y+h*0.75);
+          voidGrad.addColorStop(0, 'rgba(0,0,0,0)');
+          voidGrad.addColorStop(0.4, 'rgba(0,0,0,0.55)');
+          voidGrad.addColorStop(1, 'rgba(0,0,0,0.70)');
+          ctx.fillStyle = voidGrad; ctx.fillRect(cx-22, y+h*0.25, 44, h*0.50);
+          // Hazard arrows on both platforms pointing toward gap
+          ctx.globalAlpha = 0.18;
+          ctx.fillStyle = '#ffcc00';
+          ctx.beginPath(); ctx.moveTo(cx-40, cy); ctx.lineTo(cx-28, cy-6); ctx.lineTo(cx-28, cy+6); ctx.closePath(); ctx.fill();
+          ctx.beginPath(); ctx.moveTo(cx+40, cy); ctx.lineTo(cx+28, cy-6); ctx.lineTo(cx+28, cy+6); ctx.closePath(); ctx.fill();
+          ctx.globalAlpha = 0.5;
           break;
         }
         case 'Main Hall': {
@@ -18042,6 +18164,30 @@
             ctx.beginPath(); ctx.moveTo(cx+Math.cos(sa)*h*0.05,y+h*0.80+Math.sin(sa)*h*0.05);
             ctx.lineTo(cx+Math.cos(sa)*h*0.11,y+h*0.80+Math.sin(sa)*h*0.11); ctx.stroke();
           }
+          // Information plaques on side walls
+          ctx.globalAlpha = 1.0;
+          const vdPlaques = [[x+4, y+h*0.52], [x+w-18, y+h*0.52]];
+          for (const [plx, ply] of vdPlaques) {
+            ctx.fillStyle = '#1e2a38'; ctx.fillRect(plx, ply, 14, 20);
+            ctx.strokeStyle = '#3a5060'; ctx.lineWidth = 0.8; ctx.strokeRect(plx, ply, 14, 20);
+            ctx.strokeStyle = 'rgba(140,200,240,0.30)'; ctx.lineWidth = 0.6;
+            for (let vdl = 0; vdl < 4; vdl++) { ctx.beginPath(); ctx.moveTo(plx+2, ply+4+vdl*4); ctx.lineTo(plx+12, ply+4+vdl*4); ctx.stroke(); }
+          }
+          // Handrail bar across front of bench (safety rail)
+          ctx.strokeStyle = '#3a4a5a'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(x+w*0.15, y+h*0.50); ctx.lineTo(x+w*0.85, y+h*0.50); ctx.stroke();
+          // Small plant pot in corner
+          ctx.fillStyle = '#4a3820'; ctx.fillRect(x+w-20, y+h*0.76, 14, 16);
+          ctx.strokeStyle = '#6a5030'; ctx.lineWidth = 0.7; ctx.strokeRect(x+w-20, y+h*0.76, 14, 16);
+          ctx.fillStyle = '#2a7a28'; ctx.beginPath(); ctx.arc(x+w-13, y+h*0.72, 8, Math.PI, 0); ctx.fill();
+          ctx.fillStyle = '#1a5a18'; ctx.beginPath(); ctx.arc(x+w-17, y+h*0.70, 5, Math.PI, 0); ctx.fill();
+          ctx.beginPath(); ctx.arc(x+w-9, y+h*0.70, 5, Math.PI, 0); ctx.fill();
+          // Telescope stand (small) far corner
+          ctx.strokeStyle = '#4a5060'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(x+10, y+h*0.74); ctx.lineTo(x+10, y+h*0.64); ctx.stroke();
+          ctx.fillStyle = '#2a3040'; ctx.beginPath(); ctx.ellipse(x+10, y+h*0.64, 8, 3, 0.3, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#4a5060'; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(x+10, y+h*0.64, 8, 3, 0.3, 0, Math.PI*2); ctx.stroke();
+          ctx.globalAlpha = 0.5;
           break;
         }
         case 'Meeting Room': {
@@ -18088,7 +18234,40 @@
           for (let np=0;np<3;np++) {
             ctx.fillStyle='rgba(240,235,210,0.35)'; ctx.fillRect(tX+tW*0.12+np*tW*0.26, tY+tH*0.20, tW*0.12, tH*0.55);
             ctx.strokeStyle='rgba(180,160,100,0.25)'; ctx.lineWidth=0.5; ctx.strokeRect(tX+tW*0.12+np*tW*0.26, tY+tH*0.20, tW*0.12, tH*0.55);
+            // Pen on each pad
+            ctx.strokeStyle = ['#4488ff','#ff6644','#44aa44'][np]; ctx.lineWidth = 0.8;
+            ctx.beginPath(); ctx.moveTo(tX+tW*0.12+np*tW*0.26+tW*0.07, tY+tH*0.22); ctx.lineTo(tX+tW*0.12+np*tW*0.26+tW*0.11, tY+tH*0.22); ctx.stroke();
           }
+          // Water glasses at each place setting
+          ctx.globalAlpha = 0.40;
+          for (let wg=0;wg<4;wg++) {
+            const wgX = tX+tW*0.08+wg*tW*0.26, wgY = tY+tH*0.60;
+            ctx.fillStyle='rgba(160,200,240,0.30)'; ctx.fillRect(wgX, wgY, 6, 10);
+            ctx.strokeStyle='rgba(180,220,255,0.40)'; ctx.lineWidth=0.7; ctx.strokeRect(wgX, wgY, 6, 10);
+            ctx.fillStyle='rgba(180,220,255,0.15)'; ctx.fillRect(wgX+1, wgY, 2, 4);
+          }
+          // Presentation laser pointer on table edge
+          ctx.globalAlpha = 0.55;
+          ctx.fillStyle = '#cc2222'; ctx.fillRect(tX+tW*0.68, tY+tH*0.25, 14, 4);
+          ctx.strokeStyle = '#881111'; ctx.lineWidth = 0.7; ctx.strokeRect(tX+tW*0.68, tY+tH*0.25, 14, 4);
+          ctx.fillStyle = 'rgba(255,60,60,0.40)'; ctx.beginPath(); ctx.arc(tX+tW*0.68+14, tY+tH*0.27, 3, 0, Math.PI*2); ctx.fill();
+          // Small red dot laser spot on screen
+          ctx.fillStyle = 'rgba(255,40,40,0.70)'; ctx.beginPath(); ctx.arc(cx+w*0.05, y+h*0.14, 2, 0, Math.PI*2); ctx.fill();
+          // Potted plant in corner
+          ctx.globalAlpha = 0.60;
+          ctx.fillStyle = '#3a2a18'; ctx.fillRect(x+w-16, y+h*0.74, 12, 18);
+          ctx.strokeStyle = '#5a4a28'; ctx.lineWidth = 0.7; ctx.strokeRect(x+w-16, y+h*0.74, 12, 18);
+          ctx.fillStyle = '#2a6a28'; ctx.beginPath(); ctx.arc(x+w-10, y+h*0.70, 9, Math.PI, 0); ctx.fill();
+          ctx.fillStyle = '#1a5018'; ctx.beginPath(); ctx.arc(x+w-14, y+h*0.68, 5, Math.PI, 0); ctx.fill();
+          ctx.beginPath(); ctx.arc(x+w-6, y+h*0.68, 5, Math.PI, 0); ctx.fill();
+          // Clock on side wall
+          ctx.globalAlpha = 0.50;
+          ctx.fillStyle = '#e8e0d0'; ctx.beginPath(); ctx.arc(x+10, y+h*0.22, 8, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#8a8070'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x+10, y+h*0.22, 8, 0, Math.PI*2); ctx.stroke();
+          ctx.strokeStyle = '#2a2820'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(x+10, y+h*0.22); ctx.lineTo(x+10, y+h*0.22-5); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x+10, y+h*0.22); ctx.lineTo(x+14, y+h*0.22+2); ctx.stroke();
+          ctx.globalAlpha = 0.5;
           break;
         }
         case 'Cargo Bay': {
@@ -18203,6 +18382,33 @@
             // Ambient floor glow (teal — sky reflection)
             ctx.fillStyle = 'rgba(40,180,120,0.06)';
             ctx.fillRect(x, y+h*0.5, w, h*0.5);
+            // Telescope pointed at stars (right corner)
+            ctx.globalAlpha = 1.0;
+            const mBlTX = x + w*0.82, mBlTY = y + h*0.40;
+            ctx.fillStyle = '#2a3a4a'; ctx.fillRect(mBlTX-4, mBlTY+14, 12, 4);
+            ctx.strokeStyle = '#3a5a6a'; ctx.lineWidth = 0.8; ctx.strokeRect(mBlTX-4, mBlTY+14, 12, 4);
+            // Tripod legs
+            ctx.strokeStyle = '#4a6a7a'; ctx.lineWidth = 1.2;
+            ctx.beginPath(); ctx.moveTo(mBlTX+2, mBlTY+18); ctx.lineTo(mBlTX-7, mBlTY+26); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(mBlTX+2, mBlTY+18); ctx.lineTo(mBlTX+11, mBlTY+26); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(mBlTX+2, mBlTY+18); ctx.lineTo(mBlTX+2, mBlTY+28); ctx.stroke();
+            // Scope tube (angled up-left toward stars)
+            ctx.fillStyle = '#1e3848';
+            ctx.save(); ctx.translate(mBlTX+2, mBlTY+14); ctx.rotate(-0.55);
+            ctx.fillRect(-2, -18, 6, 18);
+            ctx.strokeStyle = '#4a7890'; ctx.lineWidth = 1; ctx.strokeRect(-2, -18, 6, 18);
+            ctx.restore();
+            // Scope lens glow
+            const lensGlow = ctx.createRadialGradient(mBlTX-5, mBlTY-4, 0, mBlTX-5, mBlTY-4, 5);
+            lensGlow.addColorStop(0, 'rgba(100,200,255,0.35)');
+            lensGlow.addColorStop(1, 'rgba(40,120,200,0)');
+            ctx.fillStyle = lensGlow; ctx.beginPath(); ctx.arc(mBlTX-5, mBlTY-4, 5, 0, Math.PI*2); ctx.fill();
+            // Observation bench along back wall
+            ctx.fillStyle = '#2a3a3a'; ctx.fillRect(x+w*0.06, y+h*0.44, w*0.60, h*0.14);
+            ctx.strokeStyle = '#3a5050'; ctx.lineWidth = 1; ctx.strokeRect(x+w*0.06, y+h*0.44, w*0.60, h*0.14);
+            ctx.fillStyle = '#1e2e2e'; ctx.fillRect(x+w*0.06, y+h*0.38, w*0.60, h*0.07);
+            ctx.strokeStyle = '#2e4444'; ctx.lineWidth = 0.7; ctx.strokeRect(x+w*0.06, y+h*0.38, w*0.60, h*0.07);
+            ctx.globalAlpha = 0.5;
           } else {
             // === POLUS BALCONY: snow-dusted outdoor viewing platform with frost railing ===
             ctx.globalAlpha = 1.0;
@@ -18407,9 +18613,64 @@
           break;
         }
         case 'Dropship': {
-          ctx.strokeStyle = '#556'; ctx.lineWidth = 2; ctx.beginPath();
-          ctx.moveTo(cx, y+15); ctx.lineTo(cx+30, cy); ctx.lineTo(cx+20, y+h-15);
-          ctx.lineTo(cx-20, y+h-15); ctx.lineTo(cx-30, cy); ctx.closePath(); ctx.stroke();
+          // Control room / voting terminal at front of the ship
+          // Dark metal ambient
+          const dsAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.65);
+          dsAmb.addColorStop(0, 'rgba(30,40,60,0.25)');
+          dsAmb.addColorStop(1, 'rgba(10,15,30,0.05)');
+          ctx.fillStyle = dsAmb; ctx.fillRect(x, y, w, h);
+          // Hull outline — pentagon shape
+          ctx.strokeStyle = '#445566'; ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(cx, y+12); ctx.lineTo(cx+w*0.42, cy);
+          ctx.lineTo(cx+w*0.30, y+h-12);
+          ctx.lineTo(cx-w*0.30, y+h-12);
+          ctx.lineTo(cx-w*0.42, cy); ctx.closePath(); ctx.stroke();
+          // Inner hull trim
+          ctx.strokeStyle = '#334455'; ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(cx, y+18); ctx.lineTo(cx+w*0.36, cy+8);
+          ctx.lineTo(cx+w*0.26, y+h-16);
+          ctx.lineTo(cx-w*0.26, y+h-16);
+          ctx.lineTo(cx-w*0.36, cy+8); ctx.closePath(); ctx.stroke();
+          // Main voting terminal / console (center)
+          ctx.fillStyle = '#1a2030'; ctx.fillRect(cx-w*0.26, y+h*0.25, w*0.52, h*0.48);
+          ctx.strokeStyle = '#3a5060'; ctx.lineWidth = 1.5; ctx.strokeRect(cx-w*0.26, y+h*0.25, w*0.52, h*0.48);
+          // Console screen
+          ctx.fillStyle = '#060c18'; ctx.fillRect(cx-w*0.22, y+h*0.28, w*0.44, h*0.28);
+          ctx.fillStyle = 'rgba(40,100,180,0.22)'; ctx.fillRect(cx-w*0.21, y+h*0.29, w*0.42, h*0.26);
+          // Screen scan lines
+          ctx.strokeStyle = 'rgba(80,160,255,0.12)'; ctx.lineWidth = 0.8;
+          for (let dssl = 0; dssl < 5; dssl++) {
+            ctx.beginPath(); ctx.moveTo(cx-w*0.21, y+h*0.30+dssl*h*0.05); ctx.lineTo(cx+w*0.21, y+h*0.30+dssl*h*0.05); ctx.stroke();
+          }
+          // Player vote buttons (3x2 grid)
+          for (let dvr = 0; dvr < 2; dvr++) for (let dvc = 0; dvc < 3; dvc++) {
+            const dbX = cx-w*0.18+dvc*w*0.13, dbY = y+h*0.58+dvr*h*0.08;
+            ctx.fillStyle = '#1e2c3e'; ctx.fillRect(dbX, dbY, w*0.10, h*0.06);
+            ctx.strokeStyle = '#3a5068'; ctx.lineWidth = 0.7; ctx.strokeRect(dbX, dbY, w*0.10, h*0.06);
+            ctx.fillStyle = `rgba(${40+dvc*30},${60+dvr*40},${200-dvc*20},0.35)`;
+            ctx.fillRect(dbX+2, dbY+2, w*0.06, h*0.025);
+          }
+          // Emergency meeting button (center bottom)
+          ctx.fillStyle = '#6a0000'; ctx.beginPath(); ctx.arc(cx, y+h*0.82, 12, 0, Math.PI*2); ctx.fill();
+          const emGlow = ctx.createRadialGradient(cx, y+h*0.82, 0, cx, y+h*0.82, 16);
+          emGlow.addColorStop(0, 'rgba(220,40,40,0.25)');
+          emGlow.addColorStop(1, 'rgba(160,0,0,0)');
+          ctx.fillStyle = emGlow; ctx.beginPath(); ctx.arc(cx, y+h*0.82, 16, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#cc1111'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(cx, y+h*0.82, 12, 0, Math.PI*2); ctx.stroke();
+          // Status indicator lights (top of screen)
+          const dsLights = ['#44ff44','#ffcc00','#4488ff'];
+          for (let dsl = 0; dsl < 3; dsl++) {
+            ctx.fillStyle = dsLights[dsl];
+            ctx.beginPath(); ctx.arc(cx-10+dsl*10, y+h*0.26, 3, 0, Math.PI*2); ctx.fill();
+          }
+          // Side access hatches
+          ctx.fillStyle = '#1a2030'; ctx.fillRect(cx-w*0.40, y+h*0.38, 10, 30);
+          ctx.strokeStyle = '#3a4a5a'; ctx.lineWidth = 0.8; ctx.strokeRect(cx-w*0.40, y+h*0.38, 10, 30);
+          ctx.fillRect(cx+w*0.30, y+h*0.38, 10, 30);
+          ctx.strokeRect(cx+w*0.30, y+h*0.38, 10, 30);
+          ctx.globalAlpha = 0.5;
           break;
         }
         case 'Decontamination': {
@@ -19190,6 +19451,12 @@
           }
           ctx.fillStyle = 'rgba(255,220,80,0.28)';
           for (let pr = 0; pr < 4; pr++) ctx.fillRect(mbX+mbW-8, mbY+3+pr*6, 6, 2);
+          // Napkin holder + salt/pepper shakers on nearest table
+          ctx.globalAlpha = 0.55;
+          ctx.fillStyle = '#d0c8b0'; ctx.fillRect(cx - w*0.06, y + h*0.30, 8, 10);
+          ctx.strokeStyle = '#9a9080'; ctx.lineWidth = 0.7; ctx.strokeRect(cx - w*0.06, y + h*0.30, 8, 10);
+          ctx.fillStyle = '#e8e8e8'; ctx.beginPath(); ctx.arc(cx + w*0.04, y + h*0.28, 3, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = '#2a2a2a'; ctx.beginPath(); ctx.arc(cx + w*0.10, y + h*0.28, 3, 0, Math.PI*2); ctx.fill();
         }
 
         // STORAGE: floor loading-zone arrows
@@ -19201,6 +19468,21 @@
           ctx.moveTo(arX, arY-6); ctx.lineTo(arX+14, arY); ctx.lineTo(arX, arY+6);
           ctx.lineTo(arX+2, arY+2); ctx.lineTo(arX-6, arY+2); ctx.lineTo(arX-6, arY-2); ctx.lineTo(arX+2, arY-2);
           ctx.closePath(); ctx.fill();
+          // Weight limit sign on wall
+          ctx.globalAlpha = 0.55;
+          const wsX = x + w*0.85, wsY = y + h*0.10;
+          ctx.fillStyle = '#f0e0a0'; ctx.fillRect(wsX, wsY, 14, 10);
+          ctx.strokeStyle = '#8a7020'; ctx.lineWidth = 0.8; ctx.strokeRect(wsX, wsY, 14, 10);
+          ctx.strokeStyle = 'rgba(80,60,10,0.40)'; ctx.lineWidth = 0.6;
+          ctx.beginPath(); ctx.moveTo(wsX+2, wsY+3); ctx.lineTo(wsX+12, wsY+3); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(wsX+2, wsY+6); ctx.lineTo(wsX+10, wsY+6); ctx.stroke();
+          // Inventory clipboard hanging on hook
+          const cbX = x + w*0.88, cbY = y + h*0.26;
+          ctx.fillStyle = '#c8b880'; ctx.fillRect(cbX, cbY, 10, 14);
+          ctx.strokeStyle = '#8a7840'; ctx.lineWidth = 0.7; ctx.strokeRect(cbX, cbY, 10, 14);
+          ctx.fillStyle = '#7a6030'; ctx.fillRect(cbX+2, cbY-2, 6, 4);
+          ctx.strokeStyle = 'rgba(40,30,10,0.30)'; ctx.lineWidth = 0.5;
+          for (let cl = 0; cl < 4; cl++) { ctx.beginPath(); ctx.moveTo(cbX+2, cbY+3+cl*3); ctx.lineTo(cbX+8, cbY+3+cl*3); ctx.stroke(); }
         }
 
         // ADMIN: framed mission poster on bottom-right wall
@@ -19215,6 +19497,20 @@
           for (let pl = 0; pl < 4; pl++) {
             ctx.beginPath(); ctx.moveTo(poX+3, poY+4+pl*5); ctx.lineTo(poX+poW-3, poY+4+pl*5); ctx.stroke();
           }
+          // Pen cup on side console
+          ctx.globalAlpha = 0.60;
+          const pcX = x + w*0.10, pcY = y + h*0.72;
+          ctx.fillStyle = '#2a2a3a'; ctx.fillRect(pcX, pcY, 8, 10);
+          ctx.strokeStyle = '#4a4a5a'; ctx.lineWidth = 0.7; ctx.strokeRect(pcX, pcY, 8, 10);
+          for (let pi = 0; pi < 3; pi++) {
+            ctx.strokeStyle = ['#4488ff','#ff6644','#44cc44'][pi]; ctx.lineWidth = 0.8;
+            ctx.beginPath(); ctx.moveTo(pcX+2+pi*2, pcY); ctx.lineTo(pcX+2+pi*2, pcY-6); ctx.stroke();
+          }
+          // Coffee thermos on table
+          const thX = x + w*0.18, thY = y + h*0.74;
+          ctx.fillStyle = '#3a3a4a'; ctx.beginPath(); ctx.arc(thX+4, thY+4, 4, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#5a5a6a'; ctx.lineWidth = 0.8; ctx.beginPath(); ctx.arc(thX+4, thY+4, 4, 0, Math.PI*2); ctx.stroke();
+          ctx.fillStyle = 'rgba(120,80,40,0.35)'; ctx.beginPath(); ctx.arc(thX+4, thY+3, 3, 0, Math.PI*2); ctx.fill();
         }
 
         // NAVIGATION: floor star-chart projection grid
@@ -19229,6 +19525,20 @@
             const ra = nr * Math.PI / 3;
             ctx.beginPath(); ctx.moveTo(ncx2, ncy2); ctx.lineTo(ncx2 + Math.cos(ra)*Math.min(w,h)*0.18, ncy2 + Math.sin(ra)*Math.min(w,h)*0.18); ctx.stroke();
           }
+          // Speed gauge display on bottom wall
+          ctx.globalAlpha = 0.45;
+          const sgX = x + w*0.28, sgY = y + h - 16;
+          ctx.fillStyle = '#0a0c18'; ctx.fillRect(sgX, sgY, 30, 12);
+          ctx.strokeStyle = '#3050a0'; ctx.lineWidth = 0.8; ctx.strokeRect(sgX, sgY, 30, 12);
+          ctx.strokeStyle = 'rgba(80,150,255,0.50)'; ctx.lineWidth = 0.7;
+          ctx.beginPath(); ctx.arc(sgX+7, sgY+6, 5, Math.PI*0.75, Math.PI*2.25); ctx.stroke();
+          ctx.strokeStyle = '#ff8844'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(sgX+7, sgY+6); ctx.lineTo(sgX+11, sgY+3); ctx.stroke();
+          // Route printout strip hanging below console
+          ctx.fillStyle = 'rgba(200,200,180,0.22)';
+          ctx.fillRect(x + w*0.08, y + h*0.44, 16, 20);
+          ctx.strokeStyle = 'rgba(80,100,180,0.25)'; ctx.lineWidth = 0.5;
+          for (let rp = 0; rp < 4; rp++) { ctx.beginPath(); ctx.moveTo(x+w*0.09, y+h*0.46+rp*4); ctx.lineTo(x+w*0.09+11, y+h*0.46+rp*4); ctx.stroke(); }
         }
 
         // WEAPONS: targeting reticle projected on floor
@@ -19240,6 +19550,20 @@
           ctx.beginPath(); ctx.arc(wtrX, wtrY, wtr*0.5, 0, Math.PI*2); ctx.stroke();
           ctx.beginPath(); ctx.moveTo(wtrX-wtr*1.3, wtrY); ctx.lineTo(wtrX+wtr*1.3, wtrY); ctx.stroke();
           ctx.beginPath(); ctx.moveTo(wtrX, wtrY-wtr*1.3); ctx.lineTo(wtrX, wtrY+wtr*1.3); ctx.stroke();
+          // Spent shell casings on floor (small golden ellipses)
+          ctx.globalAlpha = 0.40;
+          ctx.fillStyle = '#c8a030';
+          const shellPositions = [[x+w*0.30, y+h*0.62],[x+w*0.38, y+h*0.70],[x+w*0.44, y+h*0.60],[x+w*0.26, y+h*0.75]];
+          for (const [sx, sy] of shellPositions) {
+            ctx.beginPath(); ctx.ellipse(sx, sy, 3, 1.5, 0.4, 0, Math.PI*2); ctx.fill();
+          }
+          // Ammo crate near bottom-left
+          ctx.globalAlpha = 0.50;
+          ctx.fillStyle = '#3a4a2a'; ctx.fillRect(x+w*0.05, y+h*0.72, 18, 14);
+          ctx.strokeStyle = '#5a6a3a'; ctx.lineWidth = 0.8; ctx.strokeRect(x+w*0.05, y+h*0.72, 18, 14);
+          ctx.strokeStyle = '#8a9a4a'; ctx.lineWidth = 0.7;
+          ctx.beginPath(); ctx.moveTo(x+w*0.05, y+h*0.72+7); ctx.lineTo(x+w*0.05+18, y+h*0.72+7); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x+w*0.05+9, y+h*0.72); ctx.lineTo(x+w*0.05+9, y+h*0.72+14); ctx.stroke();
         }
 
         // REACTOR: radiation hexagon floor markings
@@ -19253,6 +19577,26 @@
               hv===0 ? ctx.moveTo(cx+Math.cos(ha)*rhex, cy+Math.sin(ha)*rhex) : ctx.lineTo(cx+Math.cos(ha)*rhex, cy+Math.sin(ha)*rhex);
             }
             ctx.closePath(); ctx.stroke();
+          }
+          // Warning tape diagonal stripes on floor near reactor
+          ctx.globalAlpha = 0.07;
+          ctx.strokeStyle = '#ffaa00'; ctx.lineWidth = 5;
+          ctx.setLineDash([8, 8]);
+          ctx.beginPath(); ctx.moveTo(x, y+h*0.85); ctx.lineTo(x+w*0.25, y+h*0.55); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x+w*0.75, y+h*0.55); ctx.lineTo(x+w, y+h*0.85); ctx.stroke();
+          ctx.setLineDash([]);
+          // Radioactive coolant barrel (bottom corner)
+          ctx.globalAlpha = 0.45;
+          const rcbX = x + w*0.04, rcbY = y + h*0.78;
+          ctx.fillStyle = '#2a4a28'; ctx.fillRect(rcbX, rcbY, 12, 18);
+          ctx.strokeStyle = '#5a8a38'; ctx.lineWidth = 0.8; ctx.strokeRect(rcbX, rcbY, 12, 18);
+          ctx.fillStyle = '#4aaa28'; ctx.fillRect(rcbX+1, rcbY+7, 10, 2);
+          ctx.fillRect(rcbX+1, rcbY+12, 10, 2);
+          ctx.strokeStyle = 'rgba(100,220,60,0.40)'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.arc(rcbX+6, rcbY+4, 3, 0, Math.PI*2); ctx.stroke();
+          for (let rv = 0; rv < 3; rv++) {
+            const rva = rv*Math.PI*2/3 - Math.PI/2;
+            ctx.beginPath(); ctx.arc(rcbX+6+Math.cos(rva)*2, rcbY+4+Math.sin(rva)*2, 1.5, 0, Math.PI*2); ctx.stroke();
           }
         }
 
@@ -19268,6 +19612,28 @@
             ctx.stroke();
           }
           ctx.setLineDash([]);
+          // Hanging bare bulb light (center ceiling, faint glow cone)
+          ctx.globalAlpha = 0.18;
+          ctx.fillStyle = 'rgba(255,220,100,0.20)';
+          ctx.beginPath(); ctx.arc(cx, y+6, 4, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = 'rgba(220,180,60,0.35)'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.arc(cx, y+6, 4, 0, Math.PI*2); ctx.stroke();
+          ctx.fillStyle = 'rgba(255,220,100,0.05)';
+          ctx.beginPath(); ctx.moveTo(cx-20, y+6); ctx.lineTo(cx+20, y+6); ctx.lineTo(cx+40, y+h*0.55); ctx.lineTo(cx-40, y+h*0.55); ctx.closePath(); ctx.fill();
+          // Floor junction boxes (small square panels with screws at corners)
+          ctx.globalAlpha = 0.50;
+          const jbPositions = [[x+w*0.22, y+h*0.82],[x+w*0.52, y+h*0.84]];
+          for (const [jbx, jby] of jbPositions) {
+            ctx.fillStyle = '#1e1e1e'; ctx.fillRect(jbx, jby, 12, 10);
+            ctx.strokeStyle = '#3a3a3a'; ctx.lineWidth = 0.7; ctx.strokeRect(jbx, jby, 12, 10);
+            ctx.fillStyle = '#555';
+            ctx.beginPath(); ctx.arc(jbx+2, jby+2, 1, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(jbx+10, jby+2, 1, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(jbx+2, jby+8, 1, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(jbx+10, jby+8, 1, 0, Math.PI*2); ctx.fill();
+            ctx.strokeStyle = 'rgba(255,160,0,0.25)'; ctx.lineWidth = 0.6;
+            ctx.beginPath(); ctx.moveTo(jbx+3, jby+5); ctx.lineTo(jbx+9, jby+5); ctx.stroke();
+          }
         }
 
         // MEDBAY: sterile floor grid (white tile lines)
@@ -19277,6 +19643,576 @@
           const mgt = 24;
           for (let mgx = 0; mgx < w; mgx += mgt) { ctx.beginPath(); ctx.moveTo(x+mgx, y); ctx.lineTo(x+mgx, y+h); ctx.stroke(); }
           for (let mgy = 0; mgy < h; mgy += mgt) { ctx.beginPath(); ctx.moveTo(x, y+mgy); ctx.lineTo(x+w, y+mgy); ctx.stroke(); }
+          // Eye chart poster on left wall
+          ctx.globalAlpha = 0.55;
+          const ecX = x + 4, ecY = y + h*0.22, ecW = 14, ecH = 22;
+          ctx.fillStyle = '#f0ede0'; ctx.fillRect(ecX, ecY, ecW, ecH);
+          ctx.strokeStyle = '#aaa898'; ctx.lineWidth = 0.7; ctx.strokeRect(ecX, ecY, ecW, ecH);
+          const ecSizes = [4, 3.5, 3, 2.5, 2, 1.5];
+          for (let el = 0; el < ecSizes.length; el++) {
+            ctx.fillStyle = `rgba(30,30,30,${0.25 + el*0.04})`;
+            ctx.font = `${ecSizes[el]}px monospace`; ctx.textAlign = 'center';
+            ctx.fillText('E', ecX+ecW/2, ecY + 4 + el*3.2);
+          }
+          // Pill bottle shelf on right wall
+          ctx.globalAlpha = 0.50;
+          const pbY = y + h*0.18;
+          ctx.fillStyle = '#4a5a6a'; ctx.fillRect(x+w-18, pbY, 14, 2);
+          const pbColors = ['#cc6644','#4488cc','#44aa44','#ccaa22'];
+          for (let pb = 0; pb < 4; pb++) {
+            const pbX2 = x+w-17+pb*3;
+            ctx.fillStyle = pbColors[pb]; ctx.fillRect(pbX2, pbY-8, 2.5, 9);
+            ctx.fillStyle = 'rgba(255,255,255,0.20)'; ctx.fillRect(pbX2+0.5, pbY-7, 1, 5);
+          }
+        }
+
+        // SECURITY: REC indicator, sticky note, cable snarl under desk
+        if (name === 'Security') {
+          ctx.globalAlpha = 0.60;
+          // REC indicator blinking dot top-right of monitor wall
+          const recX = x + w - 12, recY = y + 8;
+          const recGlow = ctx.createRadialGradient(recX, recY, 0, recX, recY, 6);
+          recGlow.addColorStop(0, 'rgba(255,60,60,0.50)');
+          recGlow.addColorStop(1, 'rgba(200,0,0,0)');
+          ctx.fillStyle = recGlow; ctx.beginPath(); ctx.arc(recX, recY, 6, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = '#ff3333'; ctx.beginPath(); ctx.arc(recX, recY, 3, 0, Math.PI*2); ctx.fill();
+          // Sticky note on monitor frame
+          ctx.fillStyle = '#e8e050'; ctx.fillRect(x + w*0.28, y + h*0.50, 10, 9);
+          ctx.strokeStyle = '#c0b030'; ctx.lineWidth = 0.6; ctx.strokeRect(x + w*0.28, y + h*0.50, 10, 9);
+          ctx.strokeStyle = 'rgba(40,40,0,0.25)'; ctx.lineWidth = 0.5;
+          for (let sn = 0; sn < 3; sn++) { ctx.beginPath(); ctx.moveTo(x+w*0.29, y+h*0.51+sn*2.5); ctx.lineTo(x+w*0.29+8, y+h*0.51+sn*2.5); ctx.stroke(); }
+          // Cable tangle under desk (squiggly lines on floor)
+          ctx.globalAlpha = 0.18;
+          ctx.strokeStyle = '#2a3a2a'; ctx.lineWidth = 1.2;
+          const cableBase = y + h*0.85;
+          ctx.beginPath(); ctx.moveTo(cx-10, cableBase); ctx.bezierCurveTo(cx, cableBase-6, cx+8, cableBase+4, cx+15, cableBase-2); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(cx-14, cableBase+4); ctx.bezierCurveTo(cx-4, cableBase-2, cx+4, cableBase+6, cx+12, cableBase+2); ctx.stroke();
+          // CCTV recording text label
+          ctx.globalAlpha = 0.30;
+          ctx.fillStyle = '#22cc22';
+          ctx.font = '5px monospace'; ctx.textAlign = 'right';
+          ctx.fillText('REC', x+w-6, y+12);
+        }
+
+        // SHIELDS: floor warning stripe border, ventilation grate
+        if (name === 'Shields') {
+          ctx.globalAlpha = 0.08;
+          ctx.strokeStyle = '#dd2222'; ctx.lineWidth = 4;
+          ctx.setLineDash([12, 8]);
+          ctx.beginPath(); ctx.moveTo(x+4, y+4); ctx.lineTo(x+w-4, y+4); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x+4, y+h-4); ctx.lineTo(x+w-4, y+h-4); ctx.stroke();
+          ctx.setLineDash([]);
+          // Ventilation grate on floor (center-left)
+          ctx.globalAlpha = 0.35;
+          const vgX = x + w*0.28, vgY = y + h*0.74, vgW = 20, vgH = 14;
+          ctx.fillStyle = '#1a1010'; ctx.fillRect(vgX, vgY, vgW, vgH);
+          ctx.strokeStyle = '#4a2020'; ctx.lineWidth = 0.7; ctx.strokeRect(vgX, vgY, vgW, vgH);
+          ctx.strokeStyle = '#3a1818'; ctx.lineWidth = 0.6;
+          for (let vr = 1; vr < 4; vr++) { ctx.beginPath(); ctx.moveTo(vgX, vgY+vgH*vr/4); ctx.lineTo(vgX+vgW, vgY+vgH*vr/4); ctx.stroke(); }
+          for (let vc = 1; vc < 5; vc++) { ctx.beginPath(); ctx.moveTo(vgX+vgW*vc/5, vgY); ctx.lineTo(vgX+vgW*vc/5, vgY+vgH); ctx.stroke(); }
+          // Power meter readout display on left panel
+          ctx.globalAlpha = 0.45;
+          const pmX = x + 12, pmY = y + h*0.84;
+          ctx.fillStyle = '#140808'; ctx.fillRect(pmX, pmY, 20, 10);
+          ctx.strokeStyle = '#4a1818'; ctx.lineWidth = 0.7; ctx.strokeRect(pmX, pmY, 20, 10);
+          ctx.fillStyle = 'rgba(220,60,60,0.40)'; ctx.fillRect(pmX+2, pmY+3, 13, 4);
+          ctx.fillStyle = 'rgba(255,80,80,0.70)'; ctx.fillRect(pmX+2, pmY+3, 8, 4);
+        }
+
+        // COMMUNICATIONS: frequency waveform chart, cable coils
+        if (name === 'Communications') {
+          ctx.globalAlpha = 0.40;
+          // Frequency waveform chart on side wall
+          const fwX = x + w*0.78, fwY = y + h*0.56, fwW = Math.min(18, w*0.14), fwH = Math.min(24, h*0.18);
+          ctx.fillStyle = '#0a1820'; ctx.fillRect(fwX, fwY, fwW, fwH);
+          ctx.strokeStyle = '#1a4060'; ctx.lineWidth = 0.8; ctx.strokeRect(fwX, fwY, fwW, fwH);
+          ctx.strokeStyle = 'rgba(60,200,220,0.45)'; ctx.lineWidth = 0.8;
+          ctx.beginPath(); ctx.moveTo(fwX+2, fwY+fwH*0.5);
+          for (let fw2 = 0; fw2 < 8; fw2++) {
+            const wAmplitude = fw2%2===0 ? fwH*0.35 : -fwH*0.35;
+            ctx.lineTo(fwX + 2 + fw2*(fwW-4)/8, fwY + fwH*0.5 + (fw2<2?wAmplitude:fw2<5?wAmplitude*0.5:wAmplitude*0.2));
+          }
+          ctx.stroke();
+          // Cable coil (neat coiled wire on floor)
+          ctx.globalAlpha = 0.25;
+          ctx.strokeStyle = '#2a4a50'; ctx.lineWidth = 1.5;
+          const ccX = x + w*0.44, ccY = y + h*0.85;
+          ctx.beginPath(); ctx.arc(ccX, ccY, 6, 0, Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(ccX, ccY, 4, 0, Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(ccX, ccY, 2, 0, Math.PI*2); ctx.stroke();
+          // Satellite dish scale model on desk
+          ctx.globalAlpha = 0.45;
+          const sdX = x + w*0.56, sdY = y + h*0.74;
+          ctx.strokeStyle = '#4a8090'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.arc(sdX, sdY, 6, Math.PI*1.05, Math.PI*1.95); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(sdX, sdY); ctx.lineTo(sdX, sdY+10); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(sdX-4, sdY+10); ctx.lineTo(sdX+4, sdY+10); ctx.stroke();
+        }
+
+        // O2: watering can, garden gloves hanging, misting droplets near pipes
+        if (name === 'O2') {
+          ctx.globalAlpha = 0.45;
+          // Watering can near oxygen tanks
+          const wcX = x + w*0.62, wcY = y + h*0.72;
+          ctx.fillStyle = '#4a7a4a'; ctx.fillRect(wcX, wcY, 14, 10);
+          ctx.strokeStyle = '#6a9a6a'; ctx.lineWidth = 0.8; ctx.strokeRect(wcX, wcY, 14, 10);
+          ctx.strokeStyle = '#6a9a6a'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(wcX+12, wcY+3); ctx.quadraticCurveTo(wcX+18, wcY+1, wcX+20, wcY+6); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(wcX+6, wcY-3); ctx.quadraticCurveTo(wcX+9, wcY-7, wcX+10, wcY); ctx.stroke();
+          // Garden gloves hanging on left machinery wall
+          ctx.globalAlpha = 0.40;
+          const ggX = x + w*0.36, ggY = y + h*0.15;
+          ctx.fillStyle = '#4a7a30'; ctx.fillRect(ggX, ggY, 8, 12); ctx.fillRect(ggX+10, ggY, 8, 12);
+          ctx.strokeStyle = '#6a9a50'; ctx.lineWidth = 0.7;
+          ctx.strokeRect(ggX, ggY, 8, 12); ctx.strokeRect(ggX+10, ggY, 8, 12);
+          ctx.strokeStyle = '#3a6a20'; ctx.lineWidth = 0.7;
+          ctx.beginPath(); ctx.moveTo(ggX+4, ggY); ctx.lineTo(ggX+4, ggY-4); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(ggX+14, ggY); ctx.lineTo(ggX+14, ggY-4); ctx.stroke();
+          // Misting droplet dots near pipe ceiling
+          ctx.globalAlpha = 0.30;
+          ctx.fillStyle = 'rgba(120,200,220,0.50)';
+          const dropPos = [[w*0.40,h*0.08],[w*0.50,h*0.10],[w*0.60,h*0.07],[w*0.46,h*0.13],[w*0.55,h*0.12]];
+          for (const [dpx, dpy] of dropPos) {
+            ctx.beginPath(); ctx.arc(x+dpx, y+dpy, 1.5, 0, Math.PI*2); ctx.fill();
+          }
+          // Soil bag leaning against machinery
+          ctx.globalAlpha = 0.45;
+          const sbX = x + w*0.36, sbY = y + h*0.68;
+          ctx.fillStyle = '#5a4a2a'; ctx.fillRect(sbX, sbY, 16, 22);
+          ctx.strokeStyle = '#7a6a3a'; ctx.lineWidth = 0.7; ctx.strokeRect(sbX, sbY, 16, 22);
+          ctx.fillStyle = 'rgba(200,170,80,0.25)'; ctx.fillRect(sbX+2, sbY+6, 12, 3);
+        }
+
+        // UPPER ENGINE / LOWER ENGINE: heat grate, pressure readings, oil drip
+        if (name === 'Upper Engine' || name === 'Lower Engine') {
+          ctx.globalAlpha = 0.30;
+          // Floor heat grate near engine base
+          const hgX = x + w*0.22, hgY = y + h*0.76, hgW = 24, hgH = 14;
+          ctx.fillStyle = '#1e1810'; ctx.fillRect(hgX, hgY, hgW, hgH);
+          ctx.strokeStyle = '#4a3818'; ctx.lineWidth = 0.8; ctx.strokeRect(hgX, hgY, hgW, hgH);
+          ctx.strokeStyle = '#3a2810'; ctx.lineWidth = 0.6;
+          for (let hg = 1; hg < 4; hg++) { ctx.beginPath(); ctx.moveTo(hgX, hgY+hgH*hg/4); ctx.lineTo(hgX+hgW, hgY+hgH*hg/4); ctx.stroke(); }
+          for (let hgc = 1; hgc < 5; hgc++) { ctx.beginPath(); ctx.moveTo(hgX+hgW*hgc/5, hgY); ctx.lineTo(hgX+hgW*hgc/5, hgY+hgH); ctx.stroke(); }
+          // Heat shimmer dots above grate
+          ctx.globalAlpha = 0.12;
+          ctx.fillStyle = 'rgba(255,180,60,0.40)';
+          for (let hd = 0; hd < 5; hd++) { ctx.beginPath(); ctx.arc(hgX+4+hd*4, hgY-3-hd%2*2, 1, 0, Math.PI*2); ctx.fill(); }
+          // Oil drip puddle (Lower Engine only, or both for variety)
+          ctx.globalAlpha = 0.18;
+          ctx.fillStyle = 'rgba(20,15,5,0.60)';
+          ctx.beginPath(); ctx.ellipse(x+w*0.14, y+h*0.88, 10, 5, 0, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = 'rgba(60,40,10,0.30)'; ctx.lineWidth = 0.6;
+          ctx.beginPath(); ctx.ellipse(x+w*0.14, y+h*0.88, 10, 5, 0, 0, Math.PI*2); ctx.stroke();
+          // Pressure reading label strip on panel
+          ctx.globalAlpha = 0.40;
+          const prX = x + w*0.82, prY = y + h*0.82;
+          ctx.fillStyle = '#141c28'; ctx.fillRect(prX, prY, 16, 8);
+          ctx.strokeStyle = '#2a3a4a'; ctx.lineWidth = 0.6; ctx.strokeRect(prX, prY, 16, 8);
+          ctx.fillStyle = 'rgba(100,180,255,0.35)'; ctx.fillRect(prX+1, prY+2, 10, 4);
+          ctx.fillStyle = 'rgba(120,220,255,0.55)'; ctx.fillRect(prX+1, prY+2, 6, 4);
+        }
+
+        // KITCHEN (Fungle): steam from pots, apron on hook
+        if (name === 'Kitchen') {
+          ctx.globalAlpha = 0.30;
+          // Steam curls above stove
+          ctx.strokeStyle = 'rgba(200,200,220,0.40)'; ctx.lineWidth = 1;
+          for (let ks = 0; ks < 3; ks++) {
+            const ksX = x + w*0.22 + ks*w*0.10, ksY = y + h*0.40;
+            ctx.beginPath(); ctx.moveTo(ksX, ksY); ctx.quadraticCurveTo(ksX+4, ksY-6, ksX, ksY-12); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(ksX+2, ksY-4); ctx.quadraticCurveTo(ksX+6, ksY-10, ksX+2, ksY-16); ctx.stroke();
+          }
+          // Apron hanging on right wall hook
+          ctx.globalAlpha = 0.42;
+          const apX = x + w*0.86, apY = y + h*0.18;
+          ctx.fillStyle = '#8a4a2a'; ctx.fillRect(apX, apY, 10, 20);
+          ctx.strokeStyle = '#aa6a3a'; ctx.lineWidth = 0.7; ctx.strokeRect(apX, apY, 10, 20);
+          ctx.fillStyle = '#6a3a18'; ctx.fillRect(apX+3, apY+5, 4, 8);
+          ctx.strokeStyle = '#5a5a5a'; ctx.lineWidth = 0.8;
+          ctx.beginPath(); ctx.moveTo(apX+5, apY); ctx.lineTo(apX+5, apY-4); ctx.stroke();
+          ctx.beginPath(); ctx.arc(apX+5, apY-5, 1.5, 0, Math.PI*2); ctx.fill();
+          // Fruit bowl on counter
+          ctx.globalAlpha = 0.50;
+          const fbX = x + w*0.70, fbY = y + h*0.58;
+          ctx.fillStyle = '#5a3a18';
+          ctx.beginPath(); ctx.arc(fbX+8, fbY+8, 8, Math.PI*0.1, Math.PI*0.9); ctx.fill();
+          ctx.strokeStyle = '#8a5a28'; ctx.lineWidth = 0.8;
+          ctx.beginPath(); ctx.arc(fbX+8, fbY+8, 8, Math.PI*0.1, Math.PI*0.9); ctx.stroke();
+          ctx.fillStyle = '#cc4422'; ctx.beginPath(); ctx.arc(fbX+5, fbY+6, 3, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = '#eeaa22'; ctx.beginPath(); ctx.arc(fbX+10, fbY+5, 2.5, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = '#44aa22'; ctx.beginPath(); ctx.arc(fbX+8, fbY+4, 2, 0, Math.PI*2); ctx.fill();
+        }
+
+        // GREENHOUSE (Fungle): condensation drops on glass, trowel & seed packets
+        if (name === 'Greenhouse') {
+          ctx.globalAlpha = 0.25;
+          // Condensation dots on glass panels (ceiling area)
+          ctx.fillStyle = 'rgba(160,220,240,0.50)';
+          for (let gd = 0; gd < 18; gd++) {
+            const gdx = x + (gd*73+11)%w, gdy = y + (gd*37+5)%(h*0.25);
+            ctx.beginPath(); ctx.arc(gdx, gdy, 1.2, 0, Math.PI*2); ctx.fill();
+          }
+          // Condensation run lines (drips down glass)
+          ctx.strokeStyle = 'rgba(140,200,220,0.22)'; ctx.lineWidth = 0.6;
+          for (let gr = 0; gr < 5; gr++) {
+            const grx = x + w*(0.15+gr*0.16);
+            ctx.beginPath(); ctx.moveTo(grx, y+4); ctx.lineTo(grx+2, y+14); ctx.lineTo(grx, y+22); ctx.stroke();
+          }
+          // Trowel leaning against planter
+          ctx.globalAlpha = 0.45;
+          ctx.strokeStyle = '#8a7a50'; ctx.lineWidth = 1.5;
+          const trX = x + w*0.82, trY = y + h*0.72;
+          ctx.beginPath(); ctx.moveTo(trX, trY); ctx.lineTo(trX+4, trY-18); ctx.stroke();
+          ctx.fillStyle = '#7a6a40';
+          ctx.beginPath(); ctx.ellipse(trX+5, trY-20, 4, 2.5, 0.4, 0, Math.PI*2); ctx.fill();
+          // Seed packets on shelf
+          ctx.globalAlpha = 0.48;
+          const spColors = ['#cc4422','#4488cc','#44aa22','#ccaa22'];
+          for (let sp = 0; sp < 4; sp++) {
+            ctx.fillStyle = spColors[sp]; ctx.fillRect(x+w*0.06+sp*12, y+h*0.18, 10, 14);
+            ctx.strokeStyle = 'rgba(255,255,255,0.20)'; ctx.lineWidth = 0.5; ctx.strokeRect(x+w*0.06+sp*12, y+h*0.18, 10, 14);
+          }
+          // Watering hose coiled on floor
+          ctx.globalAlpha = 0.28;
+          ctx.strokeStyle = '#3a6a28'; ctx.lineWidth = 2;
+          const whX = x + w*0.46, whY = y + h*0.84;
+          for (let wh = 1; wh <= 3; wh++) { ctx.beginPath(); ctx.arc(whX, whY, wh*4, 0, Math.PI*2); ctx.stroke(); }
+        }
+
+        // LABORATORY (Fungle): chemical formula board, test tube rack
+        if (name === 'Laboratory') {
+          ctx.globalAlpha = 0.45;
+          // Chemical formula board on back wall
+          const cfbX = x + w*0.04, cfbY = y + h*0.08, cfbW = Math.min(30, w*0.16), cfbH = Math.min(22, h*0.16);
+          ctx.fillStyle = '#101a20'; ctx.fillRect(cfbX, cfbY, cfbW, cfbH);
+          ctx.strokeStyle = '#205060'; ctx.lineWidth = 1; ctx.strokeRect(cfbX, cfbY, cfbW, cfbH);
+          ctx.strokeStyle = 'rgba(100,200,220,0.35)'; ctx.lineWidth = 0.6;
+          for (let cf = 0; cf < 3; cf++) { ctx.beginPath(); ctx.moveTo(cfbX+3, cfbY+5+cf*6); ctx.lineTo(cfbX+cfbW-3, cfbY+5+cf*6); ctx.stroke(); }
+          // Small formula symbols (dots as atoms)
+          ctx.fillStyle = 'rgba(120,220,240,0.40)';
+          ctx.beginPath(); ctx.arc(cfbX+8, cfbY+8, 2, 0, Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.arc(cfbX+14, cfbY+8, 2, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = 'rgba(100,200,220,0.30)'; ctx.lineWidth = 0.7;
+          ctx.beginPath(); ctx.moveTo(cfbX+10, cfbY+8); ctx.lineTo(cfbX+12, cfbY+8); ctx.stroke();
+          // Test tube rack
+          ctx.globalAlpha = 0.50;
+          const ttrX = x + w*0.72, ttrY = y + h*0.24;
+          ctx.fillStyle = '#2a3a40'; ctx.fillRect(ttrX, ttrY, 24, 6);
+          ctx.strokeStyle = '#4a6a70'; ctx.lineWidth = 0.7; ctx.strokeRect(ttrX, ttrY, 24, 6);
+          const ttColors = ['rgba(100,220,200,0.60)','rgba(220,100,80,0.55)','rgba(100,180,255,0.55)','rgba(220,200,60,0.55)'];
+          for (let tt = 0; tt < 4; tt++) {
+            ctx.fillStyle = ttColors[tt]; ctx.fillRect(ttrX+2+tt*6, ttrY-12, 4, 13);
+            ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 0.5; ctx.strokeRect(ttrX+2+tt*6, ttrY-12, 4, 13);
+            ctx.beginPath(); ctx.arc(ttrX+4+tt*6, ttrY+1, 2, 0, Math.PI*2); ctx.fill();
+          }
+          // Microscope silhouette
+          ctx.globalAlpha = 0.42;
+          const msX = x + w*0.52, msY = y + h*0.22;
+          ctx.fillStyle = '#2a3040'; ctx.fillRect(msX, msY+12, 12, 4);
+          ctx.strokeStyle = '#4a5060'; ctx.lineWidth = 0.8; ctx.strokeRect(msX, msY+12, 12, 4);
+          ctx.strokeStyle = '#5a6070'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(msX+6, msY+12); ctx.lineTo(msX+8, msY+4); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(msX+8, msY+4); ctx.lineTo(msX+14, msY); ctx.stroke();
+          ctx.beginPath(); ctx.arc(msX+14, msY, 3, 0, Math.PI*2); ctx.fill();
+        }
+
+        // LOOKOUT (Fungle): compass rose on floor
+        if (name === 'Lookout') {
+          ctx.globalAlpha = 0.08;
+          ctx.strokeStyle = '#c0a040'; ctx.lineWidth = 1;
+          const lkCx = x + w*0.40, lkCy = y + h*0.72;
+          ctx.beginPath(); ctx.arc(lkCx, lkCy, Math.min(w,h)*0.15, 0, Math.PI*2); ctx.stroke();
+          const compassDirs = [0, Math.PI/4, Math.PI/2, Math.PI*3/4, Math.PI, Math.PI*5/4, Math.PI*3/2, Math.PI*7/4];
+          for (const ca of compassDirs) {
+            const isCard = ca % (Math.PI/2) === 0;
+            ctx.lineWidth = isCard ? 1.2 : 0.7;
+            const len = Math.min(w,h) * (isCard ? 0.14 : 0.10);
+            ctx.beginPath(); ctx.moveTo(lkCx, lkCy); ctx.lineTo(lkCx + Math.cos(ca)*len, lkCy + Math.sin(ca)*len); ctx.stroke();
+          }
+          ctx.fillStyle = 'rgba(200,160,60,0.35)';
+          ctx.beginPath(); ctx.arc(lkCx, lkCy, 3, 0, Math.PI*2); ctx.fill();
+        }
+
+        // CAMPFIRE (Fungle): floating ember sparks in air
+        if (name === 'Campfire') {
+          ctx.globalAlpha = 0.50;
+          const emberPositions = [
+            [cx-8, cy-h*0.28],[cx+5, cy-h*0.34],[cx-14, cy-h*0.38],[cx+12, cy-h*0.25],[cx-3, cy-h*0.42],
+            [cx+18, cy-h*0.30],[cx-20, cy-h*0.22],[cx+8, cy-h*0.44]
+          ];
+          for (const [ex, ey] of emberPositions) {
+            const eGlow = ctx.createRadialGradient(ex, ey, 0, ex, ey, 3);
+            eGlow.addColorStop(0, 'rgba(255,200,80,0.80)');
+            eGlow.addColorStop(1, 'rgba(255,100,0,0)');
+            ctx.fillStyle = eGlow; ctx.beginPath(); ctx.arc(ex, ey, 3, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#ffdd60'; ctx.beginPath(); ctx.arc(ex, ey, 1, 0, Math.PI*2); ctx.fill();
+          }
+        }
+
+        // HIGHLANDS (Fungle): wind speed anemometer readout, topographic contour lines
+        if (name === 'Highlands') {
+          ctx.globalAlpha = 0.07;
+          ctx.strokeStyle = '#8090a0'; ctx.lineWidth = 0.8;
+          const contourRadii = [Math.min(w,h)*0.38, Math.min(w,h)*0.26, Math.min(w,h)*0.16];
+          for (const cr of contourRadii) {
+            ctx.beginPath(); ctx.ellipse(x+w*0.35, y+h*0.50, cr, cr*0.60, 0, 0, Math.PI*2); ctx.stroke();
+          }
+          // Wind speed readout strip
+          ctx.globalAlpha = 0.42;
+          const wrX = x + w*0.82, wrY = y + h*0.10;
+          ctx.fillStyle = '#0a1418'; ctx.fillRect(wrX, wrY, 16, 12);
+          ctx.strokeStyle = '#1a3040'; ctx.lineWidth = 0.7; ctx.strokeRect(wrX, wrY, 16, 12);
+          ctx.fillStyle = 'rgba(100,180,220,0.45)'; ctx.fillRect(wrX+2, wrY+3, 9, 6);
+          ctx.fillStyle = 'rgba(140,220,255,0.65)'; ctx.fillRect(wrX+2, wrY+3, 5, 6);
+        }
+
+        // PRECISION DRILLING (Fungle): core sample labels, drill depth counter
+        if (name === 'Precision Drilling') {
+          ctx.globalAlpha = 0.42;
+          // Drill depth counter display
+          const ddX = x + w*0.78, ddY = y + h*0.78;
+          ctx.fillStyle = '#0a1010'; ctx.fillRect(ddX, ddY, 20, 12);
+          ctx.strokeStyle = '#205050'; ctx.lineWidth = 0.7; ctx.strokeRect(ddX, ddY, 20, 12);
+          ctx.fillStyle = 'rgba(80,220,200,0.40)'; ctx.fillRect(ddX+2, ddY+3, 12, 6);
+          ctx.fillStyle = 'rgba(120,255,240,0.65)'; ctx.fillRect(ddX+2, ddY+3, 7, 6);
+          // Core sample depth labels (tiny marks on sample tray)
+          ctx.globalAlpha = 0.35;
+          ctx.strokeStyle = 'rgba(180,160,120,0.50)'; ctx.lineWidth = 0.5;
+          for (let cs = 0; cs < 5; cs++) {
+            ctx.beginPath(); ctx.moveTo(x+w*0.54+cs*10, y+h*0.62); ctx.lineTo(x+w*0.54+cs*10, y+h*0.62-4); ctx.stroke();
+          }
+          // Rock dust puff on floor
+          ctx.globalAlpha = 0.12;
+          ctx.fillStyle = 'rgba(180,160,120,0.50)';
+          ctx.beginPath(); ctx.ellipse(x+w*0.36, y+h*0.82, 16, 8, 0, 0, Math.PI*2); ctx.fill();
+        }
+
+        // MINING PIT (Fungle): ore cart dust trail, pick-axe silhouette on wall
+        if (name === 'Mining Pit') {
+          ctx.globalAlpha = 0.35;
+          // Dust trail behind ore cart (bottom of cart tracks)
+          ctx.fillStyle = 'rgba(160,140,100,0.30)';
+          ctx.beginPath(); ctx.ellipse(x+w*0.28, y+h*0.82, 20, 7, 0, 0, Math.PI*2); ctx.fill();
+          // Pick-axe silhouette on wall
+          ctx.strokeStyle = 'rgba(180,160,100,0.40)'; ctx.lineWidth = 1.5;
+          const pax = x + w*0.84, pay = y + h*0.18;
+          ctx.beginPath(); ctx.moveTo(pax, pay+16); ctx.lineTo(pax+8, pay); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(pax+8, pay); ctx.lineTo(pax+14, pay+6); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(pax+8, pay); ctx.lineTo(pax+2, pay+5); ctx.stroke();
+          // Measurement mark on shaft wall (ore depth indicator)
+          ctx.globalAlpha = 0.28;
+          ctx.strokeStyle = 'rgba(200,180,120,0.40)'; ctx.lineWidth = 0.8;
+          for (let mm = 0; mm < 6; mm++) {
+            const mmY = y + h*0.25 + mm*h*0.09;
+            ctx.beginPath(); ctx.moveTo(x+8, mmY); ctx.lineTo(x + 8 + (mm%2===0?8:5), mmY); ctx.stroke();
+          }
+        }
+
+        // SPLASH ZONE (Fungle): sand footprints, buoy marker
+        if (name === 'Splash Zone') {
+          ctx.globalAlpha = 0.25;
+          // Sand footprints near shore
+          ctx.fillStyle = 'rgba(180,150,80,0.50)';
+          const fpPairs = [[w*0.38,h*0.72],[w*0.44,h*0.76],[w*0.50,h*0.73],[w*0.56,h*0.77]];
+          for (const [fpx, fpy] of fpPairs) {
+            ctx.beginPath(); ctx.ellipse(x+fpx, y+fpy, 3, 5, 0.3, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(x+fpx+8, y+fpy+2, 3, 5, -0.3, 0, Math.PI*2); ctx.fill();
+          }
+          // Buoy marker in water (small circle + stripe)
+          ctx.globalAlpha = 0.40;
+          const buX = x + w*0.70, buY = y + h*0.28;
+          ctx.fillStyle = '#cc3a1a'; ctx.beginPath(); ctx.arc(buX, buY, 5, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = '#ffffff'; ctx.fillRect(buX-5, buY-1, 10, 2);
+          ctx.strokeStyle = '#882010'; ctx.lineWidth = 0.8; ctx.beginPath(); ctx.arc(buX, buY, 5, 0, Math.PI*2); ctx.stroke();
+          // Seashell scatter near shore
+          ctx.globalAlpha = 0.35;
+          ctx.strokeStyle = '#c8b880'; ctx.lineWidth = 0.8;
+          const shellPos = [[w*0.32,h*0.82],[w*0.42,h*0.88],[w*0.52,h*0.85]];
+          for (const [shx, shy] of shellPos) {
+            ctx.beginPath(); ctx.arc(x+shx, y+shy, 3, 0, Math.PI); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x+shx-3, y+shy); ctx.lineTo(x+shx+3, y+shy); ctx.stroke();
+          }
+        }
+
+        // VAULT (Airship): coin scatter on floor near door
+        if (name === 'Vault') {
+          ctx.globalAlpha = 0.45;
+          const coinPositions = [[w*0.82,h*0.76],[w*0.88,h*0.82],[w*0.79,h*0.86],[w*0.86,h*0.70],[w*0.92,h*0.74]];
+          for (const [cpx, cpy] of coinPositions) {
+            ctx.fillStyle = '#d4a820'; ctx.beginPath(); ctx.ellipse(x+cpx, y+cpy, 4, 2.5, 0, 0, Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#e8c040'; ctx.lineWidth = 0.7; ctx.beginPath(); ctx.ellipse(x+cpx, y+cpy, 4, 2.5, 0, 0, Math.PI*2); ctx.stroke();
+          }
+          // Combination notepad (scratchpad with numbers near keypad)
+          ctx.globalAlpha = 0.40;
+          ctx.fillStyle = '#e0d8c0'; ctx.fillRect(x + w*0.10, y + h*0.82, 12, 10);
+          ctx.strokeStyle = '#b0a880'; ctx.lineWidth = 0.6; ctx.strokeRect(x + w*0.10, y + h*0.82, 12, 10);
+          ctx.strokeStyle = 'rgba(40,30,10,0.25)'; ctx.lineWidth = 0.5;
+          for (let vl = 0; vl < 3; vl++) { ctx.beginPath(); ctx.moveTo(x+w*0.11, y+h*0.83+vl*3); ctx.lineTo(x+w*0.11+9, y+h*0.83+vl*3); ctx.stroke(); }
+        }
+
+        // RECORDS (Airship): papers on floor, hanging folder tab on cabinet
+        if (name === 'Records') {
+          ctx.globalAlpha = 0.30;
+          // Scattered papers on floor near desk
+          ctx.fillStyle = 'rgba(240,230,200,0.50)';
+          const recPapers = [[w*0.30,h*0.72],[w*0.42,h*0.76],[w*0.38,h*0.68]];
+          for (const [rpx, rpy] of recPapers) {
+            ctx.save(); ctx.translate(x+rpx+10, y+rpy+7); ctx.rotate(0.2*(recPapers.indexOf([rpx,rpy])*0.5-0.25));
+            ctx.fillRect(-10, -7, 20, 14);
+            ctx.strokeStyle = 'rgba(180,160,100,0.30)'; ctx.lineWidth = 0.5;
+            for (let rl = 0; rl < 3; rl++) { ctx.beginPath(); ctx.moveTo(-8, -5+rl*4); ctx.lineTo(8, -5+rl*4); ctx.stroke(); }
+            ctx.restore();
+          }
+          // Coffee ring stain on desk
+          ctx.globalAlpha = 0.20;
+          ctx.strokeStyle = 'rgba(180,120,40,0.50)'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(cx+20, y+h*0.38, 6, 0, Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(cx+20, y+h*0.38, 4, 0, Math.PI*2); ctx.stroke();
+        }
+
+        // MAIN HALL (Airship): painting/portrait on wall, footstep marks on carpet
+        if (name === 'Main Hall') {
+          ctx.globalAlpha = 0.45;
+          // Portrait painting on left wall
+          const prX = x + 8, prY = y + h*0.22, prW = 16, prH = 20;
+          ctx.fillStyle = '#c8a860'; ctx.fillRect(prX-2, prY-2, prW+4, prH+4);
+          ctx.strokeStyle = '#e0c070'; ctx.lineWidth = 1; ctx.strokeRect(prX-2, prY-2, prW+4, prH+4);
+          ctx.fillStyle = '#b08048'; ctx.fillRect(prX, prY, prW, prH);
+          ctx.fillStyle = 'rgba(180,140,80,0.30)'; ctx.fillRect(prX+2, prY+2, prW-4, prH-4);
+          ctx.fillStyle = '#f0d0a0'; ctx.beginPath(); ctx.arc(prX+prW/2, prY+prH*0.42, 4, 0, Math.PI*2); ctx.fill();
+          // Footstep ghost marks on carpet (very faint ovals)
+          ctx.globalAlpha = 0.10;
+          ctx.fillStyle = 'rgba(80,20,20,0.60)';
+          for (let fp = 0; fp < 4; fp++) {
+            const fpy = y + h*(0.20+fp*0.18);
+            ctx.beginPath(); ctx.ellipse(cx-5, fpy, 3, 5, 0.2, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(cx+5, fpy+h*0.09, 3, 5, -0.2, 0, Math.PI*2); ctx.fill();
+          }
+        }
+
+        // COCKPIT (Airship): coffee cup on console edge, flight manual on shelf
+        if (name === 'Cockpit') {
+          ctx.globalAlpha = 0.50;
+          // Coffee cup on right console edge
+          const ccX = x + w*0.42, ccY = y + h*0.82;
+          ctx.fillStyle = '#2a2a3a'; ctx.beginPath(); ctx.arc(ccX+4, ccY+4, 5, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#4a4a5a'; ctx.lineWidth = 0.8; ctx.beginPath(); ctx.arc(ccX+4, ccY+4, 5, 0, Math.PI*2); ctx.stroke();
+          ctx.strokeStyle = '#4a4a5a'; ctx.lineWidth = 1.2;
+          ctx.beginPath(); ctx.arc(ccX+9, ccY+4, 3, -Math.PI*0.4, Math.PI*0.4); ctx.stroke();
+          ctx.fillStyle = 'rgba(100,60,20,0.40)'; ctx.beginPath(); ctx.arc(ccX+4, ccY+3, 4, 0, Math.PI*2); ctx.fill();
+          // Flight manual / book on console
+          ctx.globalAlpha = 0.45;
+          ctx.fillStyle = '#3a4a5a'; ctx.fillRect(x+w*0.28, y+h*0.80, 14, 10);
+          ctx.strokeStyle = '#5a6a7a'; ctx.lineWidth = 0.7; ctx.strokeRect(x+w*0.28, y+h*0.80, 14, 10);
+          ctx.strokeStyle = 'rgba(140,160,180,0.25)'; ctx.lineWidth = 0.5;
+          for (let bk = 0; bk < 3; bk++) { ctx.beginPath(); ctx.moveTo(x+w*0.29, y+h*0.81+bk*3); ctx.lineTo(x+w*0.29+11, y+h*0.81+bk*3); ctx.stroke(); }
+        }
+
+        // LOCKER ROOM (Airship): wet towel on bench, steam wisps near shower
+        if (name === 'Locker Room') {
+          ctx.globalAlpha = 0.40;
+          // Wet towel draped over bench
+          ctx.fillStyle = 'rgba(80,100,140,0.40)';
+          ctx.fillRect(cx-30, cy+5, 24, 8);
+          ctx.strokeStyle = 'rgba(100,120,180,0.30)'; ctx.lineWidth = 0.7;
+          ctx.strokeRect(cx-30, cy+5, 24, 8);
+          // Faint wet footprints near drain
+          ctx.globalAlpha = 0.15;
+          ctx.fillStyle = 'rgba(60,80,120,0.50)';
+          for (let ft = 0; ft < 3; ft++) {
+            ctx.beginPath(); ctx.ellipse(cx-4, y+h-24-ft*12, 3, 4, 0.1, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(cx+4, y+h-20-ft*12, 3, 4, -0.1, 0, Math.PI*2); ctx.fill();
+          }
+          // Steam wisps from upper shower area
+          ctx.globalAlpha = 0.18;
+          ctx.strokeStyle = 'rgba(200,210,230,0.40)'; ctx.lineWidth = 1;
+          for (let st = 0; st < 3; st++) {
+            const stX = x + w*(0.12+st*0.28), stY = y + h*0.46;
+            ctx.beginPath(); ctx.moveTo(stX, stY); ctx.quadraticCurveTo(stX+4, stY-8, stX, stY-16); ctx.stroke();
+          }
+        }
+
+        // SPECIMEN ROOM (Polus): biohazard floor marking, specimen labels
+        if (name === 'Specimen Room') {
+          ctx.globalAlpha = 0.08;
+          ctx.strokeStyle = '#40aacc'; ctx.lineWidth = 1.5;
+          const speR = Math.min(w,h)*0.22;
+          ctx.beginPath(); ctx.arc(cx, cy+h*0.28, speR, 0, Math.PI*2); ctx.stroke();
+          for (let sv = 0; sv < 3; sv++) {
+            const sva = sv*Math.PI*2/3 - Math.PI/2;
+            ctx.beginPath(); ctx.arc(cx+Math.cos(sva)*speR*0.58, cy+h*0.28+Math.sin(sva)*speR*0.58, speR*0.38, 0, Math.PI*2); ctx.stroke();
+          }
+          // Specimen label tags on tank bases
+          ctx.globalAlpha = 0.45;
+          const spLabels = [[cx-46+17, cy+30], [cx+12+17, cy+30]];
+          for (const [lbx, lby] of spLabels) {
+            ctx.fillStyle = '#e0d8c0'; ctx.fillRect(lbx-8, lby, 16, 9);
+            ctx.strokeStyle = '#b0a880'; ctx.lineWidth = 0.6; ctx.strokeRect(lbx-8, lby, 16, 9);
+            ctx.strokeStyle = 'rgba(40,30,10,0.25)'; ctx.lineWidth = 0.5;
+            for (let sl2 = 0; sl2 < 2; sl2++) { ctx.beginPath(); ctx.moveTo(lbx-6, lby+3+sl2*3); ctx.lineTo(lbx+6, lby+3+sl2*3); ctx.stroke(); }
+          }
+        }
+
+        // OFFICE (Polus): sticky notes on monitor, paper coffee cup
+        if (name === 'Office') {
+          ctx.globalAlpha = 0.55;
+          // Sticky note on first monitor
+          ctx.fillStyle = '#e8e050'; ctx.fillRect(x + w*0.18, y + 2, 10, 9);
+          ctx.strokeStyle = '#c0b030'; ctx.lineWidth = 0.6; ctx.strokeRect(x + w*0.18, y + 2, 10, 9);
+          ctx.strokeStyle = 'rgba(40,40,0,0.25)'; ctx.lineWidth = 0.5;
+          for (let on2 = 0; on2 < 3; on2++) { ctx.beginPath(); ctx.moveTo(x+w*0.19, y+3+on2*2.5); ctx.lineTo(x+w*0.19+8, y+3+on2*2.5); ctx.stroke(); }
+          // Paper coffee cup near terminal
+          ctx.globalAlpha = 0.50;
+          const pcX2 = x + 18, pcY2 = y + h*0.62;
+          ctx.fillStyle = '#e8e4d0'; ctx.fillRect(pcX2, pcY2, 8, 12);
+          ctx.strokeStyle = '#b0a880'; ctx.lineWidth = 0.7; ctx.strokeRect(pcX2, pcY2, 8, 12);
+          ctx.fillStyle = 'rgba(120,80,40,0.35)'; ctx.fillRect(pcX2+1, pcY2+1, 6, 6);
+          // Correction tape dispenser on desk
+          ctx.globalAlpha = 0.45;
+          ctx.fillStyle = '#c8d0e0'; ctx.beginPath(); ctx.ellipse(x+w*0.26, y+h*0.42, 8, 5, 0, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = '#8090a0'; ctx.lineWidth = 0.7; ctx.beginPath(); ctx.ellipse(x+w*0.26, y+h*0.42, 8, 5, 0, 0, Math.PI*2); ctx.stroke();
+        }
+
+        // CARGO BAY (Airship): chain pulley on ceiling, loading scale
+        if (name === 'Cargo Bay') {
+          ctx.globalAlpha = 0.30;
+          // Chain pulley hanging from ceiling
+          const puX = cx + w*0.05, puY = y + 5;
+          ctx.strokeStyle = 'rgba(160,140,80,0.40)'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(puX, puY); ctx.lineTo(puX, puY+20); ctx.stroke();
+          ctx.beginPath(); ctx.arc(puX, puY+20, 5, 0, Math.PI*2); ctx.stroke();
+          for (let pch = 0; pch < 4; pch++) {
+            ctx.beginPath(); ctx.arc(puX, puY+26+pch*5, 3, 0, Math.PI*2); ctx.stroke();
+          }
+          // Loading scale near left crates
+          ctx.globalAlpha = 0.42;
+          const scX2 = x + w*0.26, scY2 = y + h*0.82;
+          ctx.fillStyle = '#3a3020'; ctx.fillRect(scX2, scY2, 20, 4);
+          ctx.strokeStyle = '#5a5030'; ctx.lineWidth = 0.7; ctx.strokeRect(scX2, scY2, 20, 4);
+          ctx.strokeStyle = '#7a7040'; ctx.lineWidth = 0.8;
+          ctx.beginPath(); ctx.moveTo(scX2+10, scY2); ctx.lineTo(scX2+10, scY2-8); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(scX2+2, scY2-8); ctx.lineTo(scX2+18, scY2-8); ctx.stroke();
+        }
+
+        // THE DORM (Fungle): personal items on floor, water bottle on locker
+        if (name === 'The Dorm') {
+          ctx.globalAlpha = 0.45;
+          // Water bottle on foot locker
+          const wbX = x + w*0.22, wbY = y + h*0.65;
+          ctx.fillStyle = 'rgba(100,180,220,0.50)'; ctx.fillRect(wbX, wbY, 5, 12);
+          ctx.strokeStyle = 'rgba(140,200,240,0.50)'; ctx.lineWidth = 0.7; ctx.strokeRect(wbX, wbY, 5, 12);
+          ctx.fillStyle = 'rgba(200,230,255,0.25)'; ctx.fillRect(wbX+1, wbY+1, 2, 5);
+          ctx.fillStyle = '#2a3a4a'; ctx.fillRect(wbX-1, wbY-2, 7, 3);
+          // Scattered personal items (socks, towel roll)
+          ctx.globalAlpha = 0.35;
+          ctx.fillStyle = '#4a5a7a'; ctx.beginPath(); ctx.ellipse(x+w*0.62, y+h*0.82, 6, 4, 0.3, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = '#7a6a5a'; ctx.beginPath(); ctx.ellipse(x+w*0.72, y+h*0.80, 8, 5, -0.2, 0, Math.PI*2); ctx.fill();
+          // Night light glow near bottom bunk
+          ctx.globalAlpha = 0.12;
+          const nlGlow = ctx.createRadialGradient(x+w*0.10, y+h*0.72, 0, x+w*0.10, y+h*0.72, 14);
+          nlGlow.addColorStop(0, 'rgba(255,200,120,0.50)');
+          nlGlow.addColorStop(1, 'rgba(255,160,60,0)');
+          ctx.fillStyle = nlGlow; ctx.beginPath(); ctx.arc(x+w*0.10, y+h*0.72, 14, 0, Math.PI*2); ctx.fill();
         }
 
         ctx.restore();
