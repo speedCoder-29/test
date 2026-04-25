@@ -238,7 +238,6 @@
       position: fixed; inset: 0; z-index: 95; display: none;
       align-items: center; justify-content: center; flex-direction: column;
       pointer-events: auto; cursor: pointer; background: rgba(0,0,0,0);
-      transition: background 0.35s;
     }
     #roleRevealOverlay.rr-active { background: rgba(0,0,0,0.9); }
     #rrSkipHint {
@@ -4746,7 +4745,6 @@
       const ofc = document.createElement('canvas');
       ofc.width  = MAP_W;
       ofc.height = MAP_H;
-      _staticMapCanvas = ofc;
       const offCtx = ofc.getContext('2d');
 
       // Temporarily redirect global ctx so drawFloorTiles/draw3DWall/drawRoomDecor
@@ -5017,6 +5015,7 @@
         ctx.restore();
       }
 
+      _staticMapCanvas = ofc; // only set after all drawing succeeds
       } finally {
         ctx = savedCtx;
       }
@@ -5042,7 +5041,7 @@
     let sabotage = { active: false, type: null, timer: 0, maxTime: 0, cooldown: 0, fixProgress: 0, fixProgressB: 0 };
     const SABOTAGE_COOLDOWN = 1800; // legacy fallback, now uses gameSettings.sabotageCooldown
     const VISION_NORMAL = 700;
-    const VISION_LIGHTS_OUT = 180;
+    const VISION_LIGHTS_OUT = 170;
     let visionRadius = VISION_NORMAL;
 
     // Player task progress
@@ -5121,8 +5120,8 @@
       noisemaker:     'Alert the crew when you are killed.',
       guardian_angel: 'Protect one crewmate from being killed.',
       tracker:        'Track a nearby player on your map. See their location for 30 seconds.',
-      sheriff:        'You can shoot — but if you shoot a crewmate, you die instead.',
-      jester:         'Get voted out to win. The crew thinks you\'re the impostor.',
+      sheriff:        'You can kill — but if you kill a crewmate, you die instead.',
+      jester:         'Get voted out to win. Make the crew thinks you\'re the impostor.',
     };
 
     // NPC AI States
@@ -7193,8 +7192,11 @@
       p1.style.animation = 'none'; p1.offsetHeight;
       p1.style.animation = 'rrP1In 2.4s forwards';
 
-      // Click anywhere to dismiss
-      overlay.addEventListener('click', _dismissReveal);
+      // Click anywhere to dismiss — delayed slightly so stray clicks from the
+      // dropship START button don't accidentally skip the reveal immediately.
+      _rrTimers.push(setTimeout(() => {
+        if (!_rrDone) overlay.addEventListener('click', _dismissReveal);
+      }, 800));
 
       // Swap to phase 2
       _rrTimers.push(setTimeout(() => {
@@ -20248,15 +20250,14 @@
     function drawMap(ox, oy) {
       // Static pre-rendered map: bg, terrain, environment (stars/hull/clouds/mushrooms), floors, walls.
       // Built lazily on first drawMap() call (inside RAF) so loadMap() doesn't block the click handler.
-      if (!_staticMapCanvas) prerenderStaticMap();
+      if (!_staticMapCanvas) { try { prerenderStaticMap(); } catch(e) { /* retry next frame */ } }
       if (_staticMapCanvas) {
         ctx.filter = 'brightness(1.55)';
-        ctx.drawImage(_staticMapCanvas, Math.round(-ox), Math.round(-oy));
-        ctx.filter = 'none';
+        try { ctx.drawImage(_staticMapCanvas, Math.round(-ox), Math.round(-oy)); } finally { ctx.filter = 'none'; }
       } else {
-        // Fallback (shouldn't occur in normal play)
-        ctx.fillStyle = mapTheme.bg;
-        ctx.fillRect(-ox, -oy, MAP_W, MAP_H);
+        // Fallback: solid background while map canvas is being built
+        ctx.fillStyle = (mapTheme && mapTheme.bg) || '#03030a';
+        ctx.fillRect(-ox, -oy, MAP_W || 3200, MAP_H || 2000);
       }
 
       // Animated corridor floor sweep
@@ -20561,7 +20562,7 @@
         ctx.globalAlpha = 0.48;
         ctx.fillStyle = '#000';
         ctx.beginPath();
-        ctx.roundRect(lx - tw/2 - 5, ly - 10, tw + 10, 14, 4);
+        if (ctx.roundRect) { ctx.roundRect(lx - tw/2 - 5, ly - 10, tw + 10, 14, 4); } else { ctx.rect(lx - tw/2 - 5, ly - 10, tw + 10, 14); }
         ctx.fill();
         ctx.globalAlpha = 1;
         // Label text
@@ -20586,7 +20587,7 @@
         ctx.lineWidth = 1;
         for (let i = 0; i < waypoints.length; i++) {
           const a = waypoints[i];
-          for (const edge of waypointAdj[i]) {
+          for (const edge of (waypointAdj[i] || [])) {
             if (edge.to <= i) continue;
             const b = waypoints[edge.to];
             ctx.beginPath();
@@ -21121,7 +21122,7 @@
           const cw = 36, ch = 44;
           const cx2 = sx - cw / 2, cy2 = sy - ch / 2;
           ctx.beginPath();
-          ctx.roundRect(cx2, cy2, cw, ch, 5);
+          if (ctx.roundRect) { ctx.roundRect(cx2, cy2, cw, ch, 5); } else { ctx.rect(cx2, cy2, cw, ch); }
           if (isFixed) {
             ctx.fillStyle = 'rgba(0,80,0,0.9)';
           } else if (isActive) {
@@ -21413,7 +21414,7 @@
         screenShake = Math.max(0, screenShake - 0.4 * (_frameDt || 1));
       }
 
-      drawMap(ox, oy);
+      try { drawMap(ox, oy); } catch(me) { console.error('[drawMap error]', me); ctx.restore(); ctx.setTransform(1,0,0,1,0,0); ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over'; ctx.shadowBlur=0; ctx.filter='none'; ctx.setLineDash([]); }
 
       // Draw moving platform (Airship)
       if (selectedMap === 'airship' && movingPlatform.active) {

@@ -3439,325 +3439,346 @@
         ],
       },
             // ========== POLUS ==========
-      // Real layout: Outdoor Antarctic base, scattered buildings connected by snowy paths
-      // Dropship top-left (spawn), Office below with emergency, Laboratory VERY LARGE top-right
-      // Specimen Room large bottom-center, two Decon corridors, Lava Pit bottom-right
+      // Layout matches reference image: Dropship top-center, Lab top-right,
+      // Security+Electrical left, Storage+Office center, O2+Comms left-mid,
+      // Specimen Room center, Weapons right (lava), Admin bottom-center, Boiler bottom-left
       polus: {
         name: 'Polus', icon: '\u{2744}\uFE0F', desc: 'Snowy outpost',
         width: 3200, height: 2400,
         bgColor: '#000000', wallColor: '#ffffff', floorColor: 'rgba(255,180,190,0.15)', gridColor: 'rgba(255,255,255,0.06)',
         terrainColor: '#c46878',
         terrain: [
-          // Dropship pad
-          { x: 100, y: 30, w: 530, h: 340 },
-          // Office area + dropship connector
-          { x: 30, y: 280, w: 600, h: 650 },
-          // Weapons area
-          { x: 690, y: 130, w: 520, h: 470 },
-          // Office->Weapons connector
-          { x: 500, y: 440, w: 310, h: 180 },
-          // Weapons->Storage connector
-          { x: 1070, y: 270, w: 290, h: 180 },
-          // Storage area
-          { x: 1240, y: 340, w: 580, h: 520 },
-          // Storage->Admin connector
-          { x: 1690, y: 400, w: 270, h: 180 },
-          // Admin area
-          { x: 1840, y: 290, w: 560, h: 520 },
-          // Admin->Lab connector
-          { x: 2270, y: 270, w: 290, h: 180 },
-          // Laboratory area
-          { x: 2440, y: 50, w: 710, h: 570 },
-          // Comms area + office connector
-          { x: 30, y: 820, w: 430, h: 540 },
-          // Comms->Electrical connector
-          { x: 290, y: 1080, w: 260, h: 400 },
-          // Electrical area
-          { x: 30, y: 1360, w: 630, h: 500 },
-          // Weapons south path
-          { x: 850, y: 490, w: 260, h: 380 },
-          // Center horizontal connector
-          { x: 850, y: 660, w: 470, h: 250 },
-          // Storage->Decon upper path
-          { x: 1410, y: 740, w: 260, h: 330 },
-          // Admin->Decon lower path
-          { x: 1870, y: 690, w: 260, h: 380 },
-          // Decontamination upper
-          { x: 1340, y: 950, w: 350, h: 290 },
-          // Decontamination lower
-          { x: 1790, y: 950, w: 350, h: 290 },
-          // Decon upper->Specimen connector
-          { x: 1410, y: 1130, w: 260, h: 290 },
-          // Specimen Room area
-          { x: 1040, y: 1290, w: 720, h: 570 },
-          // Specimen->Lava connector
-          { x: 1620, y: 1420, w: 450, h: 180 },
-          // Lava Pit area
-          { x: 1940, y: 1440, w: 670, h: 560 },
-          // Electrical->Boiler connector
-          { x: 210, y: 1750, w: 250, h: 350 },
-          // Path toward O2
-          { x: 290, y: 1870, w: 480, h: 200 },
-          // O2 area
-          { x: 640, y: 1690, w: 540, h: 450 },
-          // O2 entrance connector
-          { x: 610, y: 1820, w: 200, h: 200 },
-          // Boiler Room area
-          { x: 140, y: 1990, w: 430, h: 370 },
-          // Boiler->O2 path
-          { x: 410, y: 2070, w: 350, h: 200 },
-          // Specimen south connector
-          { x: 1020, y: 1540, w: 200, h: 260 },
+          // ── LEFT SIDE ──
+          { x:30,  y:490, w:380, h:310 },   // Security + surrounding
+          { x:350, y:440, w:610, h:540 },   // Electrical area
+          { x:30,  y:880, w:440, h:400 },   // O2 area
+          { x:130, y:1190,w:810, h:580 },   // Communications area
+          { x:30,  y:1750,w:520, h:480 },   // Boiler Room area
+          { x:80,  y:1680,w:180, h:120 },   // Boiler→Comms vertical path
+          { x:80,  y:1220,w:100, h:90  },   // O2→Comms connector
+          // ── CENTER-TOP ──
+          { x:840, y:20,  w:660, h:460 },   // Dropship pad
+          { x:970, y:420, w:180, h:180 },   // Dropship→Storage south path
+          { x:1630,y:420, w:180, h:180 },   // Dropship→Office south path
+          { x:840, y:160, w:100, h:320 },   // Dropship west path
+          // ── CENTER ──
+          { x:970, y:500, w:600, h:480 },   // Storage area
+          { x:1560,y:500, w:680, h:480 },   // Office area
+          { x:870, y:500, w:160, h:200 },   // Elec→Storage corridor
+          // ── CENTER-LOWER ──
+          { x:990, y:940, w:190, h:400 },   // Storage→Specimen path
+          { x:1650,y:940, w:190, h:400 },   // Office→Specimen path
+          { x:980, y:1240,w:880, h:600 },   // Specimen Room area
+          { x:820, y:1430,w:200, h:200 },   // Comms→Specimen corridor
+          { x:1020,y:1790,w:900, h:570 },   // Admin area
+          { x:1080,y:1760,w:200, h:80  },   // Specimen→Admin connector
+          // ── RIGHT SIDE ──
+          { x:2290,y:140, w:890, h:680 },   // Laboratory area (very large)
+          { x:2160,y:420, w:240, h:240 },   // Office→Lab corridor
+          { x:1780,y:1220,w:200, h:170 },   // Specimen→Weapons corridor
+          { x:1950,y:1180,w:780, h:620 },   // Weapons area
+          { x:2620,y:1200,w:420, h:760 },   // Lava/Weapons east extension
+          { x:1790,y:1750,w:280, h:120 },   // Weapons→Admin path
+          { x:820, y:1600,w:300, h:240 },   // Comms→Admin bottom path
         ],
-        spawnX: 350, spawnY: 200,
-        emergencyBtn: { x: 350, y: 650, radius: 22 },
+        spawnX: 1190, spawnY: 220,
+        emergencyBtn: { x: 1970, y: 760, radius: 22 },
         sabotageFixLocations: {
-          lights:  { x: 340, y: 1620 },
-          o2:      [{ x: 910, y: 1920 }, { x: 1520, y: 1100 }],
-          reactor: [{ x: 2620, y: 260 }, { x: 2960, y: 260 }],
-          comms:   { x: 240, y: 1160 },
+          lights:  { x: 650, y: 720 },
+          o2:      [{ x: 250, y: 1080 }, { x: 1430, y: 1450 }],
+          reactor: [{ x: 2530, y: 380 }, { x: 2980, y: 380 }],
+          comms:   { x: 550, y: 1480 },
         },
         walls: (function() {
           const w = [];
           w.push(...borderWalls(3200, 2400));
-          // === Dropship (140px exit gap) ===
-          w.push({ x: 150, y: 80, w: 16, h: 260 }); // left
-          w.push({ x: 150, y: 80, w: 420, h: 16 }); // top
-          w.push({ x: 554, y: 80, w: 16, h: 75 }); // right-top
-          w.push({ x: 554, y: 295, w: 16, h: 45 }); // right-bottom
-          w.push({ x: 150, y: 324, w: 420, h: 16 }); // bottom
-          // === Office (140px openings) ===
-          w.push({ x: 80, y: 450, w: 16, h: 440 }); // left
-          w.push({ x: 80, y: 450, w: 500, h: 16 }); // top
-          w.push({ x: 564, y: 450, w: 16, h: 150 }); // right-top
-          w.push({ x: 564, y: 740, w: 16, h: 150 }); // right-bottom
-          w.push({ x: 80, y: 874, w: 190, h: 16 }); // bottom-left
-          w.push({ x: 410, y: 874, w: 170, h: 16 }); // bottom-right
-          // === Communications (140px exit) ===
-          w.push({ x: 80, y: 1020, w: 16, h: 280 }); // left
-          w.push({ x: 80, y: 1020, w: 320, h: 16 }); // top
-          w.push({ x: 384, y: 1020, w: 16, h: 80 }); // right-top
-          w.push({ x: 384, y: 1240, w: 16, h: 60 }); // right-bottom
-          w.push({ x: 80, y: 1284, w: 320, h: 16 }); // bottom
-          // === Weapons (140px openings left + bottom) ===
-          w.push({ x: 750, y: 180, w: 16, h: 130 }); // left-top
-          w.push({ x: 750, y: 450, w: 16, h: 110 }); // left-bottom
-          w.push({ x: 750, y: 180, w: 400, h: 16 }); // top
-          w.push({ x: 1134, y: 180, w: 16, h: 380 }); // right
-          w.push({ x: 750, y: 544, w: 160, h: 16 }); // bottom-left
-          w.push({ x: 1050, y: 544, w: 100, h: 16 }); // bottom-right
-          // === Electrical (140px top gap) ===
-          w.push({ x: 80, y: 1420, w: 16, h: 400 }); // left
-          w.push({ x: 80, y: 1420, w: 190, h: 16 }); // top-left
-          w.push({ x: 410, y: 1420, w: 190, h: 16 }); // top-right
-          w.push({ x: 584, y: 1420, w: 16, h: 400 }); // right
-          w.push({ x: 80, y: 1804, w: 520, h: 16 }); // bottom
-          // === O2 (140px right gap) ===
-          w.push({ x: 700, y: 1750, w: 16, h: 340 }); // left
-          w.push({ x: 700, y: 1750, w: 420, h: 16 }); // top
-          w.push({ x: 1104, y: 1750, w: 16, h: 130 }); // right-top
-          w.push({ x: 1104, y: 2020, w: 16, h: 70 }); // right-bottom
-          w.push({ x: 700, y: 2074, w: 420, h: 16 }); // bottom
-          // === Storage (140px left + bottom gaps) ===
-          w.push({ x: 1300, y: 400, w: 16, h: 140 }); // left-top
-          w.push({ x: 1300, y: 680, w: 16, h: 130 }); // left-bottom
-          w.push({ x: 1300, y: 400, w: 470, h: 16 }); // top
-          w.push({ x: 1754, y: 400, w: 16, h: 410 }); // right
-          w.push({ x: 1300, y: 794, w: 170, h: 16 }); // bottom-left
-          w.push({ x: 1610, y: 794, w: 160, h: 16 }); // bottom-right
-          // === Admin (140px left + bottom gaps) ===
-          w.push({ x: 1900, y: 350, w: 16, h: 140 }); // left-top
-          w.push({ x: 1900, y: 630, w: 16, h: 130 }); // left-bottom
-          w.push({ x: 1900, y: 350, w: 450, h: 16 }); // top
-          w.push({ x: 2334, y: 350, w: 16, h: 410 }); // right
-          w.push({ x: 1900, y: 744, w: 30, h: 16 }); // bottom-left
-          w.push({ x: 2070, y: 744, w: 280, h: 16 }); // bottom-right
-          // === Laboratory (140px left gap) ===
-          w.push({ x: 2500, y: 100, w: 16, h: 170 }); // left-top
-          w.push({ x: 2500, y: 410, w: 16, h: 170 }); // left-bottom
-          w.push({ x: 2500, y: 100, w: 600, h: 16 }); // top
-          w.push({ x: 3084, y: 100, w: 16, h: 480 }); // right
-          w.push({ x: 2500, y: 564, w: 600, h: 16 }); // bottom
-          // === Decontamination Upper ===
-          w.push({ x: 1400, y: 1000, w: 16, h: 200 }); // left
-          w.push({ x: 1400, y: 1000, w: 240, h: 16 }); // top
-          w.push({ x: 1624, y: 1000, w: 16, h: 200 }); // right
-          w.push({ x: 1400, y: 1184, w: 240, h: 16 }); // bottom
-          // === Specimen Room (140px left gap) ===
-          w.push({ x: 1100, y: 1350, w: 16, h: 150 }); // left-top
-          w.push({ x: 1100, y: 1640, w: 16, h: 170 }); // left-bottom
-          w.push({ x: 1100, y: 1350, w: 600, h: 16 }); // top
-          w.push({ x: 1684, y: 1350, w: 16, h: 460 }); // right
-          w.push({ x: 1100, y: 1794, w: 600, h: 16 }); // bottom
-          // === Decontamination Lower ===
-          w.push({ x: 1850, y: 1000, w: 16, h: 200 }); // left
-          w.push({ x: 1850, y: 1000, w: 240, h: 16 }); // top
-          w.push({ x: 2074, y: 1000, w: 16, h: 200 }); // right
-          w.push({ x: 1850, y: 1184, w: 240, h: 16 }); // bottom
-          // === Boiler Room (140px right gap) ===
-          w.push({ x: 200, y: 2050, w: 16, h: 260 }); // left
-          w.push({ x: 200, y: 2050, w: 320, h: 16 }); // top
-          w.push({ x: 504, y: 2050, w: 16, h: 80 }); // right-top
-          w.push({ x: 504, y: 2270, w: 16, h: 40 }); // right-bottom
-          w.push({ x: 200, y: 2294, w: 320, h: 16 }); // bottom
-          // === Lava Pit area ===
-          w.push({ x: 2000, y: 1500, w: 550, h: 16 }); // north edge
-          w.push({ x: 2000, y: 1500, w: 16, h: 450 }); // west edge
-          w.push({ x: 2534, y: 1500, w: 16, h: 450 }); // east edge
-          w.push({ x: 2000, y: 1934, w: 550, h: 16 }); // south edge
+          // === SECURITY (x:70, y:530, w:310, h:230) ===
+          w.push({ x:70,  y:530, w:16,  h:230 }); // left
+          w.push({ x:70,  y:530, w:310, h:16  }); // top
+          w.push({ x:70,  y:744, w:310, h:16  }); // bottom
+          w.push({ x:364, y:530, w:16,  h:70  }); // right-top
+          w.push({ x:364, y:740, w:16,  h:20  }); // right-bottom (door gap y:600-740)
+          // === ELECTRICAL (x:380, y:490, w:530, h:450) ===
+          w.push({ x:380, y:490, w:530, h:16  }); // top
+          w.push({ x:380, y:924, w:160, h:16  }); // bottom-right (gap left for O2)
+          w.push({ x:700, y:924, w:210, h:16  }); // bottom-right cont.
+          w.push({ x:380, y:490, w:16,  h:110 }); // left-top (above Sec door)
+          w.push({ x:380, y:740, w:16,  h:200 }); // left-bottom
+          w.push({ x:894, y:490, w:16,  h:200 }); // right-top
+          w.push({ x:894, y:830, w:16,  h:110 }); // right-bottom (door gap y:690-830)
+          // === O2 (x:70, y:940, w:360, h:290) ===
+          w.push({ x:70,  y:940, w:16,  h:290 }); // left
+          w.push({ x:220, y:940, w:210, h:16  }); // top (gap x:70-220 open to Elec)
+          w.push({ x:70,  y:1214,w:360, h:16  }); // bottom
+          w.push({ x:414, y:940, w:16,  h:130 }); // right-top
+          w.push({ x:414, y:1080,w:16,  h:150 }); // right-bottom (door gap y:940+130=1070 to 1080)
+          // === COMMUNICATIONS (x:220, y:1250, w:660, h:480) ===
+          w.push({ x:220, y:1250,w:660, h:16  }); // top
+          w.push({ x:220, y:1714,w:660, h:16  }); // bottom
+          w.push({ x:220, y:1250,w:16,  h:480 }); // left
+          w.push({ x:864, y:1250,w:16,  h:190 }); // right-top
+          w.push({ x:864, y:1580,w:16,  h:150 }); // right-bottom (door gap y:1440-1580)
+          // === BOILER ROOM (x:70, y:1850, w:440, h:370) ===
+          w.push({ x:70,  y:1850,w:16,  h:370 }); // left
+          w.push({ x:70,  y:1850,w:440, h:16  }); // top
+          w.push({ x:70,  y:2204,w:440, h:16  }); // bottom
+          w.push({ x:494, y:1850,w:16,  h:120 }); // right-top
+          w.push({ x:494, y:2070,w:16,  h:150 }); // right-bottom (door gap y:1970-2070)
+          // === DROPSHIP (x:910, y:40, w:560, h:380) ===
+          w.push({ x:910, y:40,  w:560, h:16  }); // top
+          w.push({ x:910, y:40,  w:16,  h:380 }); // left
+          w.push({ x:1454,y:40,  w:16,  h:380 }); // right
+          w.push({ x:910, y:404, w:190, h:16  }); // bottom-left
+          w.push({ x:1260,y:404, w:204, h:16  }); // bottom-right (gap x:1100-1260 south to Storage)
+          // === STORAGE (x:1000, y:550, w:530, h:400) ===
+          w.push({ x:1000,y:550, w:530, h:16  }); // top
+          w.push({ x:1000,y:934, w:530, h:16  }); // bottom
+          w.push({ x:1000,y:550, w:16,  h:140 }); // left-top
+          w.push({ x:1000,y:830, w:16,  h:120 }); // left-bottom (door gap y:690-830)
+          w.push({ x:1514,y:550, w:16,  h:140 }); // right-top
+          w.push({ x:1514,y:830, w:16,  h:120 }); // right-bottom (door gap y:690-830)
+          // === OFFICE (x:1660, y:550, w:580, h:400) ===
+          w.push({ x:1660,y:550, w:580, h:16  }); // top
+          w.push({ x:1660,y:934, w:580, h:16  }); // bottom
+          w.push({ x:1660,y:550, w:16,  h:140 }); // left-top
+          w.push({ x:1660,y:830, w:16,  h:120 }); // left-bottom (door gap y:690-830)
+          w.push({ x:2224,y:550, w:16,  h:140 }); // right-top
+          w.push({ x:2224,y:830, w:16,  h:120 }); // right-bottom (door gap y:690-830 → Lab)
+          // === LABORATORY (x:2380, y:190, w:780, h:580) ===
+          w.push({ x:2380,y:190, w:780, h:16  }); // top
+          w.push({ x:2380,y:754, w:780, h:16  }); // bottom
+          w.push({ x:3144,y:190, w:16,  h:580 }); // right
+          w.push({ x:2380,y:190, w:16,  h:190 }); // left-top
+          w.push({ x:2380,y:520, w:16,  h:250 }); // left-bottom (door gap y:380-520)
+          // === SPECIMEN ROOM (x:1000, y:1280, w:780, h:540) ===
+          w.push({ x:1000,y:1280,w:780, h:16  }); // top
+          w.push({ x:1000,y:1804,w:780, h:16  }); // bottom
+          w.push({ x:1000,y:1280,w:16,  h:540 }); // left
+          w.push({ x:1764,y:1280,w:16,  h:180 }); // right-top
+          w.push({ x:1764,y:1600,w:16,  h:220 }); // right-bottom (door gap y:1460-1600)
+          // === WEAPONS (x:2040, y:1260, w:640, h:490) ===
+          w.push({ x:2040,y:1260,w:640, h:16  }); // top
+          w.push({ x:2040,y:1734,w:640, h:16  }); // bottom
+          w.push({ x:2664,y:1260,w:16,  h:490 }); // right
+          w.push({ x:2040,y:1260,w:16,  h:180 }); // left-top
+          w.push({ x:2040,y:1570,w:16,  h:180 }); // left-bottom (door gap y:1440-1570)
+          // === ADMIN (x:1110, y:1840, w:720, h:490) ===
+          w.push({ x:1110,y:1840,w:720, h:16  }); // top
+          w.push({ x:1110,y:2314,w:720, h:16  }); // bottom
+          w.push({ x:1110,y:1840,w:16,  h:490 }); // left
+          w.push({ x:1814,y:1840,w:16,  h:490 }); // right
           return w;
         })(),
         rooms: [
-          { name: 'Dropship',      x: 360,  y: 210 },
-          { name: 'Office',        x: 330,  y: 670 },
-          { name: 'Communications',x: 240,  y: 1160 },
-          { name: 'Weapons',       x: 950,  y: 370 },
-          { name: 'Electrical',    x: 340,  y: 1620 },
-          { name: 'O2',            x: 910,  y: 1920 },
-          { name: 'Storage',       x: 1535, y: 605 },
-          { name: 'Admin',         x: 2125, y: 555 },
-          { name: 'Laboratory',    x: 2800, y: 340 },
-          { name: 'Specimen Room', x: 1400, y: 1580 },
-          { name: 'Boiler Room',   x: 360,  y: 2180 },
-          { name: 'Decontamination', x: 1520, y: 1100 },
-          { name: 'Decontamination', x: 1970, y: 1100 },
+          { name: 'Dropship',       x: 1190, y: 220  },
+          { name: 'Security',       x: 225,  y: 645  },
+          { name: 'Electrical',     x: 650,  y: 710  },
+          { name: 'O2',             x: 250,  y: 1080 },
+          { name: 'Communications', x: 550,  y: 1480 },
+          { name: 'Boiler Room',    x: 290,  y: 2020 },
+          { name: 'Storage',        x: 1270, y: 750  },
+          { name: 'Office',         x: 1960, y: 750  },
+          { name: 'Laboratory',     x: 2780, y: 480  },
+          { name: 'Specimen Room',  x: 1400, y: 1550 },
+          { name: 'Weapons',        x: 2360, y: 1500 },
+          { name: 'Admin',          x: 1470, y: 2070 },
         ],
         floors: [
-          { x: 166, y: 96, w: 388, h: 228 },     // Dropship
-          { x: 96, y: 466, w: 468, h: 408 },      // Office (LARGE)
-          { x: 96, y: 1036, w: 288, h: 248 },     // Communications
-          { x: 766, y: 196, w: 368, h: 348 },     // Weapons
-          { x: 96, y: 1436, w: 488, h: 368 },     // Electrical
-          { x: 716, y: 1766, w: 388, h: 308 },    // O2
-          { x: 1316, y: 416, w: 438, h: 378 },    // Storage (larger)
-          { x: 1916, y: 366, w: 418, h: 378 },    // Admin
-          { x: 2516, y: 116, w: 568, h: 448 },    // Laboratory (VERY LARGE)
-          { x: 1116, y: 1366, w: 568, h: 428 },   // Specimen Room (LARGE)
-          { x: 216, y: 2066, w: 288, h: 228 },    // Boiler Room
-          { x: 1416, y: 1016, w: 208, h: 168 },   // Decontamination Upper
-          { x: 1866, y: 1016, w: 208, h: 168 },   // Decontamination Lower
-          // Outdoor snowy paths (140px wide for reference match)
-          { x: 290, y: 324, w: 140, h: 126 },     // Dropship->Office
-          { x: 270, y: 874, w: 140, h: 146 },     // Office->Comms
-          { x: 564, y: 500, w: 186, h: 140 },     // Office->Weapons
-          { x: 1134, y: 320, w: 166, h: 140 },    // Weapons->Storage
-          { x: 1754, y: 450, w: 146, h: 140 },    // Storage->Admin
-          { x: 2334, y: 320, w: 166, h: 140 },    // Admin->Lab
-          { x: 910, y: 544, w: 140, h: 200 },     // Weapons->south path
-          { x: 910, y: 714, w: 390, h: 140 },     // Center horizontal connector
-          { x: 1470, y: 794, w: 140, h: 206 },    // Storage->Decon upper
-          { x: 1930, y: 744, w: 140, h: 256 },    // Admin->Decon lower
-          { x: 1470, y: 1184, w: 140, h: 166 },   // Decon upper->Specimen
-          { x: 1684, y: 1470, w: 316, h: 140 },   // Specimen->Lava area
-          { x: 354, y: 1140, w: 140, h: 280 },    // Comms->Electrical
-          { x: 270, y: 1804, w: 140, h: 246 },    // Electrical->Boiler
-          { x: 350, y: 1920, w: 350, h: 140 },    // path toward O2
-          { x: 670, y: 1870, w: 140, h: 140 },    // connect to O2
-          { x: 1074, y: 1600, w: 140, h: 150 },   // Specimen->south
-          { x: 474, y: 2120, w: 226, h: 140 },    // Boiler->O2 path
+          // ── ROOMS ──
+          { x:910,  y:40,   w:560, h:380 }, // Dropship
+          { x:70,   y:530,  w:310, h:230 }, // Security
+          { x:380,  y:490,  w:530, h:450 }, // Electrical
+          { x:70,   y:940,  w:360, h:290 }, // O2
+          { x:220,  y:1250, w:660, h:480 }, // Communications
+          { x:70,   y:1850, w:440, h:370 }, // Boiler Room
+          { x:1000, y:550,  w:530, h:400 }, // Storage
+          { x:1660, y:550,  w:580, h:400 }, // Office
+          { x:2380, y:190,  w:780, h:580 }, // Laboratory
+          { x:1000, y:1280, w:780, h:540 }, // Specimen Room
+          { x:2040, y:1260, w:640, h:490 }, // Weapons
+          { x:1110, y:1840, w:720, h:490 }, // Admin
+          // ── CORRIDORS ──
+          { x:364,  y:600,  w:16,  h:140 }, // Security→Electrical door gap
+          { x:380,  y:930,  w:70,  h:30  }, // Electrical→O2 seam
+          { x:150,  y:1220, w:90,  h:60  }, // O2→Communications
+          { x:110,  y:1720, w:150, h:160 }, // Communications→Boiler Room
+          { x:870,  y:690,  w:140, h:150 }, // Electrical→Storage path
+          { x:1090, y:404,  w:170, h:160 }, // Dropship→Storage south
+          { x:1700, y:404,  w:170, h:160 }, // Dropship→Office south
+          { x:1050, y:940,  w:170, h:360 }, // Storage→Specimen
+          { x:1700, y:940,  w:170, h:360 }, // Office→Specimen
+          { x:1780, y:1460, w:280, h:140 }, // Specimen→Weapons
+          { x:1160, y:1800, w:170, h:70  }, // Specimen→Admin seam
+          { x:1800, y:1740, w:240, h:130 }, // Weapons→Admin path
+          { x:880,  y:1440, w:140, h:400 }, // Comms→Admin bottom
+          { x:2240, y:580,  w:160, h:290 }, // Office→Laboratory
         ],
         tasks: [
-          // Office (floor x:96-564, y:466-874)
-          { x: 180,  y: 560,  name: 'Swipe Card',           room: 'Office' },
-          { x: 420,  y: 560,  name: 'Fix Wiring',            room: 'Office' },
-          { x: 180,  y: 760,  name: 'Download Data',         room: 'Office' },
-          { x: 420,  y: 760,  name: 'Align Telescope',       room: 'Office' },
-          // Communications (floor x:96-384, y:1036-1284)
-          { x: 160,  y: 1100, name: 'Upload Data',           room: 'Communications' },
-          { x: 320,  y: 1100, name: 'Fix Wiring',            room: 'Communications' },
-          { x: 220,  y: 1230, name: 'Restore Comms',         room: 'Communications' },
-          // Weapons (floor x:766-1134, y:196-544)
-          { x: 840,  y: 280,  name: 'Clear Asteroids',       room: 'Weapons', visual: true },
-          { x: 1040, y: 280,  name: 'Fix Wiring',            room: 'Weapons' },
-          { x: 840,  y: 450,  name: 'Download Data',         room: 'Weapons' },
-          { x: 1040, y: 450,  name: 'Calibrate Distributor', room: 'Weapons' },
-          // Electrical (floor x:96-584, y:1436-1804)
-          { x: 180,  y: 1530, name: 'Calibrate Distributor', room: 'Electrical' },
-          { x: 450,  y: 1530, name: 'Fix Wiring',            room: 'Electrical' },
-          { x: 180,  y: 1720, name: 'Divert Power',          room: 'Electrical' },
-          { x: 450,  y: 1720, name: 'Download Data',         room: 'Electrical' },
-          // O2 (floor x:716-1104, y:1766-2074)
-          { x: 800,  y: 1850, name: 'Fill Canisters',        room: 'O2' },
-          { x: 1020, y: 1850, name: 'Fix Wiring',            room: 'O2' },
-          { x: 800,  y: 2000, name: 'Clean O2 Filter',       room: 'O2' },
-          { x: 1020, y: 2000, name: 'Download Data',         room: 'O2' },
-          // Storage (floor x:1316-1754, y:416-794)
-          { x: 1400, y: 510,  name: 'Fuel Engines',          room: 'Storage' },
-          { x: 1660, y: 510,  name: 'Fix Wiring',            room: 'Storage' },
-          { x: 1400, y: 700,  name: 'Empty Garbage',         room: 'Storage' },
-          { x: 1660, y: 700,  name: 'Download Data',         room: 'Storage' },
-          // Admin (floor x:1916-2334, y:366-744)
-          { x: 2000, y: 460,  name: 'Chart Course',          room: 'Admin' },
-          { x: 2230, y: 460,  name: 'Fix Wiring',            room: 'Admin' },
-          { x: 2000, y: 660,  name: 'Upload Data',           room: 'Admin' },
-          { x: 2230, y: 660,  name: 'Download Data',         room: 'Admin' },
-          // Laboratory (floor x:2516-3084, y:116-564)
-          { x: 2620, y: 200,  name: 'Align Telescope',       room: 'Laboratory' },
-          { x: 2980, y: 200,  name: 'Inspect Sample',        room: 'Laboratory' },
-          { x: 2620, y: 460,  name: 'Fix Wiring',            room: 'Laboratory' },
-          { x: 2980, y: 460,  name: 'Start Reactor',         room: 'Laboratory', visual: true },
-          // Specimen Room (floor x:1116-1684, y:1366-1794)
-          { x: 1220, y: 1460, name: 'Inspect Sample',        room: 'Specimen Room' },
-          { x: 1580, y: 1460, name: 'Fix Wiring',            room: 'Specimen Room' },
-          { x: 1220, y: 1700, name: 'Store Samples',         room: 'Specimen Room' },
-          { x: 1580, y: 1700, name: 'Download Data',         room: 'Specimen Room' },
-          // Boiler Room (floor x:216-504, y:2066-2294)
-          { x: 280,  y: 2150, name: 'Replace Water Jug',     room: 'Boiler Room' },
-          { x: 440,  y: 2150, name: 'Fix Wiring',            room: 'Boiler Room' },
-          { x: 360,  y: 2250, name: 'Clean Boiler',          room: 'Boiler Room' },
-          // Dropship (floor x:166-554, y:96-324)
-          { x: 260,  y: 180,  name: 'Fix Wiring',            room: 'Dropship' },
-          { x: 450,  y: 180,  name: 'Prep Launch',           room: 'Dropship' },
+          // DROPSHIP (x:910-1470, y:40-420)
+          // Fix Wiring: side wiring conduit on left cabin wall
+          { x:970,  y:360,  name:'Fix Wiring',            room:'Dropship' },
+          // Prep Launch: main launch control console at front of cockpit
+          { x:1190, y:100,  name:'Prep Launch',            room:'Dropship' },
+
+          // SECURITY (x:70-380, y:530-760)
+          // View Security: monitor wall across top of room
+          { x:175,  y:565,  name:'View Security',          room:'Security', visual:true },
+          // Fix Wiring: wiring panel on right wall near floor
+          { x:330,  y:720,  name:'Fix Wiring',             room:'Security' },
+
+          // ELECTRICAL (x:380-910, y:490-940)
+          // Calibrate Distributor: upper section of the breaker/electrical panel (right wall)
+          { x:810,  y:640,  name:'Calibrate Distributor',  room:'Electrical' },
+          // Fix Wiring: tangled cable mess on the floor (center-left)
+          { x:510,  y:660,  name:'Fix Wiring',             room:'Electrical' },
+          // Divert Power: lower switch bank on right-side electrical panel
+          { x:810,  y:860,  name:'Divert Power',           room:'Electrical' },
+          // Download Data: data readout terminal on left wall
+          { x:460,  y:860,  name:'Download Data',          room:'Electrical' },
+
+          // O2 (x:70-430, y:940-1230)
+          // Fill Canisters: at left O2 pressurized canister bank
+          { x:155,  y:1060, name:'Fill Canisters',         room:'O2' },
+          // Fix Wiring: wiring panel on right wall
+          { x:385,  y:1050, name:'Fix Wiring',             room:'O2' },
+          // Clean O2 Filter: filter/scrubber unit on south wall (below canisters)
+          { x:240,  y:1175, name:'Clean O2 Filter',        room:'O2' },
+
+          // COMMUNICATIONS (x:220-880, y:1250-1730)
+          // Upload Data: main uplink terminal on left console
+          { x:330,  y:1370, name:'Upload Data',            room:'Communications' },
+          // Fix Wiring: wiring conduit on center floor
+          { x:560,  y:1650, name:'Fix Wiring',             room:'Communications' },
+          // Restore Comms: satellite relay control panel on right side
+          { x:780,  y:1470, name:'Restore Comms',          room:'Communications' },
+          // Download Data: downlink/receive terminal, left-center
+          { x:370,  y:1640, name:'Download Data',          room:'Communications' },
+
+          // BOILER ROOM (x:70-510, y:1850-2220)
+          // Replace Water Jug: water supply corner on left side
+          { x:130,  y:1940, name:'Replace Water Jug',      room:'Boiler Room' },
+          // Fix Wiring: wiring panel on left-lower wall
+          { x:185,  y:2150, name:'Fix Wiring',             room:'Boiler Room' },
+          // Clean Boiler: at the boiler drum furnace door (center-right)
+          { x:335,  y:2050, name:'Clean Boiler',           room:'Boiler Room' },
+
+          // STORAGE (x:1000-1530, y:550-950)
+          // Fuel Engines: fuel drum racks on left side
+          { x:1060, y:700,  name:'Fuel Engines',           room:'Storage' },
+          // Fix Wiring: wiring conduit center-right
+          { x:1270, y:700,  name:'Fix Wiring',             room:'Storage' },
+          // Empty Garbage: waste bins on far right lower corner
+          { x:1460, y:880,  name:'Empty Garbage',          room:'Storage' },
+          // Download Data: inventory management terminal right wall
+          { x:1450, y:640,  name:'Download Data',          room:'Storage' },
+
+          // OFFICE (x:1660-2240, y:550-950)
+          // Swipe Card: ID card reader at the main entrance (left wall, near door)
+          { x:1710, y:760,  name:'Swipe Card',             room:'Office' },
+          // Align Telescope: roof-mounted telescope eyepiece station (top-right)
+          { x:2180, y:590,  name:'Align Telescope',        room:'Office' },
+          // Fix Wiring: wiring panel behind file cabinet bank (right)
+          { x:2175, y:870,  name:'Fix Wiring',             room:'Office' },
+          // Download Data: main desktop terminal on center desk
+          { x:1920, y:870,  name:'Download Data',          room:'Office' },
+
+          // LABORATORY (x:2380-3160, y:190-770)
+          // Align Telescope: large telescope instrument at far-right end of lab
+          { x:3070, y:340,  name:'Align Telescope',        room:'Laboratory' },
+          // Inspect Sample: microscope/specimen analysis station center-lab
+          { x:2700, y:420,  name:'Inspect Sample',         room:'Laboratory' },
+          // Fix Wiring: electrical panel near decon door (left wall lower)
+          { x:2460, y:680,  name:'Fix Wiring',             room:'Laboratory' },
+          // Start Reactor: reactor control console right-center (visual task)
+          { x:2900, y:500,  name:'Start Reactor',          room:'Laboratory', visual:true },
+
+          // SPECIMEN ROOM (x:1000-1780, y:1280-1820)
+          // Inspect Sample: at the specimen containment tanks (center)
+          { x:1380, y:1440, name:'Inspect Sample',         room:'Specimen Room' },
+          // Download Data: data terminal upper-right wall
+          { x:1660, y:1370, name:'Download Data',          room:'Specimen Room' },
+          // Store Samples: sample shelf/storage locker on left wall
+          { x:1065, y:1700, name:'Store Samples',          room:'Specimen Room' },
+          // Fix Wiring: wiring panel lower-right
+          { x:1720, y:1700, name:'Fix Wiring',             room:'Specimen Room' },
+
+          // WEAPONS (x:2040-2680, y:1260-1750)
+          // Clear Asteroids: main targeting console (center, visual)
+          { x:2360, y:1420, name:'Clear Asteroids',        room:'Weapons', visual:true },
+          // Download Data: fire control terminal center-left
+          { x:2200, y:1490, name:'Download Data',          room:'Weapons' },
+          // Calibrate Distributor: power distributor panel on right wall
+          { x:2600, y:1570, name:'Calibrate Distributor',  room:'Weapons' },
+          // Fix Wiring: wiring behind ammo crate rack (left)
+          { x:2105, y:1640, name:'Fix Wiring',             room:'Weapons' },
+
+          // ADMIN (x:1110-1830, y:1840-2330)
+          // Chart Course: navigation display screen on left wall (top)
+          { x:1170, y:1920, name:'Chart Course',           room:'Admin' },
+          // Fix Wiring: wiring panel on right wall
+          { x:1775, y:2010, name:'Fix Wiring',             room:'Admin' },
+          // Upload Data: uplink console on left side (bottom)
+          { x:1200, y:2240, name:'Upload Data',            room:'Admin' },
+          // Download Data: receive console on right side (bottom)
+          { x:1750, y:2240, name:'Download Data',          room:'Admin' },
         ],
         vents: [
-          { x: 320, y: 750, partner: 1 },    // Office
-          { x: 1520, y: 700, partner: 2 },   // Storage
-          { x: 230, y: 1220, partner: 0 },   // Communications
-          { x: 330, y: 1700, partner: 4 },   // Electrical
-          { x: 900, y: 2000, partner: 5 },   // O2
-          { x: 1390, y: 1680, partner: 3 },  // Specimen
-          { x: 2110, y: 650, partner: 7 },   // Admin
-          { x: 2780, y: 450, partner: 6 },   // Laboratory
+          // Vent grates positioned near walls / under equipment
+          { x:340,  y:742,  partner:1 },  // 0 Security: floor grate under desk right corner
+          { x:892,  y:918,  partner:0 },  // 1 Electrical: floor grate near panel base (right)
+          { x:1010, y:928,  partner:3 },  // 2 Storage: floor grate bottom-left corner
+          { x:3140, y:740,  partner:2 },  // 3 Laboratory: floor grate far-right corner
+          { x:1010, y:1792, partner:5 },  // 4 Specimen Room: floor grate bottom-left
+          { x:2650, y:1272, partner:4 },  // 5 Weapons: floor grate top-right corner
+          { x:1120, y:2300, partner:7 },  // 6 Admin: floor grate bottom-left corner
+          { x:490,  y:2196, partner:6 },  // 7 Boiler Room: floor grate bottom-right corner
         ],
         doors: [
-          { x: 554, y: 155, w: 16, h: 140, room: 'Dropship', dir: 'v' },
-          { x: 564, y: 600, w: 16, h: 140, room: 'Office', dir: 'v' },
-          { x: 270, y: 874, w: 140, h: 16, room: 'Office', dir: 'h' },
-          { x: 270, y: 1420, w: 140, h: 16, room: 'Electrical', dir: 'h' },
-          { x: 750, y: 310, w: 16, h: 140, room: 'Weapons', dir: 'v' },
-          { x: 384, y: 1100, w: 16, h: 140, room: 'Communications', dir: 'v' },
-          { x: 1300, y: 540, w: 16, h: 140, room: 'Storage', dir: 'v' },
-          { x: 1900, y: 490, w: 16, h: 140, room: 'Admin', dir: 'v' },
-          { x: 2500, y: 270, w: 16, h: 140, room: 'Laboratory', dir: 'v' },
-          { x: 1100, y: 1500, w: 16, h: 140, room: 'Specimen Room', dir: 'v' },
-          { x: 1104, y: 1880, w: 16, h: 140, room: 'O2', dir: 'v' },
-          { x: 504, y: 2130, w: 16, h: 140, room: 'Boiler Room', dir: 'v' },
+          { x:364,  y:600,  w:16, h:140, room:'Security',      dir:'v' },
+          { x:894,  y:690,  w:16, h:140, room:'Electrical',    dir:'v' },
+          { x:1000, y:690,  w:16, h:140, room:'Storage',       dir:'v' },
+          { x:1514, y:690,  w:16, h:140, room:'Storage',       dir:'v' },
+          { x:1660, y:690,  w:16, h:140, room:'Office',        dir:'v' },
+          { x:2224, y:690,  w:16, h:140, room:'Office',        dir:'v' },
+          { x:2380, y:380,  w:16, h:140, room:'Laboratory',    dir:'v' },
+          { x:1764, y:1460, w:16, h:140, room:'Specimen Room', dir:'v' },
+          { x:2040, y:1440, w:16, h:140, room:'Weapons',       dir:'v' },
+          { x:494,  y:1970, w:16, h:100, room:'Boiler Room',   dir:'v' },
+          { x:414,  y:1040, w:16, h:80,  room:'O2',            dir:'v' },
+          { x:864,  y:1440, w:16, h:140, room:'Communications',dir:'v' },
         ],
         waypoints: [
-          { x: 360, y: 190, room: 'Dropship' },      // 0
-          { x: 320, y: 650, room: 'Office' },          // 1
-          { x: 230, y: 1140, room: 'Communications' }, // 2
-          { x: 940, y: 360, room: 'Weapons' },         // 3
-          { x: 330, y: 1600, room: 'Electrical' },     // 4
-          { x: 900, y: 1900, room: 'O2' },             // 5
-          { x: 1520, y: 590, room: 'Storage' },        // 6
-          { x: 2110, y: 540, room: 'Admin' },          // 7
-          { x: 2780, y: 320, room: 'Laboratory' },     // 8
-          { x: 1390, y: 1560, room: 'Specimen Room' }, // 9
-          { x: 350, y: 2160, room: 'Boiler Room' },    // 10
-          { x: 380, y: 420, room: 'Hallway' },         // 11
-          { x: 660, y: 570, room: 'Hallway' },         // 12
-          { x: 1200, y: 390, room: 'Hallway' },        // 13
-          { x: 1510, y: 1090, room: 'Hallway' },       // 14 decon upper
-          { x: 1960, y: 1090, room: 'Hallway' },       // 15 decon lower
-          { x: 380, y: 1320, room: 'Hallway' },        // 16
-          { x: 940, y: 780, room: 'Hallway' },         // 17 center
-          { x: 400, y: 1950, room: 'Hallway' },        // 18
+          { x:1190, y:220,  room:'Dropship' },       // 0
+          { x:225,  y:650,  room:'Security' },        // 1
+          { x:650,  y:710,  room:'Electrical' },      // 2
+          { x:250,  y:1080, room:'O2' },              // 3
+          { x:550,  y:1480, room:'Communications' }, // 4
+          { x:290,  y:2020, room:'Boiler Room' },    // 5
+          { x:1270, y:750,  room:'Storage' },         // 6
+          { x:1960, y:750,  room:'Office' },          // 7
+          { x:2780, y:480,  room:'Laboratory' },      // 8
+          { x:1400, y:1550, room:'Specimen Room' },  // 9
+          { x:2360, y:1500, room:'Weapons' },         // 10
+          { x:1470, y:2070, room:'Admin' },           // 11
+          { x:940,  y:730,  room:'Hallway' },         // 12 Elec→Storage
+          { x:1170, y:490,  room:'Hallway' },         // 13 Dropship→Storage
+          { x:1770, y:490,  room:'Hallway' },         // 14 Dropship→Office
+          { x:1170, y:1110, room:'Hallway' },         // 15 Storage→Specimen
+          { x:1770, y:1110, room:'Hallway' },         // 16 Office→Specimen
+          { x:1920, y:1500, room:'Hallway' },         // 17 Specimen→Weapons
+          { x:1900, y:1800, room:'Hallway' },         // 18 Weapons→Admin
+          { x:230,  y:1770, room:'Hallway' },         // 19 Comms→Boiler
+          { x:950,  y:1500, room:'Hallway' },         // 20 Comms→Admin
+          { x:2310, y:680,  room:'Hallway' },         // 21 Office→Lab
         ],
         waypointEdges: [
-          [0,11],[11,1],[11,12],[12,3],[3,13],[13,6],[6,7],[7,8],
-          [1,16],[16,2],[2,4],[3,17],[17,6],[6,14],[14,9],[7,15],[15,9],
-          [4,18],[18,5],[5,10],[9,5],
+          [0,13],[13,6],[0,14],[14,7],
+          [1,2],[2,12],[12,6],[6,7],
+          [2,3],[3,4],[4,19],[19,5],[5,11],
+          [6,15],[15,9],[7,16],[16,9],
+          [9,17],[17,10],[10,18],[18,11],
+          [4,20],[20,11],
+          [7,21],[21,8],
         ],
       },
       // ========== THE AIRSHIP ==========
@@ -4907,18 +4928,19 @@
       // Polus: blue-tinted ice patches on the floor
       if (selectedMap === 'polus') {
         const _icePatches = [
-          { x: 420, y: 980, rx: 90, ry: 34 },
-          { x: 780, y: 1260, rx: 70, ry: 26 },
-          { x: 1100, y: 800, rx: 110, ry: 38 },
-          { x: 1450, y: 1050, rx: 80, ry: 28 },
-          { x: 600, y: 1550, rx: 100, ry: 32 },
-          { x: 1750, y: 700, rx: 75, ry: 24 },
-          { x: 1300, y: 1400, rx: 95, ry: 30 },
-          { x: 950, y: 480, rx: 60, ry: 20 },
-          { x: 1900, y: 1200, rx: 85, ry: 28 },
-          { x: 350, y: 600, rx: 65, ry: 22 },
-          { x: 2100, y: 900, rx: 78, ry: 25 },
-          { x: 1600, y: 300, rx: 55, ry: 18 },
+          // On outdoor paths between rooms
+          { x: 640,  y: 740,  rx: 90,  ry: 32 }, // Elec→Storage path
+          { x: 1180, y: 480,  rx: 75,  ry: 26 }, // Dropship→Storage path
+          { x: 1760, y: 480,  rx: 70,  ry: 24 }, // Dropship→Office path
+          { x: 1120, y: 1130, rx: 85,  ry: 28 }, // Storage→Specimen
+          { x: 1730, y: 1130, rx: 80,  ry: 26 }, // Office→Specimen
+          { x: 380,  y: 1180, rx: 65,  ry: 22 }, // O2→Comms area
+          { x: 230,  y: 1760, rx: 60,  ry: 20 }, // Comms→Boiler
+          { x: 1920, y: 1490, rx: 78,  ry: 25 }, // Specimen→Weapons
+          { x: 1870, y: 1800, rx: 72,  ry: 24 }, // Weapons→Admin
+          { x: 960,  y: 1610, rx: 70,  ry: 22 }, // Comms→Admin bottom
+          { x: 2310, y: 640,  rx: 65,  ry: 20 }, // Office→Lab
+          { x: 1200, y: 1830, rx: 68,  ry: 22 }, // Specimen→Admin seam
         ];
         ctx.save();
         for (const _ip of _icePatches) {
@@ -14110,6 +14132,31 @@
         }
       }
 
+      // === POLUS: cold industrial floor tint + icy grid for every room ===
+      if (selectedMap === 'polus') {
+        const _pFloorMap = {
+          'Dropship':'#06080e','Security':'#080f0a','Electrical':'#0e0d06',
+          'O2':'#050c0f','Communications':'#070b12','Boiler Room':'#100806',
+          'Storage':'#0e0b06','Office':'#0a0c10','Laboratory':'#060c16',
+          'Specimen Room':'#04080f','Weapons':'#100806','Admin':'#0a0c10',
+        };
+        const _pfc = _pFloorMap[name];
+        if (_pfc) {
+          ctx.globalAlpha = 1.0;
+          ctx.fillStyle = _pfc; ctx.fillRect(x, y, w, h);
+          // Icy tile grid
+          const _pTile = 44;
+          ctx.strokeStyle = 'rgba(160,210,255,0.055)'; ctx.lineWidth = 0.5;
+          for (let _ptx = 0; _ptx < w; _ptx += _pTile) { ctx.beginPath(); ctx.moveTo(x+_ptx,y); ctx.lineTo(x+_ptx,y+h); ctx.stroke(); }
+          for (let _pty = 0; _pty < h; _pty += _pTile) { ctx.beginPath(); ctx.moveTo(x,y+_pty); ctx.lineTo(x+w,y+_pty); ctx.stroke(); }
+          // Cold ambient glow from center
+          const _pAmb = ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(w,h)*0.55);
+          _pAmb.addColorStop(0,'rgba(130,190,255,0.07)'); _pAmb.addColorStop(1,'rgba(40,80,160,0)');
+          ctx.fillStyle = _pAmb; ctx.fillRect(x,y,w,h);
+          ctx.globalAlpha = 0.5;
+        }
+      }
+
       switch (name) {
         case 'Cafeteria': {
           // MIRA HQ cafeteria: warm cream tile floor, steel-blue accents
@@ -20214,6 +20261,349 @@
           nlGlow.addColorStop(1, 'rgba(255,160,60,0)');
           ctx.fillStyle = nlGlow; ctx.beginPath(); ctx.arc(x+w*0.10, y+h*0.72, 14, 0, Math.PI*2); ctx.fill();
         }
+
+        // ===== POLUS-SPECIFIC ROOM PROPS =====
+        if (selectedMap === 'polus') {
+
+          // DROPSHIP: launch exhaust scorch marks + footprints in snow
+          if (name === 'Dropship') {
+            ctx.globalAlpha = 0.18;
+            // Scorch circles on launch pad
+            for (let _sc = 0; _sc < 2; _sc++) {
+              const _scx = x + w*(0.28+_sc*0.44), _scy = y + h*0.82;
+              const _scg = ctx.createRadialGradient(_scx,_scy,0,_scx,_scy,28);
+              _scg.addColorStop(0,'rgba(80,40,10,0.70)'); _scg.addColorStop(0.5,'rgba(50,25,5,0.30)'); _scg.addColorStop(1,'rgba(0,0,0,0)');
+              ctx.fillStyle = _scg; ctx.beginPath(); ctx.arc(_scx,_scy,28,0,Math.PI*2); ctx.fill();
+            }
+            // Launch struts
+            ctx.globalAlpha = 0.35;
+            ctx.strokeStyle = '#5a4a30'; ctx.lineWidth = 3;
+            for (let _st = 0; _st < 3; _st++) {
+              const _stx = x+w*(0.20+_st*0.30);
+              ctx.beginPath(); ctx.moveTo(_stx,y+h*0.65); ctx.lineTo(_stx-8,y+h*0.86); ctx.stroke();
+              ctx.beginPath(); ctx.moveTo(_stx,y+h*0.65); ctx.lineTo(_stx+8,y+h*0.86); ctx.stroke();
+            }
+            // Snow footprints trail leading away
+            ctx.globalAlpha = 0.22; ctx.fillStyle = 'rgba(200,230,255,0.5)';
+            for (let _fp = 0; _fp < 6; _fp++) {
+              ctx.beginPath(); ctx.ellipse(x+w*0.48+_fp*8, y+h*0.88+(_fp%2)*5, 3, 5, 0.2, 0, Math.PI*2); ctx.fill();
+            }
+          }
+
+          // SECURITY (Polus): polar bear mascot plushie on desk, REC indicator, green cam glow
+          if (name === 'Security') {
+            // Green security ambient over existing monitors
+            ctx.globalAlpha = 0.08;
+            const _secG = ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(w,h)*0.6);
+            _secG.addColorStop(0,'rgba(40,220,80,0.50)'); _secG.addColorStop(1,'rgba(0,80,20,0)');
+            ctx.fillStyle = _secG; ctx.fillRect(x,y,w,h);
+            // REC light (top-right)
+            ctx.globalAlpha = 0.80;
+            const _recx = x+w-14, _recy = y+10;
+            const _recGl = ctx.createRadialGradient(_recx,_recy,0,_recx,_recy,8);
+            _recGl.addColorStop(0,'rgba(255,60,60,0.70)'); _recGl.addColorStop(1,'rgba(200,0,0,0)');
+            ctx.fillStyle = _recGl; ctx.beginPath(); ctx.arc(_recx,_recy,8,0,Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#ff3333'; ctx.beginPath(); ctx.arc(_recx,_recy,3,0,Math.PI*2); ctx.fill();
+            // Polar bear plushie (round white body + ears)
+            ctx.globalAlpha = 0.55;
+            const _pbx = x+w*0.82, _pby = y+h*0.65;
+            ctx.fillStyle = '#d8e8f0'; ctx.beginPath(); ctx.arc(_pbx,_pby,7,0,Math.PI*2); ctx.fill(); // body
+            ctx.beginPath(); ctx.arc(_pbx-5,_pby-6,3.5,0,Math.PI*2); ctx.fill(); // left ear
+            ctx.beginPath(); ctx.arc(_pbx+5,_pby-6,3.5,0,Math.PI*2); ctx.fill(); // right ear
+            ctx.fillStyle = '#c0d0e0'; ctx.beginPath(); ctx.arc(_pbx,_pby-1,5,0,Math.PI*2); ctx.fill(); // head
+            ctx.fillStyle = '#2a1a1a'; ctx.beginPath(); ctx.arc(_pbx-2,_pby-2,1.2,0,Math.PI*2); ctx.fill(); // eye L
+            ctx.beginPath(); ctx.arc(_pbx+2,_pby-2,1.2,0,Math.PI*2); ctx.fill(); // eye R
+            // Sticky note on desk
+            ctx.fillStyle = '#ffe060'; ctx.fillRect(x+w*0.10,y+h*0.08,12,10);
+            ctx.strokeStyle = '#c0a820'; ctx.lineWidth = 0.6; ctx.strokeRect(x+w*0.10,y+h*0.08,12,10);
+          }
+
+          // ELECTRICAL (Polus): anti-freeze cabinet + snowy boot prints
+          if (name === 'Electrical') {
+            // Frost on wall corners
+            ctx.globalAlpha = 0.14; ctx.fillStyle = 'rgba(180,220,255,0.60)';
+            ctx.beginPath(); ctx.arc(x+8,y+8,18,0,Math.PI*0.5); ctx.fill();
+            ctx.beginPath(); ctx.arc(x+w-8,y+8,18,Math.PI*0.5,Math.PI); ctx.fill();
+            // Anti-freeze cabinet (small yellow box on left wall)
+            ctx.globalAlpha = 0.55;
+            ctx.fillStyle = '#e8c820'; ctx.fillRect(x+6,y+h*0.42,14,20);
+            ctx.strokeStyle = '#a08010'; ctx.lineWidth = 1; ctx.strokeRect(x+6,y+h*0.42,14,20);
+            ctx.fillStyle = '#3a3010'; ctx.fillRect(x+10,y+h*0.44,6,4);
+            // Snowy boot prints on floor
+            ctx.globalAlpha = 0.18; ctx.fillStyle = 'rgba(200,230,255,0.7)';
+            const _bpPath = [[0.35,0.72],[0.40,0.82],[0.45,0.72],[0.50,0.82],[0.55,0.72]];
+            for (const [_bpx,_bpy] of _bpPath) {
+              ctx.beginPath(); ctx.ellipse(x+w*_bpx,y+h*_bpy,4,6,0.2,0,Math.PI*2); ctx.fill();
+            }
+          }
+
+          // O2 (Polus): pressurized canisters, frost condensation, pressure gauges
+          if (name === 'O2') {
+            // Two large oxygen canisters (green)
+            ctx.globalAlpha = 0.65;
+            for (let _oc = 0; _oc < 2; _oc++) {
+              const _ocx = x+w*(0.22+_oc*0.38), _ocy = y+h*0.30;
+              ctx.fillStyle = '#2a5a2a'; ctx.fillRect(_ocx-6,_ocy,12,28);
+              ctx.strokeStyle = '#4a8a4a'; ctx.lineWidth = 1; ctx.strokeRect(_ocx-6,_ocy,12,28);
+              // Canister top cap
+              ctx.fillStyle = '#3a6a3a'; ctx.fillRect(_ocx-7,_ocy-4,14,6);
+              // Pressure valve
+              ctx.fillStyle = '#8a4a20'; ctx.beginPath(); ctx.arc(_ocx,_ocy-2,3,0,Math.PI*2); ctx.fill();
+              // Green glow
+              ctx.globalAlpha = 0.10;
+              const _ocgl = ctx.createRadialGradient(_ocx,_ocy+14,0,_ocx,_ocy+14,20);
+              _ocgl.addColorStop(0,'rgba(60,200,80,0.50)'); _ocgl.addColorStop(1,'rgba(0,100,20,0)');
+              ctx.fillStyle = _ocgl; ctx.beginPath(); ctx.arc(_ocx,_ocy+14,20,0,Math.PI*2); ctx.fill();
+              ctx.globalAlpha = 0.65;
+            }
+            // Frost condensation patches on walls
+            ctx.globalAlpha = 0.18;
+            ctx.fillStyle = 'rgba(180,230,255,0.60)';
+            ctx.beginPath(); ctx.ellipse(x+w*0.10,y+h*0.20,14,8,-0.3,0,Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(x+w*0.85,y+h*0.55,12,7,0.2,0,Math.PI*2); ctx.fill();
+            // Pressure readout strip on right wall
+            ctx.globalAlpha = 0.50;
+            ctx.fillStyle = '#1a1a2a'; ctx.fillRect(x+w-20,y+h*0.38,14,30);
+            ctx.strokeStyle = '#3a3a4a'; ctx.lineWidth = 0.8; ctx.strokeRect(x+w-20,y+h*0.38,14,30);
+            for (let _pr = 0; _pr < 4; _pr++) {
+              ctx.fillStyle = _pr < 2 ? 'rgba(60,220,80,0.55)' : 'rgba(60,220,80,0.20)';
+              ctx.fillRect(x+w-18,y+h*0.40+_pr*7,10,5);
+            }
+          }
+
+          // COMMUNICATIONS (Polus): satellite relay panel, waveform display
+          if (name === 'Communications') {
+            // Satellite dish silhouette on floor
+            ctx.globalAlpha = 0.12; ctx.strokeStyle = '#8090c0'; ctx.lineWidth = 2;
+            const _dsx = x+w*0.80, _dsy = y+h*0.30;
+            ctx.beginPath(); ctx.arc(_dsx,_dsy,22,Math.PI*1.2,Math.PI*1.8); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(_dsx,_dsy); ctx.lineTo(_dsx,_dsy+18); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(_dsx-12,_dsy+18); ctx.lineTo(_dsx+12,_dsy+18); ctx.stroke();
+            // Waveform display panel
+            ctx.globalAlpha = 0.50;
+            const _wfx = x+w*0.10, _wfy = y+h*0.72, _wfw = Math.min(60,w*0.30);
+            ctx.fillStyle = '#0a1020'; ctx.fillRect(_wfx,_wfy,_wfw,16);
+            ctx.strokeStyle = '#2a3a50'; ctx.lineWidth = 0.8; ctx.strokeRect(_wfx,_wfy,_wfw,16);
+            ctx.strokeStyle = '#3090e0'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(_wfx+2,_wfy+8);
+            for (let _wfi = 0; _wfi < 10; _wfi++) {
+              const _wfamp = (_wfi%3===0?6:_wfi%2===0?3:5);
+              ctx.lineTo(_wfx+2+_wfi*(_wfw-4)/10, _wfy+8+(_wfi%2===0?-_wfamp:_wfamp));
+            }
+            ctx.stroke();
+            // Cable bundles along floor
+            ctx.globalAlpha = 0.25;
+            ctx.strokeStyle = '#405060'; ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.moveTo(x+10,y+h*0.55); ctx.lineTo(x+w*0.70,y+h*0.55); ctx.stroke();
+            ctx.strokeStyle = '#304050'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(x+10,y+h*0.58); ctx.lineTo(x+w*0.65,y+h*0.58); ctx.stroke();
+          }
+
+          // BOILER ROOM (Polus): large boiler tank, steam pipes, coal pile
+          if (name === 'Boiler Room') {
+            // Big boiler drum (center-right)
+            ctx.globalAlpha = 0.70;
+            const _bx = x+w*0.52, _by = y+h*0.18, _bw = Math.min(70,w*0.35), _bh = Math.min(80,h*0.50);
+            const _boilG = ctx.createLinearGradient(_bx,_by,_bx+_bw,_by);
+            _boilG.addColorStop(0,'#2a1a10'); _boilG.addColorStop(0.4,'#4a3020'); _boilG.addColorStop(1,'#2a1a10');
+            ctx.fillStyle = _boilG; ctx.fillRect(_bx,_by,_bw,_bh);
+            ctx.strokeStyle = '#6a4a30'; ctx.lineWidth = 2; ctx.strokeRect(_bx,_by,_bw,_bh);
+            // Boiler bands
+            for (let _bb = 0; _bb < 3; _bb++) {
+              ctx.strokeStyle = '#5a3a20'; ctx.lineWidth = 2.5;
+              ctx.beginPath(); ctx.moveTo(_bx,_by+_bh*0.25+_bb*_bh*0.20); ctx.lineTo(_bx+_bw,_by+_bh*0.25+_bb*_bh*0.20); ctx.stroke();
+            }
+            // Furnace door
+            ctx.fillStyle = '#180c06'; ctx.fillRect(_bx+_bw*0.20,_by+_bh*0.55,_bw*0.50,_bh*0.30);
+            ctx.strokeStyle = '#6a4020'; ctx.lineWidth = 1; ctx.strokeRect(_bx+_bw*0.20,_by+_bh*0.55,_bw*0.50,_bh*0.30);
+            // Furnace glow
+            ctx.globalAlpha = 0.28;
+            const _fgx = _bx+_bw*0.45, _fgy = _by+_bh*0.70;
+            const _fgl = ctx.createRadialGradient(_fgx,_fgy,0,_fgx,_fgy,25);
+            _fgl.addColorStop(0,'rgba(255,160,40,0.80)'); _fgl.addColorStop(0.5,'rgba(220,80,20,0.40)'); _fgl.addColorStop(1,'rgba(160,20,0,0)');
+            ctx.fillStyle = _fgl; ctx.beginPath(); ctx.arc(_fgx,_fgy,25,0,Math.PI*2); ctx.fill();
+            // Steam pipes going up
+            ctx.globalAlpha = 0.55;
+            ctx.strokeStyle = '#7a6050'; ctx.lineWidth = 5;
+            ctx.beginPath(); ctx.moveTo(_bx+_bw*0.30,_by); ctx.lineTo(_bx+_bw*0.30,y+6); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(_bx+_bw*0.70,_by); ctx.lineTo(_bx+_bw*0.70,y+6); ctx.stroke();
+            // Steam wisps at top of pipes
+            ctx.globalAlpha = 0.15; ctx.strokeStyle = 'rgba(200,200,220,0.60)'; ctx.lineWidth = 2;
+            for (let _sw = 0; _sw < 2; _sw++) {
+              const _spx = _bx+_bw*(0.30+_sw*0.40);
+              ctx.beginPath(); ctx.moveTo(_spx,y+12); ctx.quadraticCurveTo(_spx+6,y+4,_spx-4,y-4); ctx.stroke();
+            }
+            // Coal pile (bottom-left)
+            ctx.globalAlpha = 0.45;
+            ctx.fillStyle = '#1a1410'; ctx.beginPath(); ctx.ellipse(x+w*0.20,y+h*0.82,20,10,0,0,Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#2a1e18'; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(x+w*0.20,y+h*0.82,20,10,0,0,Math.PI*2); ctx.stroke();
+            // Shovel leaning on wall
+            ctx.strokeStyle = '#5a4030'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(x+w*0.36,y+h*0.62); ctx.lineTo(x+w*0.30,y+h*0.90); ctx.stroke();
+            ctx.fillStyle = '#4a3828'; ctx.fillRect(x+w*0.28,y+h*0.88,8,6);
+          }
+
+          // STORAGE (Polus): polar expedition crates, ice chest, cargo straps
+          if (name === 'Storage') {
+            // Ice chest (blue-white, bottom corner)
+            ctx.globalAlpha = 0.55;
+            const _icx = x+w*0.08, _icy = y+h*0.68;
+            ctx.fillStyle = '#2a4060'; ctx.fillRect(_icx,_icy,24,16);
+            ctx.strokeStyle = '#4a6080'; ctx.lineWidth = 1; ctx.strokeRect(_icx,_icy,24,16);
+            ctx.fillStyle = '#3a5a80'; ctx.fillRect(_icx+1,_icy+1,22,6); // lid
+            ctx.strokeStyle = 'rgba(160,220,255,0.30)'; ctx.lineWidth = 0.5; ctx.strokeRect(_icx+1,_icy+1,22,6);
+            // Icicles dripping off chest edge
+            ctx.globalAlpha = 0.40; ctx.fillStyle = 'rgba(180,230,255,0.70)';
+            for (let _ic2 = 0; _ic2 < 4; _ic2++) {
+              ctx.beginPath();
+              ctx.moveTo(_icx+3+_ic2*6,_icy+17); ctx.lineTo(_icx+5+_ic2*6,_icy+17); ctx.lineTo(_icx+4+_ic2*6,_icy+22);
+              ctx.closePath(); ctx.fill();
+            }
+            // Cargo strap across crates
+            ctx.globalAlpha = 0.35;
+            ctx.strokeStyle = '#c08020'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(x+w*0.30,y+h*0.18); ctx.lineTo(x+w*0.80,y+h*0.18); ctx.lineTo(x+w*0.80,y+h*0.55); ctx.stroke();
+            ctx.setLineDash([4,3]);
+            ctx.beginPath(); ctx.moveTo(x+w*0.30,y+h*0.18); ctx.lineTo(x+w*0.30,y+h*0.55); ctx.stroke();
+            ctx.setLineDash([]);
+          }
+
+          // OFFICE (Polus): large emergency button highlight, floor status light strips
+          if (name === 'Office') {
+            // Prominent emergency meeting button glow on floor
+            ctx.globalAlpha = 0.15;
+            const _emg = ctx.createRadialGradient(cx,cy+h*0.10,0,cx,cy+h*0.10,40);
+            _emg.addColorStop(0,'rgba(255,40,40,0.60)'); _emg.addColorStop(0.5,'rgba(200,20,20,0.25)'); _emg.addColorStop(1,'rgba(160,0,0,0)');
+            ctx.fillStyle = _emg; ctx.beginPath(); ctx.arc(cx,cy+h*0.10,40,0,Math.PI*2); ctx.fill();
+            // Status light strips on floor (blue LED strips)
+            ctx.globalAlpha = 0.18;
+            ctx.strokeStyle = 'rgba(80,180,255,0.60)'; ctx.lineWidth = 2;
+            ctx.setLineDash([6,4]);
+            ctx.beginPath(); ctx.moveTo(x+12,y+h*0.78); ctx.lineTo(x+w-12,y+h*0.78); ctx.stroke();
+            ctx.setLineDash([]);
+            // File cabinet bank (right side)
+            ctx.globalAlpha = 0.50;
+            ctx.fillStyle = '#1c1c2a'; ctx.fillRect(x+w*0.72,y+h*0.60,w*0.22,h*0.35);
+            ctx.strokeStyle = '#3a3a4a'; ctx.lineWidth = 0.8; ctx.strokeRect(x+w*0.72,y+h*0.60,w*0.22,h*0.35);
+            for (let _fc2 = 0; _fc2 < 3; _fc2++) {
+              ctx.strokeStyle = '#2a2a3a'; ctx.lineWidth = 0.5;
+              ctx.beginPath(); ctx.moveTo(x+w*0.72,y+h*(0.71+_fc2*0.08)); ctx.lineTo(x+w*0.94,y+h*(0.71+_fc2*0.08)); ctx.stroke();
+              // Drawer handle
+              ctx.fillStyle = '#5a5a6a'; ctx.fillRect(x+w*0.80,y+h*(0.67+_fc2*0.08),w*0.06,3);
+            }
+          }
+
+          // LABORATORY (Polus): geological specimen shelf, rock core samples
+          if (name === 'Laboratory') {
+            // Rock core sample display shelf
+            ctx.globalAlpha = 0.55;
+            const _lsx = x+w*0.08, _lsy = y+h*0.12, _lsw = w*0.40;
+            ctx.fillStyle = '#1a1810'; ctx.fillRect(_lsx,_lsy,_lsw,14);
+            ctx.strokeStyle = '#3a3020'; ctx.lineWidth = 0.8; ctx.strokeRect(_lsx,_lsy,_lsw,14);
+            const _rockCols = ['#6a5040','#4a5a30','#5a4a60','#7a6050','#4a6070'];
+            for (let _rc = 0; _rc < 6; _rc++) {
+              ctx.fillStyle = _rockCols[_rc%5]; ctx.beginPath(); ctx.arc(_lsx+10+_rc*14,_lsy+7,4,0,Math.PI*2); ctx.fill();
+              ctx.strokeStyle = 'rgba(200,180,140,0.15)'; ctx.lineWidth = 0.5; ctx.beginPath(); ctx.arc(_lsx+10+_rc*14,_lsy+7,4,0,Math.PI*2); ctx.stroke();
+            }
+            // Drill core label tags
+            ctx.fillStyle = '#e8e4d0'; ctx.globalAlpha = 0.30;
+            for (let _rt = 0; _rt < 3; _rt++) {
+              ctx.fillRect(_lsx+6+_rt*20,_lsy+13,12,7);
+            }
+            // Decon chamber door indicator (left wall)
+            ctx.globalAlpha = 0.60;
+            ctx.fillStyle = '#0a1820'; ctx.fillRect(x+6,y+h*0.32,16,36);
+            ctx.strokeStyle = '#2a4a60'; ctx.lineWidth = 1; ctx.strokeRect(x+6,y+h*0.32,16,36);
+            ctx.fillStyle = '#1a3a58'; ctx.fillRect(x+8,y+h*0.34,12,28);
+            // Decon indicator light
+            ctx.fillStyle = 'rgba(60,220,100,0.70)';
+            ctx.beginPath(); ctx.arc(x+14,y+h*0.32-4,3,0,Math.PI*2); ctx.fill();
+            // UV light strip on ceiling
+            ctx.globalAlpha = 0.10;
+            const _uvGl = ctx.createLinearGradient(x,y,x,y+h*0.25);
+            _uvGl.addColorStop(0,'rgba(180,100,255,0.50)'); _uvGl.addColorStop(1,'rgba(120,60,220,0)');
+            ctx.fillStyle = _uvGl; ctx.fillRect(x,y,w,h*0.25);
+          }
+
+          // WEAPONS (Polus): turret cannon shadow, ammo crates, lava heat shimmer
+          if (name === 'Weapons') {
+            // Cannon barrel shadow on floor
+            ctx.globalAlpha = 0.20;
+            ctx.fillStyle = 'rgba(40,30,20,0.60)';
+            ctx.beginPath(); ctx.ellipse(cx+w*0.05,cy-h*0.10,w*0.28,h*0.07,0,0,Math.PI*2); ctx.fill();
+            // Ammo crates (stacked, left side)
+            ctx.globalAlpha = 0.55;
+            for (let _am = 0; _am < 2; _am++) {
+              const _amx = x+w*0.10, _amy = y+h*(0.30+_am*0.25);
+              ctx.fillStyle = '#3a3020'; ctx.fillRect(_amx,_amy,20,16);
+              ctx.strokeStyle = '#5a5030'; ctx.lineWidth = 0.8; ctx.strokeRect(_amx,_amy,20,16);
+              ctx.strokeStyle = '#4a4028'; ctx.lineWidth = 0.5;
+              ctx.beginPath(); ctx.moveTo(_amx,_amy+8); ctx.lineTo(_amx+20,_amy+8); ctx.stroke();
+              ctx.beginPath(); ctx.moveTo(_amx+10,_amy); ctx.lineTo(_amx+10,_amy+16); ctx.stroke();
+            }
+            // Lava heat glow from right side (east wall)
+            ctx.globalAlpha = 0.12;
+            const _lvGl = ctx.createLinearGradient(x+w,y,x+w*0.50,y);
+            _lvGl.addColorStop(0,'rgba(255,140,30,0.60)'); _lvGl.addColorStop(0.5,'rgba(220,80,20,0.25)'); _lvGl.addColorStop(1,'rgba(160,20,0,0)');
+            ctx.fillStyle = _lvGl; ctx.fillRect(x+w*0.50,y,w*0.50,h);
+            // Targeting reticle on floor
+            ctx.globalAlpha = 0.08; ctx.strokeStyle = '#cc4444'; ctx.lineWidth = 1;
+            const _trx = x+w*0.58, _try2 = cy;
+            ctx.beginPath(); ctx.arc(_trx,_try2,w*0.12,0,Math.PI*2); ctx.stroke();
+            ctx.beginPath(); ctx.arc(_trx,_try2,w*0.06,0,Math.PI*2); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(_trx-w*0.16,_try2); ctx.lineTo(_trx+w*0.16,_try2); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(_trx,_try2-h*0.28); ctx.lineTo(_trx,_try2+h*0.28); ctx.stroke();
+          }
+
+          // ADMIN (Polus): large oval meeting table, voting screens on walls
+          if (name === 'Admin') {
+            // Oval conference table
+            ctx.globalAlpha = 0.55;
+            const _atx = cx, _aty = cy-h*0.05;
+            const _tableG = ctx.createRadialGradient(_atx,_aty-h*0.04,0,_atx,_aty,Math.min(w,h)*0.30);
+            _tableG.addColorStop(0,'#1e2a3a'); _tableG.addColorStop(0.7,'#141e2e'); _tableG.addColorStop(1,'#0e1622');
+            ctx.fillStyle = _tableG;
+            ctx.beginPath(); ctx.ellipse(_atx,_aty,w*0.30,h*0.28,0,0,Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#3a5070'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.ellipse(_atx,_aty,w*0.30,h*0.28,0,0,Math.PI*2); ctx.stroke();
+            // Table surface highlight
+            ctx.globalAlpha = 0.15;
+            ctx.fillStyle = 'rgba(80,140,200,0.30)';
+            ctx.beginPath(); ctx.ellipse(_atx-w*0.04,_aty-h*0.06,w*0.14,h*0.10,0,0,Math.PI*2); ctx.fill();
+            // Chairs around table (6)
+            ctx.globalAlpha = 0.40; ctx.fillStyle = '#2a3848';
+            for (let _ac = 0; _ac < 6; _ac++) {
+              const _aca = (_ac/6)*Math.PI*2 - Math.PI/2;
+              const _acr = Math.min(w,h)*0.36;
+              ctx.beginPath(); ctx.arc(_atx+Math.cos(_aca)*_acr,_aty+Math.sin(_aca)*_acr*0.80,7,0,Math.PI*2); ctx.fill();
+            }
+            // Voting screens on top wall
+            ctx.globalAlpha = 0.45;
+            for (let _vs = 0; _vs < 3; _vs++) {
+              const _vsx = x+w*(0.15+_vs*0.28), _vsy = y+10;
+              ctx.fillStyle = '#0a0e18'; ctx.fillRect(_vsx,_vsy,w*0.20,h*0.12);
+              ctx.strokeStyle = '#2a3a50'; ctx.lineWidth = 0.8; ctx.strokeRect(_vsx,_vsy,w*0.20,h*0.12);
+              ctx.fillStyle = 'rgba(60,120,200,0.25)'; ctx.fillRect(_vsx+1,_vsy+1,w*0.20-2,h*0.12-2);
+              // Crewmate icon silhouette on screen
+              ctx.fillStyle = 'rgba(100,180,255,0.20)';
+              ctx.beginPath(); ctx.arc(_vsx+w*0.10,_vsy+h*0.05,5,0,Math.PI*2); ctx.fill();
+              ctx.fillRect(_vsx+w*0.06,_vsy+h*0.06,w*0.08,h*0.05);
+            }
+          }
+
+          // SPECIMEN ROOM (Polus): extra containment ring on floor, biohazard marking
+          if (name === 'Specimen Room') {
+            // Biohazard floor marking
+            ctx.globalAlpha = 0.08; ctx.strokeStyle = '#ffcc00'; ctx.lineWidth = 2;
+            const _bhR = Math.min(w,h)*0.10;
+            ctx.beginPath(); ctx.arc(x+w*0.18,y+h*0.78,_bhR,0,Math.PI*2); ctx.stroke();
+            for (let _bh2 = 0; _bh2 < 3; _bh2++) {
+              const _bha = _bh2*(Math.PI*2/3);
+              ctx.beginPath(); ctx.arc(x+w*0.18+Math.cos(_bha)*_bhR*0.9,y+h*0.78+Math.sin(_bha)*_bhR*0.9,_bhR*0.5,0,Math.PI*2); ctx.stroke();
+            }
+          }
+
+        } // end selectedMap === 'polus'
 
         ctx.restore();
         ctx.globalAlpha = 0.5;
