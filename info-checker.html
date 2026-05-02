@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Info Checker</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #0f0f1a;
+      color: #e0e0f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #4ecdc4;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    p.subtitle {
+      color: #888;
+      margin-bottom: 36px;
+      font-size: 0.95rem;
+    }
+    .card {
+      background: #1a1a2e;
+      border: 1px solid rgba(78,205,196,0.2);
+      border-radius: 12px;
+      padding: 28px 32px;
+      width: 100%;
+      max-width: 560px;
+      margin-bottom: 20px;
+    }
+    .card h2 {
+      font-size: 1rem;
+      color: #4ecdc4;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.9rem;
+    }
+    .row:last-child { border-bottom: none; }
+    .label { color: #888; }
+    .value { color: #e0e0f0; font-weight: 500; word-break: break-all; text-align: right; max-width: 60%; }
+    .value.ok  { color: #44ff88; }
+    .value.warn { color: #ffcc44; }
+    .value.err  { color: #ff5555; }
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    input[type="text"] {
+      flex: 1;
+      background: #0f0f1a;
+      border: 1px solid rgba(78,205,196,0.3);
+      border-radius: 8px;
+      color: #e0e0f0;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    input[type="text"]:focus { border-color: #4ecdc4; }
+    button {
+      background: #4ecdc4;
+      color: #0f0f1a;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: #38b2aa; }
+    #lookupResult { margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+  <h1>Info Checker</h1>
+  <p class="subtitle">System, browser &amp; network information at a glance</p>
+
+  <!-- Browser & Device -->
+  <div class="card">
+    <h2>Browser &amp; Device</h2>
+    <div class="row"><span class="label">Browser</span><span class="value" id="browser">—</span></div>
+    <div class="row"><span class="label">User Agent</span><span class="value" id="ua">—</span></div>
+    <div class="row"><span class="label">Platform</span><span class="value" id="platform">—</span></div>
+    <div class="row"><span class="label">Screen</span><span class="value" id="screen">—</span></div>
+    <div class="row"><span class="label">Window</span><span class="value" id="winsize">—</span></div>
+    <div class="row"><span class="label">Device Pixel Ratio</span><span class="value" id="dpr">—</span></div>
+    <div class="row"><span class="label">Language</span><span class="value" id="lang">—</span></div>
+    <div class="row"><span class="label">Cookies Enabled</span><span class="value" id="cookies">—</span></div>
+    <div class="row"><span class="label">Online</span><span class="value" id="online">—</span></div>
+  </div>
+
+  <!-- Time & Date -->
+  <div class="card">
+    <h2>Time &amp; Date</h2>
+    <div class="row"><span class="label">Local Time</span><span class="value" id="localtime">—</span></div>
+    <div class="row"><span class="label">UTC Time</span><span class="value" id="utctime">—</span></div>
+    <div class="row"><span class="label">Timezone</span><span class="value" id="timezone">—</span></div>
+    <div class="row"><span class="label">UTC Offset</span><span class="value" id="utcoffset">—</span></div>
+  </div>
+
+  <!-- Performance -->
+  <div class="card">
+    <h2>Performance</h2>
+    <div class="row"><span class="label">Page Load Time</span><span class="value" id="loadtime">—</span></div>
+    <div class="row"><span class="label">Memory (JS Heap)</span><span class="value" id="memory">—</span></div>
+    <div class="row"><span class="label">CPU Cores (logical)</span><span class="value" id="cores">—</span></div>
+    <div class="row"><span class="label">Connection Type</span><span class="value" id="connection">—</span></div>
+  </div>
+
+  <!-- URL / Page Info -->
+  <div class="card">
+    <h2>Page Info</h2>
+    <div class="row"><span class="label">URL</span><span class="value" id="pageurl">—</span></div>
+    <div class="row"><span class="label">Protocol</span><span class="value" id="protocol">—</span></div>
+    <div class="row"><span class="label">Host</span><span class="value" id="host">—</span></div>
+    <div class="row"><span class="label">Referrer</span><span class="value" id="referrer">—</span></div>
+  </div>
+
+  <!-- Text Lookup Tool -->
+  <div class="card">
+    <h2>Quick Lookup</h2>
+    <div class="input-row">
+      <input type="text" id="lookupInput" placeholder="Enter anything to check…">
+      <button onclick="doLookup()">Check</button>
+    </div>
+    <div id="lookupResult"></div>
+  </div>
+
+  <script>
+    function getBrowser() {
+      const ua = navigator.userAgent;
+      if (ua.includes('Edg/'))    return 'Microsoft Edge';
+      if (ua.includes('Chrome/')) return 'Google Chrome';
+      if (ua.includes('Firefox/'))return 'Mozilla Firefox';
+      if (ua.includes('Safari/') && !ua.includes('Chrome')) return 'Apple Safari';
+      if (ua.includes('OPR/') || ua.includes('Opera/')) return 'Opera';
+      return 'Unknown';
+    }
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function updateTime() {
+      const now = new Date();
+      document.getElementById('localtime').textContent =
+        `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}  ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+      document.getElementById('utctime').textContent =
+        `${now.getUTCFullYear()}-${pad(now.getUTCMonth()+1)}-${pad(now.getUTCDate())}  ${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`;
+    }
+
+    function classify(el, val, okFn) {
+      el.textContent = val;
+      el.className = 'value ' + (okFn(val) ? 'ok' : 'warn');
+    }
+
+    // Browser & Device
+    document.getElementById('browser').textContent   = getBrowser();
+    document.getElementById('ua').textContent        = navigator.userAgent;
+    document.getElementById('platform').textContent  = navigator.platform || navigator.userAgentData?.platform || '—';
+    document.getElementById('screen').textContent    = `${screen.width} × ${screen.height} (${screen.colorDepth}-bit)`;
+    document.getElementById('winsize').textContent   = `${window.innerWidth} × ${window.innerHeight}`;
+    document.getElementById('dpr').textContent       = window.devicePixelRatio || 1;
+    document.getElementById('lang').textContent      = navigator.language || '—';
+    classify(document.getElementById('cookies'), navigator.cookieEnabled ? 'Yes' : 'No', v => v === 'Yes');
+    classify(document.getElementById('online'),  navigator.onLine ? 'Online' : 'Offline', v => v === 'Online');
+
+    // Time
+    const tz     = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const offset = -new Date().getTimezoneOffset();
+    document.getElementById('timezone').textContent  = tz;
+    document.getElementById('utcoffset').textContent = `UTC${offset >= 0 ? '+' : ''}${offset/60}`;
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    // Performance
+    window.addEventListener('load', () => {
+      const nav = performance.getEntriesByType('navigation')[0];
+      if (nav) {
+        const ms = Math.round(nav.loadEventEnd - nav.startTime);
+        const el = document.getElementById('loadtime');
+        el.textContent = ms + ' ms';
+        el.className = 'value ' + (ms < 1000 ? 'ok' : ms < 3000 ? 'warn' : 'err');
+      }
+    });
+
+    if (performance.memory) {
+      const used  = (performance.memory.usedJSHeapSize  / 1048576).toFixed(1);
+      const total = (performance.memory.totalJSHeapSize / 1048576).toFixed(1);
+      document.getElementById('memory').textContent = `${used} MB / ${total} MB`;
+    } else {
+      document.getElementById('memory').textContent = 'N/A';
+    }
+
+    document.getElementById('cores').textContent = navigator.hardwareConcurrency || '—';
+
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (conn) {
+      const parts = [];
+      if (conn.effectiveType) parts.push(conn.effectiveType.toUpperCase());
+      if (conn.downlink)      parts.push(conn.downlink + ' Mbps');
+      if (conn.rtt)           parts.push('RTT ' + conn.rtt + ' ms');
+      document.getElementById('connection').textContent = parts.join('  ·  ') || '—';
+    } else {
+      document.getElementById('connection').textContent = 'N/A';
+    }
+
+    // Page Info
+    document.getElementById('pageurl').textContent  = location.href;
+    document.getElementById('protocol').textContent = location.protocol;
+    document.getElementById('host').textContent     = location.host || '(local file)';
+    document.getElementById('referrer').textContent = document.referrer || '(none)';
+
+    // Quick Lookup
+    function doLookup() {
+      const raw = document.getElementById('lookupInput').value.trim();
+      const out = document.getElementById('lookupResult');
+      if (!raw) { out.innerHTML = ''; return; }
+
+      const rows = [];
+
+      rows.push(['Input', raw]);
+      rows.push(['Length', raw.length + ' characters']);
+      rows.push(['Words', raw.trim().split(/\s+/).filter(Boolean).length]);
+      rows.push(['Uppercase', raw.toUpperCase()]);
+      rows.push(['Lowercase', raw.toLowerCase()]);
+
+      // Number check
+      const num = Number(raw);
+      if (!isNaN(num) && raw !== '') {
+        rows.push(['As Number', num]);
+        rows.push(['Hex', '0x' + Math.abs(Math.floor(num)).toString(16).toUpperCase()]);
+        rows.push(['Binary', Math.abs(Math.floor(num)).toString(2)]);
+        rows.push(['Is Integer', Number.isInteger(num) ? 'Yes' : 'No']);
+      }
+
+      // URL check
+      try {
+        const u = new URL(raw);
+        rows.push(['Valid URL', 'Yes']);
+        rows.push(['URL Protocol', u.protocol]);
+        rows.push(['URL Host', u.host]);
+      } catch (_) {
+        if (raw.startsWith('http') || raw.includes('://')) rows.push(['Valid URL', 'No']);
+      }
+
+      // Email check
+      rows.push(['Looks like email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw) ? 'Yes' : 'No']);
+
+      // Char codes (first 8)
+      const codes = [...raw].slice(0, 8).map(c => c.charCodeAt(0)).join(', ');
+      rows.push(['Char codes (first 8)', codes + (raw.length > 8 ? ' …' : '')]);
+
+      out.innerHTML = rows.map(([l, v]) =>
+        `<div class="row"><span class="label">${l}</span><span class="value">${v}</span></div>`
+      ).join('');
+    }
+
+    document.getElementById('lookupInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLookup();
+    });
+  </script>
+</body>
+</html>
