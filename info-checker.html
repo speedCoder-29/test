@@ -62,7 +62,7 @@
       gap: 10px;
       margin-bottom: 14px;
     }
-    input[type="text"] {
+    input[type="text"], input[type="password"] {
       flex: 1;
       background: #0f0f1a;
       border: 1px solid rgba(78,205,196,0.3);
@@ -72,7 +72,7 @@
       font-size: 0.9rem;
       outline: none;
     }
-    input[type="text"]:focus { border-color: #4ecdc4; }
+    input[type="text"]:focus, input[type="password"]:focus { border-color: #4ecdc4; }
     button {
       background: #4ecdc4;
       color: #0f0f1a;
@@ -85,13 +85,260 @@
       transition: background 0.2s;
     }
     button:hover { background: #38b2aa; }
+    button:disabled { background: #2a5a58; color: #5a8a88; cursor: not-allowed; }
     #lookupResult { margin-top: 4px; }
+
+    /* ── Fact-Check Chat ───────────────────────────────── */
+    .chat-card {
+      background: #1a1a2e;
+      border: 1px solid rgba(78,205,196,0.35);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 560px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .chat-header {
+      background: linear-gradient(135deg, #1e2a4a 0%, #1a1a2e 100%);
+      border-bottom: 1px solid rgba(78,205,196,0.2);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .chat-header-icon {
+      font-size: 1.4rem;
+      filter: drop-shadow(0 0 6px rgba(78,205,196,0.5));
+    }
+    .chat-header-text h2 {
+      font-size: 1rem;
+      color: #4ecdc4;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+    }
+    .chat-header-text p {
+      font-size: 0.78rem;
+      color: #666;
+    }
+    /* API key bar */
+    .api-bar {
+      background: rgba(0,0,0,0.25);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 10px 16px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .api-bar input {
+      flex: 1;
+      background: #0f0f1a;
+      border: 1px solid rgba(78,205,196,0.2);
+      border-radius: 6px;
+      color: #aaa;
+      padding: 7px 12px;
+      font-size: 0.8rem;
+      font-family: monospace;
+      outline: none;
+    }
+    .api-bar input:focus { border-color: #4ecdc4; color: #e0e0f0; }
+    .api-bar button {
+      padding: 7px 14px;
+      font-size: 0.8rem;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .api-status {
+      font-size: 0.75rem;
+      padding: 0 2px;
+    }
+    .api-status.set   { color: #44ff88; }
+    .api-status.unset { color: #ff5555; }
+    /* Messages area */
+    #chatMessages {
+      height: 340px;
+      overflow-y: auto;
+      padding: 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scroll-behavior: smooth;
+    }
+    #chatMessages::-webkit-scrollbar { width: 5px; }
+    #chatMessages::-webkit-scrollbar-track { background: transparent; }
+    #chatMessages::-webkit-scrollbar-thumb { background: rgba(78,205,196,0.3); border-radius: 4px; }
+    .msg-wrap {
+      display: flex;
+      flex-direction: column;
+      max-width: 92%;
+    }
+    .msg-wrap.user { align-self: flex-end; align-items: flex-end; }
+    .msg-wrap.bot  { align-self: flex-start; align-items: flex-start; }
+    .msg-bubble {
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+    .msg-wrap.user .msg-bubble {
+      background: linear-gradient(135deg, #1a4a6a, #1a3a5a);
+      border: 1px solid rgba(78,205,196,0.25);
+      border-bottom-right-radius: 4px;
+      color: #d0eef0;
+    }
+    .msg-wrap.bot .msg-bubble {
+      background: #13132a;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-bottom-left-radius: 4px;
+      color: #e0e0f0;
+    }
+    /* Verdict badge */
+    .verdict {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 6px;
+    }
+    .verdict.true    { background: rgba(68,255,136,0.12); color: #44ff88; border: 1px solid rgba(68,255,136,0.3); }
+    .verdict.false   { background: rgba(255,85,85,0.12);  color: #ff5555; border: 1px solid rgba(255,85,85,0.3); }
+    .verdict.unclear { background: rgba(255,204,68,0.12); color: #ffcc44; border: 1px solid rgba(255,204,68,0.3); }
+    .verdict-icon { font-size: 0.95rem; }
+    /* Explanation text */
+    .bot-explanation { font-size: 0.87rem; line-height: 1.55; color: #c8c8e0; }
+    .bot-sources {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      color: #556;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 7px;
+    }
+    .bot-sources span { color: #4ecdc4; }
+    /* Typing dots */
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      padding: 10px 14px;
+      background: #13132a;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      border-bottom-left-radius: 4px;
+      width: fit-content;
+    }
+    .typing-dots span {
+      width: 7px; height: 7px;
+      background: #4ecdc4;
+      border-radius: 50%;
+      animation: typingBounce 1.2s infinite;
+      opacity: 0.5;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce {
+      0%,60%,100% { transform: translateY(0); opacity: 0.4; }
+      30%          { transform: translateY(-5px); opacity: 1; }
+    }
+    /* Chat input */
+    .chat-input-area {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 14px 16px;
+      display: flex;
+      gap: 10px;
+    }
+    #chatInput {
+      flex: 1;
+      background: #0f0f1a;
+      border: 1px solid rgba(78,205,196,0.25);
+      border-radius: 22px;
+      color: #e0e0f0;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      outline: none;
+      resize: none;
+      font-family: inherit;
+      line-height: 1.4;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    #chatInput:focus { border-color: #4ecdc4; }
+    #chatInput::placeholder { color: #444; }
+    #sendBtn {
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      padding: 0;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      align-self: flex-end;
+    }
+    .chat-hint {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #333;
+      padding: 0 16px 10px;
+    }
+    /* Welcome message */
+    .welcome-msg {
+      align-self: center;
+      text-align: center;
+      color: #444;
+      font-size: 0.85rem;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .welcome-msg .icon { font-size: 2rem; display: block; margin-bottom: 8px; }
   </style>
 </head>
 <body>
 
   <h1>Info Checker</h1>
-  <p class="subtitle">System, browser &amp; network information at a glance</p>
+  <p class="subtitle">Fact-check statements &amp; explore system info</p>
+
+  <!-- ── Fact-Check Chat ─────────────────────────────────────── -->
+  <div class="chat-card">
+    <div class="chat-header">
+      <div class="chat-header-icon">🔍</div>
+      <div class="chat-header-text">
+        <h2>Fact Checker</h2>
+        <p>Ask if something is true or false — get a verified verdict</p>
+      </div>
+    </div>
+
+    <!-- API key setup -->
+    <div class="api-bar">
+      <input type="password" id="apiKeyInput" placeholder="Paste your Anthropic API key (sk-ant-…)" autocomplete="off">
+      <button onclick="saveKey()">Save Key</button>
+      <span class="api-status unset" id="apiStatus">● No key</span>
+    </div>
+
+    <!-- Messages -->
+    <div id="chatMessages">
+      <div class="welcome-msg" id="welcomeMsg">
+        <span class="icon">🔎</span>
+        Ask me anything you want to fact-check.<br>
+        <em>e.g. "Is the Great Wall of China visible from space?"</em><br><br>
+        <small style="color:#333">Requires an Anthropic API key above.</small>
+      </div>
+    </div>
+
+    <div class="chat-hint">Press <strong>Enter</strong> to send · <strong>Shift+Enter</strong> for new line</div>
+
+    <!-- Input bar -->
+    <div class="chat-input-area">
+      <textarea id="chatInput" placeholder="Is it true that…?" rows="1"></textarea>
+      <button id="sendBtn" onclick="sendFactCheck()" title="Send">➤</button>
+    </div>
+  </div>
 
   <!-- Browser & Device -->
   <div class="card">
@@ -275,6 +522,234 @@
     document.getElementById('lookupInput').addEventListener('keydown', e => {
       if (e.key === 'Enter') doLookup();
     });
+
+    // ── Fact-Check Chat ──────────────────────────────────────────────────────
+
+    const SYSTEM_PROMPT = `You are a strict, impartial fact-checker that uses verified, well-established knowledge from trusted sources (peer-reviewed science, encyclopedias, government data, major reputable news organizations, official statistics, etc.).
+
+When a user asks whether something is true or false, respond ONLY in this exact JSON format:
+{
+  "verdict": "TRUE" | "FALSE" | "UNCERTAIN",
+  "confidence": "HIGH" | "MEDIUM" | "LOW",
+  "summary": "One clear sentence stating the verdict and why.",
+  "explanation": "2-4 sentences of supporting detail. Mention specific trusted sources or bodies of evidence where relevant (e.g. NASA, WHO, peer-reviewed studies, census data). Be precise and factual.",
+  "sources": "Comma-separated list of 2-4 source types or institutions that back this verdict (e.g. NASA, CDC, Oxford Dictionary, IPCC).",
+  "likely": "Only include this field when verdict is UNCERTAIN — one sentence on what is most likely true based on available evidence."
+}
+
+Rules:
+- If the claim is clearly TRUE based on well-established fact, use TRUE.
+- If the claim is clearly FALSE (a myth, debunked, incorrect), use FALSE.
+- If evidence is genuinely mixed, the topic is too recent, or the claim is ambiguous, use UNCERTAIN.
+- Never guess or make up sources. Only cite real, known institutions.
+- Keep summary and explanation factual and concise.
+- Do not include any text outside the JSON object.`;
+
+    const chatHistory = [];
+    let isLoading = false;
+
+    // API key management
+    function saveKey() {
+      const k = document.getElementById('apiKeyInput').value.trim();
+      if (!k) { setStatus(false); return; }
+      localStorage.setItem('fc_api_key', k);
+      document.getElementById('apiKeyInput').value = '';
+      setStatus(true);
+    }
+
+    function getKey() {
+      return localStorage.getItem('fc_api_key') || '';
+    }
+
+    function setStatus(hasKey) {
+      const el = document.getElementById('apiStatus');
+      if (hasKey) {
+        el.textContent = '● Key set';
+        el.className = 'api-status set';
+      } else {
+        el.textContent = '● No key';
+        el.className = 'api-status unset';
+      }
+    }
+
+    // Init key status
+    setStatus(!!getKey());
+    if (getKey()) document.getElementById('apiKeyInput').placeholder = 'API key saved — paste new key to update';
+
+    // Auto-grow textarea
+    const chatInput = document.getElementById('chatInput');
+    chatInput.addEventListener('input', () => {
+      chatInput.style.height = 'auto';
+      chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+    });
+    chatInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendFactCheck(); }
+    });
+
+    // Add a message bubble to the chat
+    function addMessage(role, content) {
+      const welcome = document.getElementById('welcomeMsg');
+      if (welcome) welcome.remove();
+
+      const wrap = document.createElement('div');
+      wrap.className = `msg-wrap ${role}`;
+
+      if (role === 'user') {
+        const bubble = document.createElement('div');
+        bubble.className = 'msg-bubble';
+        bubble.textContent = content;
+        wrap.appendChild(bubble);
+      } else {
+        wrap.appendChild(buildBotBubble(content));
+      }
+
+      document.getElementById('chatMessages').appendChild(wrap);
+      scrollChat();
+      return wrap;
+    }
+
+    // Parse the JSON verdict and build the bot bubble
+    function buildBotBubble(raw) {
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble';
+
+      let parsed;
+      try {
+        const jsonMatch = raw.match(/\{[\s\S]*\}/);
+        parsed = JSON.parse(jsonMatch ? jsonMatch[0] : raw);
+      } catch (_) {
+        bubble.textContent = raw;
+        return bubble;
+      }
+
+      const v = (parsed.verdict || '').toUpperCase();
+      const cls = v === 'TRUE' ? 'true' : v === 'FALSE' ? 'false' : 'unclear';
+      const icon = v === 'TRUE' ? '✅' : v === 'FALSE' ? '❌' : '⚠️';
+      const label = v === 'TRUE' ? 'True' : v === 'FALSE' ? 'False' : 'Uncertain';
+      const conf = parsed.confidence ? ` · ${parsed.confidence} confidence` : '';
+
+      const badge = document.createElement('div');
+      badge.className = `verdict ${cls}`;
+      badge.innerHTML = `<span class="verdict-icon">${icon}</span>${label}${conf}`;
+      bubble.appendChild(badge);
+
+      if (parsed.summary) {
+        const s = document.createElement('div');
+        s.className = 'bot-explanation';
+        s.style.fontWeight = '600';
+        s.style.marginBottom = '6px';
+        s.textContent = parsed.summary;
+        bubble.appendChild(s);
+      }
+
+      if (parsed.explanation) {
+        const e = document.createElement('div');
+        e.className = 'bot-explanation';
+        e.textContent = parsed.explanation;
+        bubble.appendChild(e);
+      }
+
+      if (parsed.likely) {
+        const l = document.createElement('div');
+        l.className = 'bot-explanation';
+        l.style.marginTop = '6px';
+        l.style.fontStyle = 'italic';
+        l.style.color = '#ffcc44';
+        l.textContent = '↳ Most likely: ' + parsed.likely;
+        bubble.appendChild(l);
+      }
+
+      if (parsed.sources) {
+        const src = document.createElement('div');
+        src.className = 'bot-sources';
+        src.innerHTML = `<span>Sources / Basis:</span> ${parsed.sources}`;
+        bubble.appendChild(src);
+      }
+
+      return bubble;
+    }
+
+    // Typing indicator
+    function showTyping() {
+      const wrap = document.createElement('div');
+      wrap.className = 'msg-wrap bot';
+      wrap.id = 'typingIndicator';
+      wrap.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
+      document.getElementById('chatMessages').appendChild(wrap);
+      scrollChat();
+    }
+
+    function hideTyping() {
+      const t = document.getElementById('typingIndicator');
+      if (t) t.remove();
+    }
+
+    function scrollChat() {
+      const box = document.getElementById('chatMessages');
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function sendFactCheck() {
+      if (isLoading) return;
+      const input = chatInput.value.trim();
+      if (!input) return;
+
+      const key = getKey();
+      if (!key) {
+        addMessage('bot', '{"verdict":"UNCERTAIN","confidence":"LOW","summary":"No API key found.","explanation":"Please paste your Anthropic API key in the field above and click Save Key. The key is stored only in your browser\'s local storage and never sent anywhere except Anthropic\'s API.","sources":"N/A"}');
+        return;
+      }
+
+      // Render user message
+      addMessage('user', input);
+      chatInput.value = '';
+      chatInput.style.height = 'auto';
+      chatHistory.push({ role: 'user', content: input });
+
+      isLoading = true;
+      document.getElementById('sendBtn').disabled = true;
+      showTyping();
+
+      try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': key,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+          },
+          body: JSON.stringify({
+            model: 'claude-haiku-4-5-20251001',
+            max_tokens: 600,
+            system: SYSTEM_PROMPT,
+            messages: chatHistory
+          })
+        });
+
+        hideTyping();
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          const msg = err?.error?.message || `API error ${res.status}`;
+          addMessage('bot', `{"verdict":"UNCERTAIN","confidence":"LOW","summary":"API error: ${msg}","explanation":"Check that your API key is correct and has sufficient credits.","sources":"N/A"}`);
+          chatHistory.pop();
+        } else {
+          const data = await res.json();
+          const reply = data.content?.[0]?.text || '{"verdict":"UNCERTAIN","confidence":"LOW","summary":"Empty response.","explanation":"The API returned an empty response.","sources":"N/A"}';
+          chatHistory.push({ role: 'assistant', content: reply });
+          addMessage('bot', reply);
+        }
+      } catch (err) {
+        hideTyping();
+        addMessage('bot', `{"verdict":"UNCERTAIN","confidence":"LOW","summary":"Network error.","explanation":"Could not reach the Anthropic API: ${err.message}. Check your internet connection.","sources":"N/A"}`);
+        chatHistory.pop();
+      } finally {
+        isLoading = false;
+        document.getElementById('sendBtn').disabled = false;
+        chatInput.focus();
+      }
+    }
   </script>
 </body>
 </html>
