@@ -62,7 +62,7 @@
       gap: 10px;
       margin-bottom: 14px;
     }
-    input[type="text"], input[type="password"] {
+    input[type="text"] {
       flex: 1;
       background: #0f0f1a;
       border: 1px solid rgba(78,205,196,0.3);
@@ -72,7 +72,7 @@
       font-size: 0.9rem;
       outline: none;
     }
-    input[type="text"]:focus, input[type="password"]:focus { border-color: #4ecdc4; }
+    input[type="text"]:focus { border-color: #4ecdc4; }
     button {
       background: #4ecdc4;
       color: #0f0f1a;
@@ -121,39 +121,6 @@
       font-size: 0.78rem;
       color: #666;
     }
-    /* API key bar */
-    .api-bar {
-      background: rgba(0,0,0,0.25);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      padding: 10px 16px;
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .api-bar input {
-      flex: 1;
-      background: #0f0f1a;
-      border: 1px solid rgba(78,205,196,0.2);
-      border-radius: 6px;
-      color: #aaa;
-      padding: 7px 12px;
-      font-size: 0.8rem;
-      font-family: monospace;
-      outline: none;
-    }
-    .api-bar input:focus { border-color: #4ecdc4; color: #e0e0f0; }
-    .api-bar button {
-      padding: 7px 14px;
-      font-size: 0.8rem;
-      border-radius: 6px;
-      white-space: nowrap;
-    }
-    .api-status {
-      font-size: 0.75rem;
-      padding: 0 2px;
-    }
-    .api-status.set   { color: #44ff88; }
-    .api-status.unset { color: #ff5555; }
     /* Messages area */
     #chatMessages {
       height: 340px;
@@ -314,20 +281,12 @@
       </div>
     </div>
 
-    <!-- API key setup -->
-    <div class="api-bar">
-      <input type="password" id="apiKeyInput" placeholder="Paste your Anthropic API key (sk-ant-…)" autocomplete="off">
-      <button onclick="saveKey()">Save Key</button>
-      <span class="api-status unset" id="apiStatus">● No key</span>
-    </div>
-
     <!-- Messages -->
     <div id="chatMessages">
       <div class="welcome-msg" id="welcomeMsg">
         <span class="icon">🔎</span>
         Ask me anything you want to fact-check.<br>
-        <em>e.g. "Is the Great Wall of China visible from space?"</em><br><br>
-        <small style="color:#333">Requires an Anthropic API key above.</small>
+        <em>e.g. "Is the Great Wall of China visible from space?"</em>
       </div>
     </div>
 
@@ -548,34 +507,6 @@ Rules:
     const chatHistory = [];
     let isLoading = false;
 
-    // API key management
-    function saveKey() {
-      const k = document.getElementById('apiKeyInput').value.trim();
-      if (!k) { setStatus(false); return; }
-      localStorage.setItem('fc_api_key', k);
-      document.getElementById('apiKeyInput').value = '';
-      setStatus(true);
-    }
-
-    function getKey() {
-      return localStorage.getItem('fc_api_key') || '';
-    }
-
-    function setStatus(hasKey) {
-      const el = document.getElementById('apiStatus');
-      if (hasKey) {
-        el.textContent = '● Key set';
-        el.className = 'api-status set';
-      } else {
-        el.textContent = '● No key';
-        el.className = 'api-status unset';
-      }
-    }
-
-    // Init key status
-    setStatus(!!getKey());
-    if (getKey()) document.getElementById('apiKeyInput').placeholder = 'API key saved — paste new key to update';
-
     // Auto-grow textarea
     const chatInput = document.getElementById('chatInput');
     chatInput.addEventListener('input', () => {
@@ -694,12 +625,6 @@ Rules:
       const input = chatInput.value.trim();
       if (!input) return;
 
-      const key = getKey();
-      if (!key) {
-        addMessage('bot', '{"verdict":"UNCERTAIN","confidence":"LOW","summary":"No API key found.","explanation":"Please paste your Anthropic API key in the field above and click Save Key. The key is stored only in your browser\'s local storage and never sent anywhere except Anthropic\'s API.","sources":"N/A"}');
-        return;
-      }
-
       // Render user message
       addMessage('user', input);
       chatInput.value = '';
@@ -711,38 +636,35 @@ Rules:
       showTyping();
 
       try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
+        const messages = [
+          { role: 'system', content: SYSTEM_PROMPT },
+          ...chatHistory
+        ];
+
+        const res = await fetch('https://text.pollinations.ai/', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': key,
-            'anthropic-version': '2023-06-01',
-            'anthropic-dangerous-direct-browser-access': 'true'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'claude-haiku-4-5-20251001',
-            max_tokens: 600,
-            system: SYSTEM_PROMPT,
-            messages: chatHistory
+            messages,
+            model: 'openai',
+            jsonMode: true,
+            seed: Math.floor(Math.random() * 99999)
           })
         });
 
         hideTyping();
 
         if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          const msg = err?.error?.message || `API error ${res.status}`;
-          addMessage('bot', `{"verdict":"UNCERTAIN","confidence":"LOW","summary":"API error: ${msg}","explanation":"Check that your API key is correct and has sufficient credits.","sources":"N/A"}`);
-          chatHistory.pop();
-        } else {
-          const data = await res.json();
-          const reply = data.content?.[0]?.text || '{"verdict":"UNCERTAIN","confidence":"LOW","summary":"Empty response.","explanation":"The API returned an empty response.","sources":"N/A"}';
-          chatHistory.push({ role: 'assistant', content: reply });
-          addMessage('bot', reply);
+          throw new Error(`Server responded with ${res.status}`);
         }
+
+        const reply = await res.text();
+        chatHistory.push({ role: 'assistant', content: reply });
+        addMessage('bot', reply);
+
       } catch (err) {
         hideTyping();
-        addMessage('bot', `{"verdict":"UNCERTAIN","confidence":"LOW","summary":"Network error.","explanation":"Could not reach the Anthropic API: ${err.message}. Check your internet connection.","sources":"N/A"}`);
+        addMessage('bot', `{"verdict":"UNCERTAIN","confidence":"LOW","summary":"Network error.","explanation":"Could not reach the AI service: ${err.message}. Check your internet connection and try again.","sources":"N/A"}`);
         chatHistory.pop();
       } finally {
         isLoading = false;
