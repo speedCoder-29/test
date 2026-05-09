@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Info Checker</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -373,6 +375,42 @@
     .disaster-detail { font-size: 0.75rem; color: #556; line-height: 1.4; }
     .disaster-loading { text-align: center; padding: 24px; color: #666; font-size: 0.88rem; }
     .disaster-error { color: #ff5555; font-size: 0.85rem; padding: 12px 0; }
+    #disasterMap {
+      display: none;
+      height: 300px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 16px;
+      border: 1px solid rgba(255,140,60,0.2);
+    }
+    .leaflet-popup-content-wrapper {
+      background: #1a1a2e;
+      color: #e0e0f0;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 0.82rem;
+    }
+    .leaflet-popup-tip { background: #1a1a2e; }
+    .leaflet-popup-close-button { color: #888 !important; }
+    .leaflet-control-attribution { background: rgba(15,15,26,0.8) !important; color: #444 !important; }
+    .leaflet-control-attribution a { color: #4ecdc4 !important; }
+    .leaflet-control-zoom a { background: #1a1a2e !important; color: #e0e0f0 !important; border-color: rgba(255,255,255,0.1) !important; }
+    .leaflet-control-zoom a:hover { background: #252540 !important; }
+    .map-legend {
+      margin-top: 10px;
+      display: flex;
+      gap: 14px;
+      font-size: 0.75rem;
+      color: #666;
+      flex-wrap: wrap;
+    }
+    .map-legend span { display: flex; align-items: center; gap: 5px; }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
   </style>
 </head>
 <body>
@@ -423,6 +461,13 @@
         <button id="disasterCheckBtn" onclick="checkDisasterRisk()">Check Risk</button>
       </div>
       <div id="disasterResult"></div>
+      <div id="disasterMap"></div>
+      <div class="map-legend" id="mapLegend" style="display:none">
+        <span><span class="legend-dot" style="background:#ff4444"></span>High Risk</span>
+        <span><span class="legend-dot" style="background:#ffaa22"></span>Medium Risk</span>
+        <span><span class="legend-dot" style="background:#44bb66"></span>Low Risk</span>
+        <span><span class="legend-dot" style="background:#334;border:1px solid #556"></span>Minimal/None</span>
+      </div>
     </div>
   </div>
 
@@ -704,6 +749,87 @@ Rules:
         html += '</div>';
       }
       result.innerHTML = html;
+      showDisasterMap(data.region || '', data.risks || []);
+    }
+
+    // ── Disaster Map ────────────────────────────────────────────────────────
+
+    let disasterMap = null;
+    let disasterLayers = [];
+
+    async function showDisasterMap(regionName, risks) {
+      const mapDiv = document.getElementById('disasterMap');
+      const legend = document.getElementById('mapLegend');
+      mapDiv.style.display = 'block';
+      legend.style.display = 'flex';
+
+      if (!disasterMap) {
+        disasterMap = L.map('disasterMap', { zoomControl: true, attributionControl: true });
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+          attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          subdomains: 'abcd',
+          maxZoom: 19
+        }).addTo(disasterMap);
+      }
+
+      disasterLayers.forEach(l => disasterMap.removeLayer(l));
+      disasterLayers = [];
+
+      let geoData;
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(regionName)}&format=json&polygon_geojson=1&limit=1`
+        );
+        geoData = await res.json();
+      } catch (_) { return; }
+
+      if (!geoData || !geoData.length) return;
+
+      const place = geoData[0];
+      const lat = parseFloat(place.lat);
+      const lon = parseFloat(place.lon);
+
+      const levels = risks.map(r => (r.level || '').toUpperCase());
+      const overallColor = levels.includes('HIGH') ? '#ff4444' : levels.includes('MEDIUM') ? '#ffaa22' : '#44bb66';
+
+      // Draw region polygon
+      if (place.geojson) {
+        const poly = L.geoJSON(place.geojson, {
+          style: { color: overallColor, weight: 2.5, fillColor: overallColor, fillOpacity: 0.12, dashArray: null }
+        }).addTo(disasterMap);
+        disasterLayers.push(poly);
+        disasterMap.fitBounds(poly.getBounds(), { padding: [24, 24] });
+      } else {
+        disasterMap.setView([lat, lon], 6);
+      }
+
+      // Place risk markers for HIGH and MEDIUM risks scattered around center
+      const notable = risks.filter(r => r.level === 'HIGH' || r.level === 'MEDIUM');
+      const n = notable.length;
+      // Estimate spread based on bounding box size
+      const bb = place.boundingbox;
+      const spread = bb ? Math.min((parseFloat(bb[1]) - parseFloat(bb[0])) * 0.28, 4) : 0.8;
+
+      notable.forEach((r, i) => {
+        const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
+        const mlat = lat + Math.cos(angle) * spread * 0.5;
+        const mlon = lon + Math.sin(angle) * spread * 0.8;
+        const color = r.level === 'HIGH' ? '#ff4444' : '#ffaa22';
+        const border = r.level === 'HIGH' ? 'rgba(255,100,100,0.5)' : 'rgba(255,180,60,0.5)';
+
+        const icon = L.divIcon({
+          className: '',
+          html: `<div style="background:${color};border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,0.6);border:2px solid ${border};cursor:pointer">${r.icon || '⚠️'}</div>`,
+          iconSize: [30, 30],
+          iconAnchor: [15, 15]
+        });
+
+        const popup = `<b>${r.icon || ''} ${r.type}</b><br><span style="color:${color};font-weight:700">▲ ${r.level} RISK</span>${r.detail ? '<br><span style="color:#aaa">' + r.detail + '</span>' : ''}`;
+        const marker = L.marker([mlat, mlon], { icon }).bindPopup(popup).addTo(disasterMap);
+        disasterLayers.push(marker);
+      });
+
+      setTimeout(() => disasterMap.invalidateSize(), 150);
     }
 
     function escHtml(s) {
