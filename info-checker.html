@@ -411,6 +411,102 @@
       border-radius: 50%;
       display: inline-block;
     }
+
+    /* ── Political / Conflict Section ─────────────────────────── */
+    .political-section {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #666;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .stability-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 12px;
+      letter-spacing: 0.4px;
+    }
+    .stability-badge.STABLE   { background: rgba(68,187,102,0.15); color: #44bb66; }
+    .stability-badge.TENSE    { background: rgba(255,204,68,0.15);  color: #ffcc44; }
+    .stability-badge.UNSTABLE { background: rgba(255,140,60,0.15);  color: #ff8c3c; }
+    .stability-badge.CONFLICT { background: rgba(255,68,68,0.15);   color: #ff4444; }
+    .political-overview {
+      font-size: 0.82rem;
+      color: #777;
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+    .political-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .pf-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      background: #0f0f1a;
+      border-radius: 7px;
+      padding: 8px 11px;
+      font-size: 0.82rem;
+    }
+    .pf-item.active   { border-left: 3px solid #ff4444; }
+    .pf-item.inactive { border-left: 3px solid #2a2a40; opacity: 0.5; }
+    .pf-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .pf-right { display: flex; flex-direction: column; gap: 2px; }
+    .pf-type  { color: #c0c0d8; font-weight: 600; }
+    .pf-detail { font-size: 0.77rem; color: #666; line-height: 1.4; }
+
+    /* ── Weather Widget ────────────────────────────────────────── */
+    .weather-widget {
+      display: none;
+      margin-top: 14px;
+      background: #0f0f1a;
+      border: 1px solid rgba(78,205,196,0.15);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .weather-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+    .weather-emoji { font-size: 2.6rem; line-height: 1; }
+    .weather-temps { display: flex; flex-direction: column; gap: 2px; }
+    .weather-temp-main { font-size: 1.7rem; font-weight: 700; color: #e0e0f0; line-height: 1; }
+    .weather-feels { font-size: 0.78rem; color: #666; }
+    .weather-desc-text { font-size: 0.85rem; color: #aaa; margin-left: auto; text-align: right; }
+    .weather-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .weather-stat {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: #666;
+    }
+    .weather-stat-val { color: #c0c0d8; font-weight: 500; }
+    .weather-source { font-size: 0.72rem; color: #333; margin-top: 10px; }
+
+    @keyframes conflict-pulse {
+      0%   { transform: scale(1);   opacity: 0.7; }
+      50%  { transform: scale(1.35); opacity: 0; }
+      100% { transform: scale(1);   opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -466,8 +562,10 @@
         <span><span class="legend-dot" style="background:#ff4444"></span>High Risk</span>
         <span><span class="legend-dot" style="background:#ffaa22"></span>Medium Risk</span>
         <span><span class="legend-dot" style="background:#44bb66"></span>Low Risk</span>
-        <span><span class="legend-dot" style="background:#334;border:1px solid #556"></span>Minimal/None</span>
+        <span><span class="legend-dot" style="background:#cc44ff"></span>Political/Conflict</span>
       </div>
+      <div id="weatherWidget" class="weather-widget"></div>
+      <div id="politicalSection" style="display:none"></div>
     </div>
   </div>
 
@@ -656,12 +754,12 @@
 
     // ── Natural Disaster Risk Checker ───────────────────────────────────────
 
-    const DISASTER_PROMPT = `You are a natural disaster risk expert with knowledge of global geology, climatology, and historical disaster data from sources like FEMA, USGS, NOAA, UN-SPIDER, EM-DAT, and national meteorological agencies.
+    const DISASTER_PROMPT = `You are an expert in natural disasters, geopolitical risk, and regional security with knowledge from FEMA, USGS, NOAA, UN-SPIDER, EM-DAT, ACLED, the Council on Foreign Relations, and national intelligence agencies.
 
 When given a region, city, or country, respond ONLY in this exact JSON format:
 {
   "region": "Official/common name of the region",
-  "overview": "2-3 sentences summarising the region's overall disaster risk profile and the key geographic/climate factors driving it.",
+  "overview": "2-3 sentences summarising the region's overall disaster risk profile and key geographic/climate factors.",
   "risks": [
     { "type": "Earthquake",        "icon": "🌍", "level": "HIGH"|"MEDIUM"|"LOW"|"NONE", "detail": "One short sentence with specific risk context." },
     { "type": "Tsunami",           "icon": "🌊", "level": "HIGH"|"MEDIUM"|"LOW"|"NONE", "detail": "..." },
@@ -673,16 +771,26 @@ When given a region, city, or country, respond ONLY in this exact JSON format:
     { "type": "Drought",           "icon": "☀️", "level": "HIGH"|"MEDIUM"|"LOW"|"NONE", "detail": "..." },
     { "type": "Blizzard/Ice Storm","icon": "❄️", "level": "HIGH"|"MEDIUM"|"LOW"|"NONE", "detail": "..." },
     { "type": "Landslide",         "icon": "⛰️", "level": "HIGH"|"MEDIUM"|"LOW"|"NONE", "detail": "..." }
-  ]
+  ],
+  "political": {
+    "stability": "STABLE"|"TENSE"|"UNSTABLE"|"CONFLICT",
+    "overview": "2 sentences on the political situation, governance stability, and any security concerns.",
+    "factors": [
+      { "type": "Armed Conflict",  "icon": "⚔️", "active": true|false, "detail": "One sentence." },
+      { "type": "Civil Unrest",    "icon": "🚨", "active": true|false, "detail": "..." },
+      { "type": "Terrorism Risk",  "icon": "💣", "active": true|false, "detail": "..." },
+      { "type": "International Sanctions", "icon": "🚫", "active": true|false, "detail": "..." },
+      { "type": "Border Disputes", "icon": "🗺️", "active": true|false, "detail": "..." },
+      { "type": "Crime / Kidnapping", "icon": "🔒", "active": true|false, "detail": "..." }
+    ]
+  }
 }
 
 Rules:
-- Use HIGH for regions with frequent or historically severe events of that type.
-- Use MEDIUM for occasional or moderate risk.
-- Use LOW for rare but possible events.
-- Use NONE if the disaster type is essentially impossible or irrelevant for that region.
-- Base risk levels on established scientific and historical data.
-- Keep each detail sentence short and specific (e.g. mention fault lines, storm seasons, elevation).
+- Use HIGH/MEDIUM/LOW/NONE for disaster risks based on established scientific and historical data.
+- For political stability: STABLE = peaceful democracy; TENSE = elevated unrest or political crisis; UNSTABLE = ongoing violence or authoritarian suppression; CONFLICT = active war or armed conflict.
+- Set "active": true only for factors that are currently present or ongoing based on your knowledge.
+- Keep detail sentences short and specific.
 - Do not include any text outside the JSON object.`;
 
     document.getElementById('disasterInput').addEventListener('keydown', e => {
@@ -749,7 +857,9 @@ Rules:
         html += '</div>';
       }
       result.innerHTML = html;
-      showDisasterMap(data.region || '', data.risks || []);
+      result.style.display = 'block';
+      renderPolitical(data.political);
+      showDisasterMap(data.region || '', data.risks || [], data.political);
     }
 
     // ── Disaster Map ────────────────────────────────────────────────────────
@@ -757,7 +867,7 @@ Rules:
     let disasterMap = null;
     let disasterLayers = [];
 
-    async function showDisasterMap(regionName, risks) {
+    async function showDisasterMap(regionName, risks, political) {
       const mapDiv = document.getElementById('disasterMap');
       const legend = document.getElementById('mapLegend');
       mapDiv.style.display = 'block';
@@ -829,7 +939,137 @@ Rules:
         disasterLayers.push(marker);
       });
 
+      // Political / conflict markers (diamond shape, purple)
+      if (political && Array.isArray(political.factors)) {
+        const active = political.factors.filter(f => f.active);
+        const na = active.length;
+        active.forEach((f, i) => {
+          const angle = (i / Math.max(na, 1)) * 2 * Math.PI;
+          const plat = lat + Math.cos(angle) * spread * 0.22;
+          const plon = lon + Math.sin(angle) * spread * 0.35;
+          const pIcon = L.divIcon({
+            className: '',
+            html: `<div style="width:28px;height:28px;background:#cc44ff;transform:rotate(45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.7);border:2px solid rgba(220,160,255,0.4)"><span style="transform:rotate(-45deg);font-size:13px;line-height:1">${f.icon || '⚠️'}</span></div>`,
+            iconSize: [28, 28],
+            iconAnchor: [14, 14]
+          });
+          const stab = (political.stability || '').toUpperCase();
+          const stabColor = stab === 'CONFLICT' ? '#ff4444' : stab === 'UNSTABLE' ? '#ff8c3c' : stab === 'TENSE' ? '#ffcc44' : '#cc44ff';
+          const pop = `<b>${f.icon || ''} ${f.type}</b><br><span style="color:#cc44ff;font-weight:700">● ACTIVE</span>${f.detail ? '<br><span style="color:#aaa">' + f.detail + '</span>' : ''}`;
+          const m = L.marker([plat, plon], { icon: pIcon }).bindPopup(pop).addTo(disasterMap);
+          disasterLayers.push(m);
+        });
+      }
+
+      fetchWeather(lat, lon);
       setTimeout(() => disasterMap.invalidateSize(), 150);
+    }
+
+    // ── Political section renderer ───────────────────────────────────────────
+    function renderPolitical(political) {
+      const sec = document.getElementById('politicalSection');
+      if (!political) { sec.style.display = 'none'; return; }
+
+      const stab = (political.stability || 'STABLE').toUpperCase();
+      const stabLabel = { STABLE:'Stable', TENSE:'Tense', UNSTABLE:'Unstable', CONFLICT:'Active Conflict' }[stab] || stab;
+
+      let html = `<div class="political-section">
+        <div class="section-label">
+          🛡️ Political &amp; Security
+          <span class="stability-badge ${stab}">${stabLabel}</span>
+        </div>`;
+
+      if (political.overview) {
+        html += `<div class="political-overview">${escHtml(political.overview)}</div>`;
+      }
+
+      if (Array.isArray(political.factors) && political.factors.length) {
+        html += '<div class="political-grid">';
+        for (const f of political.factors) {
+          const cls = f.active ? 'active' : 'inactive';
+          html += `<div class="pf-item ${cls}">
+            <span class="pf-icon">${f.icon || '•'}</span>
+            <div class="pf-right">
+              <span class="pf-type">${escHtml(f.type)}</span>
+              ${f.detail ? `<span class="pf-detail">${escHtml(f.detail)}</span>` : ''}
+            </div>
+          </div>`;
+        }
+        html += '</div>';
+      }
+
+      html += `<div style="font-size:0.7rem;color:#333;margin-top:8px">⚠️ Political data reflects AI training knowledge and may not capture recent developments.</div>`;
+      html += '</div>';
+
+      sec.innerHTML = html;
+      sec.style.display = 'block';
+    }
+
+    // ── Weather (Open-Meteo, free, no key) ───────────────────────────────────
+    function wmoToDesc(code) {
+      if (code === 0)              return ['☀️', 'Clear sky'];
+      if (code <= 3)               return ['⛅', 'Partly cloudy'];
+      if (code <= 48)              return ['🌫️', 'Fog'];
+      if (code <= 57)              return ['🌦️', 'Drizzle'];
+      if (code <= 67)              return ['🌧️', 'Rain'];
+      if (code <= 77)              return ['❄️', 'Snow'];
+      if (code <= 82)              return ['🌦️', 'Rain showers'];
+      if (code <= 86)              return ['❄️', 'Snow showers'];
+      return ['⛈️', 'Thunderstorm'];
+    }
+
+    function windDir(deg) {
+      const dirs = ['N','NE','E','SE','S','SW','W','NW'];
+      return dirs[Math.round(deg / 45) % 8];
+    }
+
+    async function fetchWeather(lat, lon) {
+      const widget = document.getElementById('weatherWidget');
+      widget.style.display = 'block';
+      widget.innerHTML = '<div style="color:#444;font-size:0.82rem;padding:6px 0">Loading weather…</div>';
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+          `&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_direction_10m` +
+          `&timezone=auto`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Weather API error');
+        const data = await res.json();
+        renderWeather(data);
+      } catch (_) {
+        widget.innerHTML = '<div style="color:#444;font-size:0.82rem;padding:6px 0">Weather data unavailable.</div>';
+      }
+    }
+
+    function renderWeather(data) {
+      const widget = document.getElementById('weatherWidget');
+      const c = data.current;
+      const [icon, desc] = wmoToDesc(c.weather_code ?? 0);
+      const tempC = Math.round(c.temperature_2m);
+      const feelsC = Math.round(c.apparent_temperature);
+      const tempF = Math.round(tempC * 9/5 + 32);
+      const feelsF = Math.round(feelsC * 9/5 + 32);
+      const wind = Math.round(c.wind_speed_10m);
+      const dir  = windDir(c.wind_direction_10m ?? 0);
+      const hum  = c.relative_humidity_2m;
+      const precip = c.precipitation != null ? c.precipitation.toFixed(1) : '0.0';
+
+      widget.innerHTML = `
+        <div class="section-label" style="margin-bottom:10px">🌡️ Current Weather</div>
+        <div class="weather-top">
+          <div class="weather-emoji">${icon}</div>
+          <div class="weather-temps">
+            <div class="weather-temp-main">${tempC}°C <span style="font-size:1rem;color:#666">/ ${tempF}°F</span></div>
+            <div class="weather-feels">Feels like ${feelsC}°C / ${feelsF}°F</div>
+          </div>
+          <div class="weather-desc-text">${desc}</div>
+        </div>
+        <div class="weather-stats">
+          <div class="weather-stat">💧 Humidity <span class="weather-stat-val">${hum}%</span></div>
+          <div class="weather-stat">💨 Wind <span class="weather-stat-val">${wind} km/h ${dir}</span></div>
+          <div class="weather-stat">🌧️ Precip <span class="weather-stat-val">${precip} mm</span></div>
+          <div class="weather-stat">📍 Coords <span class="weather-stat-val">${data.latitude.toFixed(2)}, ${data.longitude.toFixed(2)}</span></div>
+        </div>
+        <div class="weather-source">Source: Open-Meteo · live data</div>`;
     }
 
     function escHtml(s) {
