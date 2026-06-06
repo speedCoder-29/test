@@ -521,6 +521,164 @@
       100% { transform: scale(1);   opacity: 0; }
     }
 
+    /* ── Weather App ─────────────────────────────────────────── */
+    .wa-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 560px;
+      margin-bottom: 12px;
+    }
+    .wa-top-title { font-size: 1.5rem; color: #e0e0f0; font-weight: 600; letter-spacing: 0.5px; }
+    .wa-refresh-btn {
+      background: none;
+      border: 1px solid rgba(78,205,196,0.3);
+      color: #4ecdc4;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+    .wa-refresh-btn:hover { background: rgba(78,205,196,0.1); }
+    .wa-hero {
+      background: linear-gradient(160deg, #1c2a40 0%, #1a1a2e 55%, #0f0f1a 100%);
+      border: 1px solid rgba(78,205,196,0.18);
+      border-radius: 20px;
+      padding: 28px 28px 22px;
+      width: 100%;
+      max-width: 560px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+    .wa-hero::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(78,205,196,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .wa-loc { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: #666; margin-bottom: 20px; }
+    .wa-loc-name { color: #b0b0c8; font-weight: 500; }
+    .wa-main-row { display: flex; align-items: center; gap: 18px; margin-bottom: 6px; }
+    .wa-big-icon { font-size: 4rem; line-height: 1; flex-shrink: 0; }
+    .wa-temp-col { display: flex; flex-direction: column; }
+    .wa-temp-big { font-size: 4.2rem; font-weight: 200; color: #f0f0ff; line-height: 1; letter-spacing: -2px; }
+    .wa-temp-unit { font-size: 1.6rem; color: #555; font-weight: 300; }
+    .wa-condition { font-size: 1rem; color: #aaa; margin-top: 6px; }
+    .wa-feels { font-size: 0.8rem; color: #555; margin-top: 3px; }
+    .wa-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .wa-stat { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 2px; }
+    .wa-stat-icon { font-size: 1rem; }
+    .wa-stat-val { font-size: 0.84rem; font-weight: 600; color: #e0e0f0; }
+    .wa-stat-lbl { font-size: 0.62rem; color: #444; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
+    .wa-card {
+      background: #1a1a2e;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 18px 20px;
+      width: 100%;
+      max-width: 560px;
+      margin-bottom: 14px;
+    }
+    .wa-card-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #555; margin-bottom: 14px; }
+    /* Daily forecast */
+    .wa-day-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.88rem;
+    }
+    .wa-day-row:last-child { border-bottom: none; }
+    .wa-day-name { width: 40px; color: #888; font-weight: 500; }
+    .wa-day-icon { font-size: 1.2rem; width: 28px; text-align: center; flex-shrink: 0; }
+    .wa-day-precip { display: flex; align-items: center; gap: 5px; width: 70px; font-size: 0.75rem; color: #6699ff; flex-shrink: 0; }
+    .wa-precip-bar-wrap { flex: 1; background: rgba(102,153,255,0.1); border-radius: 4px; height: 4px; }
+    .wa-precip-bar { height: 4px; background: #6699ff; border-radius: 4px; }
+    .wa-day-temps { margin-left: auto; display: flex; gap: 10px; }
+    .wa-day-max { color: #e0e0f0; font-weight: 600; }
+    .wa-day-min { color: #555; }
+    /* Alerts */
+    .wa-alert-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 0.84rem;
+      line-height: 1.55;
+    }
+    .wa-alert-item:last-child { margin-bottom: 0; }
+    .wa-alert-item.warn   { background: rgba(255,204,68,0.07);  border-left: 3px solid #ffcc44; color: #ccbb88; }
+    .wa-alert-item.danger { background: rgba(255,68,68,0.07);   border-left: 3px solid #ff4444; color: #cc8888; }
+    .wa-alert-item.info   { background: rgba(78,205,196,0.07);  border-left: 3px solid #4ecdc4; color: #88bbbb; }
+    .wa-no-alerts { color: #444; font-size: 0.85rem; }
+    /* Emergency kit */
+    .wa-kit-section { margin-bottom: 16px; }
+    .wa-kit-section:last-child { margin-bottom: 0; }
+    .wa-kit-section-title { font-size: 0.7rem; color: #4ecdc4; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+    .wa-kit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; }
+    .wa-kit-item { display: flex; align-items: flex-start; gap: 6px; font-size: 0.81rem; color: #888; padding: 4px 0; line-height: 1.4; }
+    .wa-kit-item::before { content: '✓'; color: #4ecdc4; font-size: 0.72rem; flex-shrink: 0; margin-top: 2px; }
+    /* No-geo fallback */
+    .wa-no-geo { text-align: center; padding: 28px 16px; }
+    .wa-no-geo p { color: #666; font-size: 0.88rem; margin-bottom: 14px; line-height: 1.6; }
+    .wa-manual-row { display: flex; gap: 10px; }
+    #waManualInput {
+      flex: 1;
+      background: #0f0f1a;
+      border: 1px solid rgba(78,205,196,0.25);
+      border-radius: 8px;
+      color: #e0e0f0;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      outline: none;
+      font-family: inherit;
+    }
+    #waManualInput:focus { border-color: #4ecdc4; }
+    #waManualBtn { background: #4ecdc4; color: #0f0f1a; border: none; border-radius: 8px; padding: 10px 18px; font-weight: 700; font-size: 0.85rem; cursor: pointer; white-space: nowrap; font-family: inherit; }
+    #waManualBtn:hover { background: #38b2aa; }
+    .wa-loading { text-align: center; padding: 40px 20px; color: #555; font-size: 0.9rem; line-height: 2; }
+    .wa-error { color: #ff5555; font-size: 0.85rem; padding: 24px; text-align: center; line-height: 1.8; }
+    /* Tools divider */
+    .tools-divider {
+      width: 100%;
+      max-width: 560px;
+      text-align: center;
+      position: relative;
+      margin: 14px 0 20px;
+    }
+    .tools-divider::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 0; right: 0;
+      height: 1px;
+      background: rgba(255,255,255,0.05);
+    }
+    .tools-divider span {
+      position: relative;
+      background: #0f0f1a;
+      padding: 0 14px;
+      font-size: 0.7rem;
+      color: #333;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
     /* ── Disaster Guide ────────────────────────────────────── */
     .guide-card {
       background: #1a1a2e;
@@ -618,8 +776,40 @@
 </head>
 <body>
 
-  <h1>Info Checker</h1>
-  <p class="subtitle">Fact-check statements &amp; explore system info</p>
+  <!-- ── Weather App ─────────────────────────────────────────── -->
+  <div class="wa-top-bar">
+    <span class="wa-top-title">🌤 Info Checker</span>
+    <button class="wa-refresh-btn" onclick="initWeatherApp()">↺ Refresh</button>
+  </div>
+
+  <div class="wa-hero" id="waHero">
+    <div class="wa-loading">
+      <div class="d-spinner" style="width:24px;height:24px;margin:0 auto 10px;display:block"></div>
+      Detecting your location…
+    </div>
+  </div>
+
+  <div class="wa-card" id="waHourlyCard" style="display:none">
+    <div class="wa-card-title">🕐 24-Hour Temperature</div>
+    <div id="waHourlyGraph"></div>
+  </div>
+
+  <div class="wa-card" id="waDailyCard" style="display:none">
+    <div class="wa-card-title">📅 7-Day Forecast</div>
+    <div id="waDailyList"></div>
+  </div>
+
+  <div class="wa-card" id="waAlertsCard" style="display:none">
+    <div class="wa-card-title">⚠️ Alerts &amp; Advisories</div>
+    <div id="waAlertsList"></div>
+  </div>
+
+  <div class="wa-card" id="waKitCard" style="display:none">
+    <div class="wa-card-title">🎒 Emergency Kit</div>
+    <div id="waKitContent"></div>
+  </div>
+
+  <div class="tools-divider"><span>More Tools</span></div>
 
   <!-- ── Fact-Check Chat ─────────────────────────────────────── -->
   <div class="chat-card">
@@ -1157,6 +1347,7 @@
     document.getElementById('utcoffset').textContent = `UTC${offset >= 0 ? '+' : ''}${offset/60}`;
     updateTime();
     setInterval(updateTime, 1000);
+    initWeatherApp();
 
     // Performance
     window.addEventListener('load', () => {
@@ -1536,17 +1727,20 @@ Rules:
     }
 
     // ── Weather (Open-Meteo, free, no key) ───────────────────────────────────
-    function wmoToDesc(code) {
-      if (code === 0)              return ['☀️', 'Clear sky'];
-      if (code <= 3)               return ['⛅', 'Partly cloudy'];
-      if (code <= 48)              return ['🌫️', 'Fog'];
-      if (code <= 57)              return ['🌦️', 'Drizzle'];
-      if (code <= 67)              return ['🌧️', 'Rain'];
-      if (code <= 77)              return ['❄️', 'Snow'];
-      if (code <= 82)              return ['🌦️', 'Rain showers'];
-      if (code <= 86)              return ['❄️', 'Snow showers'];
-      return ['⛈️', 'Thunderstorm'];
+    const WMO_MAP = {
+      0:['☀️','Clear sky'], 1:['🌤️','Mainly clear'], 2:['⛅','Partly cloudy'], 3:['☁️','Overcast'],
+      45:['🌫️','Fog'], 48:['🌫️','Rime fog'],
+      51:['🌦️','Light drizzle'], 53:['🌦️','Drizzle'], 55:['🌦️','Heavy drizzle'],
+      61:['🌧️','Light rain'], 63:['🌧️','Rain'], 65:['🌧️','Heavy rain'],
+      71:['🌨️','Light snow'], 73:['🌨️','Snow'], 75:['❄️','Heavy snow'], 77:['❄️','Snow grains'],
+      80:['🌦️','Showers'], 81:['🌧️','Heavy showers'], 82:['⛈️','Violent showers'],
+      85:['🌨️','Snow showers'], 86:['❄️','Heavy snow showers'],
+      95:['⛈️','Thunderstorm'], 96:['⛈️','Thunderstorm w/ hail'], 99:['⛈️','Severe thunderstorm']
+    };
+    function wmoGet(code) {
+      return WMO_MAP[code] || WMO_MAP[Math.floor(code / 10) * 10] || ['🌡️','Unknown'];
     }
+    const wmoToDesc = wmoGet;
 
     function windDir(deg) {
       const dirs = ['N','NE','E','SE','S','SW','W','NW'];
@@ -1600,6 +1794,240 @@ Rules:
           <div class="weather-stat">📍 Coords <span class="weather-stat-val">${data.latitude.toFixed(2)}, ${data.longitude.toFixed(2)}</span></div>
         </div>
         <div class="weather-source">Source: Open-Meteo · live data</div>`;
+    }
+
+    // ── Weather App ──────────────────────────────────────────────────────────
+
+    const DAYS_SHORT  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+    async function initWeatherApp() {
+      const hero = document.getElementById('waHero');
+      hero.innerHTML = '<div class="wa-loading"><div class="d-spinner" style="width:24px;height:24px;margin:0 auto 10px;display:block"></div>Detecting your location…</div>';
+      ['waHourlyCard','waDailyCard','waAlertsCard','waKitCard'].forEach(id => document.getElementById(id).style.display = 'none');
+      if (!navigator.geolocation) { showGeoFallback('Geolocation is not supported by your browser.'); return; }
+      navigator.geolocation.getCurrentPosition(
+        pos => fetchWeatherAppData(pos.coords.latitude, pos.coords.longitude),
+        err => showGeoFallback(err.code === 1 ? 'Location access was denied.' : 'Could not determine your location.'),
+        { timeout: 10000 }
+      );
+    }
+
+    function showGeoFallback(msg) {
+      document.getElementById('waHero').innerHTML = `<div class="wa-no-geo">
+        <p>📍 ${escHtml(msg)}<br>Enter a city or location to get weather data:</p>
+        <div class="wa-manual-row">
+          <input type="text" id="waManualInput" placeholder="e.g. Tokyo, London, New York…">
+          <button id="waManualBtn" onclick="waManualFetch()">Get Weather</button>
+        </div>
+      </div>`;
+      document.getElementById('waManualInput').addEventListener('keydown', e => { if (e.key === 'Enter') waManualFetch(); });
+    }
+
+    async function waManualFetch() {
+      const val = (document.getElementById('waManualInput').value || '').trim();
+      if (!val) return;
+      document.getElementById('waHero').innerHTML = '<div class="wa-loading"><div class="d-spinner" style="width:24px;height:24px;margin:0 auto 10px;display:block"></div>Looking up location…</div>';
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(val)}&format=json&limit=1`);
+        const data = await res.json();
+        if (!data.length) throw new Error('Location not found. Try a different city name.');
+        const name = data[0].display_name.split(',').slice(0, 2).join(',').trim();
+        fetchWeatherAppData(parseFloat(data[0].lat), parseFloat(data[0].lon), name);
+      } catch (e) {
+        document.getElementById('waHero').innerHTML = `<div class="wa-error">⚠️ ${escHtml(e.message)}</div>`;
+      }
+    }
+
+    async function fetchWeatherAppData(lat, lon, knownName) {
+      document.getElementById('waHero').innerHTML = '<div class="wa-loading"><div class="d-spinner" style="width:24px;height:24px;margin:0 auto 10px;display:block"></div>Loading weather data…</div>';
+      try {
+        let locName = knownName;
+        if (!locName) {
+          try {
+            const gr = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+            const gd = await gr.json();
+            const a = gd.address || {};
+            locName = [a.city || a.town || a.village || a.county, a.country].filter(Boolean).join(', ');
+          } catch (_) { locName = `${lat.toFixed(2)}, ${lon.toFixed(2)}`; }
+        }
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+          `&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m` +
+          `&hourly=temperature_2m,weather_code,precipitation_probability` +
+          `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,sunrise,sunset` +
+          `&wind_speed_unit=kmh&timezone=auto&forecast_days=7`;
+        const wr = await fetch(url);
+        if (!wr.ok) throw new Error('Weather API returned an error. Try again.');
+        const wd = await wr.json();
+        renderWeatherApp(wd, locName);
+      } catch (e) {
+        document.getElementById('waHero').innerHTML = `<div class="wa-error">⚠️ ${escHtml(e.message)}<br><small style="color:#444">Check your connection and try refreshing.</small></div>`;
+      }
+    }
+
+    function renderWeatherApp(wd, locName) {
+      const c = wd.current;
+      const [icon, condText] = wmoGet(c.weather_code);
+      const tempC   = Math.round(c.temperature_2m);
+      const feelsC  = Math.round(c.apparent_temperature);
+      const wind    = Math.round(c.wind_speed_10m);
+      const gusts   = Math.round(c.wind_gusts_10m);
+      const dir     = windDir(c.wind_direction_10m || 0);
+      const hum     = c.relative_humidity_2m;
+      const cloud   = c.cloud_cover;
+      const todayHi = Math.round(wd.daily.temperature_2m_max?.[0] ?? tempC);
+      const todayLo = Math.round(wd.daily.temperature_2m_min?.[0] ?? tempC);
+      const sunrise = wd.daily.sunrise?.[0] ? new Date(wd.daily.sunrise[0]) : null;
+      const sunset  = wd.daily.sunset?.[0]  ? new Date(wd.daily.sunset[0])  : null;
+      const fmtT    = d => d ? `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}` : '—';
+
+      document.getElementById('waHero').innerHTML = `
+        <div class="wa-loc"><span>📍</span><span class="wa-loc-name">${escHtml(locName)}</span></div>
+        <div class="wa-main-row">
+          <span class="wa-big-icon">${icon}</span>
+          <div class="wa-temp-col">
+            <span class="wa-temp-big">${tempC}<span class="wa-temp-unit">°C</span></span>
+            <span class="wa-condition">${condText}</span>
+            <span class="wa-feels">Feels like ${feelsC}°C</span>
+          </div>
+        </div>
+        <div class="wa-stats-grid">
+          <div class="wa-stat"><span class="wa-stat-icon">💧</span><span class="wa-stat-val">${hum}%</span><span class="wa-stat-lbl">Humidity</span></div>
+          <div class="wa-stat"><span class="wa-stat-icon">💨</span><span class="wa-stat-val">${wind} km/h</span><span class="wa-stat-lbl">${dir} Wind</span></div>
+          <div class="wa-stat"><span class="wa-stat-icon">💨</span><span class="wa-stat-val">${gusts} km/h</span><span class="wa-stat-lbl">Gusts</span></div>
+          <div class="wa-stat"><span class="wa-stat-icon">☁️</span><span class="wa-stat-val">${cloud}%</span><span class="wa-stat-lbl">Cloud Cover</span></div>
+          <div class="wa-stat"><span class="wa-stat-icon">↑</span><span class="wa-stat-val">${todayHi}°C</span><span class="wa-stat-lbl">Today High</span></div>
+          <div class="wa-stat"><span class="wa-stat-icon">↓</span><span class="wa-stat-val">${todayLo}°C</span><span class="wa-stat-lbl">Today Low</span></div>
+          <div class="wa-stat"><span class="wa-stat-icon">🌅</span><span class="wa-stat-val">${fmtT(sunrise)}</span><span class="wa-stat-lbl">Sunrise</span></div>
+          <div class="wa-stat"><span class="wa-stat-icon">🌇</span><span class="wa-stat-val">${fmtT(sunset)}</span><span class="wa-stat-lbl">Sunset</span></div>
+        </div>`;
+
+      renderHourlyGraph(wd.hourly);
+      renderDailyForecast(wd.daily);
+      renderWeatherAlerts(c, wd.hourly, wd.daily);
+      renderEmergencyKit(c, wd.daily);
+    }
+
+    function renderHourlyGraph(hourly) {
+      const card = document.getElementById('waHourlyCard');
+      const wrap = document.getElementById('waHourlyGraph');
+      card.style.display = 'block';
+      const now = new Date();
+      const si = Math.max(hourly.time.findIndex(t => new Date(t) >= now), 0);
+      const times = hourly.time.slice(si, si + 25);
+      const temps = hourly.temperature_2m.slice(si, si + 25);
+      const precip = (hourly.precipitation_probability || []).slice(si, si + 25);
+      const n = temps.length;
+      if (n < 2) { wrap.innerHTML = '<p style="color:#444;font-size:0.8rem">No hourly data.</p>'; return; }
+
+      const W = 530, H = 120, pL = 28, pR = 8, pT = 22, pB = 24;
+      const gW = W - pL - pR, gH = H - pT - pB;
+      const minT = Math.min(...temps) - 1, maxT = Math.max(...temps) + 1;
+      const xOf = i => pL + (i / (n - 1)) * gW;
+      const yOf = t => pT + gH - ((t - minT) / (maxT - minT)) * gH;
+      const pts = temps.map((t, i) => `${xOf(i).toFixed(1)},${yOf(t).toFixed(1)}`).join(' L ');
+      const area = `M ${pts} L ${xOf(n-1).toFixed(1)},${(pT+gH).toFixed(1)} L ${xOf(0).toFixed(1)},${(pT+gH).toFixed(1)} Z`;
+      const bW = Math.max(gW / n - 1, 2);
+
+      let bars = '', marks = '';
+      for (let i = 0; i < n; i++) {
+        const p = precip[i] || 0;
+        if (p > 5) { const bH = (p/100)*gH*0.35; bars += `<rect x="${(xOf(i)-bW/2).toFixed(1)}" y="${(pT+gH-bH).toFixed(1)}" width="${bW.toFixed(1)}" height="${bH.toFixed(1)}" fill="rgba(100,150,255,0.18)" rx="1"/>`; }
+        if (i % (n > 18 ? 4 : 3) === 0) {
+          const tx = xOf(i).toFixed(1), ty = yOf(temps[i]).toFixed(1);
+          const lbl = i === 0 ? 'Now' : `${new Date(times[i]).getHours()}:00`;
+          marks += `<text x="${tx}" y="${H-5}" text-anchor="middle" fill="#444" font-size="9">${lbl}</text>`;
+          marks += `<text x="${tx}" y="${(parseFloat(ty)-5).toFixed(1)}" text-anchor="middle" fill="#99bbb8" font-size="9">${Math.round(temps[i])}°</text>`;
+          marks += `<circle cx="${tx}" cy="${ty}" r="2.5" fill="#4ecdc4" opacity="0.8"/>`;
+        }
+      }
+
+      wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+        <defs><linearGradient id="tGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4ecdc4" stop-opacity="0.22"/><stop offset="100%" stop-color="#4ecdc4" stop-opacity="0.01"/></linearGradient></defs>
+        ${bars}
+        <path d="${area}" fill="url(#tGrad)"/>
+        <path d="M ${pts}" fill="none" stroke="#4ecdc4" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+        ${marks}
+      </svg>
+      <div style="font-size:0.68rem;color:#333;margin-top:4px;display:flex;gap:14px">
+        <span><span style="display:inline-block;width:10px;height:2px;background:#4ecdc4;vertical-align:middle;margin-right:4px;border-radius:2px"></span>Temperature</span>
+        <span><span style="display:inline-block;width:10px;height:8px;background:rgba(100,150,255,0.28);vertical-align:middle;margin-right:4px;border-radius:1px"></span>Rain chance</span>
+      </div>`;
+    }
+
+    function renderDailyForecast(daily) {
+      const card = document.getElementById('waDailyCard');
+      card.style.display = 'block';
+      const n = daily.time?.length || 0;
+      let html = '';
+      for (let i = 0; i < n; i++) {
+        const d = new Date(daily.time[i]);
+        const name = i === 0 ? 'Today' : DAYS_SHORT[d.getDay()];
+        const [ic] = wmoGet(daily.weather_code[i]);
+        const hi = Math.round(daily.temperature_2m_max[i]);
+        const lo = Math.round(daily.temperature_2m_min[i]);
+        const pp = daily.precipitation_probability_max?.[i] ?? 0;
+        html += `<div class="wa-day-row">
+          <span class="wa-day-name">${name}</span>
+          <span class="wa-day-icon">${ic}</span>
+          <div class="wa-day-precip">
+            <span style="min-width:28px">${Math.round(pp)}%</span>
+            <div class="wa-precip-bar-wrap"><div class="wa-precip-bar" style="width:${Math.round(pp)}%"></div></div>
+          </div>
+          <div class="wa-day-temps"><span class="wa-day-max">${hi}°</span><span class="wa-day-min">${lo}°</span></div>
+        </div>`;
+      }
+      document.getElementById('waDailyList').innerHTML = html;
+    }
+
+    function renderWeatherAlerts(cur, hourly, daily) {
+      const card = document.getElementById('waAlertsCard');
+      card.style.display = 'block';
+      const alerts = [];
+      const code = cur.weather_code, gusts = cur.wind_gusts_10m, temp = cur.temperature_2m;
+
+      if (code >= 95) alerts.push({cls:'danger', t:`⛈️ Thunderstorm active. Seek shelter indoors, avoid high ground and open areas.`});
+      if (gusts > 80) alerts.push({cls:'danger', t:`💨 Severe gusts of ${Math.round(gusts)} km/h. Secure loose items; avoid travel if possible.`});
+      else if (gusts > 60) alerts.push({cls:'warn',  t:`💨 Strong gusts of ${Math.round(gusts)} km/h. Exercise caution outdoors.`});
+      if (temp >= 38)  alerts.push({cls:'danger', t:`🌡️ Extreme heat: ${Math.round(temp)}°C. Stay hydrated, avoid outdoor exertion, check on vulnerable people.`});
+      else if (temp >= 33) alerts.push({cls:'warn', t:`🥵 High temperature of ${Math.round(temp)}°C. Limit outdoor activity during peak hours (10am–4pm).`});
+      if (temp <= -15) alerts.push({cls:'danger', t:`🥶 Extreme cold: ${Math.round(temp)}°C. High frostbite risk. Cover all exposed skin.`});
+      else if (temp <= -5) alerts.push({cls:'warn', t:`❄️ Freezing temperature of ${Math.round(temp)}°C. Watch for ice; dress in insulating layers.`});
+      if ([55,65,67,81,82].includes(code)) alerts.push({cls:'warn', t:`🌧️ Heavy rain currently. Watch for localised flooding and reduced driving visibility.`});
+
+      const now = new Date();
+      const si = hourly.time.findIndex(t => new Date(t) >= now);
+      if (si >= 0) {
+        const npp = (hourly.precipitation_probability || []).slice(si, si + 24).filter(Boolean);
+        if (npp.length && Math.max(...npp) >= 80) alerts.push({cls:'info', t:`🌧️ High rain probability (${Math.max(...npp)}%) in the next 24 hours.`});
+        if ((hourly.weather_code || []).slice(si, si + 24).some(x => x >= 95)) alerts.push({cls:'warn', t:`⛈️ Thunderstorms forecast within the next 24 hours.`});
+      }
+      const mxWind = Math.max(...(daily.wind_gusts_10m_max || daily.wind_speed_10m_max || []).slice(0,3).filter(Boolean));
+      if (mxWind > 80) alerts.push({cls:'warn', t:`💨 Wind gusts up to ${Math.round(mxWind)} km/h forecast in the next 3 days.`});
+
+      document.getElementById('waAlertsList').innerHTML = alerts.length
+        ? alerts.map(a => `<div class="wa-alert-item ${a.cls}">${escHtml(a.t)}</div>`).join('')
+        : '<div class="wa-no-alerts">✅ No active alerts for your area.</div>';
+    }
+
+    function renderEmergencyKit(cur, daily) {
+      const card = document.getElementById('waKitCard');
+      card.style.display = 'block';
+      const code = cur.weather_code, temp = cur.temperature_2m, gusts = cur.wind_gusts_10m;
+      const hi = daily.temperature_2m_max?.[0] ?? temp, lo = daily.temperature_2m_min?.[0] ?? temp;
+
+      const base = ['3-day water supply (4L/person/day)','Non-perishable food (3-day)','First aid kit & medications','Flashlight & extra batteries','Power bank / phone charger','Emergency cash & ID copies','Whistle to signal for help','Multi-tool or pocket knife'];
+      const extra = new Set();
+
+      if (code >= 61 || [80,81,82].includes(code)) { ['Umbrella & waterproof jacket','Waterproof boots','Waterproof bag for electronics','Sandbags if in a flood-prone area'].forEach(x => extra.add(x)); }
+      if (code >= 95) { ['Surge protector for electronics','Rubber-soled footwear','Battery-powered emergency radio'].forEach(x => extra.add(x)); }
+      if (code >= 71 && code <= 77 || lo <= 0) { ['Ice scraper & snow shovel','Rock salt / sand for walkways','Extra blankets & thermal clothing','Hand warmers'].forEach(x => extra.add(x)); }
+      if (hi >= 33) { ['Double water supply in heat','Electrolytes / sports drinks','Sun hat, sunglasses, SPF 50+ sunscreen','Cooling towel or handheld fan'].forEach(x => extra.add(x)); }
+      if (gusts > 60) { ['Secure all outdoor furniture','Rope & tie-downs for loose items','Candles & matches (power may cut)'].forEach(x => extra.add(x)); }
+      if (code >= 45 && code <= 48) { ['High-visibility clothing','Reduce driving speed in fog','Fog lights if driving'].forEach(x => extra.add(x)); }
+
+      const baseHtml = `<div class="wa-kit-section"><div class="wa-kit-section-title">Always Have Ready</div><div class="wa-kit-grid">${base.map(i=>`<div class="wa-kit-item">${escHtml(i)}</div>`).join('')}</div></div>`;
+      const extHtml = extra.size ? `<div class="wa-kit-section"><div class="wa-kit-section-title">Recommended for Current Conditions</div><div class="wa-kit-grid">${[...extra].map(i=>`<div class="wa-kit-item">${escHtml(i)}</div>`).join('')}</div></div>` : '';
+      document.getElementById('waKitContent').innerHTML = baseHtml + extHtml;
     }
 
     function escHtml(s) {
