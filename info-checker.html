@@ -507,6 +507,100 @@
       50%  { transform: scale(1.35); opacity: 0; }
       100% { transform: scale(1);   opacity: 0; }
     }
+
+    /* ── Disaster Guide ────────────────────────────────────── */
+    .guide-card {
+      background: #1a1a2e;
+      border: 1px solid rgba(255,140,60,0.25);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 560px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .guide-header {
+      background: linear-gradient(135deg, #2a1a0e 0%, #1a1a2e 100%);
+      border-bottom: 1px solid rgba(255,140,60,0.2);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .guide-header-icon { font-size: 1.4rem; filter: drop-shadow(0 0 6px rgba(255,140,60,0.5)); }
+    .guide-header-text h2 {
+      font-size: 1rem;
+      color: #ff8c3c;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+    }
+    .guide-header-text p { font-size: 0.78rem; color: #666; }
+    .guide-list { padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
+    details.guide-item {
+      background: #0f0f1a;
+      border-radius: 8px;
+      border-left: 3px solid #ff8c3c;
+      overflow: hidden;
+    }
+    details.guide-item[open] { border-left-color: #ff6622; }
+    summary.guide-summary {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+    }
+    summary.guide-summary::-webkit-details-marker { display: none; }
+    .guide-summary-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .guide-summary-text { flex: 1; }
+    .guide-summary-name { font-size: 0.9rem; font-weight: 600; color: #e0e0f0; }
+    .guide-summary-tag  { font-size: 0.75rem; color: #666; margin-top: 1px; }
+    .guide-chevron {
+      font-size: 0.75rem;
+      color: #555;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    details.guide-item[open] .guide-chevron { transform: rotate(180deg); }
+    .guide-body {
+      padding: 0 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      margin-top: 0;
+    }
+    .guide-section { margin-top: 10px; }
+    .guide-section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #ff8c3c;
+      margin-bottom: 5px;
+    }
+    .guide-section-body {
+      font-size: 0.82rem;
+      color: #999;
+      line-height: 1.6;
+    }
+    .guide-section-body li { margin-left: 14px; margin-bottom: 2px; }
+    .guide-tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .guide-tag {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+    .guide-tag.wind    { background: rgba(78,205,196,0.12); color: #4ecdc4; }
+    .guide-tag.fire    { background: rgba(255,68,68,0.12);  color: #ff6666; }
+    .guide-tag.water   { background: rgba(68,130,255,0.12); color: #6699ff; }
+    .guide-tag.earth   { background: rgba(180,130,60,0.12); color: #cc9944; }
+    .guide-tag.cold    { background: rgba(140,200,255,0.12);color: #88ccff; }
+    .guide-tag.heat    { background: rgba(255,160,40,0.12); color: #ffaa44; }
+    .guide-tag.bio     { background: rgba(100,200,80,0.12); color: #77cc55; }
   </style>
 </head>
 <body>
@@ -566,6 +660,392 @@
       </div>
       <div id="weatherWidget" class="weather-widget"></div>
       <div id="politicalSection" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ── Natural Disaster Guide ──────────────────────────────────────── -->
+  <div class="guide-card">
+    <div class="guide-header">
+      <div class="guide-header-icon">📖</div>
+      <div class="guide-header-text">
+        <h2>Natural Disaster Guide</h2>
+        <p>Click any disaster to learn what it is, warning signs, and how to stay safe</p>
+      </div>
+    </div>
+    <div class="guide-list">
+
+      <!-- Earthquake -->
+      <details class="guide-item">
+        <summary class="guide-summary">
+          <span class="guide-summary-icon">🌍</span>
+          <div class="guide-summary-text">
+            <div class="guide-summary-name">Earthquake</div>
+            <div class="guide-summary-tag">Sudden ground shaking from fault movement</div>
+          </div>
+          <span class="guide-chevron">▼</span>
+        </summary>
+        <div class="guide-body">
+          <div class="guide-tag-row"><span class="guide-tag earth">Tectonic</span><span class="guide-tag earth">Fault Lines</span><span class="guide-tag earth">Aftershocks</span></div>
+          <div class="guide-section">
+            <div class="guide-section-title">What it is</div>
+            <div class="guide-section-body">A sudden release of energy in Earth's crust caused by movement along fault lines, volcanic activity, or tectonic plate collisions. Shaking can last seconds to minutes and may trigger tsunamis, landslides, and fires.</div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">Warning signs</div>
+            <div class="guide-section-body"><ul><li>Foreshocks (smaller tremors beforehand)</li><li>Animals behaving unusually or fleeing</li><li>Radon gas detected in groundwater</li><li>Ground cracking or tilting (rare, near faults)</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">During</div>
+            <div class="guide-section-body"><ul><li><b>Drop, Cover, Hold On</b> — get under a sturdy table and hold on</li><li>Stay away from windows, exterior walls, and heavy objects</li><li>If outdoors, move away from buildings, power lines, and trees</li><li>If driving, pull over away from overpasses and wait</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">After</div>
+            <div class="guide-section-body"><ul><li>Expect aftershocks — some can be nearly as strong as the main quake</li><li>Check for gas leaks (smell, hissing) — open windows and evacuate if suspected</li><li>Avoid damaged buildings and downed power lines</li><li>If near the coast, move to high ground immediately (tsunami risk)</li></ul></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Tsunami -->
+      <details class="guide-item">
+        <summary class="guide-summary">
+          <span class="guide-summary-icon">🌊</span>
+          <div class="guide-summary-text">
+            <div class="guide-summary-name">Tsunami</div>
+            <div class="guide-summary-tag">Massive ocean waves triggered by seabed events</div>
+          </div>
+          <span class="guide-chevron">▼</span>
+        </summary>
+        <div class="guide-body">
+          <div class="guide-tag-row"><span class="guide-tag water">Ocean</span><span class="guide-tag water">Coastal</span><span class="guide-tag earth">Earthquake-triggered</span></div>
+          <div class="guide-section">
+            <div class="guide-section-title">What it is</div>
+            <div class="guide-section-body">A series of enormous ocean waves caused by an underwater earthquake, volcanic eruption, or submarine landslide. Open-ocean waves travel at up to 800 km/h and are barely noticeable at sea but grow to devastating heights nearshore.</div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">Warning signs</div>
+            <div class="guide-section-body"><ul><li>Strong or prolonged earthquake felt near the coast</li><li>Ocean rapidly receding (the "drawback") — exposing the seabed</li><li>Loud rumbling or roaring sound from the ocean</li><li>Official tsunami warnings via alert systems</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">During</div>
+            <div class="guide-section-body"><ul><li><b>Move immediately to high ground (30 m+)</b> — do not wait for official confirmation</li><li>The drawback IS the warning — run, do not stop to watch</li><li>A building's upper floors may provide refuge if high ground is unreachable</li><li>Do not return to the coast until authorities declare it safe</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">After</div>
+            <div class="guide-section-body"><ul><li>Multiple waves arrive — often the second or third is the largest</li><li>Wait for the all-clear before returning to coastal areas</li><li>Avoid floodwater — it is fast-moving and carries debris</li><li>Beware of sewage contamination in standing water</li></ul></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Hurricane -->
+      <details class="guide-item">
+        <summary class="guide-summary">
+          <span class="guide-summary-icon">🌀</span>
+          <div class="guide-summary-text">
+            <div class="guide-summary-name">Hurricane / Typhoon / Cyclone</div>
+            <div class="guide-summary-tag">Rotating tropical storm with extreme winds</div>
+          </div>
+          <span class="guide-chevron">▼</span>
+        </summary>
+        <div class="guide-body">
+          <div class="guide-tag-row"><span class="guide-tag wind">Wind</span><span class="guide-tag water">Storm Surge</span><span class="guide-tag water">Flooding</span></div>
+          <div class="guide-section">
+            <div class="guide-section-title">What it is</div>
+            <div class="guide-section-body">A large rotating tropical storm with sustained winds exceeding 119 km/h. The same phenomenon is called a hurricane (Atlantic/eastern Pacific), typhoon (western Pacific), or cyclone (Indian Ocean/Australia). Danger comes from wind, storm surge, and inland flooding.</div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">Warning signs</div>
+            <div class="guide-section-body"><ul><li>Days-in-advance forecast from meteorological services</li><li>Rapidly dropping barometric pressure</li><li>Intensifying rain bands and darkening, thickening clouds</li><li>Government evacuation orders</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">During</div>
+            <div class="guide-section-body"><ul><li>Evacuate storm-surge zones when ordered — surge kills more than wind</li><li>Shelter in a sturdy building's interior room, away from windows</li><li>The calm "eye" passing overhead is temporary — the storm returns</li><li>Avoid flooded roads — 15 cm of water can knock a person over</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">After</div>
+            <div class="guide-section-body"><ul><li>Do not go outside until authorities confirm the storm has fully passed</li><li>Watch for downed power lines and structural damage</li><li>Avoid floodwaters — they may be contaminated or electrically charged</li><li>Use generators outdoors only to avoid carbon monoxide poisoning</li></ul></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Tornado -->
+      <details class="guide-item">
+        <summary class="guide-summary">
+          <span class="guide-summary-icon">🌪️</span>
+          <div class="guide-summary-text">
+            <div class="guide-summary-name">Tornado</div>
+            <div class="guide-summary-tag">Violent rotating column of air from a thunderstorm</div>
+          </div>
+          <span class="guide-chevron">▼</span>
+        </summary>
+        <div class="guide-body">
+          <div class="guide-tag-row"><span class="guide-tag wind">Wind up to 480 km/h</span><span class="guide-tag wind">Brief</span><span class="guide-tag earth">Debris</span></div>
+          <div class="guide-section">
+            <div class="guide-section-title">What it is</div>
+            <div class="guide-section-body">A rapidly rotating column of air extending from a supercell thunderstorm to the ground. Most last only minutes, but violent EF4–EF5 tornadoes can stay on the ground for over an hour and devastate entire towns.</div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">Warning signs</div>
+            <div class="guide-section-body"><ul><li>Dark, greenish or purple sky</li><li>Large hail, often followed by sudden calm</li><li>Loud continuous roar (like a freight train)</li><li>Rotating funnel cloud descending from a storm cloud</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">During</div>
+            <div class="guide-section-body"><ul><li>Go to the <b>lowest floor, interior room</b> (bathroom, closet, under stairs)</li><li>Cover yourself with a mattress, blankets, or helmet to protect from debris</li><li>Mobile homes are unsafe — leave immediately for a sturdy building</li><li>If caught outdoors with no shelter, lie flat in a low ditch</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">After</div>
+            <div class="guide-section-body"><ul><li>Watch for downed power lines and gas leaks</li><li>Wear sturdy shoes — debris and broken glass everywhere</li><li>More tornadoes may follow the same storm system</li><li>Photograph damage before cleanup for insurance</li></ul></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Flood -->
+      <details class="guide-item">
+        <summary class="guide-summary">
+          <span class="guide-summary-icon">🌧️</span>
+          <div class="guide-summary-text">
+            <div class="guide-summary-name">Flood</div>
+            <div class="guide-summary-tag">Overflow of water onto normally dry land</div>
+          </div>
+          <span class="guide-chevron">▼</span>
+        </summary>
+        <div class="guide-body">
+          <div class="guide-tag-row"><span class="guide-tag water">Flash Flood</span><span class="guide-tag water">River Flood</span><span class="guide-tag water">Storm Surge</span></div>
+          <div class="guide-section">
+            <div class="guide-section-title">What it is</div>
+            <div class="guide-section-body">Flooding occurs when water overflows onto land that is normally dry. Flash floods develop within 6 hours of heavy rain and are extremely dangerous. River floods develop more slowly but can persist for days. Coastal floods are driven by storm surge or high tides.</div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">Warning signs</div>
+            <div class="guide-section-body"><ul><li>Heavy or prolonged rainfall upstream</li><li>Rapidly rising river or stream levels</li><li>Saturated soil unable to absorb more rain</li><li>Official flood watches and warnings</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">During</div>
+            <div class="guide-section-body"><ul><li>Move to higher ground immediately — never wait</li><li><b>Never walk through floodwater:</b> 15 cm can knock you down; 30 cm can move a car</li><li>Do not drive on flooded roads — "Turn Around, Don't Drown"</li><li>Disconnect electrical appliances if water is rising indoors</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">After</div>
+            <div class="guide-section-body"><ul><li>Avoid floodwater — it is likely contaminated with sewage and chemicals</li><li>Do not use electrical devices until wiring has been inspected</li><li>Dry and disinfect all surfaces to prevent mould growth</li><li>Document all damage with photos before cleanup</li></ul></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Wildfire -->
+      <details class="guide-item">
+        <summary class="guide-summary">
+          <span class="guide-summary-icon">🔥</span>
+          <div class="guide-summary-text">
+            <div class="guide-summary-name">Wildfire</div>
+            <div class="guide-summary-tag">Uncontrolled fire spreading through vegetation</div>
+          </div>
+          <span class="guide-chevron">▼</span>
+        </summary>
+        <div class="guide-body">
+          <div class="guide-tag-row"><span class="guide-tag fire">Extreme Heat</span><span class="guide-tag fire">Embers</span><span class="guide-tag wind">Wind-driven</span></div>
+          <div class="guide-section">
+            <div class="guide-section-title">What it is</div>
+            <div class="guide-section-body">An uncontrolled fire that spreads through forests, grasslands, or shrublands, often driven by wind and dry conditions. Wildfires can travel faster than a person can run and produce toxic smoke visible hundreds of kilometres away.</div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">Warning signs</div>
+            <div class="guide-section-body"><ul><li>Visible smoke on the horizon or smell of burning</li><li>Ash falling from the sky</li><li>Sudden strong wind increase in dry conditions</li><li>Animals fleeing the area</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">During</div>
+            <div class="guide-section-body"><ul><li><b>Evacuate immediately when ordered</b> — early evacuation saves lives</li><li>If trapped, shelter in a building — close all vents and gaps</li><li>Cover mouth with a damp cloth; wear long clothing and enclosed shoes</li><li>Turn on lights so rescue crews can see you through smoke</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">After</div>
+            <div class="guide-section-body"><ul><li>Do not return until authorities confirm the area is safe</li><li>Wear an N95 mask — ash contains toxic particles</li><li>Watch for "hotspots" — fires can reignite days later</li><li>Burned slopes are prone to mudslides during rain</li></ul></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Volcanic Eruption -->
+      <details class="guide-item">
+        <summary class="guide-summary">
+          <span class="guide-summary-icon">🌋</span>
+          <div class="guide-summary-text">
+            <div class="guide-summary-name">Volcanic Eruption</div>
+            <div class="guide-summary-tag">Lava, ash, and gases expelled from a volcano</div>
+          </div>
+          <span class="guide-chevron">▼</span>
+        </summary>
+        <div class="guide-body">
+          <div class="guide-tag-row"><span class="guide-tag fire">Lava</span><span class="guide-tag earth">Pyroclastic Flow</span><span class="guide-tag wind">Ash Cloud</span></div>
+          <div class="guide-section">
+            <div class="guide-section-title">What it is</div>
+            <div class="guide-section-body">A volcanic eruption releases lava, ash, toxic gases, and pyroclastic flows (fast-moving currents of hot gas and volcanic matter). Pyroclastic flows can reach 700 km/h and 1000°C. Ash can collapse roofs and contaminate water supplies across vast regions.</div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">Warning signs</div>
+            <div class="guide-section-body"><ul><li>Increased earthquake swarms near the volcano</li><li>Ground deformation or swelling detected by sensors</li><li>Sulfur smell or increased steam venting</li><li>Changes in volcanic lake colour or temperature</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">During</div>
+            <div class="guide-section-body"><ul><li>Evacuate immediately if ordered — pyroclastic flows are unsurvivable</li><li>Wear an N95 mask and goggles if ash is falling</li><li>Stay indoors with windows and doors sealed if sheltering</li><li>Avoid valleys and riverbeds — lahars (volcanic mudflows) travel fast</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">After</div>
+            <div class="guide-section-body"><ul><li>Clear ash from roofs — it is very heavy and can cause collapse</li><li>Do not use tap water until authorities confirm it is safe</li><li>Wear masks and goggles when cleaning ash</li><li>Be aware of secondary lahars triggered by rainfall weeks later</li></ul></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Drought -->
+      <details class="guide-item">
+        <summary class="guide-summary">
+          <span class="guide-summary-icon">☀️</span>
+          <div class="guide-summary-text">
+            <div class="guide-summary-name">Drought</div>
+            <div class="guide-summary-tag">Extended period of abnormally low rainfall</div>
+          </div>
+          <span class="guide-chevron">▼</span>
+        </summary>
+        <div class="guide-body">
+          <div class="guide-tag-row"><span class="guide-tag heat">Water Scarcity</span><span class="guide-tag heat">Food Security</span><span class="guide-tag fire">Wildfire Risk</span></div>
+          <div class="guide-section">
+            <div class="guide-section-title">What it is</div>
+            <div class="guide-section-body">A drought is an extended period of significantly below-average rainfall that depletes water supplies, reduces crop yields, and raises wildfire risk. Unlike other disasters, droughts develop slowly over months and can persist for years, causing famine and displacement.</div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">Warning signs</div>
+            <div class="guide-section-body"><ul><li>Consecutive months of below-average rainfall</li><li>Dropping reservoir, lake, and groundwater levels</li><li>Dry, cracked soil and yellowing vegetation</li><li>Government-issued water restrictions</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">During</div>
+            <div class="guide-section-body"><ul><li>Follow all water restrictions and conservation orders</li><li>Fix leaks and replace inefficient fixtures</li><li>Store drinking water safely if supplies are threatened</li><li>Be vigilant about fire — drought conditions make ignition easy</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">After</div>
+            <div class="guide-section-body"><ul><li>Reintroduce water slowly — sudden flooding of dry soil causes erosion</li><li>Restore vegetation to prevent long-term soil degradation</li><li>Assess crop and livestock losses for aid eligibility</li><li>Plan long-term rainwater harvesting and water storage</li></ul></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Blizzard -->
+      <details class="guide-item">
+        <summary class="guide-summary">
+          <span class="guide-summary-icon">❄️</span>
+          <div class="guide-summary-text">
+            <div class="guide-summary-name">Blizzard / Ice Storm</div>
+            <div class="guide-summary-tag">Severe snow, ice, and wind reducing visibility to near zero</div>
+          </div>
+          <span class="guide-chevron">▼</span>
+        </summary>
+        <div class="guide-body">
+          <div class="guide-tag-row"><span class="guide-tag cold">Hypothermia</span><span class="guide-tag cold">White-out</span><span class="guide-tag cold">Ice Accumulation</span></div>
+          <div class="guide-section">
+            <div class="guide-section-title">What it is</div>
+            <div class="guide-section-body">A blizzard combines heavy snowfall, sustained winds above 56 km/h, and visibility below 400 metres. Ice storms coat surfaces in freezing rain, making roads impassable and causing power lines and trees to collapse under the weight.</div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">Warning signs</div>
+            <div class="guide-section-body"><ul><li>Meteorological forecast of blizzard or freezing rain conditions</li><li>Rapid temperature drop to below freezing with precipitation</li><li>Darkening skies and strengthening winds</li><li>Government winter storm warnings</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">During</div>
+            <div class="guide-section-body"><ul><li>Stay indoors — wind chill can cause frostbite in minutes</li><li>Avoid all unnecessary travel; if you must drive, carry an emergency kit</li><li>Dress in layers (moisture-wicking base, insulating mid, windproof outer)</li><li>Keep pipes from freezing by letting taps drip slightly</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">After</div>
+            <div class="guide-section-body"><ul><li>Clear snow from roofs — heavy accumulation can cause structural collapse</li><li>Watch for black ice on roads and footpaths</li><li>Check on elderly and vulnerable neighbours</li><li>Do not use gas stoves or grills indoors for heating — carbon monoxide risk</li></ul></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Landslide -->
+      <details class="guide-item">
+        <summary class="guide-summary">
+          <span class="guide-summary-icon">⛰️</span>
+          <div class="guide-summary-text">
+            <div class="guide-summary-name">Landslide</div>
+            <div class="guide-summary-tag">Mass movement of rock, soil, or debris downslope</div>
+          </div>
+          <span class="guide-chevron">▼</span>
+        </summary>
+        <div class="guide-body">
+          <div class="guide-tag-row"><span class="guide-tag earth">Rain-triggered</span><span class="guide-tag earth">Earthquake-triggered</span><span class="guide-tag water">Mudflow</span></div>
+          <div class="guide-section">
+            <div class="guide-section-title">What it is</div>
+            <div class="guide-section-body">A landslide is the movement of rock, earth, or debris down a slope, often triggered by heavy rainfall, earthquakes, or human activity (deforestation, construction). Mudflows (lahars near volcanoes, debris flows) travel at high speed and can bury entire communities.</div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">Warning signs</div>
+            <div class="guide-section-body"><ul><li>Cracks appearing in ground, roads, or building foundations</li><li>Tilting or leaning trees, fences, or utility poles</li><li>New springs or muddy water appearing on slopes</li><li>Sudden increase in stream turbidity (muddiness)</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">During</div>
+            <div class="guide-section-body"><ul><li>Evacuate immediately — landslides move faster than people expect</li><li>Move away from the slide path to the sides, not upslope</li><li>If caught, curl into a ball to protect your head and vital organs</li><li>Avoid river channels during and after heavy rain — debris flows follow them</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">After</div>
+            <div class="guide-section-body"><ul><li>Stay away — secondary slides are common within 24–48 hours</li><li>Check for gas, water, and electrical line damage</li><li>Report unstable slopes and new ground cracks to authorities</li><li>Burned slopes are especially prone to slides during subsequent rainfall</li></ul></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Lightning Storm -->
+      <details class="guide-item">
+        <summary class="guide-summary">
+          <span class="guide-summary-icon">⚡</span>
+          <div class="guide-summary-text">
+            <div class="guide-summary-name">Lightning / Severe Thunderstorm</div>
+            <div class="guide-summary-tag">Electrical discharge, hail, strong winds, and heavy rain</div>
+          </div>
+          <span class="guide-chevron">▼</span>
+        </summary>
+        <div class="guide-body">
+          <div class="guide-tag-row"><span class="guide-tag wind">Hail</span><span class="guide-tag heat">Electric</span><span class="guide-tag water">Flash Flood</span></div>
+          <div class="guide-section">
+            <div class="guide-section-title">What it is</div>
+            <div class="guide-section-body">A thunderstorm produces lightning, thunder, heavy rain, and often hail or strong winds. Lightning strikes kill more people globally each year than tornadoes or hurricanes, and severe thunderstorms are a leading cause of flash floods and power outages.</div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">Warning signs</div>
+            <div class="guide-section-body"><ul><li>Darkening skies and distant rumbling thunder</li><li>Hair standing on end or skin tingling (lightning is about to strike nearby)</li><li>Sudden drop in temperature and wind shift</li><li>Thunder within 30 seconds of a lightning flash = storm is within 10 km</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">During</div>
+            <div class="guide-section-body"><ul><li>Seek shelter in a substantial building or metal-roofed vehicle</li><li><b>30-30 rule:</b> If thunder follows lightning in under 30 s, shelter immediately; wait 30 min after the last thunder before going out</li><li>Avoid tall trees, open fields, hilltops, water, and metal objects</li><li>If caught outdoors with no shelter, crouch low with feet together — do not lie flat</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">After</div>
+            <div class="guide-section-body"><ul><li>Check for lightning-strike fires on your property (roof, trees)</li><li>Do not touch a lightning strike victim — they carry no residual charge and need CPR</li><li>Watch for flash flooding from the storm's heavy rain</li><li>Surge-protect electronics or unplug during storms</li></ul></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Heatwave -->
+      <details class="guide-item">
+        <summary class="guide-summary">
+          <span class="guide-summary-icon">🥵</span>
+          <div class="guide-summary-text">
+            <div class="guide-summary-name">Heatwave</div>
+            <div class="guide-summary-tag">Prolonged extreme heat — the world's deadliest weather event</div>
+          </div>
+          <span class="guide-chevron">▼</span>
+        </summary>
+        <div class="guide-body">
+          <div class="guide-tag-row"><span class="guide-tag heat">Heat Stroke</span><span class="guide-tag heat">Dehydration</span><span class="guide-tag fire">Wildfire Risk</span></div>
+          <div class="guide-section">
+            <div class="guide-section-title">What it is</div>
+            <div class="guide-section-body">A heatwave is a prolonged period of abnormally high temperatures, often combined with high humidity. Heatwaves kill more people worldwide each year than any other weather-related disaster. The elderly, young children, and outdoor workers are most vulnerable.</div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">Warning signs</div>
+            <div class="guide-section-body"><ul><li>Forecast of temperatures significantly above seasonal averages for 3+ days</li><li>High overnight temperatures not allowing the body to recover</li><li>Government heat health alerts or emergency declarations</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">During</div>
+            <div class="guide-section-body"><ul><li>Stay in air-conditioned spaces during the hottest part of the day (10am–4pm)</li><li>Drink water frequently — do not wait until you feel thirsty</li><li>Wear light, loose, light-coloured clothing; use sunscreen</li><li>Check on elderly neighbours, young children, and pets regularly</li><li><b>Heat stroke signs:</b> hot/dry skin, confusion, rapid pulse — call emergency services immediately</li></ul></div>
+          </div>
+          <div class="guide-section">
+            <div class="guide-section-title">After</div>
+            <div class="guide-section-body"><ul><li>Cool down gradually — sudden cold water can cause shock</li><li>Rehydrate with water and electrolytes, not alcohol or caffeine</li><li>Assess and report any heat-related illnesses to health authorities</li><li>Review and improve home insulation for future heatwaves</li></ul></div>
+          </div>
+        </div>
+      </details>
+
     </div>
   </div>
 
