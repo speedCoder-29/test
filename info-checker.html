@@ -373,8 +373,21 @@
     .risk-badge.LOW    { background: rgba(68,187,102,0.15); color: #55cc77; }
     .risk-badge.NONE   { background: rgba(80,80,100,0.15);  color: #556; }
     .disaster-detail { font-size: 0.75rem; color: #556; line-height: 1.4; }
-    .disaster-loading { text-align: center; padding: 24px; color: #666; font-size: 0.88rem; }
-    .disaster-error { color: #ff5555; font-size: 0.85rem; padding: 12px 0; }
+    .disaster-loading { text-align: center; padding: 24px; color: #888; font-size: 0.88rem; line-height: 1.8; }
+    .disaster-error { color: #ff5555; font-size: 0.85rem; padding: 12px 0; line-height: 1.7; }
+    .disaster-error small { display: block; margin-top: 3px; }
+    .d-spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,140,60,0.2);
+      border-top-color: #ff8c3c;
+      border-radius: 50%;
+      animation: d-spin 0.75s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes d-spin { to { transform: rotate(360deg); } }
+    .retry-note { font-size: 0.75rem; color: #555; margin-top: 4px; }
     #disasterMap {
       display: none;
       height: 300px;
@@ -1277,6 +1290,9 @@ Rules:
       if (e.key === 'Enter') checkDisasterRisk();
     });
 
+    const DISASTER_MODELS = ['openai', 'mistral', 'openai-large'];
+    const DISASTER_TIMEOUT_MS = 18000;
+
     async function checkDisasterRisk() {
       const input = document.getElementById('disasterInput').value.trim();
       if (!input) return;
@@ -1285,35 +1301,69 @@ Rules:
       const result = document.getElementById('disasterResult');
       btn.disabled = true;
       result.style.display = 'block';
-      result.innerHTML = '<div class="disaster-loading">🔍 Analysing risk profile for <strong>' + escHtml(input) + '</strong>…</div>';
 
-      try {
-        const res = await fetch('https://text.pollinations.ai/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            messages: [
-              { role: 'system', content: DISASTER_PROMPT },
-              { role: 'user', content: input }
-            ],
-            model: 'openai',
-            jsonMode: true,
-            seed: Math.floor(Math.random() * 99999)
-          })
-        });
+      // Hide stale map/weather/political from a previous search
+      document.getElementById('disasterMap').style.display = 'none';
+      document.getElementById('mapLegend').style.display = 'none';
+      document.getElementById('weatherWidget').style.display = 'none';
+      document.getElementById('politicalSection').style.display = 'none';
 
-        if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+      let lastErr = null;
 
-        const raw = await res.text();
-        const jsonMatch = raw.match(/\{[\s\S]*\}/);
-        const data = JSON.parse(jsonMatch ? jsonMatch[0] : raw);
-        renderDisasterResult(data);
+      for (let attempt = 0; attempt < DISASTER_MODELS.length; attempt++) {
+        const model = DISASTER_MODELS[attempt];
+        const attemptLabel = attempt > 0
+          ? `<div class="retry-note">Retrying with ${model} — attempt ${attempt + 1} of ${DISASTER_MODELS.length}</div>`
+          : '';
+        result.innerHTML = `<div class="disaster-loading"><span class="d-spinner"></span>Analysing <strong>${escHtml(input)}</strong>…${attemptLabel}</div>`;
 
-      } catch (err) {
-        result.innerHTML = `<div class="disaster-error">⚠️ Could not fetch risk data: ${escHtml(err.message)}. Check your connection and try again.</div>`;
-      } finally {
-        btn.disabled = false;
+        try {
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), DISASTER_TIMEOUT_MS);
+
+          const res = await fetch('https://text.pollinations.ai/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: controller.signal,
+            body: JSON.stringify({
+              messages: [
+                { role: 'system', content: DISASTER_PROMPT },
+                { role: 'user', content: input }
+              ],
+              model,
+              jsonMode: true,
+              seed: Math.floor(Math.random() * 99999)
+            })
+          });
+
+          clearTimeout(timer);
+
+          if (!res.ok) throw new Error(`Server error ${res.status}`);
+          const raw = await res.text();
+          if (!raw || !raw.trim()) throw new Error('Empty response from server');
+
+          const jsonMatch = raw.match(/\{[\s\S]*\}/);
+          if (!jsonMatch) throw new Error('Response was not valid JSON');
+
+          const data = JSON.parse(jsonMatch[0]);
+          renderDisasterResult(data);
+          btn.disabled = false;
+          return;
+
+        } catch (err) {
+          lastErr = err.name === 'AbortError'
+            ? new Error(`Request timed out after ${DISASTER_TIMEOUT_MS / 1000}s`)
+            : err;
+        }
       }
+
+      // All attempts failed
+      result.innerHTML = `<div class="disaster-error">
+        ⚠️ Could not fetch risk data after ${DISASTER_MODELS.length} attempts.
+        <small style="color:#666">${escHtml(lastErr ? lastErr.message : 'Unknown error')}</small>
+        <small style="color:#444">Check your internet connection or try again in a moment.</small>
+      </div>`;
+      btn.disabled = false;
     }
 
     function renderDisasterResult(data) {
