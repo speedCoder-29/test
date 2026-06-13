@@ -91,183 +91,7 @@
     #lookupResult { margin-top: 4px; }
 
     /* ── Fact-Check Chat ───────────────────────────────── */
-    .chat-card {
-      background: #1a1a2e;
-      border: 1px solid rgba(78,205,196,0.35);
-      border-radius: 12px;
-      width: 100%;
-      max-width: 640px;
-      margin-bottom: 20px;
-      overflow: hidden;
-    }
-    .chat-header {
-      background: linear-gradient(135deg, #1e2a4a 0%, #1a1a2e 100%);
-      border-bottom: 1px solid rgba(78,205,196,0.2);
-      padding: 18px 24px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .chat-header-icon {
-      font-size: 1.4rem;
-      filter: drop-shadow(0 0 6px rgba(78,205,196,0.5));
-    }
-    .chat-header-text h2 {
-      font-size: 1rem;
-      color: #4ecdc4;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 2px;
-    }
-    .chat-header-text p {
-      font-size: 0.78rem;
-      color: #666;
-    }
-    /* Messages area */
-    #chatMessages {
-      height: 340px;
-      overflow-y: auto;
-      padding: 18px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      scroll-behavior: smooth;
-    }
-    #chatMessages::-webkit-scrollbar { width: 5px; }
-    #chatMessages::-webkit-scrollbar-track { background: transparent; }
-    #chatMessages::-webkit-scrollbar-thumb { background: rgba(78,205,196,0.3); border-radius: 4px; }
-    .msg-wrap {
-      display: flex;
-      flex-direction: column;
-      max-width: 92%;
-    }
-    .msg-wrap.user { align-self: flex-end; align-items: flex-end; }
-    .msg-wrap.bot  { align-self: flex-start; align-items: flex-start; }
-    .msg-bubble {
-      border-radius: 14px;
-      padding: 10px 14px;
-      font-size: 0.88rem;
-      line-height: 1.5;
-      word-break: break-word;
-    }
-    .msg-wrap.user .msg-bubble {
-      background: linear-gradient(135deg, #1a4a6a, #1a3a5a);
-      border: 1px solid rgba(78,205,196,0.25);
-      border-bottom-right-radius: 4px;
-      color: #d0eef0;
-    }
-    .msg-wrap.bot .msg-bubble {
-      background: #13132a;
-      border: 1px solid rgba(255,255,255,0.07);
-      border-bottom-left-radius: 4px;
-      color: #e0e0f0;
-    }
-    /* Verdict badge */
-    .verdict {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      padding: 4px 10px;
-      border-radius: 20px;
-      margin-bottom: 6px;
-    }
-    .verdict.true    { background: rgba(68,255,136,0.12); color: #44ff88; border: 1px solid rgba(68,255,136,0.3); }
-    .verdict.false   { background: rgba(255,85,85,0.12);  color: #ff5555; border: 1px solid rgba(255,85,85,0.3); }
-    .verdict.unclear { background: rgba(255,204,68,0.12); color: #ffcc44; border: 1px solid rgba(255,204,68,0.3); }
-    .verdict-icon { font-size: 0.95rem; }
-    /* Explanation text */
-    .bot-explanation { font-size: 0.87rem; line-height: 1.55; color: #c8c8e0; }
-    .bot-sources {
-      margin-top: 8px;
-      font-size: 0.78rem;
-      color: #556;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      padding-top: 7px;
-    }
-    .bot-sources span { color: #4ecdc4; }
-    /* Typing dots */
-    .typing-dots {
-      display: flex;
-      gap: 4px;
-      align-items: center;
-      padding: 10px 14px;
-      background: #13132a;
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 14px;
-      border-bottom-left-radius: 4px;
-      width: fit-content;
-    }
-    .typing-dots span {
-      width: 7px; height: 7px;
-      background: #4ecdc4;
-      border-radius: 50%;
-      animation: typingBounce 1.2s infinite;
-      opacity: 0.5;
-    }
-    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes typingBounce {
-      0%,60%,100% { transform: translateY(0); opacity: 0.4; }
-      30%          { transform: translateY(-5px); opacity: 1; }
-    }
-    /* Chat input */
-    .chat-input-area {
-      border-top: 1px solid rgba(255,255,255,0.06);
-      padding: 14px 16px;
-      display: flex;
-      gap: 10px;
-    }
-    #chatInput {
-      flex: 1;
-      background: #0f0f1a;
-      border: 1px solid rgba(78,205,196,0.25);
-      border-radius: 22px;
-      color: #e0e0f0;
-      padding: 10px 18px;
-      font-size: 0.9rem;
-      outline: none;
-      resize: none;
-      font-family: inherit;
-      line-height: 1.4;
-      max-height: 120px;
-      overflow-y: auto;
-    }
-    #chatInput:focus { border-color: #4ecdc4; }
-    #chatInput::placeholder { color: #444; }
-    #sendBtn {
-      border-radius: 50%;
-      width: 42px;
-      height: 42px;
-      min-width: 42px;
-      padding: 0;
-      font-size: 1.1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      align-self: flex-end;
-    }
-    .chat-hint {
-      text-align: center;
-      font-size: 0.75rem;
-      color: #333;
-      padding: 0 16px 10px;
-    }
-    /* Welcome message */
-    .welcome-msg {
-      align-self: center;
-      text-align: center;
-      color: #444;
-      font-size: 0.85rem;
-      padding: 20px;
-      line-height: 1.6;
-    }
-    .welcome-msg .icon { font-size: 2rem; display: block; margin-bottom: 8px; }
-
-    /* ── Disaster Risk Checker ─────────────────────────────── */
+    /* ── Disaster Area Map ────────────────────────────────── */
     .disaster-card {
       background: #1a1a2e;
       border: 1px solid rgba(255,140,60,0.3);
@@ -323,59 +147,6 @@
     }
     #disasterCheckBtn:hover { background: #e07830; }
     #disasterCheckBtn:disabled { background: #5a3a20; color: #8a6a50; cursor: not-allowed; }
-    #disasterResult { display: none; }
-    .disaster-region-name {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: #e0e0f0;
-      margin-bottom: 6px;
-    }
-    .disaster-overview {
-      font-size: 0.83rem;
-      color: #888;
-      margin-bottom: 16px;
-      line-height: 1.5;
-    }
-    .disaster-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    .disaster-item {
-      background: #0f0f1a;
-      border-radius: 8px;
-      padding: 10px 12px;
-      border-left: 3px solid transparent;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    .disaster-item.HIGH   { border-left-color: #ff4444; }
-    .disaster-item.MEDIUM { border-left-color: #ffaa22; }
-    .disaster-item.LOW    { border-left-color: #44bb66; }
-    .disaster-item.NONE   { border-left-color: #334; opacity: 0.55; }
-    .disaster-item-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .disaster-type { font-size: 0.85rem; color: #c0c0d8; }
-    .disaster-type .d-icon { margin-right: 5px; }
-    .risk-badge {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      padding: 2px 8px;
-      border-radius: 12px;
-    }
-    .risk-badge.HIGH   { background: rgba(255,68,68,0.15);  color: #ff6666; }
-    .risk-badge.MEDIUM { background: rgba(255,170,34,0.15); color: #ffbb44; }
-    .risk-badge.LOW    { background: rgba(68,187,102,0.15); color: #55cc77; }
-    .risk-badge.NONE   { background: rgba(80,80,100,0.15);  color: #556; }
-    .disaster-detail { font-size: 0.75rem; color: #556; line-height: 1.4; }
-    .disaster-loading { text-align: center; padding: 24px; color: #888; font-size: 0.88rem; line-height: 1.8; }
-    .disaster-error { color: #ff5555; font-size: 0.85rem; padding: 12px 0; line-height: 1.7; }
-    .disaster-error small { display: block; margin-top: 3px; }
     .d-spinner {
       width: 18px; height: 18px;
       border: 2px solid rgba(255,140,60,0.2);
@@ -387,7 +158,6 @@
       margin-right: 8px;
     }
     @keyframes d-spin { to { transform: rotate(360deg); } }
-    .retry-note { font-size: 0.75rem; color: #555; margin-top: 4px; }
     #disasterMap {
       display: none;
       height: 300px;
@@ -423,102 +193,6 @@
       width: 10px; height: 10px;
       border-radius: 50%;
       display: inline-block;
-    }
-
-    /* ── Political / Conflict Section ─────────────────────────── */
-    .political-section {
-      margin-top: 18px;
-      padding-top: 16px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-    }
-    .section-label {
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #666;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .stability-badge {
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 2px 10px;
-      border-radius: 12px;
-      letter-spacing: 0.4px;
-    }
-    .stability-badge.STABLE   { background: rgba(68,187,102,0.15); color: #44bb66; }
-    .stability-badge.TENSE    { background: rgba(255,204,68,0.15);  color: #ffcc44; }
-    .stability-badge.UNSTABLE { background: rgba(255,140,60,0.15);  color: #ff8c3c; }
-    .stability-badge.CONFLICT { background: rgba(255,68,68,0.15);   color: #ff4444; }
-    .political-overview {
-      font-size: 0.82rem;
-      color: #777;
-      line-height: 1.55;
-      margin-bottom: 10px;
-    }
-    .political-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .pf-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 9px;
-      background: #0f0f1a;
-      border-radius: 7px;
-      padding: 8px 11px;
-      font-size: 0.82rem;
-    }
-    .pf-item.active   { border-left: 3px solid #ff4444; }
-    .pf-item.inactive { border-left: 3px solid #2a2a40; opacity: 0.5; }
-    .pf-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
-    .pf-right { display: flex; flex-direction: column; gap: 2px; }
-    .pf-type  { color: #c0c0d8; font-weight: 600; }
-    .pf-detail { font-size: 0.77rem; color: #666; line-height: 1.4; }
-
-    /* ── Weather Widget ────────────────────────────────────────── */
-    .weather-widget {
-      display: none;
-      margin-top: 14px;
-      background: #0f0f1a;
-      border: 1px solid rgba(78,205,196,0.15);
-      border-radius: 10px;
-      padding: 14px 16px;
-    }
-    .weather-top {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 12px;
-    }
-    .weather-emoji { font-size: 2.6rem; line-height: 1; }
-    .weather-temps { display: flex; flex-direction: column; gap: 2px; }
-    .weather-temp-main { font-size: 1.7rem; font-weight: 700; color: #e0e0f0; line-height: 1; }
-    .weather-feels { font-size: 0.78rem; color: #666; }
-    .weather-desc-text { font-size: 0.85rem; color: #aaa; margin-left: auto; text-align: right; }
-    .weather-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-    .weather-stat {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      color: #666;
-    }
-    .weather-stat-val { color: #c0c0d8; font-weight: 500; }
-    .weather-source { font-size: 0.72rem; color: #333; margin-top: 10px; }
-
-    @keyframes conflict-pulse {
-      0%   { transform: scale(1);   opacity: 0.7; }
-      50%  { transform: scale(1.35); opacity: 0; }
-      100% { transform: scale(1);   opacity: 0; }
     }
 
     /* ── Weather App ─────────────────────────────────────────── */
@@ -706,45 +380,6 @@
     }
     .wa-tab.active { background: rgba(78,205,196,0.12); border-color: rgba(78,205,196,0.35); color: #4ecdc4; }
     .wa-tab:hover:not(.active) { color: #888; border-color: rgba(255,255,255,0.12); }
-    /* AI Key Setup Panel */
-    .ai-key-panel {
-      background: #1a1a2e;
-      border: 1px solid rgba(78,205,196,0.22);
-      border-top: 2px solid #4ecdc4;
-      border-radius: 12px;
-      padding: 16px 20px;
-      width: 100%;
-      max-width: 640px;
-      margin-bottom: 14px;
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
-    }
-    .ai-key-icon { font-size: 1.6rem; flex-shrink: 0; margin-top: 2px; }
-    .ai-key-body { flex: 1; min-width: 0; }
-    .ai-key-title { font-size: 0.72rem; font-weight: 700; color: #4ecdc4; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px; }
-    .ai-key-desc { font-size: 0.8rem; color: #666; line-height: 1.5; margin-bottom: 10px; }
-    .ai-key-desc a { color: #4ecdc4; text-decoration: none; }
-    .ai-key-desc a:hover { text-decoration: underline; }
-    .ai-key-row { display: flex; gap: 8px; }
-    .ai-key-input {
-      flex: 1;
-      background: #0f0f1a;
-      border: 1px solid rgba(78,205,196,0.25);
-      border-radius: 7px;
-      color: #e0e0f0;
-      padding: 8px 12px;
-      font-size: 0.84rem;
-      outline: none;
-      font-family: inherit;
-      min-width: 0;
-    }
-    .ai-key-input:focus { border-color: #4ecdc4; }
-    .ai-key-save { background: #4ecdc4; color: #0f0f1a; border: none; border-radius: 7px; padding: 8px 18px; font-weight: 700; font-size: 0.84rem; cursor: pointer; white-space: nowrap; font-family: inherit; flex-shrink: 0; }
-    .ai-key-save:hover { background: #38b2aa; }
-    .ai-key-set { font-size: 0.78rem; color: #44cc88; display: flex; align-items: center; gap: 8px; }
-    .ai-key-change { font-size: 0.72rem; color: #4ecdc4; cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; font-family: inherit; }
-
     /* Detail conditions */
     .detail-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
     .detail-item { background: #0f0f1a; border-radius: 8px; padding: 12px 13px; }
@@ -992,24 +627,6 @@
     <button class="wa-refresh-btn" onclick="initWeatherApp()">↺ Refresh</button>
   </div>
 
-  <!-- ── AI Key Setup ───────────────────────────────────────── -->
-  <div class="ai-key-panel" id="aiKeyPanel">
-    <div class="ai-key-icon">🤖</div>
-    <div class="ai-key-body">
-      <div class="ai-key-title">AI Setup — Required for Fact Checker &amp; Disaster Risk</div>
-      <div class="ai-key-desc" id="aiKeyDesc">
-        These features use Google Gemini AI — free, no credit card needed, 1,500 requests/day.
-        Get your key in 2 minutes at <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio → Create API key</a>.
-      </div>
-      <div id="aiKeyForm">
-        <div class="ai-key-row">
-          <input class="ai-key-input" type="password" id="geminiKeyInput" placeholder="Paste your Gemini API key (AIza…)">
-          <button class="ai-key-save" onclick="saveGeminiKey()">Save Key</button>
-        </div>
-        <div id="aiKeyMsg" style="font-size:0.75rem;margin-top:6px;min-height:16px"></div>
-      </div>
-    </div>
-  </div>
 
   <div class="wa-hero" id="waHero">
     <div class="wa-loading">
@@ -1058,60 +675,31 @@
     <div id="waKitContent"></div>
   </div>
 
-  <div class="tools-divider"><span>More Tools</span></div>
+  <div class="tools-divider"><span>Disaster &amp; Guide</span></div>
 
-  <!-- ── Fact-Check Chat ─────────────────────────────────────── -->
-  <div class="chat-card">
-    <div class="chat-header">
-      <div class="chat-header-icon">🔍</div>
-      <div class="chat-header-text">
-        <h2>Fact Checker</h2>
-        <p>Ask if something is true or false — get a verified verdict</p>
-      </div>
-    </div>
-
-    <!-- Messages -->
-    <div id="chatMessages">
-      <div class="welcome-msg" id="welcomeMsg">
-        <span class="icon">🔎</span>
-        Ask me anything you want to fact-check.<br>
-        <em>e.g. "Is the Great Wall of China visible from space?"</em>
-      </div>
-    </div>
-
-    <div class="chat-hint">Press <strong>Enter</strong> to send · <strong>Shift+Enter</strong> for new line</div>
-
-    <!-- Input bar -->
-    <div class="chat-input-area">
-      <textarea id="chatInput" placeholder="Is it true that…?" rows="1"></textarea>
-      <button id="sendBtn" onclick="sendFactCheck()" title="Send">➤</button>
-    </div>
-  </div>
-
-  <!-- ── Natural Disaster Risk Checker ─────────────────────────── -->
+  <!-- ── Natural Disaster Area Map ────────────────────────────── -->
   <div class="disaster-card">
     <div class="disaster-header">
-      <div class="disaster-header-icon">🌪️</div>
+      <div class="disaster-header-icon">🌍</div>
       <div class="disaster-header-text">
-        <h2>Natural Disaster Risk</h2>
-        <p>Enter a region or country to see its natural disaster risk profile</p>
+        <h2>Natural Disaster Map</h2>
+        <p>Enter a region or country to see active disaster events on the map</p>
       </div>
     </div>
     <div class="disaster-body">
       <div class="disaster-input-row">
         <input type="text" id="disasterInput" placeholder="e.g. Japan, California, Bangladesh…">
-        <button id="disasterCheckBtn" onclick="checkDisasterRisk()">Check Risk</button>
+        <button id="disasterCheckBtn" onclick="showAreaMap()">Show Map</button>
       </div>
-      <div id="disasterResult"></div>
+      <div id="disasterStatus" style="display:none;font-size:0.83rem;color:#888;margin-bottom:10px;line-height:1.6"></div>
       <div id="disasterMap"></div>
       <div class="map-legend" id="mapLegend" style="display:none">
-        <span><span class="legend-dot" style="background:#ff4444"></span>High Risk</span>
-        <span><span class="legend-dot" style="background:#ffaa22"></span>Medium Risk</span>
-        <span><span class="legend-dot" style="background:#44bb66"></span>Low Risk</span>
-        <span><span class="legend-dot" style="background:#cc44ff"></span>Political/Conflict</span>
+        <span><span class="legend-dot" style="background:#ff2222"></span>M6+ Quake</span>
+        <span><span class="legend-dot" style="background:#ffaa22"></span>M2.5–5 Quake</span>
+        <span><span class="legend-dot" style="background:#ff5533;border-radius:3px"></span>Wildfire</span>
+        <span><span class="legend-dot" style="background:#3399ff;border-radius:3px"></span>Flood/Storm</span>
+        <span><span class="legend-dot" style="background:#ff8833;border-radius:3px"></span>Volcano</span>
       </div>
-      <div id="weatherWidget" class="weather-widget"></div>
-      <div id="politicalSection" style="display:none"></div>
     </div>
   </div>
 
@@ -1700,450 +1288,150 @@
       if (e.key === 'Enter') doLookup();
     });
 
-    // ── Natural Disaster Risk Checker ───────────────────────────────────────
-
-    const DISASTER_PROMPT = `You are an expert in natural disasters, geopolitical risk, and regional security with knowledge from FEMA, USGS, NOAA, UN-SPIDER, EM-DAT, ACLED, the Council on Foreign Relations, and national intelligence agencies.
-
-When given a region, city, or country, respond ONLY in this exact JSON format:
-{
-  "region": "Official/common name of the region",
-  "overview": "2-3 sentences summarising the region's overall disaster risk profile and key geographic/climate factors.",
-  "risks": [
-    { "type": "Earthquake",        "icon": "🌍", "level": "HIGH"|"MEDIUM"|"LOW"|"NONE", "detail": "One short sentence with specific risk context." },
-    { "type": "Tsunami",           "icon": "🌊", "level": "HIGH"|"MEDIUM"|"LOW"|"NONE", "detail": "..." },
-    { "type": "Hurricane/Typhoon", "icon": "🌀", "level": "HIGH"|"MEDIUM"|"LOW"|"NONE", "detail": "..." },
-    { "type": "Tornado",           "icon": "🌪️", "level": "HIGH"|"MEDIUM"|"LOW"|"NONE", "detail": "..." },
-    { "type": "Flood",             "icon": "🌧️", "level": "HIGH"|"MEDIUM"|"LOW"|"NONE", "detail": "..." },
-    { "type": "Wildfire",          "icon": "🔥", "level": "HIGH"|"MEDIUM"|"LOW"|"NONE", "detail": "..." },
-    { "type": "Volcanic Eruption", "icon": "🌋", "level": "HIGH"|"MEDIUM"|"LOW"|"NONE", "detail": "..." },
-    { "type": "Drought",           "icon": "☀️", "level": "HIGH"|"MEDIUM"|"LOW"|"NONE", "detail": "..." },
-    { "type": "Blizzard/Ice Storm","icon": "❄️", "level": "HIGH"|"MEDIUM"|"LOW"|"NONE", "detail": "..." },
-    { "type": "Landslide",         "icon": "⛰️", "level": "HIGH"|"MEDIUM"|"LOW"|"NONE", "detail": "..." }
-  ],
-  "political": {
-    "stability": "STABLE"|"TENSE"|"UNSTABLE"|"CONFLICT",
-    "overview": "2 sentences on the political situation, governance stability, and any security concerns.",
-    "factors": [
-      { "type": "Armed Conflict",  "icon": "⚔️", "active": true|false, "detail": "One sentence." },
-      { "type": "Civil Unrest",    "icon": "🚨", "active": true|false, "detail": "..." },
-      { "type": "Terrorism Risk",  "icon": "💣", "active": true|false, "detail": "..." },
-      { "type": "International Sanctions", "icon": "🚫", "active": true|false, "detail": "..." },
-      { "type": "Border Disputes", "icon": "🗺️", "active": true|false, "detail": "..." },
-      { "type": "Crime / Kidnapping", "icon": "🔒", "active": true|false, "detail": "..." }
-    ]
-  }
-}
-
-Rules:
-- Use HIGH/MEDIUM/LOW/NONE for disaster risks based on established scientific and historical data.
-- For political stability: STABLE = peaceful democracy; TENSE = elevated unrest or political crisis; UNSTABLE = ongoing violence or authoritarian suppression; CONFLICT = active war or armed conflict.
-- Set "active": true only for factors that are currently present or ongoing based on your knowledge.
-- Keep detail sentences short and specific.
-- Do not include any text outside the JSON object.`;
+    // ── Natural Disaster Area Map ────────────────────────────────────────────
 
     document.getElementById('disasterInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter') checkDisasterRisk();
+      if (e.key === 'Enter') showAreaMap();
     });
-
-    // ── AI key management ────────────────────────────────────────────────────
-
-    let _geminiKey = localStorage.getItem('geminiKey') || '';
-
-    function initAIKeyPanel() {
-      const panel = document.getElementById('aiKeyPanel');
-      if (_geminiKey) {
-        document.getElementById('aiKeyForm').innerHTML =
-          `<div class="ai-key-set">✅ Gemini key saved
-            <button class="ai-key-change" onclick="clearGeminiKey()">Change</button>
-          </div>`;
-        document.getElementById('aiKeyDesc').textContent =
-          'Google Gemini AI is active. The Fact Checker and Disaster Risk features are ready to use.';
-        panel.style.borderTopColor = '#44cc88';
-      }
-    }
-
-    function saveGeminiKey() {
-      const val = document.getElementById('geminiKeyInput')?.value.trim() || '';
-      const msg = document.getElementById('aiKeyMsg');
-      if (!val || !val.startsWith('AIza')) {
-        if (msg) { msg.style.color = '#ff6666'; msg.textContent = 'Key should start with "AIza" — check and paste again.'; }
-        return;
-      }
-      _geminiKey = val;
-      localStorage.setItem('geminiKey', val);
-      if (msg) { msg.style.color = '#44cc88'; msg.textContent = ''; }
-      initAIKeyPanel();
-    }
-
-    function clearGeminiKey() {
-      _geminiKey = '';
-      localStorage.removeItem('geminiKey');
-      document.getElementById('aiKeyForm').innerHTML =
-        `<div class="ai-key-row">
-          <input class="ai-key-input" type="password" id="geminiKeyInput" placeholder="Paste your Gemini API key (AIza…)">
-          <button class="ai-key-save" onclick="saveGeminiKey()">Save Key</button>
-        </div>
-        <div id="aiKeyMsg" style="font-size:0.75rem;margin-top:6px;min-height:16px"></div>`;
-      document.getElementById('aiKeyDesc').innerHTML =
-        'These features use Google Gemini AI — free, no credit card needed, 1,500 requests/day. ' +
-        'Get your key at <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio → Create API key</a>.';
-      document.getElementById('aiKeyPanel').style.borderTopColor = '#4ecdc4';
-    }
-
-    initAIKeyPanel();
-
-    // ── Shared AI helpers ────────────────────────────────────────────────────
-
-    const AI_TIMEOUT   = 26000;
-    const POLL_MODELS  = ['openai', 'openai-large', 'mistral', 'llama'];
-    const POLL_WAIT    = 7000;
-
-    function aiErr(msg, code) { const e = new Error(msg); e.code = code; return e; }
-
-    function extractJSON(raw) {
-      const s = raw.trim();
-      try { return JSON.parse(s); } catch {}
-      const stripped = s.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
-      try { return JSON.parse(stripped); } catch {}
-      const m = s.match(/\{[\s\S]*\}/);
-      if (m) { try { return JSON.parse(m[0]); } catch {} }
-      throw new Error('Response did not contain valid JSON');
-    }
-
-    async function callGemini(systemMsg, messages) {
-      const key = _geminiKey;
-      if (!key) throw aiErr('No Gemini key', 0);
-
-      // Convert OpenAI-format messages → Gemini format
-      const contents = messages
-        .filter(m => m.role !== 'system')
-        .map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }));
-
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), AI_TIMEOUT);
-      try {
-        const r = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            signal: ctrl.signal,
-            body: JSON.stringify({
-              system_instruction: { parts: [{ text: systemMsg }] },
-              contents,
-              generationConfig: { responseMimeType: 'application/json' }
-            })
-          }
-        );
-        clearTimeout(t);
-        if (r.status === 400) {
-          const body = await r.json().catch(() => ({}));
-          const detail = body?.error?.message || 'Bad request';
-          if (detail.toLowerCase().includes('api key')) throw aiErr('Invalid Gemini API key — click Change to update it.', 401);
-          throw new Error(`Gemini 400: ${detail}`);
-        }
-        if (r.status === 429) throw aiErr('Gemini quota reached for today', 429);
-        if (!r.ok) throw new Error(`Gemini HTTP ${r.status}`);
-        const json = await r.json();
-        const text = json?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!text) throw new Error('Empty Gemini response');
-        return extractJSON(text);
-      } catch (e) {
-        clearTimeout(t);
-        throw e.name === 'AbortError' ? new Error('Gemini timeout') : e;
-      }
-    }
-
-    async function pollinationsPost(messages, model) {
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), AI_TIMEOUT);
-      try {
-        const r = await fetch('https://text.pollinations.ai/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Referer': location.href },
-          signal: ctrl.signal,
-          body: JSON.stringify({ messages, model, jsonMode: true, seed: Date.now() % 99999 })
-        });
-        clearTimeout(t);
-        if (r.status === 429) throw aiErr(`Rate limited (${model})`, 429);
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const txt = await r.text();
-        if (!txt.trim()) throw new Error('Empty response');
-        return txt;
-      } catch (e) {
-        clearTimeout(t);
-        throw e.name === 'AbortError' ? new Error(`Timeout (${model})`) : e;
-      }
-    }
-
-    async function pollinationsGet(userMsg, systemMsg) {
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), AI_TIMEOUT);
-      const url = `https://text.pollinations.ai/${encodeURIComponent(userMsg.slice(0,500))}?model=openai&json=true&seed=${Date.now()%99999}&system=${encodeURIComponent(systemMsg.slice(0,800))}`;
-      try {
-        const r = await fetch(url, { signal: ctrl.signal });
-        clearTimeout(t);
-        if (r.status === 429) throw aiErr('Rate limited (GET)', 429);
-        if (!r.ok) throw new Error(`GET HTTP ${r.status}`);
-        const txt = await r.text();
-        if (!txt.trim()) throw new Error('Empty GET response');
-        return txt;
-      } catch (e) {
-        clearTimeout(t);
-        throw e.name === 'AbortError' ? new Error('GET timeout') : e;
-      }
-    }
-
-    // onStatus(msg) — optional callback for live progress display
-    async function callAI(systemMsg, messages, onStatus) {
-      // 1. Try Gemini first (no rate-limit issues at free tier)
-      if (_geminiKey) {
-        if (onStatus) onStatus('Asking Gemini AI…');
-        try {
-          return await callGemini(systemMsg, messages);
-        } catch (e) {
-          if (e.code === 401) throw e;           // bad key — surface immediately
-          if (e.code !== 429 && e.code !== 0) {  // unexpected Gemini error
-            if (onStatus) onStatus(`Gemini error — trying backup… (${e.message})`);
-          } else if (e.code === 429) {
-            if (onStatus) onStatus('Gemini daily quota reached — trying backup…');
-          }
-          // fall through to Pollinations
-        }
-      }
-
-      // 2. Pollinations fallback (no key needed)
-      let lastErr, hit429 = false;
-      for (let i = 0; i < POLL_MODELS.length; i++) {
-        const model = POLL_MODELS[i];
-        if (onStatus) onStatus(`Backup AI (${model})…`);
-        try { return extractJSON(await pollinationsPost(messages, model)); }
-        catch (e) {
-          lastErr = e;
-          if (e.code === 429) {
-            hit429 = true;
-            if (onStatus) onStatus(`Rate limited — waiting ${Math.round(POLL_WAIT/1000)}s…`);
-            await new Promise(res => setTimeout(res, POLL_WAIT));
-          }
-        }
-      }
-
-      // 3. GET endpoint last resort
-      try {
-        if (onStatus) onStatus('Trying alternate endpoint…');
-        const userMsg = messages.filter(m => m.role === 'user').pop()?.content || '';
-        return extractJSON(await pollinationsGet(userMsg, systemMsg));
-      } catch (e) { lastErr = e; }
-
-      if (hit429) throw new Error('All AI services rate-limited. Add a free Gemini key (see the AI Setup panel) to avoid this.');
-      throw lastErr || new Error('All AI endpoints failed');
-    }
-
-    // ── Disaster risk checker ────────────────────────────────────────────────
-
-    async function checkDisasterRisk() {
-      const input = document.getElementById('disasterInput').value.trim();
-      if (!input) return;
-
-      const btn    = document.getElementById('disasterCheckBtn');
-      const result = document.getElementById('disasterResult');
-      btn.disabled = true;
-      result.style.display = 'block';
-
-      document.getElementById('disasterMap').style.display      = 'none';
-      document.getElementById('mapLegend').style.display        = 'none';
-      document.getElementById('weatherWidget').style.display    = 'none';
-      document.getElementById('politicalSection').style.display = 'none';
-
-      const setStatus = msg => {
-        result.innerHTML = `<div class="disaster-loading"><span class="d-spinner"></span>${escHtml(msg)}</div>`;
-      };
-      setStatus(`Analysing ${input}…`);
-
-      try {
-        const data = await callAI(DISASTER_PROMPT, [
-          { role: 'system', content: DISASTER_PROMPT },
-          { role: 'user',   content: input }
-        ], setStatus);
-        renderDisasterResult(data);
-      } catch (err) {
-        result.innerHTML = `<div class="disaster-error">
-          ⚠️ Could not fetch risk data.<br>
-          <small style="color:#666">${escHtml(err.message)}</small><br>
-          <small style="color:#444">Try a different region name or try again in a moment.</small>
-        </div>`;
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function renderDisasterResult(data) {
-      const result = document.getElementById('disasterResult');
-      let html = `<div class="disaster-region-name">📍 ${escHtml(data.region || 'Unknown Region')}</div>`;
-      if (data.overview) {
-        html += `<div class="disaster-overview">${escHtml(data.overview)}</div>`;
-      }
-      if (Array.isArray(data.risks) && data.risks.length) {
-        html += '<div class="disaster-grid">';
-        for (const r of data.risks) {
-          const lvl = (r.level || 'NONE').toUpperCase();
-          html += `<div class="disaster-item ${lvl}">
-            <div class="disaster-item-top">
-              <span class="disaster-type"><span class="d-icon">${r.icon || ''}</span>${escHtml(r.type)}</span>
-              <span class="risk-badge ${lvl}">${lvl}</span>
-            </div>
-            ${r.detail ? `<div class="disaster-detail">${escHtml(r.detail)}</div>` : ''}
-          </div>`;
-        }
-        html += '</div>';
-      }
-      result.innerHTML = html;
-      result.style.display = 'block';
-      renderPolitical(data.political);
-      showDisasterMap(data.region || '', data.risks || [], data.political);
-    }
-
-    // ── Disaster Map ────────────────────────────────────────────────────────
 
     let disasterMap = null;
     let disasterLayers = [];
 
-    async function showDisasterMap(regionName, risks, political) {
-      const mapDiv = document.getElementById('disasterMap');
-      const legend = document.getElementById('mapLegend');
-      mapDiv.style.display = 'block';
-      legend.style.display = 'flex';
+    const EONET_STYLE = {
+      wildfires:     { icon: '🔥', color: '#ff5533' },
+      severeStorms:  { icon: '⛈️', color: '#5599ff' },
+      volcanoes:     { icon: '🌋', color: '#ff8833' },
+      floods:        { icon: '🌊', color: '#3399ff' },
+      drought:       { icon: '☀️', color: '#ffcc22' },
+      earthquakes:   { icon: '🌍', color: '#ff4444' },
+      tempExtremes:  { icon: '🌡️', color: '#ff6688' },
+      landslides:    { icon: '⛰️', color: '#aa8855' },
+    };
 
-      if (!disasterMap) {
-        disasterMap = L.map('disasterMap', { zoomControl: true, attributionControl: true });
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-          attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-          subdomains: 'abcd',
-          maxZoom: 19
-        }).addTo(disasterMap);
-      }
+    async function showAreaMap() {
+      const input = document.getElementById('disasterInput').value.trim();
+      if (!input) return;
 
-      disasterLayers.forEach(l => disasterMap.removeLayer(l));
-      disasterLayers = [];
+      const btn    = document.getElementById('disasterCheckBtn');
+      const status = document.getElementById('disasterStatus');
+      btn.disabled = true;
+      status.style.display = 'block';
+      status.innerHTML = '<span class="d-spinner"></span>Looking up location…';
 
-      let geoData;
       try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(regionName)}&format=json&polygon_geojson=1&limit=1`
-        );
-        geoData = await res.json();
-      } catch (_) { return; }
+        const geoRes  = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(input)}&format=json&polygon_geojson=1&limit=1`);
+        const geoData = await geoRes.json();
+        if (!geoData.length) throw new Error('Location not found. Try a different name.');
 
-      if (!geoData || !geoData.length) return;
+        const place = geoData[0];
+        const lat = parseFloat(place.lat);
+        const lon = parseFloat(place.lon);
+        const bb  = place.boundingbox; // [minLat, maxLat, minLon, maxLon]
+        const minLat = parseFloat(bb[0]), maxLat = parseFloat(bb[1]);
+        const minLon = parseFloat(bb[2]), maxLon = parseFloat(bb[3]);
+        const padLat = (maxLat - minLat) * 0.5, padLon = (maxLon - minLon) * 0.5;
+        const sMinLat = minLat - padLat, sMaxLat = maxLat + padLat;
+        const sMinLon = minLon - padLon, sMaxLon = maxLon + padLon;
 
-      const place = geoData[0];
-      const lat = parseFloat(place.lat);
-      const lon = parseFloat(place.lon);
+        status.innerHTML = '<span class="d-spinner"></span>Loading live disaster data…';
 
-      const levels = risks.map(r => (r.level || '').toUpperCase());
-      const overallColor = levels.includes('HIGH') ? '#ff4444' : levels.includes('MEDIUM') ? '#ffaa22' : '#44bb66';
+        // Init map
+        const mapDiv = document.getElementById('disasterMap');
+        mapDiv.style.display = 'block';
+        document.getElementById('mapLegend').style.display = 'flex';
 
-      // Draw region polygon
-      if (place.geojson) {
-        const poly = L.geoJSON(place.geojson, {
-          style: { color: overallColor, weight: 2.5, fillColor: overallColor, fillOpacity: 0.12, dashArray: null }
-        }).addTo(disasterMap);
-        disasterLayers.push(poly);
-        disasterMap.fitBounds(poly.getBounds(), { padding: [24, 24] });
-      } else {
-        disasterMap.setView([lat, lon], 6);
-      }
-
-      // Place risk markers for HIGH and MEDIUM risks scattered around center
-      const notable = risks.filter(r => r.level === 'HIGH' || r.level === 'MEDIUM');
-      const n = notable.length;
-      // Estimate spread based on bounding box size
-      const bb = place.boundingbox;
-      const spread = bb ? Math.min((parseFloat(bb[1]) - parseFloat(bb[0])) * 0.28, 4) : 0.8;
-
-      notable.forEach((r, i) => {
-        const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
-        const mlat = lat + Math.cos(angle) * spread * 0.5;
-        const mlon = lon + Math.sin(angle) * spread * 0.8;
-        const color = r.level === 'HIGH' ? '#ff4444' : '#ffaa22';
-        const border = r.level === 'HIGH' ? 'rgba(255,100,100,0.5)' : 'rgba(255,180,60,0.5)';
-
-        const icon = L.divIcon({
-          className: '',
-          html: `<div style="background:${color};border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,0.6);border:2px solid ${border};cursor:pointer">${r.icon || '⚠️'}</div>`,
-          iconSize: [30, 30],
-          iconAnchor: [15, 15]
-        });
-
-        const popup = `<b>${r.icon || ''} ${r.type}</b><br><span style="color:${color};font-weight:700">▲ ${r.level} RISK</span>${r.detail ? '<br><span style="color:#aaa">' + r.detail + '</span>' : ''}`;
-        const marker = L.marker([mlat, mlon], { icon }).bindPopup(popup).addTo(disasterMap);
-        disasterLayers.push(marker);
-      });
-
-      // Political / conflict markers (diamond shape, purple)
-      if (political && Array.isArray(political.factors)) {
-        const active = political.factors.filter(f => f.active);
-        const na = active.length;
-        active.forEach((f, i) => {
-          const angle = (i / Math.max(na, 1)) * 2 * Math.PI;
-          const plat = lat + Math.cos(angle) * spread * 0.22;
-          const plon = lon + Math.sin(angle) * spread * 0.35;
-          const pIcon = L.divIcon({
-            className: '',
-            html: `<div style="width:28px;height:28px;background:#cc44ff;transform:rotate(45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.7);border:2px solid rgba(220,160,255,0.4)"><span style="transform:rotate(-45deg);font-size:13px;line-height:1">${f.icon || '⚠️'}</span></div>`,
-            iconSize: [28, 28],
-            iconAnchor: [14, 14]
-          });
-          const stab = (political.stability || '').toUpperCase();
-          const stabColor = stab === 'CONFLICT' ? '#ff4444' : stab === 'UNSTABLE' ? '#ff8c3c' : stab === 'TENSE' ? '#ffcc44' : '#cc44ff';
-          const pop = `<b>${f.icon || ''} ${f.type}</b><br><span style="color:#cc44ff;font-weight:700">● ACTIVE</span>${f.detail ? '<br><span style="color:#aaa">' + f.detail + '</span>' : ''}`;
-          const m = L.marker([plat, plon], { icon: pIcon }).bindPopup(pop).addTo(disasterMap);
-          disasterLayers.push(m);
-        });
-      }
-
-      fetchWeather(lat, lon);
-      setTimeout(() => disasterMap.invalidateSize(), 150);
-    }
-
-    // ── Political section renderer ───────────────────────────────────────────
-    function renderPolitical(political) {
-      const sec = document.getElementById('politicalSection');
-      if (!political) { sec.style.display = 'none'; return; }
-
-      const stab = (political.stability || 'STABLE').toUpperCase();
-      const stabLabel = { STABLE:'Stable', TENSE:'Tense', UNSTABLE:'Unstable', CONFLICT:'Active Conflict' }[stab] || stab;
-
-      let html = `<div class="political-section">
-        <div class="section-label">
-          🛡️ Political &amp; Security
-          <span class="stability-badge ${stab}">${stabLabel}</span>
-        </div>`;
-
-      if (political.overview) {
-        html += `<div class="political-overview">${escHtml(political.overview)}</div>`;
-      }
-
-      if (Array.isArray(political.factors) && political.factors.length) {
-        html += '<div class="political-grid">';
-        for (const f of political.factors) {
-          const cls = f.active ? 'active' : 'inactive';
-          html += `<div class="pf-item ${cls}">
-            <span class="pf-icon">${f.icon || '•'}</span>
-            <div class="pf-right">
-              <span class="pf-type">${escHtml(f.type)}</span>
-              ${f.detail ? `<span class="pf-detail">${escHtml(f.detail)}</span>` : ''}
-            </div>
-          </div>`;
+        if (!disasterMap) {
+          disasterMap = L.map('disasterMap', { zoomControl: true, attributionControl: true });
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd', maxZoom: 19
+          }).addTo(disasterMap);
         }
-        html += '</div>';
+
+        disasterLayers.forEach(l => disasterMap.removeLayer(l));
+        disasterLayers = [];
+
+        // Draw region boundary
+        if (place.geojson) {
+          const poly = L.geoJSON(place.geojson, {
+            style: { color: '#ff8c3c', weight: 2, fillColor: '#ff8c3c', fillOpacity: 0.07, dashArray: '5 5' }
+          }).addTo(disasterMap);
+          disasterLayers.push(poly);
+          disasterMap.fitBounds(poly.getBounds(), { padding: [24, 24] });
+        } else {
+          disasterMap.setView([lat, lon], 6);
+        }
+
+        // Fetch USGS earthquakes + NASA EONET in parallel
+        const [usgsRes, eonetRes] = await Promise.allSettled([
+          fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_month.geojson'),
+          fetch('https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200')
+        ]);
+
+        let quakeCount = 0, eventCount = 0;
+
+        // USGS earthquakes
+        if (usgsRes.status === 'fulfilled' && usgsRes.value.ok) {
+          const usgs = await usgsRes.value.json();
+          for (const f of (usgs.features || [])) {
+            const [eLon, eLat] = f.geometry.coordinates;
+            if (eLat < sMinLat || eLat > sMaxLat || eLon < sMinLon || eLon > sMaxLon) continue;
+            const mag   = f.properties.mag;
+            const size  = Math.max(10, Math.min(30, mag * 5));
+            const color = mag >= 6 ? '#ff2222' : mag >= 5 ? '#ff6633' : mag >= 4 ? '#ffaa22' : '#ffcc66';
+            const qIcon = L.divIcon({
+              className: '',
+              html: `<div style="width:${size}px;height:${size}px;background:${color};border-radius:50%;opacity:0.85;border:2px solid rgba(255,255,255,0.25);box-shadow:0 2px 6px rgba(0,0,0,0.6)"></div>`,
+              iconSize: [size, size], iconAnchor: [size/2, size/2]
+            });
+            const date = new Date(f.properties.time).toLocaleDateString();
+            const pop  = `<b>🌍 M${mag} Earthquake</b><br>${f.properties.place}<br><span style="color:#aaa;font-size:0.78rem">${date}</span>`;
+            disasterLayers.push(L.marker([eLat, eLon], { icon: qIcon }).bindPopup(pop).addTo(disasterMap));
+            quakeCount++;
+          }
+        }
+
+        // NASA EONET events
+        if (eonetRes.status === 'fulfilled' && eonetRes.value.ok) {
+          const eonet = await eonetRes.value.json();
+          for (const ev of (eonet.events || [])) {
+            const geom = ev.geometry?.[0];
+            if (!geom || geom.type !== 'Point') continue;
+            const [eLon, eLat] = geom.coordinates;
+            if (eLat < sMinLat || eLat > sMaxLat || eLon < sMinLon || eLon > sMaxLon) continue;
+            const cat = ev.categories?.[0] || {};
+            const { icon: eIcon, color: eColor } = EONET_STYLE[cat.id] || { icon: '⚠️', color: '#ffaa22' };
+            const eMarker = L.divIcon({
+              className: '',
+              html: `<div style="width:28px;height:28px;background:${eColor};border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:15px;opacity:0.9;box-shadow:0 2px 6px rgba(0,0,0,0.5)">${eIcon}</div>`,
+              iconSize: [28, 28], iconAnchor: [14, 14]
+            });
+            const date = new Date(geom.date).toLocaleDateString();
+            const pop  = `<b>${eIcon} ${ev.title}</b><br><span style="color:#aaa;font-size:0.78rem">${date}</span>`;
+            disasterLayers.push(L.marker([eLat, eLon], { icon: eMarker }).bindPopup(pop).addTo(disasterMap));
+            eventCount++;
+          }
+        }
+
+        const total   = quakeCount + eventCount;
+        const locName = place.display_name.split(',').slice(0, 2).join(',').trim();
+        if (total > 0) {
+          const parts = [];
+          if (quakeCount) parts.push(`${quakeCount} earthquake${quakeCount !== 1 ? 's' : ''}`);
+          if (eventCount) parts.push(`${eventCount} other event${eventCount !== 1 ? 's' : ''}`);
+          status.innerHTML = `<span style="color:#44bb66">✓</span> ${parts.join(', ')} near <b>${escHtml(locName)}</b>. Click any marker for details.`;
+        } else {
+          status.innerHTML = `<span style="color:#888">No active events recorded near <b>${escHtml(locName)}</b> right now.</span>`;
+        }
+
+        setTimeout(() => disasterMap.invalidateSize(), 150);
+      } catch (e) {
+        status.innerHTML = `<span style="color:#ff5555">⚠️ ${escHtml(e.message)}</span>`;
+        document.getElementById('disasterMap').style.display = 'none';
+        document.getElementById('mapLegend').style.display = 'none';
+      } finally {
+        btn.disabled = false;
       }
-
-      html += `<div style="font-size:0.7rem;color:#333;margin-top:8px">⚠️ Political data reflects AI training knowledge and may not capture recent developments.</div>`;
-      html += '</div>';
-
-      sec.innerHTML = html;
-      sec.style.display = 'block';
     }
 
     // ── Weather (Open-Meteo, free, no key) ───────────────────────────────────
@@ -2165,55 +1453,6 @@ Rules:
     function windDir(deg) {
       const dirs = ['N','NE','E','SE','S','SW','W','NW'];
       return dirs[Math.round(deg / 45) % 8];
-    }
-
-    async function fetchWeather(lat, lon) {
-      const widget = document.getElementById('weatherWidget');
-      widget.style.display = 'block';
-      widget.innerHTML = '<div style="color:#444;font-size:0.82rem;padding:6px 0">Loading weather…</div>';
-      try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
-          `&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_direction_10m` +
-          `&timezone=auto`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('Weather API error');
-        const data = await res.json();
-        renderWeather(data);
-      } catch (_) {
-        widget.innerHTML = '<div style="color:#444;font-size:0.82rem;padding:6px 0">Weather data unavailable.</div>';
-      }
-    }
-
-    function renderWeather(data) {
-      const widget = document.getElementById('weatherWidget');
-      const c = data.current;
-      const [icon, desc] = wmoToDesc(c.weather_code ?? 0);
-      const tempC = Math.round(c.temperature_2m);
-      const feelsC = Math.round(c.apparent_temperature);
-      const tempF = Math.round(tempC * 9/5 + 32);
-      const feelsF = Math.round(feelsC * 9/5 + 32);
-      const wind = Math.round(c.wind_speed_10m);
-      const dir  = windDir(c.wind_direction_10m ?? 0);
-      const hum  = c.relative_humidity_2m;
-      const precip = c.precipitation != null ? c.precipitation.toFixed(1) : '0.0';
-
-      widget.innerHTML = `
-        <div class="section-label" style="margin-bottom:10px">🌡️ Current Weather</div>
-        <div class="weather-top">
-          <div class="weather-emoji">${icon}</div>
-          <div class="weather-temps">
-            <div class="weather-temp-main">${tempC}°C <span style="font-size:1rem;color:#666">/ ${tempF}°F</span></div>
-            <div class="weather-feels">Feels like ${feelsC}°C / ${feelsF}°F</div>
-          </div>
-          <div class="weather-desc-text">${desc}</div>
-        </div>
-        <div class="weather-stats">
-          <div class="weather-stat">💧 Humidity <span class="weather-stat-val">${hum}%</span></div>
-          <div class="weather-stat">💨 Wind <span class="weather-stat-val">${wind} km/h ${dir}</span></div>
-          <div class="weather-stat">🌧️ Precip <span class="weather-stat-val">${precip} mm</span></div>
-          <div class="weather-stat">📍 Coords <span class="weather-stat-val">${data.latitude.toFixed(2)}, ${data.longitude.toFixed(2)}</span></div>
-        </div>
-        <div class="weather-source">Source: Open-Meteo · live data</div>`;
     }
 
     // ── Weather App ──────────────────────────────────────────────────────────
@@ -2915,192 +2154,6 @@ Rules:
       return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    // ── Fact-Check Chat ──────────────────────────────────────────────────────
-
-    const SYSTEM_PROMPT = `You are a strict, impartial fact-checker that uses verified, well-established knowledge from trusted sources (peer-reviewed science, encyclopedias, government data, major reputable news organizations, official statistics, etc.).
-
-When a user asks whether something is true or false, respond ONLY in this exact JSON format:
-{
-  "verdict": "TRUE" | "FALSE" | "UNCERTAIN",
-  "confidence": "HIGH" | "MEDIUM" | "LOW",
-  "summary": "One clear sentence stating the verdict and why.",
-  "explanation": "2-4 sentences of supporting detail. Mention specific trusted sources or bodies of evidence where relevant (e.g. NASA, WHO, peer-reviewed studies, census data). Be precise and factual.",
-  "sources": "Comma-separated list of 2-4 source types or institutions that back this verdict (e.g. NASA, CDC, Oxford Dictionary, IPCC).",
-  "likely": "Only include this field when verdict is UNCERTAIN — one sentence on what is most likely true based on available evidence."
-}
-
-Rules:
-- If the claim is clearly TRUE based on well-established fact, use TRUE.
-- If the claim is clearly FALSE (a myth, debunked, incorrect), use FALSE.
-- If evidence is genuinely mixed, the topic is too recent, or the claim is ambiguous, use UNCERTAIN.
-- Never guess or make up sources. Only cite real, known institutions.
-- Keep summary and explanation factual and concise.
-- Do not include any text outside the JSON object.`;
-
-    const chatHistory = [];
-    let isLoading = false;
-
-    // Auto-grow textarea
-    const chatInput = document.getElementById('chatInput');
-    chatInput.addEventListener('input', () => {
-      chatInput.style.height = 'auto';
-      chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
-    });
-    chatInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendFactCheck(); }
-    });
-
-    // Add a message bubble to the chat
-    function addMessage(role, content) {
-      const welcome = document.getElementById('welcomeMsg');
-      if (welcome) welcome.remove();
-
-      const wrap = document.createElement('div');
-      wrap.className = `msg-wrap ${role}`;
-
-      if (role === 'user') {
-        const bubble = document.createElement('div');
-        bubble.className = 'msg-bubble';
-        bubble.textContent = content;
-        wrap.appendChild(bubble);
-      } else {
-        wrap.appendChild(buildBotBubble(content));
-      }
-
-      document.getElementById('chatMessages').appendChild(wrap);
-      scrollChat();
-      return wrap;
-    }
-
-    // Parse the JSON verdict and build the bot bubble
-    function buildBotBubble(raw) {
-      const bubble = document.createElement('div');
-      bubble.className = 'msg-bubble';
-
-      let parsed;
-      try {
-        const jsonMatch = raw.match(/\{[\s\S]*\}/);
-        parsed = JSON.parse(jsonMatch ? jsonMatch[0] : raw);
-      } catch (_) {
-        bubble.textContent = raw;
-        return bubble;
-      }
-
-      const v = (parsed.verdict || '').toUpperCase();
-      const cls = v === 'TRUE' ? 'true' : v === 'FALSE' ? 'false' : 'unclear';
-      const icon = v === 'TRUE' ? '✅' : v === 'FALSE' ? '❌' : '⚠️';
-      const label = v === 'TRUE' ? 'True' : v === 'FALSE' ? 'False' : 'Uncertain';
-      const conf = parsed.confidence ? ` · ${parsed.confidence} confidence` : '';
-
-      const badge = document.createElement('div');
-      badge.className = `verdict ${cls}`;
-      badge.innerHTML = `<span class="verdict-icon">${icon}</span>${label}${conf}`;
-      bubble.appendChild(badge);
-
-      if (parsed.summary) {
-        const s = document.createElement('div');
-        s.className = 'bot-explanation';
-        s.style.fontWeight = '600';
-        s.style.marginBottom = '6px';
-        s.textContent = parsed.summary;
-        bubble.appendChild(s);
-      }
-
-      if (parsed.explanation) {
-        const e = document.createElement('div');
-        e.className = 'bot-explanation';
-        e.textContent = parsed.explanation;
-        bubble.appendChild(e);
-      }
-
-      if (parsed.likely) {
-        const l = document.createElement('div');
-        l.className = 'bot-explanation';
-        l.style.marginTop = '6px';
-        l.style.fontStyle = 'italic';
-        l.style.color = '#ffcc44';
-        l.textContent = '↳ Most likely: ' + parsed.likely;
-        bubble.appendChild(l);
-      }
-
-      if (parsed.sources) {
-        const src = document.createElement('div');
-        src.className = 'bot-sources';
-        src.innerHTML = `<span>Sources / Basis:</span> ${parsed.sources}`;
-        bubble.appendChild(src);
-      }
-
-      return bubble;
-    }
-
-    // Typing indicator
-    function showTyping(msg) {
-      const wrap = document.createElement('div');
-      wrap.className = 'msg-wrap bot';
-      wrap.id = 'typingIndicator';
-      wrap.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div><div id="typingStatus" style="font-size:0.72rem;color:#555;margin-top:4px"></div>`;
-      document.getElementById('chatMessages').appendChild(wrap);
-      if (msg) setTypingStatus(msg);
-      scrollChat();
-    }
-
-    function setTypingStatus(msg) {
-      const el = document.getElementById('typingStatus');
-      if (el) { el.textContent = msg; scrollChat(); }
-    }
-
-    function hideTyping() {
-      const t = document.getElementById('typingIndicator');
-      if (t) t.remove();
-    }
-
-    function scrollChat() {
-      const box = document.getElementById('chatMessages');
-      box.scrollTop = box.scrollHeight;
-    }
-
-    async function sendFactCheck() {
-      if (isLoading) return;
-      const input = chatInput.value.trim();
-      if (!input) return;
-
-      addMessage('user', input);
-      chatInput.value = '';
-      chatInput.style.height = 'auto';
-      chatHistory.push({ role: 'user', content: input });
-
-      isLoading = true;
-      document.getElementById('sendBtn').disabled = true;
-      showTyping();
-
-      const messages = [
-        { role: 'system', content: SYSTEM_PROMPT },
-        ...chatHistory
-      ];
-
-      try {
-        const data = await callAI(SYSTEM_PROMPT, messages, setTypingStatus);
-        const reply = JSON.stringify(data);
-        chatHistory.push({ role: 'assistant', content: reply });
-        hideTyping();
-        addMessage('bot', reply);
-      } catch (err) {
-        hideTyping();
-        const errReply = JSON.stringify({
-          verdict: 'UNCERTAIN',
-          confidence: 'LOW',
-          summary: 'Could not reach the AI service.',
-          explanation: `${err.message}. The AI service may be temporarily busy or unavailable — please try again in a moment.`,
-          sources: 'N/A'
-        });
-        addMessage('bot', errReply);
-        chatHistory.pop();
-      } finally {
-        isLoading = false;
-        document.getElementById('sendBtn').disabled = false;
-        chatInput.focus();
-      }
-    }
   </script>
 </body>
 </html>

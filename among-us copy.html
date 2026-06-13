@@ -1300,6 +1300,26 @@
     }
     #joinBtn:hover { transform: translateY(-2px); box-shadow: 0 4px 28px rgba(78,205,196,0.55); }
     #joinStatus { color: #888; font-size: 13px; margin-top: 10px; min-height: 18px; text-align: center; }
+
+    /* ── Lobby polish: keyboard focus, press feedback, motion safety, texture ── */
+    /* Keyboard focus rings (mouse clicks stay clean via :focus-visible). Cyan = crewmate visor. */
+    #startBtn:focus-visible, #joinBtn:focus-visible, #authSubmitBtn:focus-visible,
+    #cosmeticsToggleBtn:focus-visible, #authBarBtn:focus-visible, #authBarSave:focus-visible,
+    .back-btn:focus-visible, .home-card:focus-visible, .map-card:focus-visible,
+    .color-swatch:focus-visible, .auth-tab:focus-visible,
+    #nameInput:focus-visible, #joinNameInput:focus-visible, #joinCodeInput:focus-visible,
+    .auth-field input:focus-visible {
+      outline: 3px solid rgba(110,230,250,0.85);
+      outline-offset: 3px;
+    }
+    /* Press feedback on the landing cards (they only had hover before) */
+    .home-card:active { transform: translateY(-1px) scale(0.992); }
+    /* Respect users who prefer less motion: calm the looping lobby animations */
+    @media (prefers-reduced-motion: reduce) {
+      #startScreen::before, #startScreen::after,
+      #startCrewChar svg, #startCrewShadow { animation: none !important; }
+      #startBtn:hover, .home-card:hover { transform: none; }
+    }
   </style>
 </head>
 <body>
@@ -6551,7 +6571,8 @@
       document.getElementById('shiftMenu').style.display = 'none';
       document.getElementById('shiftMenuOverlay').style.display = 'none';
       detectiveNotes = []; detectiveNotesOpen = false; detectiveActiveCase = 0; detectiveInterrogate = 0;
-      document.getElementById('detectiveNotesPanel').style.display = 'none';
+      document.getElementById('detectiveBoard').classList.remove('visible');
+      document.getElementById('detectiveBoardOverlay').style.display = 'none';
       vitalsOpen = false;
       document.getElementById('vitalsPanel').style.display = 'none';
       document.getElementById('noisemakerAlert').style.display = 'none';
@@ -6915,14 +6936,6 @@
         row.innerHTML = `<div class="vitals-dot" style="background:${p.color}"></div><span>${p.name} ${p.alive ? '♥' : '✕'}</span>`;
         list.appendChild(row);
       }
-    }
-
-    function toggleDetectiveNotes() {
-      if (playerRole !== 'detective') return;
-      detectiveNotesOpen = !detectiveNotesOpen;
-      const panel = document.getElementById('detectiveNotesPanel');
-      panel.style.display = detectiveNotesOpen ? 'block' : 'none';
-      if (detectiveNotesOpen) renderDetectiveNotes();
     }
 
     function doInterrogate() {
