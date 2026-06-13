@@ -35,7 +35,7 @@
       border-radius: 12px;
       padding: 28px 32px;
       width: 100%;
-      max-width: 560px;
+      max-width: 640px;
       margin-bottom: 20px;
     }
     .card h2 {
@@ -96,7 +96,7 @@
       border: 1px solid rgba(78,205,196,0.35);
       border-radius: 12px;
       width: 100%;
-      max-width: 560px;
+      max-width: 640px;
       margin-bottom: 20px;
       overflow: hidden;
     }
@@ -273,7 +273,7 @@
       border: 1px solid rgba(255,140,60,0.3);
       border-radius: 12px;
       width: 100%;
-      max-width: 560px;
+      max-width: 640px;
       margin-bottom: 20px;
       overflow: hidden;
     }
@@ -527,7 +527,7 @@
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      max-width: 560px;
+      max-width: 640px;
       margin-bottom: 12px;
     }
     .wa-top-title { font-size: 1.5rem; color: #e0e0f0; font-weight: 600; letter-spacing: 0.5px; }
@@ -549,7 +549,7 @@
       border-radius: 20px;
       padding: 28px 28px 22px;
       width: 100%;
-      max-width: 560px;
+      max-width: 640px;
       margin-bottom: 14px;
       position: relative;
       overflow: hidden;
@@ -574,43 +574,79 @@
     .wa-feels { font-size: 0.8rem; color: #555; margin-top: 3px; }
     .wa-stats-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       margin-top: 22px;
       padding-top: 18px;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      gap: 1px;
     }
-    .wa-stat { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 2px; }
-    .wa-stat-icon { font-size: 1rem; }
-    .wa-stat-val { font-size: 0.84rem; font-weight: 600; color: #e0e0f0; }
-    .wa-stat-lbl { font-size: 0.62rem; color: #444; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
+    .wa-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding: 10px 8px;
+      border-right: 1px solid rgba(255,255,255,0.04);
+    }
+    .wa-stat:nth-child(3n) { border-right: none; }
+    .wa-stat:nth-child(n+4) { border-top: 1px solid rgba(255,255,255,0.04); }
+    .wa-stat-lbl { font-size: 0.62rem; color: #444; text-transform: uppercase; letter-spacing: 0.5px; }
+    .wa-stat-val { font-size: 0.92rem; font-weight: 600; color: #d8d8f0; line-height: 1.2; }
+    .wa-stat-sub { font-size: 0.68rem; color: #3a3a5a; }
     .wa-card {
       background: #1a1a2e;
       border: 1px solid rgba(255,255,255,0.06);
+      border-top: 2px solid transparent;
       border-radius: 14px;
-      padding: 18px 20px;
+      padding: 20px 22px;
       width: 100%;
-      max-width: 560px;
+      max-width: 640px;
       margin-bottom: 14px;
     }
-    .wa-card-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #555; margin-bottom: 14px; }
-    /* Daily forecast */
-    .wa-day-row {
+    .wa-card-accent-teal   { border-top-color: #4ecdc4; }
+    .wa-card-accent-blue   { border-top-color: #6699ff; }
+    .wa-card-accent-amber  { border-top-color: #ffaa44; }
+    .wa-card-accent-gold   { border-top-color: #ffd060; }
+    .wa-card-accent-red    { border-top-color: #ff5555; }
+    .wa-card-accent-green  { border-top-color: #44cc88; }
+    .wa-card-accent-purple { border-top-color: #cc55ff; }
+    .wa-card-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #4ecdc4;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
       display: flex;
       align-items: center;
+      gap: 7px;
+    }
+    .wa-card-title.amber  { color: #ffaa44; }
+    .wa-card-title.blue   { color: #6699ff; }
+    .wa-card-title.gold   { color: #ffd060; }
+    .wa-card-title.red    { color: #ff6666; }
+    .wa-card-title.green  { color: #44cc88; }
+    .wa-card-title.purple { color: #cc55ff; }
+    /* Daily forecast */
+    .wa-day-row {
+      display: grid;
+      grid-template-columns: 46px 30px 1fr auto;
+      align-items: center;
       gap: 10px;
-      padding: 9px 0;
+      padding: 10px 0;
       border-bottom: 1px solid rgba(255,255,255,0.04);
-      font-size: 0.88rem;
     }
     .wa-day-row:last-child { border-bottom: none; }
-    .wa-day-name { width: 40px; color: #888; font-weight: 500; }
-    .wa-day-icon { font-size: 1.2rem; width: 28px; text-align: center; flex-shrink: 0; }
-    .wa-day-precip { display: flex; align-items: center; gap: 5px; width: 70px; font-size: 0.75rem; color: #6699ff; flex-shrink: 0; }
-    .wa-precip-bar-wrap { flex: 1; background: rgba(102,153,255,0.1); border-radius: 4px; height: 4px; }
-    .wa-precip-bar { height: 4px; background: #6699ff; border-radius: 4px; }
-    .wa-day-temps { margin-left: auto; display: flex; gap: 10px; }
-    .wa-day-max { color: #e0e0f0; font-weight: 600; }
-    .wa-day-min { color: #555; }
+    .wa-day-name { font-size: 0.85rem; color: #888; font-weight: 500; }
+    .wa-day-icon { font-size: 1.25rem; text-align: center; }
+    .wa-day-bar-col { display: flex; flex-direction: column; gap: 3px; }
+    .wa-day-trange { position: relative; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.05); }
+    .wa-day-trange-fill { position: absolute; top: 0; height: 5px; border-radius: 3px; }
+    .wa-day-pp { font-size: 0.7rem; color: rgba(102,153,255,0.7); }
+    .wa-day-temps { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+    .wa-day-max { font-size: 0.88rem; color: #d8d8f0; font-weight: 600; }
+    .wa-day-min { font-size: 0.78rem; color: #444; }
     /* Alerts */
     .wa-alert-item {
       display: flex;
@@ -654,10 +690,101 @@
     #waManualBtn:hover { background: #38b2aa; }
     .wa-loading { text-align: center; padding: 40px 20px; color: #555; font-size: 0.9rem; line-height: 2; }
     .wa-error { color: #ff5555; font-size: 0.85rem; padding: 24px; text-align: center; line-height: 1.8; }
+    /* Hourly tabs */
+    .wa-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+    .wa-tab {
+      background: #0f0f1a;
+      border: 1px solid rgba(255,255,255,0.07);
+      color: #555;
+      border-radius: 6px;
+      padding: 5px 14px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .wa-tab.active { background: rgba(78,205,196,0.12); border-color: rgba(78,205,196,0.35); color: #4ecdc4; }
+    .wa-tab:hover:not(.active) { color: #888; border-color: rgba(255,255,255,0.12); }
+    /* AI Key Setup Panel */
+    .ai-key-panel {
+      background: #1a1a2e;
+      border: 1px solid rgba(78,205,196,0.22);
+      border-top: 2px solid #4ecdc4;
+      border-radius: 12px;
+      padding: 16px 20px;
+      width: 100%;
+      max-width: 640px;
+      margin-bottom: 14px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .ai-key-icon { font-size: 1.6rem; flex-shrink: 0; margin-top: 2px; }
+    .ai-key-body { flex: 1; min-width: 0; }
+    .ai-key-title { font-size: 0.72rem; font-weight: 700; color: #4ecdc4; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px; }
+    .ai-key-desc { font-size: 0.8rem; color: #666; line-height: 1.5; margin-bottom: 10px; }
+    .ai-key-desc a { color: #4ecdc4; text-decoration: none; }
+    .ai-key-desc a:hover { text-decoration: underline; }
+    .ai-key-row { display: flex; gap: 8px; }
+    .ai-key-input {
+      flex: 1;
+      background: #0f0f1a;
+      border: 1px solid rgba(78,205,196,0.25);
+      border-radius: 7px;
+      color: #e0e0f0;
+      padding: 8px 12px;
+      font-size: 0.84rem;
+      outline: none;
+      font-family: inherit;
+      min-width: 0;
+    }
+    .ai-key-input:focus { border-color: #4ecdc4; }
+    .ai-key-save { background: #4ecdc4; color: #0f0f1a; border: none; border-radius: 7px; padding: 8px 18px; font-weight: 700; font-size: 0.84rem; cursor: pointer; white-space: nowrap; font-family: inherit; flex-shrink: 0; }
+    .ai-key-save:hover { background: #38b2aa; }
+    .ai-key-set { font-size: 0.78rem; color: #44cc88; display: flex; align-items: center; gap: 8px; }
+    .ai-key-change { font-size: 0.72rem; color: #4ecdc4; cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; font-family: inherit; }
+
+    /* Detail conditions */
+    .detail-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .detail-item { background: #0f0f1a; border-radius: 8px; padding: 12px 13px; }
+    .detail-lbl { font-size: 0.67rem; color: #555; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 5px; }
+    .detail-val { font-size: 1.05rem; font-weight: 600; color: #e0e0f0; }
+    .detail-sub { font-size: 0.72rem; color: #555; margin-top: 3px; }
+    .uv-bar-wrap {
+      height: 6px;
+      border-radius: 4px;
+      background: linear-gradient(90deg,#44cc44 0%,#aacc00 20%,#ffcc00 40%,#ff8800 60%,#ff4400 75%,#cc0088 88%,#880088 100%);
+      position: relative;
+      margin: 7px 0 3px;
+    }
+    .uv-needle { position: absolute; top: -3px; width: 3px; height: 12px; background: #fff; border-radius: 2px; transform: translateX(-50%); box-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+    /* Sun & Moon */
+    .sun-moon-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .sun-block, .moon-block { background: #0f0f1a; border-radius: 8px; padding: 13px 14px; }
+    .sm-title { font-size: 0.67rem; color: #555; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
+    .sm-row { display: flex; justify-content: space-between; font-size: 0.8rem; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .sm-row:last-child { border-bottom: none; }
+    .sm-key { color: #555; }
+    .sm-val { color: #c0c0d8; font-weight: 500; }
+    .moon-emoji { text-align: center; font-size: 2.4rem; margin-bottom: 6px; }
+    .moon-name  { text-align: center; font-size: 0.82rem; color: #aaa; font-weight: 600; margin-bottom: 2px; }
+    .moon-illum { text-align: center; font-size: 0.72rem; color: #555; }
+    /* AQI */
+    .aqi-top { display: flex; align-items: center; gap: 16px; }
+    .aqi-circle { width: 66px; height: 66px; border-radius: 50%; border: 2.5px solid; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+    .aqi-circle-num { font-size: 1.3rem; line-height: 1; }
+    .aqi-circle-lbl { font-size: 0.58rem; letter-spacing: 0.5px; opacity: 0.8; }
+    .aqi-desc-name { font-size: 0.95rem; font-weight: 600; color: #e0e0f0; margin-bottom: 3px; }
+    .aqi-desc-note { font-size: 0.78rem; color: #666; line-height: 1.4; }
+    .aqi-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 7px; margin-top: 12px; }
+    .aqi-item { background: #0f0f1a; border-radius: 7px; padding: 9px 10px; }
+    .aqi-item-val { font-size: 0.95rem; font-weight: 600; color: #e0e0f0; }
+    .aqi-item-lbl { font-size: 0.65rem; color: #555; margin-top: 2px; }
     /* Tools divider */
     .tools-divider {
       width: 100%;
-      max-width: 560px;
+      max-width: 640px;
       text-align: center;
       position: relative;
       margin: 14px 0 20px;
@@ -685,7 +812,7 @@
       border: 1px solid rgba(255,140,60,0.25);
       border-radius: 12px;
       width: 100%;
-      max-width: 560px;
+      max-width: 640px;
       margin-bottom: 20px;
       overflow: hidden;
     }
@@ -772,6 +899,89 @@
     .guide-tag.cold    { background: rgba(140,200,255,0.12);color: #88ccff; }
     .guide-tag.heat    { background: rgba(255,160,40,0.12); color: #ffaa44; }
     .guide-tag.bio     { background: rgba(100,200,80,0.12); color: #77cc55; }
+
+    /* ── Interactive Disaster Survival ──────────────────────── */
+    .dsg-card {
+      background: #1a1a2e;
+      border: 1px solid rgba(255,140,60,0.25);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 640px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .dsg-header {
+      background: linear-gradient(135deg, #2a1a0e 0%, #1a1a2e 100%);
+      border-bottom: 1px solid rgba(255,140,60,0.2);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .dsg-header-icon { font-size: 1.4rem; filter: drop-shadow(0 0 6px rgba(255,140,60,0.5)); }
+    .dsg-header-text h2 { font-size: 1rem; color: #ff8c3c; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+    .dsg-header-text p  { font-size: 0.78rem; color: #666; }
+    .dsg-body { padding: 14px 16px; }
+    .dsg-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 0;
+    }
+    .dsg-btn {
+      background: #0f0f1a;
+      border: 1px solid rgba(255,140,60,0.18);
+      border-radius: 10px;
+      padding: 10px 6px;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-family: inherit;
+    }
+    .dsg-btn:hover { background: rgba(255,140,60,0.08); border-color: rgba(255,140,60,0.4); transform: translateY(-1px); }
+    .dsg-btn.active { background: rgba(255,140,60,0.14); border-color: #ff8c3c; }
+    .dsg-btn-icon { font-size: 1.4rem; line-height: 1; }
+    .dsg-btn-name { font-size: 0.68rem; color: #888; line-height: 1.2; }
+    .dsg-btn.active .dsg-btn-name { color: #ff8c3c; }
+    .dsg-panel {
+      margin-top: 14px;
+      background: #0d0d1a;
+      border-radius: 10px;
+      border: 1px solid rgba(255,140,60,0.15);
+      overflow: hidden;
+      animation: dsg-slide 0.18s ease;
+    }
+    @keyframes dsg-slide { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+    .dsg-panel-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(255,140,60,0.06);
+      border-bottom: 1px solid rgba(255,140,60,0.12);
+    }
+    .dsg-panel-head-icon { font-size: 1.8rem; }
+    .dsg-panel-head-name { font-size: 1rem; font-weight: 700; color: #ff8c3c; }
+    .dsg-panel-head-tag  { font-size: 0.75rem; color: #666; }
+    .dsg-sections { padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
+    .dsg-sec-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+    .dsg-sec-title.what   { color: #4ecdc4; }
+    .dsg-sec-title.signs  { color: #ffaa44; }
+    .dsg-sec-title.during { color: #ff6666; }
+    .dsg-sec-title.after  { color: #8bc34a; }
+    .dsg-sec-title.avoid  { color: #e040fb; }
+    .dsg-sec-body { font-size: 0.82rem; color: #999; line-height: 1.6; }
+    .dsg-sec-body li { margin-left: 14px; margin-bottom: 3px; }
   </style>
 </head>
 <body>
@@ -782,6 +992,25 @@
     <button class="wa-refresh-btn" onclick="initWeatherApp()">↺ Refresh</button>
   </div>
 
+  <!-- ── AI Key Setup ───────────────────────────────────────── -->
+  <div class="ai-key-panel" id="aiKeyPanel">
+    <div class="ai-key-icon">🤖</div>
+    <div class="ai-key-body">
+      <div class="ai-key-title">AI Setup — Required for Fact Checker &amp; Disaster Risk</div>
+      <div class="ai-key-desc" id="aiKeyDesc">
+        These features use Google Gemini AI — free, no credit card needed, 1,500 requests/day.
+        Get your key in 2 minutes at <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio → Create API key</a>.
+      </div>
+      <div id="aiKeyForm">
+        <div class="ai-key-row">
+          <input class="ai-key-input" type="password" id="geminiKeyInput" placeholder="Paste your Gemini API key (AIza…)">
+          <button class="ai-key-save" onclick="saveGeminiKey()">Save Key</button>
+        </div>
+        <div id="aiKeyMsg" style="font-size:0.75rem;margin-top:6px;min-height:16px"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="wa-hero" id="waHero">
     <div class="wa-loading">
       <div class="d-spinner" style="width:24px;height:24px;margin:0 auto 10px;display:block"></div>
@@ -790,22 +1019,42 @@
   </div>
 
   <div class="wa-card" id="waHourlyCard" style="display:none">
-    <div class="wa-card-title">🕐 24-Hour Temperature</div>
+    <div class="wa-card-title">🕐 Hourly Forecast</div>
+    <div class="wa-tabs">
+      <button class="wa-tab active" id="tabTemp" onclick="switchHourlyTab('temp')">🌡 Temperature</button>
+      <button class="wa-tab" id="tabWind" onclick="switchHourlyTab('wind')">💨 Wind</button>
+      <button class="wa-tab" id="tabRain" onclick="switchHourlyTab('rain')">🌧 Precipitation</button>
+    </div>
     <div id="waHourlyGraph"></div>
   </div>
 
+  <div class="wa-card" id="waDetailsCard" style="display:none">
+    <div class="wa-card-title amber">🔬 Detailed Conditions</div>
+    <div id="waDetailsContent"></div>
+  </div>
+
   <div class="wa-card" id="waDailyCard" style="display:none">
-    <div class="wa-card-title">📅 7-Day Forecast</div>
+    <div class="wa-card-title blue">📅 7-Day Forecast</div>
     <div id="waDailyList"></div>
   </div>
 
+  <div class="wa-card" id="waSunMoonCard" style="display:none">
+    <div class="wa-card-title gold">🌙 Sun &amp; Moon</div>
+    <div id="waSunMoonContent"></div>
+  </div>
+
+  <div class="wa-card" id="waAirQualCard" style="display:none">
+    <div class="wa-card-title" id="waAirQualTitle">💨 Air Quality</div>
+    <div id="waAirQualContent"><div style="color:#444;font-size:0.82rem">Loading…</div></div>
+  </div>
+
   <div class="wa-card" id="waAlertsCard" style="display:none">
-    <div class="wa-card-title">⚠️ Alerts &amp; Advisories</div>
+    <div class="wa-card-title red">⚠️ Alerts &amp; Advisories</div>
     <div id="waAlertsList"></div>
   </div>
 
   <div class="wa-card" id="waKitCard" style="display:none">
-    <div class="wa-card-title">🎒 Emergency Kit</div>
+    <div class="wa-card-title green">🎒 Emergency Kit Checklist</div>
     <div id="waKitContent"></div>
   </div>
 
@@ -863,6 +1112,21 @@
       </div>
       <div id="weatherWidget" class="weather-widget"></div>
       <div id="politicalSection" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ── Disaster Survival Guide (Interactive) ───────────────────────── -->
+  <div class="dsg-card">
+    <div class="dsg-header">
+      <div class="dsg-header-icon">🆘</div>
+      <div class="dsg-header-text">
+        <h2>Disaster Survival Guide</h2>
+        <p>Tap any disaster to learn what it is and how to survive it</p>
+      </div>
+    </div>
+    <div class="dsg-body">
+      <div class="dsg-grid" id="dsgGrid"></div>
+      <div class="dsg-panel" id="dsgPanel" style="display:none"></div>
     </div>
   </div>
 
@@ -1481,80 +1745,236 @@ Rules:
       if (e.key === 'Enter') checkDisasterRisk();
     });
 
-    const DISASTER_MODELS = ['openai', 'mistral', 'openai-large'];
-    const DISASTER_TIMEOUT_MS = 18000;
+    // ── AI key management ────────────────────────────────────────────────────
+
+    let _geminiKey = localStorage.getItem('geminiKey') || '';
+
+    function initAIKeyPanel() {
+      const panel = document.getElementById('aiKeyPanel');
+      if (_geminiKey) {
+        document.getElementById('aiKeyForm').innerHTML =
+          `<div class="ai-key-set">✅ Gemini key saved
+            <button class="ai-key-change" onclick="clearGeminiKey()">Change</button>
+          </div>`;
+        document.getElementById('aiKeyDesc').textContent =
+          'Google Gemini AI is active. The Fact Checker and Disaster Risk features are ready to use.';
+        panel.style.borderTopColor = '#44cc88';
+      }
+    }
+
+    function saveGeminiKey() {
+      const val = document.getElementById('geminiKeyInput')?.value.trim() || '';
+      const msg = document.getElementById('aiKeyMsg');
+      if (!val || !val.startsWith('AIza')) {
+        if (msg) { msg.style.color = '#ff6666'; msg.textContent = 'Key should start with "AIza" — check and paste again.'; }
+        return;
+      }
+      _geminiKey = val;
+      localStorage.setItem('geminiKey', val);
+      if (msg) { msg.style.color = '#44cc88'; msg.textContent = ''; }
+      initAIKeyPanel();
+    }
+
+    function clearGeminiKey() {
+      _geminiKey = '';
+      localStorage.removeItem('geminiKey');
+      document.getElementById('aiKeyForm').innerHTML =
+        `<div class="ai-key-row">
+          <input class="ai-key-input" type="password" id="geminiKeyInput" placeholder="Paste your Gemini API key (AIza…)">
+          <button class="ai-key-save" onclick="saveGeminiKey()">Save Key</button>
+        </div>
+        <div id="aiKeyMsg" style="font-size:0.75rem;margin-top:6px;min-height:16px"></div>`;
+      document.getElementById('aiKeyDesc').innerHTML =
+        'These features use Google Gemini AI — free, no credit card needed, 1,500 requests/day. ' +
+        'Get your key at <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio → Create API key</a>.';
+      document.getElementById('aiKeyPanel').style.borderTopColor = '#4ecdc4';
+    }
+
+    initAIKeyPanel();
+
+    // ── Shared AI helpers ────────────────────────────────────────────────────
+
+    const AI_TIMEOUT   = 26000;
+    const POLL_MODELS  = ['openai', 'openai-large', 'mistral', 'llama'];
+    const POLL_WAIT    = 7000;
+
+    function aiErr(msg, code) { const e = new Error(msg); e.code = code; return e; }
+
+    function extractJSON(raw) {
+      const s = raw.trim();
+      try { return JSON.parse(s); } catch {}
+      const stripped = s.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+      try { return JSON.parse(stripped); } catch {}
+      const m = s.match(/\{[\s\S]*\}/);
+      if (m) { try { return JSON.parse(m[0]); } catch {} }
+      throw new Error('Response did not contain valid JSON');
+    }
+
+    async function callGemini(systemMsg, messages) {
+      const key = _geminiKey;
+      if (!key) throw aiErr('No Gemini key', 0);
+
+      // Convert OpenAI-format messages → Gemini format
+      const contents = messages
+        .filter(m => m.role !== 'system')
+        .map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }));
+
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), AI_TIMEOUT);
+      try {
+        const r = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: ctrl.signal,
+            body: JSON.stringify({
+              system_instruction: { parts: [{ text: systemMsg }] },
+              contents,
+              generationConfig: { responseMimeType: 'application/json' }
+            })
+          }
+        );
+        clearTimeout(t);
+        if (r.status === 400) {
+          const body = await r.json().catch(() => ({}));
+          const detail = body?.error?.message || 'Bad request';
+          if (detail.toLowerCase().includes('api key')) throw aiErr('Invalid Gemini API key — click Change to update it.', 401);
+          throw new Error(`Gemini 400: ${detail}`);
+        }
+        if (r.status === 429) throw aiErr('Gemini quota reached for today', 429);
+        if (!r.ok) throw new Error(`Gemini HTTP ${r.status}`);
+        const json = await r.json();
+        const text = json?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!text) throw new Error('Empty Gemini response');
+        return extractJSON(text);
+      } catch (e) {
+        clearTimeout(t);
+        throw e.name === 'AbortError' ? new Error('Gemini timeout') : e;
+      }
+    }
+
+    async function pollinationsPost(messages, model) {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), AI_TIMEOUT);
+      try {
+        const r = await fetch('https://text.pollinations.ai/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Referer': location.href },
+          signal: ctrl.signal,
+          body: JSON.stringify({ messages, model, jsonMode: true, seed: Date.now() % 99999 })
+        });
+        clearTimeout(t);
+        if (r.status === 429) throw aiErr(`Rate limited (${model})`, 429);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const txt = await r.text();
+        if (!txt.trim()) throw new Error('Empty response');
+        return txt;
+      } catch (e) {
+        clearTimeout(t);
+        throw e.name === 'AbortError' ? new Error(`Timeout (${model})`) : e;
+      }
+    }
+
+    async function pollinationsGet(userMsg, systemMsg) {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), AI_TIMEOUT);
+      const url = `https://text.pollinations.ai/${encodeURIComponent(userMsg.slice(0,500))}?model=openai&json=true&seed=${Date.now()%99999}&system=${encodeURIComponent(systemMsg.slice(0,800))}`;
+      try {
+        const r = await fetch(url, { signal: ctrl.signal });
+        clearTimeout(t);
+        if (r.status === 429) throw aiErr('Rate limited (GET)', 429);
+        if (!r.ok) throw new Error(`GET HTTP ${r.status}`);
+        const txt = await r.text();
+        if (!txt.trim()) throw new Error('Empty GET response');
+        return txt;
+      } catch (e) {
+        clearTimeout(t);
+        throw e.name === 'AbortError' ? new Error('GET timeout') : e;
+      }
+    }
+
+    // onStatus(msg) — optional callback for live progress display
+    async function callAI(systemMsg, messages, onStatus) {
+      // 1. Try Gemini first (no rate-limit issues at free tier)
+      if (_geminiKey) {
+        if (onStatus) onStatus('Asking Gemini AI…');
+        try {
+          return await callGemini(systemMsg, messages);
+        } catch (e) {
+          if (e.code === 401) throw e;           // bad key — surface immediately
+          if (e.code !== 429 && e.code !== 0) {  // unexpected Gemini error
+            if (onStatus) onStatus(`Gemini error — trying backup… (${e.message})`);
+          } else if (e.code === 429) {
+            if (onStatus) onStatus('Gemini daily quota reached — trying backup…');
+          }
+          // fall through to Pollinations
+        }
+      }
+
+      // 2. Pollinations fallback (no key needed)
+      let lastErr, hit429 = false;
+      for (let i = 0; i < POLL_MODELS.length; i++) {
+        const model = POLL_MODELS[i];
+        if (onStatus) onStatus(`Backup AI (${model})…`);
+        try { return extractJSON(await pollinationsPost(messages, model)); }
+        catch (e) {
+          lastErr = e;
+          if (e.code === 429) {
+            hit429 = true;
+            if (onStatus) onStatus(`Rate limited — waiting ${Math.round(POLL_WAIT/1000)}s…`);
+            await new Promise(res => setTimeout(res, POLL_WAIT));
+          }
+        }
+      }
+
+      // 3. GET endpoint last resort
+      try {
+        if (onStatus) onStatus('Trying alternate endpoint…');
+        const userMsg = messages.filter(m => m.role === 'user').pop()?.content || '';
+        return extractJSON(await pollinationsGet(userMsg, systemMsg));
+      } catch (e) { lastErr = e; }
+
+      if (hit429) throw new Error('All AI services rate-limited. Add a free Gemini key (see the AI Setup panel) to avoid this.');
+      throw lastErr || new Error('All AI endpoints failed');
+    }
+
+    // ── Disaster risk checker ────────────────────────────────────────────────
 
     async function checkDisasterRisk() {
       const input = document.getElementById('disasterInput').value.trim();
       if (!input) return;
 
-      const btn = document.getElementById('disasterCheckBtn');
+      const btn    = document.getElementById('disasterCheckBtn');
       const result = document.getElementById('disasterResult');
       btn.disabled = true;
       result.style.display = 'block';
 
-      // Hide stale map/weather/political from a previous search
-      document.getElementById('disasterMap').style.display = 'none';
-      document.getElementById('mapLegend').style.display = 'none';
-      document.getElementById('weatherWidget').style.display = 'none';
+      document.getElementById('disasterMap').style.display      = 'none';
+      document.getElementById('mapLegend').style.display        = 'none';
+      document.getElementById('weatherWidget').style.display    = 'none';
       document.getElementById('politicalSection').style.display = 'none';
 
-      let lastErr = null;
+      const setStatus = msg => {
+        result.innerHTML = `<div class="disaster-loading"><span class="d-spinner"></span>${escHtml(msg)}</div>`;
+      };
+      setStatus(`Analysing ${input}…`);
 
-      for (let attempt = 0; attempt < DISASTER_MODELS.length; attempt++) {
-        const model = DISASTER_MODELS[attempt];
-        const attemptLabel = attempt > 0
-          ? `<div class="retry-note">Retrying with ${model} — attempt ${attempt + 1} of ${DISASTER_MODELS.length}</div>`
-          : '';
-        result.innerHTML = `<div class="disaster-loading"><span class="d-spinner"></span>Analysing <strong>${escHtml(input)}</strong>…${attemptLabel}</div>`;
-
-        try {
-          const controller = new AbortController();
-          const timer = setTimeout(() => controller.abort(), DISASTER_TIMEOUT_MS);
-
-          const res = await fetch('https://text.pollinations.ai/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            signal: controller.signal,
-            body: JSON.stringify({
-              messages: [
-                { role: 'system', content: DISASTER_PROMPT },
-                { role: 'user', content: input }
-              ],
-              model,
-              jsonMode: true,
-              seed: Math.floor(Math.random() * 99999)
-            })
-          });
-
-          clearTimeout(timer);
-
-          if (!res.ok) throw new Error(`Server error ${res.status}`);
-          const raw = await res.text();
-          if (!raw || !raw.trim()) throw new Error('Empty response from server');
-
-          const jsonMatch = raw.match(/\{[\s\S]*\}/);
-          if (!jsonMatch) throw new Error('Response was not valid JSON');
-
-          const data = JSON.parse(jsonMatch[0]);
-          renderDisasterResult(data);
-          btn.disabled = false;
-          return;
-
-        } catch (err) {
-          lastErr = err.name === 'AbortError'
-            ? new Error(`Request timed out after ${DISASTER_TIMEOUT_MS / 1000}s`)
-            : err;
-        }
+      try {
+        const data = await callAI(DISASTER_PROMPT, [
+          { role: 'system', content: DISASTER_PROMPT },
+          { role: 'user',   content: input }
+        ], setStatus);
+        renderDisasterResult(data);
+      } catch (err) {
+        result.innerHTML = `<div class="disaster-error">
+          ⚠️ Could not fetch risk data.<br>
+          <small style="color:#666">${escHtml(err.message)}</small><br>
+          <small style="color:#444">Try a different region name or try again in a moment.</small>
+        </div>`;
+      } finally {
+        btn.disabled = false;
       }
-
-      // All attempts failed
-      result.innerHTML = `<div class="disaster-error">
-        ⚠️ Could not fetch risk data after ${DISASTER_MODELS.length} attempts.
-        <small style="color:#666">${escHtml(lastErr ? lastErr.message : 'Unknown error')}</small>
-        <small style="color:#444">Check your internet connection or try again in a moment.</small>
-      </div>`;
-      btn.disabled = false;
     }
 
     function renderDisasterResult(data) {
@@ -1800,10 +2220,20 @@ Rules:
 
     const DAYS_SHORT  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
+    let _hourlyData = null, _hourlyTab = 'temp';
+
+    function switchHourlyTab(mode) {
+      _hourlyTab = mode;
+      ['temp','wind','rain'].forEach(m => {
+        document.getElementById('tab' + m.charAt(0).toUpperCase() + m.slice(1)).classList.toggle('active', m === mode);
+      });
+      if (_hourlyData) renderHourlyGraph(_hourlyData, mode);
+    }
+
     async function initWeatherApp() {
       const hero = document.getElementById('waHero');
       hero.innerHTML = '<div class="wa-loading"><div class="d-spinner" style="width:24px;height:24px;margin:0 auto 10px;display:block"></div>Detecting your location…</div>';
-      ['waHourlyCard','waDailyCard','waAlertsCard','waKitCard'].forEach(id => document.getElementById(id).style.display = 'none');
+      ['waHourlyCard','waDetailsCard','waDailyCard','waSunMoonCard','waAirQualCard','waAlertsCard','waKitCard'].forEach(id => document.getElementById(id).style.display = 'none');
       if (!navigator.geolocation) { showGeoFallback('Geolocation is not supported by your browser.'); return; }
       navigator.geolocation.getCurrentPosition(
         pos => fetchWeatherAppData(pos.coords.latitude, pos.coords.longitude),
@@ -1850,21 +2280,24 @@ Rules:
             locName = [a.city || a.town || a.village || a.county, a.country].filter(Boolean).join(', ');
           } catch (_) { locName = `${lat.toFixed(2)}, ${lon.toFixed(2)}`; }
         }
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
-          `&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m` +
-          `&hourly=temperature_2m,weather_code,precipitation_probability` +
-          `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,sunrise,sunset` +
+        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+          `&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,snowfall,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,uv_index,visibility,dew_point_2m` +
+          `&hourly=temperature_2m,weather_code,precipitation_probability,wind_speed_10m,precipitation` +
+          `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,uv_index_max,sunrise,sunset` +
           `&wind_speed_unit=kmh&timezone=auto&forecast_days=7`;
-        const wr = await fetch(url);
-        if (!wr.ok) throw new Error('Weather API returned an error. Try again.');
-        const wd = await wr.json();
-        renderWeatherApp(wd, locName);
+        const aqiUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}` +
+          `&current=european_aqi,us_aqi,pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,ozone&timezone=auto`;
+        const [wr, ar] = await Promise.allSettled([fetch(weatherUrl), fetch(aqiUrl)]);
+        if (wr.status === 'rejected' || !wr.value.ok) throw new Error('Weather API returned an error. Try again.');
+        const wd = await wr.value.json();
+        const aqiData = (ar.status === 'fulfilled' && ar.value.ok) ? await ar.value.json() : null;
+        renderWeatherApp(wd, locName, aqiData);
       } catch (e) {
         document.getElementById('waHero').innerHTML = `<div class="wa-error">⚠️ ${escHtml(e.message)}<br><small style="color:#444">Check your connection and try refreshing.</small></div>`;
       }
     }
 
-    function renderWeatherApp(wd, locName) {
+    function renderWeatherApp(wd, locName, aqiData) {
       const c = wd.current;
       const [icon, condText] = wmoGet(c.weather_code);
       const tempC   = Math.round(c.temperature_2m);
@@ -1879,6 +2312,15 @@ Rules:
       const sunrise = wd.daily.sunrise?.[0] ? new Date(wd.daily.sunrise[0]) : null;
       const sunset  = wd.daily.sunset?.[0]  ? new Date(wd.daily.sunset[0])  : null;
       const fmtT    = d => d ? `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}` : '—';
+      const uv      = c.uv_index != null ? c.uv_index.toFixed(1) : '—';
+      const uvColor = c.uv_index == null ? '#888' : c.uv_index <= 2 ? '#44cc44' : c.uv_index <= 5 ? '#ffcc00' : c.uv_index <= 7 ? '#ff8800' : c.uv_index <= 10 ? '#ff4400' : '#880088';
+      const vis     = c.visibility != null ? (c.visibility / 1000).toFixed(1) + ' km' : '—';
+      const press   = c.pressure_msl != null ? Math.round(c.pressure_msl) + ' hPa' : '—';
+      const dew     = c.dew_point_2m != null ? Math.round(c.dew_point_2m) + '°C' : '—';
+
+      const uvLabel = c.uv_index == null ? '' : c.uv_index <= 2 ? 'Low' : c.uv_index <= 5 ? 'Mod' : c.uv_index <= 7 ? 'High' : c.uv_index <= 10 ? 'V.High' : 'Extrm';
+      const precToday = wd.daily.precipitation_sum?.[0] != null ? wd.daily.precipitation_sum[0].toFixed(1) + ' mm' : '—';
+      const ppToday   = wd.daily.precipitation_probability_max?.[0] != null ? wd.daily.precipitation_probability_max[0] + '%' : '';
 
       document.getElementById('waHero').innerHTML = `
         <div class="wa-loc"><span>📍</span><span class="wa-loc-name">${escHtml(locName)}</span></div>
@@ -1887,91 +2329,162 @@ Rules:
           <div class="wa-temp-col">
             <span class="wa-temp-big">${tempC}<span class="wa-temp-unit">°C</span></span>
             <span class="wa-condition">${condText}</span>
-            <span class="wa-feels">Feels like ${feelsC}°C</span>
+            <span class="wa-feels">Feels like ${feelsC}°C · ${Math.round(tempC*9/5+32)}°F</span>
           </div>
         </div>
         <div class="wa-stats-grid">
-          <div class="wa-stat"><span class="wa-stat-icon">💧</span><span class="wa-stat-val">${hum}%</span><span class="wa-stat-lbl">Humidity</span></div>
-          <div class="wa-stat"><span class="wa-stat-icon">💨</span><span class="wa-stat-val">${wind} km/h</span><span class="wa-stat-lbl">${dir} Wind</span></div>
-          <div class="wa-stat"><span class="wa-stat-icon">💨</span><span class="wa-stat-val">${gusts} km/h</span><span class="wa-stat-lbl">Gusts</span></div>
-          <div class="wa-stat"><span class="wa-stat-icon">☁️</span><span class="wa-stat-val">${cloud}%</span><span class="wa-stat-lbl">Cloud Cover</span></div>
-          <div class="wa-stat"><span class="wa-stat-icon">↑</span><span class="wa-stat-val">${todayHi}°C</span><span class="wa-stat-lbl">Today High</span></div>
-          <div class="wa-stat"><span class="wa-stat-icon">↓</span><span class="wa-stat-val">${todayLo}°C</span><span class="wa-stat-lbl">Today Low</span></div>
-          <div class="wa-stat"><span class="wa-stat-icon">🌅</span><span class="wa-stat-val">${fmtT(sunrise)}</span><span class="wa-stat-lbl">Sunrise</span></div>
-          <div class="wa-stat"><span class="wa-stat-icon">🌇</span><span class="wa-stat-val">${fmtT(sunset)}</span><span class="wa-stat-lbl">Sunset</span></div>
+          <div class="wa-stat">
+            <span class="wa-stat-lbl">Today</span>
+            <span class="wa-stat-val">↑${todayHi}° ↓${todayLo}°</span>
+          </div>
+          <div class="wa-stat">
+            <span class="wa-stat-lbl">${dir} Wind</span>
+            <span class="wa-stat-val">${wind} km/h</span>
+            <span class="wa-stat-sub">Gusts ${gusts} km/h</span>
+          </div>
+          <div class="wa-stat">
+            <span class="wa-stat-lbl">Humidity</span>
+            <span class="wa-stat-val">${hum}%</span>
+          </div>
+          <div class="wa-stat">
+            <span class="wa-stat-lbl">UV Index</span>
+            <span class="wa-stat-val" style="color:${uvColor}">${uv} <span style="font-size:0.72rem;font-weight:400">${uvLabel}</span></span>
+          </div>
+          <div class="wa-stat">
+            <span class="wa-stat-lbl">Precipitation</span>
+            <span class="wa-stat-val">${precToday}</span>
+            <span class="wa-stat-sub">${ppToday ? ppToday + ' chance' : ''}</span>
+          </div>
+          <div class="wa-stat">
+            <span class="wa-stat-lbl">Cloud Cover</span>
+            <span class="wa-stat-val">${cloud}%</span>
+          </div>
         </div>`;
 
-      renderHourlyGraph(wd.hourly);
+      _hourlyTab = 'temp';
+      ['temp','wind','rain'].forEach(m => {
+        const el = document.getElementById('tab'+m.charAt(0).toUpperCase()+m.slice(1));
+        if (el) el.classList.toggle('active', m === 'temp');
+      });
+
+      document.getElementById('waHourlyCard').className  = 'wa-card wa-card-accent-teal';
+      document.getElementById('waDetailsCard').className  = 'wa-card wa-card-accent-amber';
+      document.getElementById('waDailyCard').className    = 'wa-card wa-card-accent-blue';
+      document.getElementById('waSunMoonCard').className  = 'wa-card wa-card-accent-gold';
+      document.getElementById('waAlertsCard').className   = 'wa-card wa-card-accent-red';
+      document.getElementById('waKitCard').className      = 'wa-card wa-card-accent-green';
+
+      renderHourlyGraph(wd.hourly, 'temp');
+      renderDetailedConditions(c, wd.daily);
       renderDailyForecast(wd.daily);
+      renderSunMoon(wd.daily);
+      renderAirQuality(aqiData);
       renderWeatherAlerts(c, wd.hourly, wd.daily);
       renderEmergencyKit(c, wd.daily);
     }
 
-    function renderHourlyGraph(hourly) {
+    function renderHourlyGraph(hourly, mode) {
+      _hourlyData = hourly;
+      if (!mode) mode = _hourlyTab;
       const card = document.getElementById('waHourlyCard');
       const wrap = document.getElementById('waHourlyGraph');
       card.style.display = 'block';
+
       const now = new Date();
-      const si = Math.max(hourly.time.findIndex(t => new Date(t) >= now), 0);
+      const si    = Math.max(hourly.time.findIndex(t => new Date(t) >= now), 0);
       const times = hourly.time.slice(si, si + 25);
-      const temps = hourly.temperature_2m.slice(si, si + 25);
-      const precip = (hourly.precipitation_probability || []).slice(si, si + 25);
-      const n = temps.length;
-      if (n < 2) { wrap.innerHTML = '<p style="color:#444;font-size:0.8rem">No hourly data.</p>'; return; }
+      const n     = times.length;
+      if (n < 2) { wrap.innerHTML = '<p style="color:#444;font-size:0.8rem">No data.</p>'; return; }
 
-      const W = 530, H = 120, pL = 28, pR = 8, pT = 22, pB = 24;
+      const W = 530, H = 130, pL = 32, pR = 8, pT = 24, pB = 26;
       const gW = W - pL - pR, gH = H - pT - pB;
-      const minT = Math.min(...temps) - 1, maxT = Math.max(...temps) + 1;
-      const xOf = i => pL + (i / (n - 1)) * gW;
-      const yOf = t => pT + gH - ((t - minT) / (maxT - minT)) * gH;
-      const pts = temps.map((t, i) => `${xOf(i).toFixed(1)},${yOf(t).toFixed(1)}`).join(' L ');
-      const area = `M ${pts} L ${xOf(n-1).toFixed(1)},${(pT+gH).toFixed(1)} L ${xOf(0).toFixed(1)},${(pT+gH).toFixed(1)} Z`;
-      const bW = Math.max(gW / n - 1, 2);
 
-      let bars = '', marks = '';
-      for (let i = 0; i < n; i++) {
-        const p = precip[i] || 0;
-        if (p > 5) { const bH = (p/100)*gH*0.35; bars += `<rect x="${(xOf(i)-bW/2).toFixed(1)}" y="${(pT+gH-bH).toFixed(1)}" width="${bW.toFixed(1)}" height="${bH.toFixed(1)}" fill="rgba(100,150,255,0.18)" rx="1"/>`; }
-        if (i % (n > 18 ? 4 : 3) === 0) {
-          const tx = xOf(i).toFixed(1), ty = yOf(temps[i]).toFixed(1);
-          const lbl = i === 0 ? 'Now' : `${new Date(times[i]).getHours()}:00`;
-          marks += `<text x="${tx}" y="${H-5}" text-anchor="middle" fill="#444" font-size="9">${lbl}</text>`;
-          marks += `<text x="${tx}" y="${(parseFloat(ty)-5).toFixed(1)}" text-anchor="middle" fill="#99bbb8" font-size="9">${Math.round(temps[i])}°</text>`;
-          marks += `<circle cx="${tx}" cy="${ty}" r="2.5" fill="#4ecdc4" opacity="0.8"/>`;
+      if (mode === 'rain') {
+        const precip = (hourly.precipitation || []).slice(si, si + 25);
+        const prob   = (hourly.precipitation_probability || []).slice(si, si + 25);
+        const maxP   = Math.max(...precip, 0.5);
+        const bW     = gW / n * 0.7;
+        const xOf    = i => pL + (i / (n - 1)) * gW;
+        const step   = n > 18 ? 4 : 3;
+        let bars = '', marks = '', probPts = [];
+        for (let i = 0; i < n; i++) {
+          const x  = xOf(i);
+          const bH = Math.max(((precip[i] || 0) / maxP) * gH, precip[i] > 0 ? 2 : 0);
+          bars += `<rect x="${(x-bW/2).toFixed(1)}" y="${(pT+gH-bH).toFixed(1)}" width="${bW.toFixed(1)}" height="${bH.toFixed(1)}" fill="rgba(100,150,255,0.5)" rx="1"/>`;
+          probPts.push(`${x.toFixed(1)},${(pT + gH - ((prob[i]||0)/100) * gH * 0.85).toFixed(1)}`);
+          if (i % step === 0) {
+            marks += `<text x="${x.toFixed(1)}" y="${H-6}" text-anchor="middle" fill="#444" font-size="9">${i===0?'Now':new Date(times[i]).getHours()+':00'}</text>`;
+            if ((precip[i]||0) > 0) marks += `<text x="${x.toFixed(1)}" y="${(pT+gH-bH-4).toFixed(1)}" text-anchor="middle" fill="#99aaff" font-size="8">${precip[i].toFixed(1)}</text>`;
+          }
         }
+        const pLine = probPts.length > 1 ? `<path d="M ${probPts.join(' L ')}" fill="none" stroke="#ffaa44" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.7"/>` : '';
+        wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">${bars}${marks}${pLine}</svg>
+        <div style="font-size:0.68rem;color:#333;margin-top:4px;display:flex;gap:14px">
+          <span><span style="display:inline-block;width:8px;height:8px;background:rgba(100,150,255,0.5);vertical-align:middle;margin-right:4px;border-radius:1px"></span>Precip (mm)</span>
+          <span><span style="display:inline-block;width:10px;height:2px;background:#ffaa44;vertical-align:middle;margin-right:4px;border-radius:2px;opacity:0.8"></span>Probability %</span>
+        </div>`;
+        return;
       }
 
+      const isWind  = mode === 'wind';
+      const values  = isWind ? hourly.wind_speed_10m.slice(si, si + 25) : hourly.temperature_2m.slice(si, si + 25);
+      const color   = isWind ? '#ffaa44' : '#4ecdc4';
+      const gradId  = isWind ? 'wGrad' : 'tGrad2';
+      const unitStr = isWind ? ' km/h' : '°';
+      const legend  = isWind ? 'Wind Speed' : 'Temperature';
+
+      const minV = Math.min(...values) - (isWind ? 2 : 1);
+      const maxV = Math.max(...values) + (isWind ? 2 : 1);
+      const xOf  = i => pL + (i / (n - 1)) * gW;
+      const yOf  = v => pT + gH - ((v - minV) / (maxV - minV)) * gH;
+      const pts  = values.map((v,i) => `${xOf(i).toFixed(1)},${yOf(v).toFixed(1)}`).join(' L ');
+      const area = `M ${pts} L ${xOf(n-1).toFixed(1)},${(pT+gH).toFixed(1)} L ${xOf(0).toFixed(1)},${(pT+gH).toFixed(1)} Z`;
+      const step = n > 18 ? 4 : 3;
+      let marks = '';
+      for (let i = 0; i < n; i += step) {
+        const tx = xOf(i).toFixed(1), ty = yOf(values[i]).toFixed(1);
+        marks += `<text x="${tx}" y="${H-6}" text-anchor="middle" fill="#444" font-size="9">${i===0?'Now':new Date(times[i]).getHours()+':00'}</text>`;
+        marks += `<text x="${tx}" y="${(parseFloat(ty)-5).toFixed(1)}" text-anchor="middle" fill="${color}" font-size="9" opacity="0.9">${Math.round(values[i])}${unitStr}</text>`;
+        marks += `<circle cx="${tx}" cy="${ty}" r="2.5" fill="${color}" opacity="0.8"/>`;
+      }
       wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
-        <defs><linearGradient id="tGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4ecdc4" stop-opacity="0.22"/><stop offset="100%" stop-color="#4ecdc4" stop-opacity="0.01"/></linearGradient></defs>
-        ${bars}
-        <path d="${area}" fill="url(#tGrad)"/>
-        <path d="M ${pts}" fill="none" stroke="#4ecdc4" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+        <defs><linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.2"/><stop offset="100%" stop-color="${color}" stop-opacity="0.01"/></linearGradient></defs>
+        <path d="${area}" fill="url(#${gradId})"/>
+        <path d="M ${pts}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
         ${marks}
       </svg>
-      <div style="font-size:0.68rem;color:#333;margin-top:4px;display:flex;gap:14px">
-        <span><span style="display:inline-block;width:10px;height:2px;background:#4ecdc4;vertical-align:middle;margin-right:4px;border-radius:2px"></span>Temperature</span>
-        <span><span style="display:inline-block;width:10px;height:8px;background:rgba(100,150,255,0.28);vertical-align:middle;margin-right:4px;border-radius:1px"></span>Rain chance</span>
-      </div>`;
+      <div style="font-size:0.68rem;color:#333;margin-top:4px"><span style="display:inline-block;width:10px;height:2px;background:${color};vertical-align:middle;margin-right:4px;border-radius:2px"></span>${legend}</div>`;
     }
 
     function renderDailyForecast(daily) {
       const card = document.getElementById('waDailyCard');
       card.style.display = 'block';
       const n = daily.time?.length || 0;
+      const allHi = daily.temperature_2m_max.slice(0, n);
+      const allLo = daily.temperature_2m_min.slice(0, n);
+      const weekMin = Math.min(...allLo);
+      const weekMax = Math.max(...allHi);
+      const range   = weekMax - weekMin || 1;
+
       let html = '';
       for (let i = 0; i < n; i++) {
-        const d = new Date(daily.time[i]);
+        const d    = new Date(daily.time[i]);
         const name = i === 0 ? 'Today' : DAYS_SHORT[d.getDay()];
         const [ic] = wmoGet(daily.weather_code[i]);
-        const hi = Math.round(daily.temperature_2m_max[i]);
-        const lo = Math.round(daily.temperature_2m_min[i]);
-        const pp = daily.precipitation_probability_max?.[i] ?? 0;
+        const hi   = Math.round(allHi[i]);
+        const lo   = Math.round(allLo[i]);
+        const pp   = daily.precipitation_probability_max?.[i] ?? 0;
+        const avg  = (hi + lo) / 2;
+        const barColor = avg <= 5 ? '#88ccff' : avg <= 15 ? '#4ecdc4' : avg <= 25 ? '#44cc88' : avg <= 32 ? '#ffaa44' : '#ff5555';
+        const leftPct  = ((lo - weekMin) / range * 100).toFixed(1);
+        const widthPct = ((hi - lo)      / range * 100).toFixed(1);
+        const ppRow    = pp > 0 ? `<div class="wa-day-pp">💧 ${Math.round(pp)}%</div>` : '';
         html += `<div class="wa-day-row">
           <span class="wa-day-name">${name}</span>
           <span class="wa-day-icon">${ic}</span>
-          <div class="wa-day-precip">
-            <span style="min-width:28px">${Math.round(pp)}%</span>
-            <div class="wa-precip-bar-wrap"><div class="wa-precip-bar" style="width:${Math.round(pp)}%"></div></div>
+          <div class="wa-day-bar-col">
+            <div class="wa-day-trange"><div class="wa-day-trange-fill" style="left:${leftPct}%;width:${widthPct}%;background:${barColor}"></div></div>
+            ${ppRow}
           </div>
           <div class="wa-day-temps"><span class="wa-day-max">${hi}°</span><span class="wa-day-min">${lo}°</span></div>
         </div>`;
@@ -2015,20 +2528,388 @@ Rules:
       const code = cur.weather_code, temp = cur.temperature_2m, gusts = cur.wind_gusts_10m;
       const hi = daily.temperature_2m_max?.[0] ?? temp, lo = daily.temperature_2m_min?.[0] ?? temp;
 
-      const base = ['3-day water supply (4L/person/day)','Non-perishable food (3-day)','First aid kit & medications','Flashlight & extra batteries','Power bank / phone charger','Emergency cash & ID copies','Whistle to signal for help','Multi-tool or pocket knife'];
+      const sections = [
+        { title: 'Water & Food', items: [
+          '3-day water supply (4L/person/day)',
+          'Extra 7-day water supply (recommended)',
+          'Non-perishable food (3-day minimum)',
+          'Manual can opener',
+          'Water purification tablets or filter',
+          'Electrolytes / sports drinks',
+        ]},
+        { title: 'Medical & Health', items: [
+          'First aid kit (bandages, antiseptic, gauze)',
+          '30-day supply of prescription medications',
+          'Spare glasses or contact lenses',
+          'N95 / P2 dust masks (x10)',
+          'Alcohol-based hand sanitizer',
+          'Thermometer & blood pressure cuff',
+          'Epi-pen if prescribed',
+        ]},
+        { title: 'Power & Light', items: [
+          'Flashlight & extra batteries (check yearly)',
+          'Power bank / phone charger (keep charged)',
+          'Battery-powered or hand-crank radio',
+          'Solar lantern or crank lantern',
+          'Spare phone (old phone charged)',
+        ]},
+        { title: 'Documents & Money', items: [
+          'Emergency cash in small bills',
+          'Copies of passport, ID, insurance docs',
+          'Emergency contact list (printed)',
+          'Local area map (offline / printed)',
+          'USB drive with important files',
+        ]},
+        { title: 'Tools & Safety', items: [
+          'Multi-tool or Swiss Army knife',
+          'Whistle to signal for help',
+          'Duct tape & heavy-duty garbage bags',
+          'Work gloves (leather)',
+          'Fire extinguisher (ABC type)',
+          'Rope or paracord (10m)',
+          'Compass',
+          'Padlock & spare keys',
+        ]},
+        { title: 'Shelter & Warmth', items: [
+          'Emergency mylar blankets (x4)',
+          'Sleeping bag rated below 0°C',
+          'Tarp or emergency poncho',
+          'Change of clothes & sturdy footwear',
+          'Rain jacket & waterproof pants',
+        ]},
+        { title: 'Sanitation & Hygiene', items: [
+          'Toilet paper & wet wipes',
+          'Portable toilet or waste bags',
+          'Feminine hygiene products if needed',
+          'Toothbrush, toothpaste, soap',
+          'Insect repellent',
+        ]},
+        { title: 'Communication & Info', items: [
+          'Emergency broadcast radio frequencies noted',
+          'Neighbour & family contact tree',
+          'Designated out-of-area contact person',
+          'Household evacuation plan (practiced)',
+          'Pet carrier & pet supplies if needed',
+        ]},
+      ];
       const extra = new Set();
 
-      if (code >= 61 || [80,81,82].includes(code)) { ['Umbrella & waterproof jacket','Waterproof boots','Waterproof bag for electronics','Sandbags if in a flood-prone area'].forEach(x => extra.add(x)); }
-      if (code >= 95) { ['Surge protector for electronics','Rubber-soled footwear','Battery-powered emergency radio'].forEach(x => extra.add(x)); }
-      if (code >= 71 && code <= 77 || lo <= 0) { ['Ice scraper & snow shovel','Rock salt / sand for walkways','Extra blankets & thermal clothing','Hand warmers'].forEach(x => extra.add(x)); }
-      if (hi >= 33) { ['Double water supply in heat','Electrolytes / sports drinks','Sun hat, sunglasses, SPF 50+ sunscreen','Cooling towel or handheld fan'].forEach(x => extra.add(x)); }
-      if (gusts > 60) { ['Secure all outdoor furniture','Rope & tie-downs for loose items','Candles & matches (power may cut)'].forEach(x => extra.add(x)); }
-      if (code >= 45 && code <= 48) { ['High-visibility clothing','Reduce driving speed in fog','Fog lights if driving'].forEach(x => extra.add(x)); }
+      if (code >= 61 || [80,81,82].includes(code)) { ['Umbrella & waterproof jacket','Waterproof boots','Waterproof bag for electronics','Sandbags if in a flood-prone area','Portable water pump'].forEach(x => extra.add(x)); }
+      if (code >= 95) { ['Surge protector for electronics','Rubber-soled footwear','Battery emergency radio','Unplug sensitive electronics'].forEach(x => extra.add(x)); }
+      if ((code >= 71 && code <= 77) || lo <= 0) { ['Ice scraper & snow shovel','Rock salt / sand for walkways','Extra blankets & thermal clothing','Hand warmers','Traction mats for vehicle'].forEach(x => extra.add(x)); }
+      if (hi >= 33) { ['Double water supply in heat','Electrolytes / sports drinks','Sun hat, sunglasses, SPF 50+','Cooling towel or fan','Never leave pets/children in car'].forEach(x => extra.add(x)); }
+      if (gusts > 60) { ['Secure all outdoor furniture','Rope & tie-downs for loose items','Candles & matches (power may cut)','Stay away from trees & power lines'].forEach(x => extra.add(x)); }
+      if (code >= 45 && code <= 48) { ['High-visibility vest','Reduce speed in fog','Fog lights on low beam','Avoid driving if possible'].forEach(x => extra.add(x)); }
+      if ((cur.uv_index ?? 0) >= 8) { ['SPF 50+ sunscreen (reapply 2-hrly)','UV-blocking sunglasses','Stay in shade 10am–4pm'].forEach(x => extra.add(x)); }
+      if ((cur.relative_humidity_2m ?? 0) >= 85 && hi >= 28) { ['Heat index is dangerous — limit exertion','Cold water immersion if overheated','Check on elderly/vulnerable neighbours'].forEach(x => extra.add(x)); }
 
-      const baseHtml = `<div class="wa-kit-section"><div class="wa-kit-section-title">Always Have Ready</div><div class="wa-kit-grid">${base.map(i=>`<div class="wa-kit-item">${escHtml(i)}</div>`).join('')}</div></div>`;
+      const kitHtml = sections.map(s =>
+        `<div class="wa-kit-section"><div class="wa-kit-section-title">${escHtml(s.title)}</div><div class="wa-kit-grid">${s.items.map(i=>`<div class="wa-kit-item">${escHtml(i)}</div>`).join('')}</div></div>`
+      ).join('');
       const extHtml = extra.size ? `<div class="wa-kit-section"><div class="wa-kit-section-title">Recommended for Current Conditions</div><div class="wa-kit-grid">${[...extra].map(i=>`<div class="wa-kit-item">${escHtml(i)}</div>`).join('')}</div></div>` : '';
-      document.getElementById('waKitContent').innerHTML = baseHtml + extHtml;
+      document.getElementById('waKitContent').innerHTML = kitHtml + extHtml;
     }
+
+    function moonPhase(date) {
+      const known = new Date('2000-01-06T18:14:00Z');
+      const cycle = 29.530588853;
+      const days  = (date - known) / 86400000;
+      const phase = ((days % cycle) + cycle) % cycle;
+      const illum = Math.round((1 - Math.cos((phase / cycle) * 2 * Math.PI)) / 2 * 100);
+      const names = ['New Moon','Waxing Crescent','First Quarter','Waxing Gibbous','Full Moon','Waning Gibbous','Last Quarter','Waning Crescent'];
+      const emojis = ['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
+      const idx    = Math.round(phase / cycle * 8) % 8;
+      return { name: names[idx], emoji: emojis[idx], illum, phase: phase.toFixed(1) };
+    }
+
+    function renderDetailedConditions(c, daily) {
+      const card = document.getElementById('waDetailsCard');
+      card.style.display = 'block';
+      const uv   = c.uv_index ?? 0;
+      const vis  = c.visibility != null ? (c.visibility / 1000).toFixed(1) : null;
+      const pres = c.pressure_msl != null ? Math.round(c.pressure_msl) : null;
+      const dew  = c.dew_point_2m != null ? c.dew_point_2m.toFixed(1) : null;
+      const rain = c.rain != null ? c.rain.toFixed(1) : '0.0';
+      const snow = c.snowfall != null && c.snowfall > 0 ? ` + ${c.snowfall.toFixed(1)} cm snow` : '';
+      const wdir = c.wind_direction_10m ?? null;
+
+      const uvColor = uv <= 2 ? '#4caf50' : uv <= 5 ? '#cddc39' : uv <= 7 ? '#ff9800' : uv <= 10 ? '#f44336' : '#9c27b0';
+      const uvLabel = uv <= 2 ? 'Low' : uv <= 5 ? 'Moderate' : uv <= 7 ? 'High' : uv <= 10 ? 'Very High' : 'Extreme';
+      const uvPct   = Math.min(uv / 12 * 100, 100).toFixed(1);
+
+      const visCat  = vis == null ? '' : vis >= 10 ? 'Excellent' : vis >= 4 ? 'Good' : vis >= 1 ? 'Moderate' : 'Poor';
+      const presNote = pres == null ? '' : pres < 1000 ? 'Low (storm possible)' : pres > 1020 ? 'High (fair weather)' : 'Normal';
+      const dewComf  = dew == null ? '' : dew < 10 ? 'Dry' : dew < 16 ? 'Comfortable' : dew < 21 ? 'Humid' : 'Very Humid';
+
+      const dirs = ['N','NE','E','SE','S','SW','W','NW'];
+      const dirLabel = wdir != null ? dirs[Math.round(wdir / 45) % 8] : '—';
+
+      const uvBar = `<div class="uv-bar-wrap"><div style="position:relative;height:6px;background:linear-gradient(to right,#4caf50,#cddc39,#ff9800,#f44336,#9c27b0);border-radius:3px;overflow:visible">
+        <div class="uv-needle" style="left:${uvPct}%"></div></div></div>`;
+
+      const gusts2  = c.wind_gusts_10m != null ? Math.round(c.wind_gusts_10m) + ' km/h' : '—';
+      const cloud2  = c.cloud_cover    != null ? c.cloud_cover + '%' : '—';
+      const items = [
+        { lbl:'UV Index',       val:`<span style="color:${uvColor};font-weight:700">${uv.toFixed(1)}</span> <span style="font-size:0.72rem;color:${uvColor}">${uvLabel}</span>${uvBar}`, sub:'' },
+        { lbl:'Visibility',     val: vis != null ? `${vis} km` : '—', sub: visCat },
+        { lbl:'Pressure',       val: pres != null ? `${pres} hPa` : '—', sub: presNote },
+        { lbl:'Dew Point',      val: dew != null ? `${dew}°C` : '—', sub: dewComf },
+        { lbl:'Rain Now',       val:`${rain} mm${snow}`, sub: parseFloat(rain) > 0 ? 'Active' : 'Dry' },
+        { lbl:'Wind Direction', val:`${wdir != null ? wdir+'°' : '—'} (${dirLabel})`, sub: wdir != null ? 'From ' + dirLabel : '' },
+        { lbl:'Wind Gusts',     val: gusts2, sub: '' },
+        { lbl:'Cloud Cover',    val: cloud2, sub: '' },
+      ];
+
+      document.getElementById('waDetailsContent').innerHTML =
+        `<div class="detail-grid">${items.map(it =>
+          `<div class="detail-item"><div class="detail-lbl">${it.lbl}</div><div class="detail-val">${it.val}</div>${it.sub ? `<div class="detail-sub">${it.sub}</div>` : ''}</div>`
+        ).join('')}</div>`;
+    }
+
+    function renderSunMoon(daily) {
+      const card = document.getElementById('waSunMoonCard');
+      card.style.display = 'block';
+      const rise  = daily.sunrise?.[0];
+      const set   = daily.sunset?.[0];
+      const moon  = moonPhase(new Date());
+
+      let dayLen = '', civilDawn = '', civilDusk = '';
+      if (rise && set) {
+        const r = new Date(rise), s = new Date(set);
+        const mins = Math.round((s - r) / 60000);
+        dayLen = `${Math.floor(mins/60)}h ${mins%60}m`;
+        const dawn = new Date(r - 30*60000), dusk = new Date(s.getTime() + 30*60000);
+        const fmt = d => d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+        civilDawn = fmt(dawn);
+        civilDusk = fmt(dusk);
+      }
+      const fmt = d => new Date(d).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+
+      document.getElementById('waSunMoonContent').innerHTML = `
+        <div class="sun-moon-grid">
+          <div class="sun-block">
+            <div class="sm-title">☀️ Sun</div>
+            <div class="sm-row"><span class="sm-key">Sunrise</span><span class="sm-val">${rise ? fmt(rise) : '—'}</span></div>
+            <div class="sm-row"><span class="sm-key">Sunset</span><span class="sm-val">${set ? fmt(set) : '—'}</span></div>
+            <div class="sm-row"><span class="sm-key">Day length</span><span class="sm-val">${dayLen || '—'}</span></div>
+            <div class="sm-row"><span class="sm-key">Civil dawn</span><span class="sm-val">${civilDawn || '—'}</span></div>
+            <div class="sm-row"><span class="sm-key">Civil dusk</span><span class="sm-val">${civilDusk || '—'}</span></div>
+          </div>
+          <div class="moon-block">
+            <div class="sm-title">🌙 Moon</div>
+            <div class="moon-emoji">${moon.emoji}</div>
+            <div class="moon-name">${moon.name}</div>
+            <div class="moon-illum">${moon.illum}% illuminated</div>
+            <div class="sm-row" style="margin-top:8px"><span class="sm-key">Cycle day</span><span class="sm-val">${moon.phase} / 29.5</span></div>
+          </div>
+        </div>`;
+    }
+
+    function renderAirQuality(aqiData) {
+      const card = document.getElementById('waAirQualCard');
+      card.style.display = 'block';
+      const el = document.getElementById('waAirQualContent');
+      if (!aqiData || !aqiData.current) {
+        el.innerHTML = '<p style="color:#444;font-size:0.85rem">Air quality data unavailable.</p>';
+        return;
+      }
+      const c   = aqiData.current;
+      const eAqi = c.european_aqi ?? null;
+      const uAqi = c.us_aqi ?? null;
+
+      let circleColor = '#4caf50', circleLabel = 'Good', accentClass = 'wa-card-accent-green', titleClass = 'green';
+      if (eAqi != null) {
+        if      (eAqi > 100) { circleColor = '#9c27b0'; circleLabel = 'Very Poor';  accentClass = 'wa-card-accent-purple'; titleClass = 'purple'; }
+        else if (eAqi > 80)  { circleColor = '#f44336'; circleLabel = 'Poor';       accentClass = 'wa-card-accent-red';    titleClass = 'red'; }
+        else if (eAqi > 60)  { circleColor = '#ff9800'; circleLabel = 'Moderate';   accentClass = 'wa-card-accent-amber';  titleClass = 'amber'; }
+        else if (eAqi > 40)  { circleColor = '#cddc39'; circleLabel = 'Fair';       accentClass = 'wa-card-accent-teal';   titleClass = ''; }
+        else if (eAqi > 20)  { circleColor = '#8bc34a'; circleLabel = 'Good';       accentClass = 'wa-card-accent-green';  titleClass = 'green'; }
+        else                 { circleColor = '#4caf50'; circleLabel = 'Very Good';  accentClass = 'wa-card-accent-green';  titleClass = 'green'; }
+      }
+      card.className = `wa-card ${accentClass}`;
+      const titleEl = document.getElementById('waAirQualTitle');
+      if (titleEl) titleEl.className = `wa-card-title ${titleClass}`;
+
+      const pollutants = [
+        { k:'pm2_5',             lbl:'PM2.5',  unit:'µg/m³' },
+        { k:'pm10',              lbl:'PM10',   unit:'µg/m³' },
+        { k:'ozone',             lbl:'O₃',     unit:'µg/m³' },
+        { k:'nitrogen_dioxide',  lbl:'NO₂',    unit:'µg/m³' },
+        { k:'carbon_monoxide',   lbl:'CO',     unit:'µg/m³' },
+      ];
+
+      const circleHtml = eAqi != null
+        ? `<div class="aqi-top"><div class="aqi-circle" style="border-color:${circleColor}"><div class="aqi-circle-num" style="color:${circleColor}">${eAqi}</div><div class="aqi-circle-lbl">EU AQI</div></div><div><div class="aqi-desc-name" style="color:${circleColor}">${circleLabel}</div>${uAqi != null ? `<div class="aqi-desc-note">US AQI: ${uAqi}</div>` : ''}<div class="aqi-desc-note">European Air Quality Index</div></div></div>`
+        : '<p style="color:#444;font-size:0.85rem">AQI unavailable.</p>';
+
+      const pollHtml = `<div class="aqi-grid">${pollutants.map(p => {
+        const v = c[p.k];
+        return `<div class="aqi-item"><div style="font-size:0.7rem;color:#555;margin-bottom:2px">${p.lbl}</div><div style="font-size:0.95rem;font-weight:600;color:#ccc">${v != null ? v.toFixed(1) : '—'}</div><div style="font-size:0.65rem;color:#444">${p.unit}</div></div>`;
+      }).join('')}</div>`;
+
+      el.innerHTML = circleHtml + pollHtml;
+    }
+
+    // ── Disaster Survival Guide ──────────────────────────────────────────
+
+    const SURVIVAL_DATA = {
+      earthquake: {
+        icon:'🌍', name:'Earthquake', tag:'Sudden ground shaking from fault movement',
+        what:'Earthquakes happen when tectonic plates suddenly shift, releasing energy as seismic waves. They strike without warning, last seconds to minutes, and may be followed by aftershocks for days or weeks.',
+        signs:['Rumbling sound like thunder underground','Ground swaying or rolling underfoot','Animals and pets acting frightened or restless','Rattling of windows, walls, and objects'],
+        during:['DROP to hands and knees immediately','Take COVER under a sturdy desk or table — hold on','If no cover, get against an interior wall, away from windows','Stay inside — most injuries happen when people run outside into falling debris','If outside, move away from buildings, power lines, and trees','If driving, pull over away from overpasses and bridges'],
+        after:['Expect aftershocks — be ready to drop again','Check for injuries — do not move seriously injured people','Smell for gas leaks — open windows and leave if you detect gas','Do not use elevators; avoid damaged buildings','Listen to emergency broadcasts for instructions'],
+        avoid:['Do not run outside during shaking','Doorways are not safe — this is an outdated myth','Do not use open flames — gas leaks are common after quakes','Do not use phones unless it is a life-threatening emergency']
+      },
+      tsunami: {
+        icon:'🌊', name:'Tsunami', tag:'Massive ocean waves triggered by seabed events',
+        what:'Tsunamis are series of enormous waves caused by undersea earthquakes, volcanic eruptions, or landslides. A single wave can travel at jet-plane speeds across the ocean and reach heights of 30m or more when it hits shore.',
+        signs:['Strong earthquake felt near the coast','Ocean suddenly withdraws, exposing the sea floor','Loud roaring sound from the ocean like a freight train','Animals fleeing inland — trust them'],
+        during:['Move immediately to high ground or inland — do not wait for an official warning','If you cannot escape, climb to the highest floor of a solid building','Do not go to the shore to watch — the first wave is not always the largest','If swept up, grab onto something that floats'],
+        after:['Stay on high ground until officials declare it safe','Tsunamis come in series — wait at least several hours','Avoid floodwater — it is dangerous, contaminated, and may have strong currents','Do not return to the coast to check on property'],
+        avoid:['Never stay in low-lying areas after a coastal earthquake','Do not wait to see the wave before evacuating','Do not assume the first wave is the last']
+      },
+      hurricane: {
+        icon:'🌀', name:'Hurricane / Typhoon / Cyclone', tag:'Rotating tropical storm with extreme winds',
+        what:'These are the same weather system called different names by region. A tropical cyclone with sustained winds above 119 km/h. They bring storm surges, flooding, extreme winds, and tornadoes. Hurricanes can be tracked days in advance.',
+        signs:['Official watches and warnings on weather services','Barometric pressure dropping rapidly','Skies darkening, swells increasing on the coast','Unusual calm before the eyewall arrives'],
+        during:['If ordered to evacuate, do so immediately and take your kit','Board up windows or use hurricane shutters before the storm','Stay indoors in an interior room on the lowest liveable floor','The eye of the storm brings a lull — do not go outside, the second eyewall is worse','Fill bathtubs with water as a backup supply'],
+        after:['Wait for official all-clear before going outside','Stay away from floodwater — 15 cm of moving water can knock you down','Report downed power lines and do not approach them','Document damage for insurance before cleaning up'],
+        avoid:['Do not shelter under trees or in mobile homes','Never drive through flooded roads — turn around, don\'t drown','Do not use generators, grills, or camp stoves indoors — CO poisoning risk']
+      },
+      tornado: {
+        icon:'🌪️', name:'Tornado', tag:'Violent rotating column of air from a thunderstorm',
+        what:'Tornadoes are violently rotating columns of air extending from a thunderstorm to the ground. They can reach wind speeds over 480 km/h and cut paths over a kilometre wide. They can appear suddenly and change direction unpredictably.',
+        signs:['Dark, greenish sky','Large hail with no rain','Loud roar similar to a freight train','Rotating, funnel-shaped cloud','Flying debris visible on the ground'],
+        during:['Go immediately to a basement or underground shelter','If no basement, go to the lowest floor, interior room (bathroom, closet, hallway)','Cover your head and neck with your arms','If in a vehicle, drive at right angles to the tornado\'s path or abandon it for a sturdy building','If outside with no shelter, lie flat in a low ditch and cover your head'],
+        after:['Watch for downed power lines and broken gas lines','Do not enter damaged buildings','Help injured people but do not move those with spinal injuries'],
+        avoid:['Never shelter under a bridge or overpass — wind speeds increase there','Do not open windows — it wastes time and is not useful','Do not try to outrun a tornado in a vehicle in an urban area']
+      },
+      flood: {
+        icon:'🌧️', name:'Flood', tag:'Overflow of water onto normally dry land',
+        what:'Floods are the world\'s most common natural disaster. They range from slow river floods to rapid flash floods that can rise within minutes. Even 30 cm of fast-moving water can sweep a person off their feet; 60 cm can carry away a vehicle.',
+        signs:['Heavy or prolonged rainfall','Rivers or streams rising rapidly','Saturated ground that can absorb no more water','Flash flood watch or warning issued'],
+        during:['Move to higher ground immediately — do not wait','If indoors, go to the highest floor','Turn off electricity at the main breaker if water is entering','Do not walk or drive through floodwater — 15 cm is enough to knock you down'],
+        after:['Return only when authorities say it is safe','Boil water or use purification tablets until supply is declared safe','Document damage with photos before cleaning','Pump out flooded basements gradually — pumping too fast can cause structural collapse'],
+        avoid:['Never drive through flooded roads — turn around, don\'t drown','Do not touch electrical equipment in flooded areas','Avoid floodwater — it may contain sewage, chemicals, and debris']
+      },
+      wildfire: {
+        icon:'🔥', name:'Wildfire', tag:'Uncontrolled fire spreading through vegetation',
+        what:'Wildfires can spread faster than a person can run, especially in dry, windy conditions. They generate intense heat, thick toxic smoke, and flying embers that can ignite structures far ahead of the main fire.',
+        signs:['Smoke on the horizon or smell of burning','Reddish or orange sky','Falling ash','Mandatory evacuation orders in surrounding areas'],
+        during:['Evacuate as soon as ordered or when you sense danger — do not delay','Close all windows, doors, and vents to slow smoke entry','Wear N95 mask, long sleeves, and cotton or wool (not synthetics)','If trapped in a building, call emergency services and signal from a window','If caught outside, do not try to outrun it uphill — fire travels fastest uphill'],
+        after:['Do not return until cleared — fire can reignite','Avoid ash and debris — they contain toxic chemicals','Check roof and attic for embers that may have lodged there'],
+        avoid:['Do not shelter in your car if fire is approaching','Never enter a building where walls are leaning or smoke is pouring out','Do not use outdoor BBQs, generators, or power tools near dry vegetation']
+      },
+      volcano: {
+        icon:'🌋', name:'Volcanic Eruption', tag:'Lava, ash, and gases expelled from a volcano',
+        what:'Volcanoes eject lava, pyroclastic flows (superheated gas and rock at 700°C), ash clouds, and toxic gases. Pyroclastic flows are the deadliest hazard — they travel at 300 km/h and are unsurvivable in their path.',
+        signs:['Increased earthquake activity near the volcano','Ground swelling or deformation','Sulfur smell (rotten eggs)','Steam venting from new locations','Official volcanic alert level raised'],
+        during:['Evacuate immediately if ordered — pyroclastic flows move faster than you can drive','Wear N95 mask and goggles — volcanic ash damages lungs and eyes','Protect water supplies from ash contamination','Stay indoors if unable to evacuate; seal doors and windows'],
+        after:['Stay inside until ash fall stops and air is declared safe','Volcanic ash is heavy — clear roofs to prevent collapse (1 cm of wet ash = 90 kg/m²)','Clean ash off vehicles before starting — it damages engines','Avoid low-lying areas where toxic gases (CO₂, SO₂) can accumulate'],
+        avoid:['Never approach a volcano during an eruption','Do not try to photograph pyroclastic flows — there is no safe distance','Do not assume lava is the main danger — ash and gases kill more people']
+      },
+      drought: {
+        icon:'☀️', name:'Drought', tag:'Extended period of abnormally low rainfall',
+        what:'Droughts develop slowly over months or years, caused by below-average rainfall combined with high evaporation. They affect water supply, agriculture, and can trigger wildfires, dust storms, and economic crises.',
+        signs:['Streams and reservoirs at historically low levels','Soil cracking and vegetation dying','Water use restrictions issued by authorities','Extended periods with no rainfall'],
+        during:['Reduce water use immediately — fix all leaks','Store water in clean containers (dark, sealed)','Conserve food — prioritise non-perishables that require little water to prepare','Monitor local air quality — dust storms are common during drought'],
+        after:['Do not waste water even when restrictions are lifted — aquifers take years to recover','Be alert for wildfires following drought','Watch for soil erosion and landslides after heavy rains following drought'],
+        avoid:['Do not irrigate lawns or wash cars during water restrictions','Avoid open flames and burning outdoors — wildfire risk is extreme','Do not ignore water quality warnings — drought concentrates contaminants']
+      },
+      blizzard: {
+        icon:'❄️', name:'Blizzard / Ice Storm', tag:'Severe snow, ice, and blinding winds',
+        what:'A blizzard combines heavy snow, strong winds (56+ km/h), and near-zero visibility for 3+ hours. Ice storms coat everything in ice, making roads and surfaces dangerously slippery and snapping power lines under the weight.',
+        signs:['Blizzard or winter storm warning issued','Rapidly dropping temperature combined with high humidity','Strong sustained winds with snow beginning','Sky turns an ominous shade of grey-green'],
+        during:['Stay indoors — most blizzard deaths happen in vehicles or from shovelling','Keep heating fuel and alternative heat sources ready','If power fails, use only one or two rooms to conserve heat','If stranded in a vehicle, stay inside — it is your shelter; run engine 10 min per hour with window cracked'],
+        after:['Shovel snow in stages — heart attacks from shovelling are common','Check on elderly and isolated neighbours','Check your roof for heavy snow accumulation — clear it carefully','Do not use generators or gas stoves indoors — CO poisoning risk'],
+        avoid:['Do not travel unless absolutely necessary','Never use a gas range or oven to heat your home','Do not eat snow for hydration — it lowers your core body temperature']
+      },
+      landslide: {
+        icon:'⛰️', name:'Landslide', tag:'Rapid mass movement of rock and debris',
+        what:'Landslides occur when soil, rock, or debris moves rapidly downslope, often triggered by heavy rain, earthquakes, or volcanic activity. Debris flows can travel at 50 km/h, carrying boulders and trees like projectiles.',
+        signs:['Cracks appearing in the ground, road, or walls','Unusual sounds — cracking trees, boulders knocking','Sudden changes in stream water colour or flow','New springs appearing after rain','Slope bulging or moving'],
+        during:['Move away from the slide\'s path laterally — get to higher ground sideways','If escape is impossible, curl into a tight ball and protect your head','Call emergency services and warn neighbours','Abandon vehicles — they can be buried or swept away'],
+        after:['Stay away from the slide area — secondary slides are common','Check for injured people but do not enter unstable areas','Report damage to infrastructure (roads, bridges, utilities)','Professional assessment required before returning to hillside homes'],
+        avoid:['Do not build or camp below steep slopes or cliffs','Never assume a slope is stable after heavy rain or an earthquake','Do not re-enter your home without a geological assessment']
+      },
+      lightning: {
+        icon:'⚡', name:'Lightning / Severe Thunderstorm', tag:'Electrical storms with hail, wind, and heavy rain',
+        what:'Lightning strikes the Earth about 100 times per second. It can strike up to 16 km from the storm\'s centre — well outside the rain. Severe thunderstorms also produce large hail, damaging winds, and flash flooding.',
+        signs:['Thunder after lightning — each 3 seconds = 1 km away','Rapidly darkening sky and increasing wind','Hail of any size','Lightning visible on the horizon'],
+        during:['Get inside a substantial building or hard-topped vehicle immediately','Avoid open fields, hilltops, and isolated trees','If caught outside, crouch low on balls of your feet, cover ears — do not lie flat','Unplug electronics and avoid contact with metal plumbing and electrical wiring inside','Stay off corded phones and away from windows'],
+        after:['If someone is struck, call emergency services — they carry no electrical charge and are safe to touch','Begin CPR if the person has no pulse','Stay indoors for 30 minutes after the last thunder — lightning can return'],
+        avoid:['Never shelter under a tree','Do not use a corded landline during a storm','Do not stand near or in water outdoors','Do not hold metal objects (umbrellas, golf clubs, fishing rods)']
+      },
+      heatwave: {
+        icon:'🥵', name:'Heatwave', tag:'Prolonged extreme heat — the world\'s deadliest weather event',
+        what:'Heatwaves are prolonged periods of excessively high temperatures, often combined with high humidity making it feel even hotter. They are the deadliest weather hazard globally, killing more people than hurricanes, floods, and tornadoes combined.',
+        signs:['Temperatures well above seasonal average for 3+ days','High humidity preventing sweat from cooling you','Hot nights giving no overnight relief','Official heat emergency or heat health alert issued'],
+        during:['Stay in air-conditioned buildings as much as possible','Drink water constantly — do not wait until you feel thirsty','Wear lightweight, loose-fitting, light-coloured clothing','Never leave children, elderly, or pets in a parked vehicle — even briefly','Check on vulnerable neighbours — heat isolation kills'],
+        after:['Allow your body to gradually reacclimatise to cooler temperatures','Rehydrate slowly — avoid excessive cold drinks at once','Heatwave can be followed by severe thunderstorms — monitor forecasts'],
+        avoid:['Do not exercise or do heavy work during peak heat hours (10am–4pm)','Do not ignore symptoms of heat exhaustion: heavy sweating, weakness, cold pale skin, weak pulse','Do not assume you are immune — heat stroke can kill anyone within minutes']
+      },
+      avalanche: {
+        icon:'🏔️', name:'Avalanche', tag:'Mass of snow sliding rapidly down a mountain slope',
+        what:'Avalanches are triggered by new snow load, warming temperatures, wind, or disturbance. They travel at up to 300 km/h and a cubic metre of dense snow weighs as much as a car. Most avalanche victims trigger the avalanche themselves.',
+        signs:['Recent heavy snowfall (30+ cm in 24 hours)','Cracking or "whumpf" sounds in the snowpack','Visible recent avalanche debris on slopes','Steep slopes (30–45°) with little or no trees','Wind loading on lee slopes'],
+        during:['If caught, try to get to the side of the avalanche flow','Ditch poles and skis — they will drag you under','Once engulfed, use swimming motions to stay near the surface','When it slows, push an arm to the surface and create an air pocket in front of your face before the snow sets','Do not panic — save oxygen'],
+        after:['If you saw someone buried, mark the last-seen point immediately','Start searching below that point — most victims are within 1m of the surface','Do not leave to get help first — a buried victim has a 90% survival rate in 15 min, 50% at 30 min','Use a probe to find the person before digging'],
+        avoid:['Never travel alone in avalanche terrain','Check avalanche forecasts before venturing into the backcountry','Do not cross steep open slopes after heavy snowfall']
+      },
+      sandstorm: {
+        icon:'🌫️', name:'Sandstorm / Dust Storm', tag:'Wall of sand or dust driven by intense winds',
+        what:'Sandstorms (haboobs) can tower 1,500m and reduce visibility to zero within seconds. The abrasive particles damage lungs, engines, electronics, and crops. They are most common in arid regions and can travel thousands of kilometres.',
+        signs:['Strong winds kicking up dust on the horizon','A visible dark wall approaching rapidly','Drop in barometric pressure','Animals seeking shelter'],
+        during:['Get inside a solid building immediately — close all windows, doors, and vents','If caught outside, cover your nose and mouth with a damp cloth or N95 mask','Protect your eyes with goggles or wrap a cloth around your head','If caught driving, pull well off the road, turn off lights, and wait it out — do not drive in zero visibility'],
+        after:['Clean and check air filters on vehicles and HVAC systems','Do not touch your eyes before washing — sand particles cause serious damage','Shake out clothing outside before wearing — do not inhale settled dust'],
+        avoid:['Do not try to outrun a sandstorm on foot — they travel faster than you','Never drive through a sandstorm — zero visibility causes pile-up crashes','Do not ignore small dust storms — they can grow rapidly']
+      },
+    };
+
+    let _dsgActive = null;
+
+    function initDisasterGuide() {
+      const grid = document.getElementById('dsgGrid');
+      grid.innerHTML = Object.entries(SURVIVAL_DATA).map(([key, d]) =>
+        `<button class="dsg-btn" id="dsgBtn-${key}" onclick="showDisasterPanel('${key}')">
+          <span class="dsg-btn-icon">${d.icon}</span>
+          <span class="dsg-btn-name">${d.name}</span>
+        </button>`
+      ).join('');
+    }
+
+    function showDisasterPanel(key) {
+      const panel = document.getElementById('dsgPanel');
+      if (_dsgActive === key) {
+        _dsgActive = null;
+        document.getElementById('dsgBtn-' + key).classList.remove('active');
+        panel.style.display = 'none';
+        return;
+      }
+      if (_dsgActive) document.getElementById('dsgBtn-' + _dsgActive)?.classList.remove('active');
+      _dsgActive = key;
+      document.getElementById('dsgBtn-' + key).classList.add('active');
+      const d = SURVIVAL_DATA[key];
+      const sec = (cls, label, content) => `<div><div class="dsg-sec-title ${cls}">${label}</div><div class="dsg-sec-body">${content}</div></div>`;
+      const list = arr => `<ul>${arr.map(x => `<li>${escHtml(x)}</li>`).join('')}</ul>`;
+      panel.innerHTML = `
+        <div class="dsg-panel-head">
+          <span class="dsg-panel-head-icon">${d.icon}</span>
+          <div><div class="dsg-panel-head-name">${escHtml(d.name)}</div><div class="dsg-panel-head-tag">${escHtml(d.tag)}</div></div>
+        </div>
+        <div class="dsg-sections">
+          ${sec('what',   'What is it?',            `<p>${escHtml(d.what)}</p>`)}
+          ${sec('signs',  'Warning Signs',           list(d.signs))}
+          ${sec('during', 'During — How to Survive', list(d.during))}
+          ${sec('after',  'After — What to Do',      list(d.after))}
+          ${sec('avoid',  'What NOT to Do',          list(d.avoid))}
+        </div>`;
+      panel.style.display = 'block';
+      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    initDisasterGuide();
 
     function escHtml(s) {
       return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -2153,13 +3034,19 @@ Rules:
     }
 
     // Typing indicator
-    function showTyping() {
+    function showTyping(msg) {
       const wrap = document.createElement('div');
       wrap.className = 'msg-wrap bot';
       wrap.id = 'typingIndicator';
-      wrap.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
+      wrap.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div><div id="typingStatus" style="font-size:0.72rem;color:#555;margin-top:4px"></div>`;
       document.getElementById('chatMessages').appendChild(wrap);
+      if (msg) setTypingStatus(msg);
       scrollChat();
+    }
+
+    function setTypingStatus(msg) {
+      const el = document.getElementById('typingStatus');
+      if (el) { el.textContent = msg; scrollChat(); }
     }
 
     function hideTyping() {
@@ -2177,7 +3064,6 @@ Rules:
       const input = chatInput.value.trim();
       if (!input) return;
 
-      // Render user message
       addMessage('user', input);
       chatInput.value = '';
       chatInput.style.height = 'auto';
@@ -2187,36 +3073,27 @@ Rules:
       document.getElementById('sendBtn').disabled = true;
       showTyping();
 
+      const messages = [
+        { role: 'system', content: SYSTEM_PROMPT },
+        ...chatHistory
+      ];
+
       try {
-        const messages = [
-          { role: 'system', content: SYSTEM_PROMPT },
-          ...chatHistory
-        ];
-
-        const res = await fetch('https://text.pollinations.ai/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            messages,
-            model: 'openai',
-            jsonMode: true,
-            seed: Math.floor(Math.random() * 99999)
-          })
-        });
-
-        hideTyping();
-
-        if (!res.ok) {
-          throw new Error(`Server responded with ${res.status}`);
-        }
-
-        const reply = await res.text();
+        const data = await callAI(SYSTEM_PROMPT, messages, setTypingStatus);
+        const reply = JSON.stringify(data);
         chatHistory.push({ role: 'assistant', content: reply });
+        hideTyping();
         addMessage('bot', reply);
-
       } catch (err) {
         hideTyping();
-        addMessage('bot', `{"verdict":"UNCERTAIN","confidence":"LOW","summary":"Network error.","explanation":"Could not reach the AI service: ${err.message}. Check your internet connection and try again.","sources":"N/A"}`);
+        const errReply = JSON.stringify({
+          verdict: 'UNCERTAIN',
+          confidence: 'LOW',
+          summary: 'Could not reach the AI service.',
+          explanation: `${err.message}. The AI service may be temporarily busy or unavailable — please try again in a moment.`,
+          sources: 'N/A'
+        });
+        addMessage('bot', errReply);
         chatHistory.pop();
       } finally {
         isLoading = false;
