@@ -9,14 +9,14 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: #0f0f1a;
+      font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+      background: #0a0a14;
       color: #e0e0f0;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 20px;
+      padding: 28px 16px 60px;
     }
     h1 {
       font-size: 2rem;
@@ -30,33 +30,40 @@
       font-size: 0.95rem;
     }
     .card {
-      background: #1a1a2e;
-      border: 1px solid rgba(78,205,196,0.2);
-      border-radius: 12px;
-      padding: 28px 32px;
+      background: #131325;
+      border: 1px solid rgba(78,205,196,0.15);
+      border-radius: 14px;
+      padding: 24px 28px;
       width: 100%;
-      max-width: 640px;
-      margin-bottom: 20px;
-    }
-    .card h2 {
-      font-size: 1rem;
-      color: #4ecdc4;
+      max-width: 660px;
       margin-bottom: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+      transition: box-shadow 0.2s;
+    }
+    .card:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.5); }
+    .card h2 {
+      font-size: 0.72rem;
+      color: #4ecdc4;
+      margin-bottom: 14px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.2px;
+      font-weight: 700;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(78,205,196,0.1);
     }
     .row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      font-size: 0.9rem;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.87rem;
+      gap: 12px;
     }
     .row:last-child { border-bottom: none; }
-    .label { color: #888; }
-    .value { color: #e0e0f0; font-weight: 500; word-break: break-all; text-align: right; max-width: 60%; }
-    .value.ok  { color: #44ff88; }
+    .label { color: #666; flex-shrink: 0; }
+    .value { color: #c8c8e8; font-weight: 500; word-break: break-all; text-align: right; }
+    .value.ok   { color: #44dd88; }
     .value.warn { color: #ffcc44; }
     .value.err  { color: #ff5555; }
     .input-row {
@@ -66,175 +73,214 @@
     }
     input[type="text"] {
       flex: 1;
-      background: #0f0f1a;
-      border: 1px solid rgba(78,205,196,0.3);
-      border-radius: 8px;
+      background: #0a0a14;
+      border: 1px solid rgba(78,205,196,0.25);
+      border-radius: 10px;
       color: #e0e0f0;
-      padding: 10px 14px;
-      font-size: 0.9rem;
-      outline: none;
-    }
-    input[type="text"]:focus { border-color: #4ecdc4; }
-    button {
-      background: #4ecdc4;
-      color: #0f0f1a;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    button:hover { background: #38b2aa; }
-    button:disabled { background: #2a5a58; color: #5a8a88; cursor: not-allowed; }
-    #lookupResult { margin-top: 4px; }
-
-    /* ── Fact-Check Chat ───────────────────────────────── */
-    /* ── Disaster Area Map ────────────────────────────────── */
-    .disaster-card {
-      background: #1a1a2e;
-      border: 1px solid rgba(255,140,60,0.3);
-      border-radius: 12px;
-      width: 100%;
-      max-width: 640px;
-      margin-bottom: 20px;
-      overflow: hidden;
-    }
-    .disaster-header {
-      background: linear-gradient(135deg, #2a1a0e 0%, #1a1a2e 100%);
-      border-bottom: 1px solid rgba(255,140,60,0.2);
-      padding: 18px 24px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .disaster-header-icon { font-size: 1.4rem; filter: drop-shadow(0 0 6px rgba(255,140,60,0.5)); }
-    .disaster-header-text h2 {
-      font-size: 1rem;
-      color: #ff8c3c;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 2px;
-    }
-    .disaster-header-text p { font-size: 0.78rem; color: #666; }
-    .disaster-body { padding: 20px; }
-    .disaster-input-row { display: flex; gap: 10px; margin-bottom: 16px; }
-    #disasterInput {
-      flex: 1;
-      background: #0f0f1a;
-      border: 1px solid rgba(255,140,60,0.25);
-      border-radius: 8px;
-      color: #e0e0f0;
-      padding: 10px 14px;
+      padding: 11px 16px;
       font-size: 0.9rem;
       outline: none;
       font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    #disasterInput:focus { border-color: #ff8c3c; }
-    #disasterInput::placeholder { color: #444; }
-    #disasterCheckBtn {
-      background: #ff8c3c;
-      color: #0f0f1a;
+    input[type="text"]:focus {
+      border-color: #4ecdc4;
+      box-shadow: 0 0 0 3px rgba(78,205,196,0.1);
+    }
+    input[type="text"]::placeholder { color: #3a3a5a; }
+    button {
+      background: linear-gradient(135deg, #4ecdc4, #38b2aa);
+      color: #0a0a14;
       border: none;
-      border-radius: 8px;
-      padding: 10px 20px;
+      border-radius: 10px;
+      padding: 11px 22px;
       font-weight: 700;
       font-size: 0.9rem;
       cursor: pointer;
-      transition: background 0.2s;
-      white-space: nowrap;
+      transition: opacity 0.2s, transform 0.1s;
+      font-family: inherit;
+      letter-spacing: 0.3px;
     }
-    #disasterCheckBtn:hover { background: #e07830; }
-    #disasterCheckBtn:disabled { background: #5a3a20; color: #8a6a50; cursor: not-allowed; }
+    button:hover { opacity: 0.88; transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+    button:disabled { background: #222238; color: #444; cursor: not-allowed; transform: none; opacity: 1; }
+    #lookupResult { margin-top: 6px; font-size: 0.85rem; color: #888; line-height: 1.6; }
+
+    /* ── Disaster Area Map ────────────────────────────────── */
+    .disaster-card {
+      background: #131325;
+      border: 1px solid rgba(255,140,60,0.25);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 660px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 32px rgba(0,0,0,0.45);
+    }
+    .disaster-header {
+      background: linear-gradient(135deg, #271608 0%, #1a1020 60%, #131325 100%);
+      border-bottom: 1px solid rgba(255,140,60,0.18);
+      padding: 22px 26px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .disaster-header-icon {
+      font-size: 2rem;
+      filter: drop-shadow(0 0 10px rgba(255,140,60,0.6));
+      flex-shrink: 0;
+    }
+    .disaster-header-text h2 {
+      font-size: 1.1rem;
+      color: #ff8c3c;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+    .disaster-header-text p { font-size: 0.82rem; color: #666; line-height: 1.4; }
+    .disaster-body { padding: 22px; }
+    .disaster-input-row { display: flex; gap: 10px; margin-bottom: 14px; }
+    #disasterInput {
+      flex: 1;
+      background: #0a0a14;
+      border: 1px solid rgba(255,140,60,0.22);
+      border-radius: 10px;
+      color: #e0e0f0;
+      padding: 11px 16px;
+      font-size: 0.92rem;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    #disasterInput:focus {
+      border-color: #ff8c3c;
+      box-shadow: 0 0 0 3px rgba(255,140,60,0.1);
+    }
+    #disasterInput::placeholder { color: #3a3050; }
+    #disasterCheckBtn {
+      background: linear-gradient(135deg, #ff8c3c, #e06820);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 11px 22px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      white-space: nowrap;
+      font-family: inherit;
+      letter-spacing: 0.3px;
+    }
+    #disasterCheckBtn:hover { opacity: 0.88; transform: translateY(-1px); }
+    #disasterCheckBtn:active { transform: translateY(0); }
+    #disasterCheckBtn:disabled { background: #2a1a0a; color: #554433; cursor: not-allowed; transform: none; opacity: 1; }
     .d-spinner {
-      width: 18px; height: 18px;
+      width: 16px; height: 16px;
       border: 2px solid rgba(255,140,60,0.2);
       border-top-color: #ff8c3c;
       border-radius: 50%;
       animation: d-spin 0.75s linear infinite;
       display: inline-block;
       vertical-align: middle;
-      margin-right: 8px;
+      margin-right: 7px;
     }
     @keyframes d-spin { to { transform: rotate(360deg); } }
     #disasterMap {
       display: none;
-      height: 300px;
-      border-radius: 10px;
+      height: 400px;
+      border-radius: 12px;
       overflow: hidden;
-      margin-top: 16px;
-      border: 1px solid rgba(255,140,60,0.2);
+      margin-top: 14px;
+      border: 1px solid rgba(255,140,60,0.18);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     }
     .leaflet-popup-content-wrapper {
-      background: #1a1a2e;
+      background: #181830;
       color: #e0e0f0;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      font-size: 0.82rem;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+      font-size: 0.84rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
     }
-    .leaflet-popup-tip { background: #1a1a2e; }
-    .leaflet-popup-close-button { color: #888 !important; }
-    .leaflet-control-attribution { background: rgba(15,15,26,0.8) !important; color: #444 !important; }
+    .leaflet-popup-tip { background: #181830; }
+    .leaflet-popup-close-button { color: #666 !important; font-size: 1.1rem !important; }
+    .leaflet-control-attribution { background: rgba(10,10,20,0.85) !important; color: #3a3a5a !important; font-size: 0.72rem !important; }
     .leaflet-control-attribution a { color: #4ecdc4 !important; }
-    .leaflet-control-zoom a { background: #1a1a2e !important; color: #e0e0f0 !important; border-color: rgba(255,255,255,0.1) !important; }
-    .leaflet-control-zoom a:hover { background: #252540 !important; }
+    .leaflet-control-zoom a { background: #181830 !important; color: #c0c0e0 !important; border-color: rgba(255,255,255,0.1) !important; }
+    .leaflet-control-zoom a:hover { background: #222244 !important; }
     .map-legend {
-      margin-top: 10px;
+      margin-top: 12px;
       display: flex;
-      gap: 14px;
-      font-size: 0.75rem;
-      color: #666;
+      gap: 12px;
+      font-size: 0.76rem;
+      color: #555;
       flex-wrap: wrap;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.05);
     }
     .map-legend span { display: flex; align-items: center; gap: 5px; }
     .legend-dot {
-      width: 10px; height: 10px;
+      width: 11px; height: 11px;
       border-radius: 50%;
       display: inline-block;
+      flex-shrink: 0;
     }
 
     /* ── Weather App ─────────────────────────────────────────── */
     .wa-top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       width: 100%;
-      max-width: 640px;
-      margin-bottom: 12px;
+      max-width: 660px;
+      margin-bottom: 24px;
+      text-align: center;
     }
-    .wa-top-title { font-size: 1.5rem; color: #e0e0f0; font-weight: 600; letter-spacing: 0.5px; }
+    .wa-top-title {
+      font-size: 2rem;
+      color: #e8e8ff;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .wa-top-subtitle {
+      font-size: 0.85rem;
+      color: #445;
+      letter-spacing: 0.5px;
+    }
     .wa-refresh-btn {
-      background: none;
-      border: 1px solid rgba(78,205,196,0.3);
+      background: rgba(78,205,196,0.08);
+      border: 1px solid rgba(78,205,196,0.25);
       color: #4ecdc4;
       border-radius: 8px;
-      padding: 6px 14px;
+      padding: 7px 16px;
       font-size: 0.8rem;
       cursor: pointer;
       font-family: inherit;
-      transition: background 0.2s;
+      transition: background 0.2s, border-color 0.2s;
+      letter-spacing: 0.3px;
     }
-    .wa-refresh-btn:hover { background: rgba(78,205,196,0.1); }
+    .wa-refresh-btn:hover { background: rgba(78,205,196,0.15); border-color: rgba(78,205,196,0.45); }
     .wa-hero {
-      background: linear-gradient(160deg, #1c2a40 0%, #1a1a2e 55%, #0f0f1a 100%);
-      border: 1px solid rgba(78,205,196,0.18);
+      background: linear-gradient(160deg, #162030 0%, #131325 55%, #0a0a14 100%);
+      border: 1px solid rgba(78,205,196,0.15);
       border-radius: 20px;
-      padding: 28px 28px 22px;
+      padding: 30px 30px 24px;
       width: 100%;
-      max-width: 640px;
+      max-width: 660px;
       margin-bottom: 14px;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
     }
     .wa-hero::before {
       content: '';
       position: absolute;
-      top: -40px; right: -40px;
-      width: 180px; height: 180px;
+      top: -60px; right: -60px;
+      width: 240px; height: 240px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(78,205,196,0.07) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(78,205,196,0.06) 0%, transparent 70%);
       pointer-events: none;
     }
     .wa-loc { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: #666; margin-bottom: 20px; }
@@ -267,14 +313,15 @@
     .wa-stat-val { font-size: 0.92rem; font-weight: 600; color: #d8d8f0; line-height: 1.2; }
     .wa-stat-sub { font-size: 0.68rem; color: #3a3a5a; }
     .wa-card {
-      background: #1a1a2e;
+      background: #131325;
       border: 1px solid rgba(255,255,255,0.06);
       border-top: 2px solid transparent;
-      border-radius: 14px;
-      padding: 20px 22px;
+      border-radius: 16px;
+      padding: 22px 24px;
       width: 100%;
-      max-width: 640px;
+      max-width: 660px;
       margin-bottom: 14px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
     .wa-card-accent-teal   { border-top-color: #4ecdc4; }
     .wa-card-accent-blue   { border-top-color: #6699ff; }
@@ -350,7 +397,7 @@
     .wa-manual-row { display: flex; gap: 10px; }
     #waManualInput {
       flex: 1;
-      background: #0f0f1a;
+      background: #0a0a14;
       border: 1px solid rgba(78,205,196,0.25);
       border-radius: 8px;
       color: #e0e0f0;
@@ -360,14 +407,14 @@
       font-family: inherit;
     }
     #waManualInput:focus { border-color: #4ecdc4; }
-    #waManualBtn { background: #4ecdc4; color: #0f0f1a; border: none; border-radius: 8px; padding: 10px 18px; font-weight: 700; font-size: 0.85rem; cursor: pointer; white-space: nowrap; font-family: inherit; }
+    #waManualBtn { background: #4ecdc4; color: #0a0a14; border: none; border-radius: 8px; padding: 10px 18px; font-weight: 700; font-size: 0.85rem; cursor: pointer; white-space: nowrap; font-family: inherit; }
     #waManualBtn:hover { background: #38b2aa; }
     .wa-loading { text-align: center; padding: 40px 20px; color: #555; font-size: 0.9rem; line-height: 2; }
     .wa-error { color: #ff5555; font-size: 0.85rem; padding: 24px; text-align: center; line-height: 1.8; }
     /* Hourly tabs */
     .wa-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
     .wa-tab {
-      background: #0f0f1a;
+      background: #0a0a14;
       border: 1px solid rgba(255,255,255,0.07);
       color: #555;
       border-radius: 6px;
@@ -382,7 +429,7 @@
     .wa-tab:hover:not(.active) { color: #888; border-color: rgba(255,255,255,0.12); }
     /* Detail conditions */
     .detail-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .detail-item { background: #0f0f1a; border-radius: 8px; padding: 12px 13px; }
+    .detail-item { background: #0a0a14; border-radius: 8px; padding: 12px 13px; }
     .detail-lbl { font-size: 0.67rem; color: #555; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 5px; }
     .detail-val { font-size: 1.05rem; font-weight: 600; color: #e0e0f0; }
     .detail-sub { font-size: 0.72rem; color: #555; margin-top: 3px; }
@@ -396,7 +443,7 @@
     .uv-needle { position: absolute; top: -3px; width: 3px; height: 12px; background: #fff; border-radius: 2px; transform: translateX(-50%); box-shadow: 0 1px 4px rgba(0,0,0,0.6); }
     /* Sun & Moon */
     .sun-moon-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .sun-block, .moon-block { background: #0f0f1a; border-radius: 8px; padding: 13px 14px; }
+    .sun-block, .moon-block { background: #0a0a14; border-radius: 8px; padding: 13px 14px; }
     .sm-title { font-size: 0.67rem; color: #555; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
     .sm-row { display: flex; justify-content: space-between; font-size: 0.8rem; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
     .sm-row:last-child { border-bottom: none; }
@@ -413,175 +460,201 @@
     .aqi-desc-name { font-size: 0.95rem; font-weight: 600; color: #e0e0f0; margin-bottom: 3px; }
     .aqi-desc-note { font-size: 0.78rem; color: #666; line-height: 1.4; }
     .aqi-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 7px; margin-top: 12px; }
-    .aqi-item { background: #0f0f1a; border-radius: 7px; padding: 9px 10px; }
+    .aqi-item { background: #0a0a14; border-radius: 7px; padding: 9px 10px; }
     .aqi-item-val { font-size: 0.95rem; font-weight: 600; color: #e0e0f0; }
     .aqi-item-lbl { font-size: 0.65rem; color: #555; margin-top: 2px; }
     /* Tools divider */
+    /* ── Section ordering (body is flex-column) ─────────────── */
+    .wa-top-bar      { order: -10; }
+    .disaster-card   { order: -5; }
+    .dsg-card        { order: -4; }
+    .guide-card      { order: -3; }
+    #weatherDivider  { order: -2; }
+    /* weather cards (.wa-hero, .wa-card) and refresh bar sit at default order:0 */
+    #systemDivider   { order: 1; }
+    .card            { order: 2; }
+
     .tools-divider {
       width: 100%;
-      max-width: 640px;
+      max-width: 660px;
       text-align: center;
       position: relative;
-      margin: 14px 0 20px;
+      margin: 22px 0 26px;
     }
     .tools-divider::before {
       content: '';
       position: absolute;
       top: 50%; left: 0; right: 0;
       height: 1px;
-      background: rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.07);
     }
     .tools-divider span {
       position: relative;
-      background: #0f0f1a;
-      padding: 0 14px;
-      font-size: 0.7rem;
-      color: #333;
-      letter-spacing: 1.5px;
+      background: #0a0a14;
+      padding: 0 18px;
+      font-size: 0.72rem;
+      color: #444;
+      letter-spacing: 2px;
       text-transform: uppercase;
+      font-weight: 600;
     }
 
     /* ── Disaster Guide ────────────────────────────────────── */
     .guide-card {
-      background: #1a1a2e;
-      border: 1px solid rgba(255,140,60,0.25);
-      border-radius: 12px;
+      background: #131325;
+      border: 1px solid rgba(255,140,60,0.2);
+      border-radius: 16px;
       width: 100%;
-      max-width: 640px;
-      margin-bottom: 20px;
+      max-width: 660px;
+      margin-bottom: 16px;
       overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.35);
     }
     .guide-header {
-      background: linear-gradient(135deg, #2a1a0e 0%, #1a1a2e 100%);
-      border-bottom: 1px solid rgba(255,140,60,0.2);
-      padding: 18px 24px;
+      background: linear-gradient(135deg, #221308 0%, #181225 60%, #131325 100%);
+      border-bottom: 1px solid rgba(255,140,60,0.16);
+      padding: 20px 24px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
-    .guide-header-icon { font-size: 1.4rem; filter: drop-shadow(0 0 6px rgba(255,140,60,0.5)); }
+    .guide-header-icon { font-size: 1.7rem; filter: drop-shadow(0 0 8px rgba(255,140,60,0.55)); flex-shrink: 0; }
     .guide-header-text h2 {
       font-size: 1rem;
       color: #ff8c3c;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 2px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      margin-bottom: 3px;
     }
-    .guide-header-text p { font-size: 0.78rem; color: #666; }
-    .guide-list { padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
+    .guide-header-text p { font-size: 0.8rem; color: #555; }
+    .guide-list { padding: 14px 18px; display: flex; flex-direction: column; gap: 6px; }
     details.guide-item {
-      background: #0f0f1a;
-      border-radius: 8px;
-      border-left: 3px solid #ff8c3c;
+      background: #0e0e20;
+      border-radius: 10px;
+      border-left: 3px solid rgba(255,140,60,0.5);
       overflow: hidden;
+      transition: border-left-color 0.2s;
     }
+    details.guide-item:hover { border-left-color: #ff8c3c; }
     details.guide-item[open] { border-left-color: #ff6622; }
     summary.guide-summary {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 11px 14px;
+      gap: 12px;
+      padding: 13px 16px;
       cursor: pointer;
       list-style: none;
       user-select: none;
+      transition: background 0.15s;
     }
+    summary.guide-summary:hover { background: rgba(255,140,60,0.04); }
     summary.guide-summary::-webkit-details-marker { display: none; }
-    .guide-summary-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .guide-summary-icon { font-size: 1.25rem; flex-shrink: 0; }
     .guide-summary-text { flex: 1; }
-    .guide-summary-name { font-size: 0.9rem; font-weight: 600; color: #e0e0f0; }
-    .guide-summary-tag  { font-size: 0.75rem; color: #666; margin-top: 1px; }
+    .guide-summary-name { font-size: 0.92rem; font-weight: 600; color: #e0e0f0; }
+    .guide-summary-tag  { font-size: 0.76rem; color: #555; margin-top: 2px; }
     .guide-chevron {
-      font-size: 0.75rem;
-      color: #555;
-      transition: transform 0.2s;
+      font-size: 0.72rem;
+      color: #444;
+      transition: transform 0.22s;
       flex-shrink: 0;
     }
-    details.guide-item[open] .guide-chevron { transform: rotate(180deg); }
+    details.guide-item[open] .guide-chevron { transform: rotate(180deg); color: #ff8c3c; }
     .guide-body {
-      padding: 0 14px 14px;
+      padding: 4px 16px 16px;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      margin-top: 0;
+      border-top: 1px solid rgba(255,255,255,0.04);
     }
     .guide-section { margin-top: 10px; }
     .guide-section-title {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 1px;
       color: #ff8c3c;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
     }
     .guide-section-body {
-      font-size: 0.82rem;
-      color: #999;
-      line-height: 1.6;
+      font-size: 0.83rem;
+      color: #888;
+      line-height: 1.65;
     }
-    .guide-section-body li { margin-left: 14px; margin-bottom: 2px; }
-    .guide-tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .guide-section-body li { margin-left: 16px; margin-bottom: 3px; }
+    .guide-tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
     .guide-tag {
       font-size: 0.7rem;
-      padding: 2px 8px;
-      border-radius: 10px;
+      padding: 3px 10px;
+      border-radius: 12px;
       font-weight: 600;
+      letter-spacing: 0.3px;
     }
-    .guide-tag.wind    { background: rgba(78,205,196,0.12); color: #4ecdc4; }
-    .guide-tag.fire    { background: rgba(255,68,68,0.12);  color: #ff6666; }
-    .guide-tag.water   { background: rgba(68,130,255,0.12); color: #6699ff; }
-    .guide-tag.earth   { background: rgba(180,130,60,0.12); color: #cc9944; }
-    .guide-tag.cold    { background: rgba(140,200,255,0.12);color: #88ccff; }
-    .guide-tag.heat    { background: rgba(255,160,40,0.12); color: #ffaa44; }
-    .guide-tag.bio     { background: rgba(100,200,80,0.12); color: #77cc55; }
+    .guide-tag.wind    { background: rgba(78,205,196,0.1);  color: #4ecdc4; }
+    .guide-tag.fire    { background: rgba(255,68,68,0.1);   color: #ff6666; }
+    .guide-tag.water   { background: rgba(68,130,255,0.1);  color: #6699ff; }
+    .guide-tag.earth   { background: rgba(180,130,60,0.1);  color: #cc9944; }
+    .guide-tag.cold    { background: rgba(140,200,255,0.1); color: #88ccff; }
+    .guide-tag.heat    { background: rgba(255,160,40,0.1);  color: #ffaa44; }
+    .guide-tag.bio     { background: rgba(100,200,80,0.1);  color: #77cc55; }
 
     /* ── Interactive Disaster Survival ──────────────────────── */
     .dsg-card {
-      background: #1a1a2e;
-      border: 1px solid rgba(255,140,60,0.25);
-      border-radius: 12px;
+      background: #131325;
+      border: 1px solid rgba(255,140,60,0.2);
+      border-radius: 16px;
       width: 100%;
-      max-width: 640px;
-      margin-bottom: 20px;
+      max-width: 660px;
+      margin-bottom: 16px;
       overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.35);
     }
     .dsg-header {
-      background: linear-gradient(135deg, #2a1a0e 0%, #1a1a2e 100%);
-      border-bottom: 1px solid rgba(255,140,60,0.2);
-      padding: 18px 24px;
+      background: linear-gradient(135deg, #221308 0%, #181225 60%, #131325 100%);
+      border-bottom: 1px solid rgba(255,140,60,0.16);
+      padding: 20px 24px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
-    .dsg-header-icon { font-size: 1.4rem; filter: drop-shadow(0 0 6px rgba(255,140,60,0.5)); }
-    .dsg-header-text h2 { font-size: 1rem; color: #ff8c3c; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
-    .dsg-header-text p  { font-size: 0.78rem; color: #666; }
-    .dsg-body { padding: 14px 16px; }
+    .dsg-header-icon { font-size: 1.7rem; filter: drop-shadow(0 0 8px rgba(255,140,60,0.55)); flex-shrink: 0; }
+    .dsg-header-text h2 { font-size: 1rem; color: #ff8c3c; font-weight: 700; letter-spacing: 0.4px; margin-bottom: 3px; }
+    .dsg-header-text p  { font-size: 0.8rem; color: #555; }
+    .dsg-body { padding: 18px 20px; }
     .dsg-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 8px;
       margin-bottom: 0;
     }
     .dsg-btn {
-      background: #0f0f1a;
-      border: 1px solid rgba(255,140,60,0.18);
-      border-radius: 10px;
-      padding: 10px 6px;
+      background: #0e0e20;
+      border: 1px solid rgba(255,140,60,0.15);
+      border-radius: 12px;
+      padding: 12px 6px 10px;
       cursor: pointer;
       text-align: center;
-      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      transition: background 0.15s, border-color 0.15s, transform 0.12s, box-shadow 0.15s;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       font-family: inherit;
     }
-    .dsg-btn:hover { background: rgba(255,140,60,0.08); border-color: rgba(255,140,60,0.4); transform: translateY(-1px); }
-    .dsg-btn.active { background: rgba(255,140,60,0.14); border-color: #ff8c3c; }
-    .dsg-btn-icon { font-size: 1.4rem; line-height: 1; }
-    .dsg-btn-name { font-size: 0.68rem; color: #888; line-height: 1.2; }
-    .dsg-btn.active .dsg-btn-name { color: #ff8c3c; }
+    .dsg-btn:hover {
+      background: rgba(255,140,60,0.08);
+      border-color: rgba(255,140,60,0.38);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255,140,60,0.1);
+    }
+    .dsg-btn.active {
+      background: rgba(255,140,60,0.13);
+      border-color: #ff8c3c;
+      box-shadow: 0 0 0 1px rgba(255,140,60,0.2);
+    }
+    .dsg-btn-icon { font-size: 1.5rem; line-height: 1; }
+    .dsg-btn-name { font-size: 0.66rem; color: #777; line-height: 1.25; }
+    .dsg-btn.active .dsg-btn-name { color: #ff8c3c; font-weight: 600; }
     .dsg-panel {
       margin-top: 14px;
       background: #0d0d1a;
@@ -615,18 +688,50 @@
     .dsg-sec-title.during { color: #ff6666; }
     .dsg-sec-title.after  { color: #8bc34a; }
     .dsg-sec-title.avoid  { color: #e040fb; }
-    .dsg-sec-body { font-size: 0.82rem; color: #999; line-height: 1.6; }
-    .dsg-sec-body li { margin-left: 14px; margin-bottom: 3px; }
+    .dsg-sec-body { font-size: 0.83rem; color: #888; line-height: 1.65; }
+    .dsg-sec-body li { margin-left: 16px; margin-bottom: 3px; }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      body { padding: 18px 12px 48px; }
+      .disaster-card, .dsg-card, .guide-card,
+      .wa-hero, .wa-card, .card,
+      .tools-divider { max-width: 100%; }
+      .wa-top-title { font-size: 1.6rem; }
+      .disaster-body { padding: 16px; }
+      .dsg-grid { grid-template-columns: repeat(4, 1fr); }
+      .detail-grid { grid-template-columns: repeat(2, 1fr); }
+      .aqi-grid { grid-template-columns: repeat(3, 1fr); }
+      #disasterMap { height: 320px; }
+      .wa-stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .wa-stat:nth-child(3n) { border-right: 1px solid rgba(255,255,255,0.04); }
+      .wa-stat:nth-child(2n) { border-right: none; }
+      .wa-stat:nth-child(n+3) { border-top: 1px solid rgba(255,255,255,0.04); }
+      .sun-moon-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 400px) {
+      .dsg-grid { grid-template-columns: repeat(3, 1fr); }
+      .wa-temp-big { font-size: 3.2rem; }
+      .wa-big-icon { font-size: 3rem; }
+      .disaster-header { padding: 16px 18px; }
+      .disaster-header-icon { font-size: 1.6rem; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- ── Weather App ─────────────────────────────────────────── -->
+  <!-- ── Page header ──────────────────────────────────────────── -->
   <div class="wa-top-bar">
-    <span class="wa-top-title">🌤 Info Checker</span>
-    <button class="wa-refresh-btn" onclick="initWeatherApp()">↺ Refresh</button>
+    <span class="wa-top-title">🌍 Info Checker</span>
+    <span class="wa-top-subtitle">Live disaster data &nbsp;·&nbsp; Weather &nbsp;·&nbsp; System info</span>
   </div>
 
+
+  <div class="tools-divider" id="weatherDivider"><span>Weather</span></div>
+
+  <div style="width:100%;max-width:640px;display:flex;justify-content:flex-end;margin-bottom:6px">
+    <button class="wa-refresh-btn" onclick="initWeatherApp()">↺ Refresh</button>
+  </div>
 
   <div class="wa-hero" id="waHero">
     <div class="wa-loading">
@@ -674,8 +779,6 @@
     <div class="wa-card-title green">🎒 Emergency Kit Checklist</div>
     <div id="waKitContent"></div>
   </div>
-
-  <div class="tools-divider"><span>Disaster &amp; Guide</span></div>
 
   <!-- ── Natural Disaster Area Map ────────────────────────────── -->
   <div class="disaster-card">
@@ -1103,6 +1206,8 @@
 
     </div>
   </div>
+
+  <div class="tools-divider" id="systemDivider"><span>System Info</span></div>
 
   <!-- Browser & Device -->
   <div class="card">

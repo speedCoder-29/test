@@ -2673,7 +2673,7 @@
           w.push({ x: 2568, y: 648, w: 14, h: 46, obj: true });
 
           // --- Reactor: coolant conduit column (right-side, vertical) ---
-          w.push({ x: 220,  y: 520, w: 14, h: 216, obj: true });
+          w.push({ x: 192,  y: 520, w: 14, h: 216, obj: true });  // shifted left to clear the north vent (was x:220)
 
           // --- Communications: server rack (right wall), satellite dish control (bottom) ---
           w.push({ x: 2056, y: 1472, w: 18, h: 100, obj: true }); // server rack
@@ -2865,7 +2865,7 @@
           // Upper Engine (floor x:156-414, y:146-394, center 285,270)
           { x: 196, y: 196,   name: 'Fuel Engines',       room: 'Upper Engine' },
           { x: 340, y: 196,   name: 'Align Engine Output',room: 'Upper Engine' },
-          { x: 196, y: 336,   name: 'Fix Wiring',         room: 'Upper Engine' },
+          { x: 196, y: 372,   name: 'Fix Wiring',         room: 'Upper Engine' },
           // Reactor (floor x:16-244, y:394-1226, center 130,810)
           { x: 118, y: 548,   name: 'Start Reactor',      room: 'Reactor', visual: true },  // north hand-pad
           { x: 118, y: 978,   name: 'Start Reactor',      room: 'Reactor', visual: true },  // south hand-pad
@@ -2964,7 +2964,7 @@
           // Electrical(4) <-> MedBay(5) <-> Security(6) (3-way ring)
           { x: 720, y: 1200, partner: 5 },  // 4: Electrical — center, between bottom panels (clear gap)
           { x: 740, y: 520, partner: 6 },   // 5: MedBay — lower-right open area, clear of scanner & station
-          { x: 560, y: 760, partner: 4 },   // 6: Security — lower-right, below monitors
+          { x: 580, y: 760, partner: 4 },   // 6: Security — lower-right, below monitors (nudged right to clear data terminal)
           // Admin(7) <-> Cafeteria(8) <-> Hallway(9) (3-way ring)
           { x: 1450, y: 928, partner: 8 },  // 7: Admin — left-center, clear of admin table x-range
           { x: 1104, y: 482, partner: 9 },  // 8: Cafeteria — bottom-left open area
@@ -3744,12 +3744,12 @@
         ],
         vents: [
           // Vent grates positioned near walls / under equipment
-          { x:340,  y:742,  partner:1 },  // 0 Security: floor grate under desk right corner
-          { x:892,  y:918,  partner:0 },  // 1 Electrical: floor grate near panel base (right)
-          { x:1010, y:928,  partner:3 },  // 2 Storage: floor grate bottom-left corner
-          { x:3140, y:740,  partner:2 },  // 3 Laboratory: floor grate far-right corner
-          { x:1010, y:1792, partner:5 },  // 4 Specimen Room: floor grate bottom-left
-          { x:2650, y:1272, partner:4 },  // 5 Weapons: floor grate top-right corner
+          { x:340,  y:734,  partner:1 },  // 0 Security: floor grate under desk right corner
+          { x:880,  y:906,  partner:0 },  // 1 Electrical: floor grate near panel base (right)
+          { x:1030, y:908,  partner:3 },  // 2 Storage: floor grate bottom-left corner
+          { x:3128, y:740,  partner:2 },  // 3 Laboratory: floor grate far-right corner
+          { x:1030, y:1792, partner:5 },  // 4 Specimen Room: floor grate bottom-left
+          { x:2650, y:1288, partner:4 },  // 5 Weapons: floor grate top-right corner
           { x:1120, y:2300, partner:7 },  // 6 Admin: floor grate bottom-left corner
           { x:490,  y:2196, partner:6 },  // 7 Boiler Room: floor grate bottom-right corner
         ],
@@ -4040,7 +4040,7 @@
           // Viewing Deck (floor x:2696-3064, y:116-424)
           { x: 2780, y: 210,  name: 'Clear Asteroids',      room: 'Viewing Deck', visual: true },
           { x: 2980, y: 210,  name: 'Fix Wiring',           room: 'Viewing Deck' },
-          { x: 2880, y: 360,  name: 'Download Data',        room: 'Viewing Deck' },
+          { x: 2880, y: 394,  name: 'Download Data',        room: 'Viewing Deck' },
           // Cargo Bay (floor x:116-734, y:1116-1684)
           { x: 220,  y: 1220, name: 'Unlock Safe',          room: 'Cargo Bay' },
           { x: 620,  y: 1220, name: 'Fix Wiring',           room: 'Cargo Bay' },
@@ -13339,21 +13339,22 @@
 
     // ====== TEXTURE & DECORATION SYSTEM ======
     const roomFloorColors = {
-      // Color-coded per official Skeld map image:
-      'Cafeteria':'#a8a090',    // warm light grey tile (center hub)
-      'Weapons':'#4e4438',      // dark tan command console
-      'Navigation':'#0e1626',   // deep navy cockpit
-      'O2':'#182a1e',           // dark forest green life support
-      'Admin':'#281a14',        // dark warm brown-red command
-      'Shields':'#101424',      // very deep blue energy room
-      'Communications':'#141e24', // near-black teal radio room
-      'Storage':'#4a3018',      // rich dark brown cargo hold
-      'Electrical':'#1a1810',   // dark charcoal-yellow industrial
-      'Lower Engine':'#141c24', // deep steel-blue engine
-      'Reactor':'#1e0e30',      // deep indigo-purple reactor
-      'Security':'#0e1018',     // near-black monitoring room
-      'Upper Engine':'#141c24', // deep steel-blue engine
-      'MedBay':'#101c28',       // dark cerulean medical bay
+      // Real Skeld: one cohesive cool steel-blue interior. Rooms read apart by props,
+      // not by floor hue — so these are near-uniform with only faint per-room tints.
+      'Cafeteria':'#2e353f',    // neutral steel (central hub; tables/props carry the room)
+      'Weapons':'#2a313b',      // steel
+      'Navigation':'#252e3c',   // slightly deeper blue cockpit
+      'O2':'#28302c',           // steel with a barely-there green (plant props carry the green)
+      'Admin':'#2b313b',        // neutral steel
+      'Shields':'#242c3c',      // faint deep blue energy room
+      'Communications':'#222a30', // near-black steel-teal
+      'Storage':'#2d2e2c',      // neutral grey (crates supply the color)
+      'Electrical':'#2a2722',   // faint warm charcoal (industrial)
+      'Lower Engine':'#262f39', // steel-blue engine
+      'Reactor':'#272d36',      // steel-blue (yellow core pulse supplies the heat glow)
+      'Security':'#20262e',     // near-black monitoring room
+      'Upper Engine':'#262f39', // steel-blue engine
+      'MedBay':'#24323a',       // faint cerulean medical bay
       'Launchpad':'#1e2030','Office':'#1a2240','Greenhouse':'#0a3030',
       'Locker Room':'#252530','Laboratory':'#141828','Balcony':'#252a35',
       'Decontamination':'#0a1428','Dropship':'#cc1111',
@@ -14262,19 +14263,22 @@
             ctx.beginPath(); ctx.moveTo(x, y+h); ctx.lineTo(x+cutSz, y+h); ctx.lineTo(x, y+h-cutSz); ctx.closePath(); ctx.fill();
             ctx.beginPath(); ctx.moveTo(x+w, y+h); ctx.lineTo(x+w-cutSz, y+h); ctx.lineTo(x+w, y+h-cutSz); ctx.closePath(); ctx.fill();
           }
-          // Checkered tile floor (warm tan — matching reference image clearly visible pattern)
+          // Checkered tile floor — cool steel-grey for the Skeld, warm tan for Airship's wood deck
           ctx.globalAlpha = 1.0;
           const tileSize = 32;
+          const _skeldCaf = selectedMap === 'skeld';
           for (let ty = 0; ty < h; ty += tileSize) {
             for (let tx = 0; tx < w; tx += tileSize) {
               const even = ((Math.floor(tx/tileSize) + Math.floor(ty/tileSize)) % 2 === 0);
-              ctx.fillStyle = even ? 'rgba(210,185,145,0.42)' : 'rgba(155,130,95,0.26)';
+              ctx.fillStyle = _skeldCaf
+                ? (even ? 'rgba(120,140,165,0.20)' : 'rgba(64,80,100,0.14)')
+                : (even ? 'rgba(210,185,145,0.42)' : 'rgba(155,130,95,0.26)');
               ctx.fillRect(x+tx, y+ty, tileSize, tileSize);
             }
           }
           ctx.globalAlpha = 0.7;
           // Tile grid lines
-          ctx.strokeStyle = 'rgba(140,115,80,0.35)'; ctx.lineWidth = 0.6;
+          ctx.strokeStyle = _skeldCaf ? 'rgba(150,175,205,0.22)' : 'rgba(140,115,80,0.35)'; ctx.lineWidth = 0.6;
           for (let tx = 0; tx <= w; tx += tileSize) {
             ctx.beginPath(); ctx.moveTo(x+tx, y); ctx.lineTo(x+tx, y+h); ctx.stroke();
           }
@@ -14951,9 +14955,10 @@
             ctx.globalAlpha = 0.5;
           }
           const rr = Math.min(w,h)*0.18;
-          // Dark interior — deeper for MIRA's darker purple reactor
+          // Dark interior — purple-black for MIRA's exotic reactor, steel-black for the Skeld
+          const _miraReactor = selectedMap === 'mira';
           ctx.globalAlpha = 1.0;
-          ctx.fillStyle = selectedMap === 'mira' ? '#060412' : '#0a0810';
+          ctx.fillStyle = _miraReactor ? '#060412' : '#0a0e16';
           ctx.fillRect(x, y, w, h);
           // Spacecraft body silhouette (dark gray mass)
           ctx.fillStyle = '#181428';
@@ -14964,28 +14969,34 @@
           ctx.fillStyle = '#0e0c1c';
           ctx.fillRect(x, cy-h*0.16, w*0.20, h*0.32); // left wing
           ctx.fillRect(x+w*0.80, cy-h*0.16, w*0.20, h*0.32); // right wing
-          // Wing edge trim (faint purple-blue)
-          ctx.strokeStyle = '#302060'; ctx.lineWidth = 1.5;
+          // Wing edge trim (purple-blue for MIRA, steel for the Skeld)
+          ctx.strokeStyle = _miraReactor ? '#302060' : '#2a3340'; ctx.lineWidth = 1.5;
           ctx.strokeRect(x, cy-h*0.16, w*0.20, h*0.32);
           ctx.strokeRect(x+w*0.80, cy-h*0.16, w*0.20, h*0.32);
           // Wing center panel divider
-          ctx.strokeStyle = 'rgba(80,60,160,0.28)'; ctx.lineWidth = 1;
+          ctx.strokeStyle = _miraReactor ? 'rgba(80,60,160,0.28)' : 'rgba(90,110,140,0.24)'; ctx.lineWidth = 1;
           ctx.beginPath(); ctx.moveTo(x+w*0.10, cy-h*0.16); ctx.lineTo(x+w*0.10, cy+h*0.16); ctx.stroke();
           ctx.beginPath(); ctx.moveTo(x+w*0.90, cy-h*0.16); ctx.lineTo(x+w*0.90, cy+h*0.16); ctx.stroke();
-          // Wing glow edge (matching purple reactor ambiance)
-          ctx.strokeStyle = 'rgba(120,60,200,0.14)'; ctx.lineWidth = 4;
+          // Wing glow edge (purple for MIRA, warm amber for the Skeld)
+          ctx.strokeStyle = _miraReactor ? 'rgba(120,60,200,0.14)' : 'rgba(255,180,70,0.12)'; ctx.lineWidth = 4;
           ctx.beginPath(); ctx.moveTo(x, cy-h*0.16); ctx.lineTo(x, cy+h*0.16); ctx.stroke();
           ctx.beginPath(); ctx.moveTo(x+w, cy-h*0.16); ctx.lineTo(x+w, cy+h*0.16); ctx.stroke();
           ctx.globalAlpha = 0.5;
-          // Purple ambient glow for the whole room
-          const purpleAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.55);
-          purpleAmb.addColorStop(0, 'rgba(140,60,220,0.20)');
-          purpleAmb.addColorStop(0.5, 'rgba(80,20,140,0.10)');
-          purpleAmb.addColorStop(1, 'rgba(40,0,80,0)');
-          ctx.fillStyle = purpleAmb;
+          // Ambient core glow — purple for MIRA, warm amber for the Skeld (matches its yellow core)
+          const reactAmb = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*0.55);
+          if (_miraReactor) {
+            reactAmb.addColorStop(0, 'rgba(140,60,220,0.20)');
+            reactAmb.addColorStop(0.5, 'rgba(80,20,140,0.10)');
+            reactAmb.addColorStop(1, 'rgba(40,0,80,0)');
+          } else {
+            reactAmb.addColorStop(0, 'rgba(255,190,70,0.14)');
+            reactAmb.addColorStop(0.5, 'rgba(180,120,30,0.06)');
+            reactAmb.addColorStop(1, 'rgba(80,50,0,0)');
+          }
+          ctx.fillStyle = reactAmb;
           ctx.fillRect(x, y, w, h);
           // Large cylindrical reactor core - outer containment ring (brighter)
-          ctx.strokeStyle = '#8a6acc'; ctx.lineWidth = 5;
+          ctx.strokeStyle = _miraReactor ? '#8a6acc' : '#c89a4a'; ctx.lineWidth = 5;
           ctx.beginPath(); ctx.arc(cx, cy, rr, 0, Math.PI*2); ctx.stroke();
           // Inner energy ring (brighter yellow)
           ctx.strokeStyle = '#ffee44'; ctx.lineWidth = 3;
@@ -28565,6 +28576,25 @@
       }
       return false;
     }
+
+    // __AUDIT_HOOK__ (temporary; remove after map-placement review)
+    window.__audit = function (id) {
+      loadMap(id);
+      prerenderStaticMap();
+      const nR = rooms.length;
+      return {
+        W: MAP_W, H: MAP_H,
+        rooms: rooms.map((r, i) => ({ name: r.name, x: r.x, y: r.y,
+          rect: mapTheme.floors && mapTheme.floors[i] ? { x: mapTheme.floors[i].x, y: mapTheme.floors[i].y, w: mapTheme.floors[i].w, h: mapTheme.floors[i].h } : null })),
+        corridors: (mapTheme.floors || []).slice(nR).map(f => ({ x: f.x, y: f.y, w: f.w, h: f.h })),
+        extraLabels: (mapTheme.extraLabels || []).map(r => ({ name: r.name, x: r.x, y: r.y })),
+        tasks: taskLocations.map(t => ({ name: t.name, x: t.x, y: t.y, room: t.room, visual: !!t.visual })),
+        vents: vents.map(v => ({ x: v.x, y: v.y })),
+        decs: decObjectLocations.map(d => ({ x: d.x, y: d.y, type: d.type })),
+        walls: walls.map(w => ({ x: w.x, y: w.y, w: w.w, h: w.h, obj: !!w.obj })),
+        emergency: EMERGENCY_BTN ? { x: EMERGENCY_BTN.x, y: EMERGENCY_BTN.y } : null,
+      };
+    };
   </script>
 <div id="killFlashOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at center, rgba(200,0,0,0.7) 0%, rgba(100,0,0,0.4) 40%, transparent 70%);opacity:0;pointer-events:none;z-index:45;transition:opacity 0.3s;"></div>
 <div id="taskFlashOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at center,rgba(80,255,160,0.6) 0%,rgba(255,215,0,0.3) 60%,transparent 100%);opacity:0;pointer-events:none;z-index:44;transition:opacity 0.22s;"></div>

@@ -15,7 +15,9 @@
       "Bash(curl -s \"https://among-us-wiki.fandom.com/api.php?action=query&list=allimages&aiprefix=Propeller&ailimit=20&format=json\" -H \"User-Agent: Mozilla/5.0\")",
       "Bash(head -5 __NEW_LINE_483d759c76421389__ curl -s \"https://among-us-wiki.fandom.com/api.php?action=query&list=allimages&aiprefix=Greatest_Headset&ailimit=10&format=json\" -H \"User-Agent: Mozilla/5.0\")",
       "Bash(node --check /tmp/extracted.js)",
-      "Bash(node --check \"C:/Users/User/AppData/Local/Temp/extracted.js\")"
+      "Bash(node --check \"C:/Users/User/AppData/Local/Temp/extracted.js\")",
+      "Bash(node _fix_polus.mjs)",
+      "Bash(awk 'NR>=3466 && NR<=3811 && /vents:/{print NR\": \"$0; f=1; next} f{print NR\": \"$0; if\\(/\\\\],/\\){exit}}' \"among-us copy.html\")"
     ]
   }
 }
