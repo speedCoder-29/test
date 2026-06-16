@@ -18,10 +18,11 @@ const ventRect = (x, y) => ({ x: x - 20, y: y - 12, w: 40, h: 24 });
 const hitsWall = (x, y) => d.walls.some(w => overlapArea(ventRect(x, y), w) > 150);
 
 const dirs = [[0, -1], [0, 1], [-1, 0], [1, 0], [-1, -1], [1, -1], [-1, 1], [1, 1]];
-// require the vent to sit comfortably inside floor (margin -6 so it's not flush to an edge)
-const clear = (x, y) => !hitsWall(x, y) && inAnyFloor(x, y, -6);
+const nearTask = (x, y) => d.tasks.some(t => Math.hypot(t.x - x, t.y - y) < 24);
+// comfortably inside floor (margin -6), off walls, and clear of task markers
+const clear = (x, y) => !hitsWall(x, y) && inAnyFloor(x, y, -6) && !nearTask(x, y);
 for (const v of d.vents) {
-  if (!hitsWall(v.x, v.y)) continue;
+  if (!hitsWall(v.x, v.y) && !nearTask(v.x, v.y)) continue;
   let best = null;
   for (let step = 4; step <= 160 && !best; step += 4) {
     for (const [dx, dy] of dirs) {

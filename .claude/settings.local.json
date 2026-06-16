@@ -17,7 +17,21 @@
       "Bash(node --check /tmp/extracted.js)",
       "Bash(node --check \"C:/Users/User/AppData/Local/Temp/extracted.js\")",
       "Bash(node _fix_polus.mjs)",
-      "Bash(awk 'NR>=3466 && NR<=3811 && /vents:/{print NR\": \"$0; f=1; next} f{print NR\": \"$0; if\\(/\\\\],/\\){exit}}' \"among-us copy.html\")"
+      "Bash(awk 'NR>=3466 && NR<=3811 && /vents:/{print NR\": \"$0; f=1; next} f{print NR\": \"$0; if\\(/\\\\],/\\){exit}}' \"among-us copy.html\")",
+      "Bash(node _validate_map.mjs polus)",
+      "Bash(node _audit_map.mjs polus)",
+      "Bash(npm i *)",
+      "Bash(echo \"installed:$?\")",
+      "Bash(node _floaters.mjs)",
+      "Bash(node _floaters.mjs skeld)",
+      "Bash(awk '/SKELD/{f=1} /MIRA/{f=0} f')",
+      "Bash(node _reach_test.js)",
+      "Bash(node _probe.js skeld 600,1000,1250,1320)",
+      "Bash(node _snap_tasks.mjs skeld)",
+      "Bash(node _walls.js polus 1100,1850,2120,2320)",
+      "Bash(node _walls.js polus 1100,1900,1740,1880)",
+      "Bash(node _probe.js polus 1100,1900,1740,1900)",
+      "Bash(node _play_test.js)"
     ]
   }
 }

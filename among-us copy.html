@@ -2660,7 +2660,7 @@
 
           // --- Electrical: hazard panel (top area), floor cable conduit ---
           w.push({ x: 808,  y: 958,  w: 32, h: 20, obj: true });  // hazard panel
-          w.push({ x: 650,  y: 1258, w: 50, h: 14, obj: true });  // floor cable conduit
+          w.push({ x: 568,  y: 1258, w: 50, h: 14, obj: true });  // floor cable conduit (moved clear of south door gap x:650-730)
 
           // --- O2: air recycler unit (right side, above door gap) ---
           w.push({ x: 2256, y: 622, w: 36, h: 56, obj: true });
@@ -2812,104 +2812,63 @@
         tasks: [
           // Cafeteria (floor x:986-1850, y:112-572, center 1418,342)
           { x: 995,  y: 193, name: 'Download Data',      room: 'Cafeteria' },
-          { x: 1800, y: 200, name: 'Upload Data',        room: 'Cafeteria' },
           { x: 1420, y: 168, name: 'Fix Wiring',         room: 'Cafeteria' },
           { x: 1038, y: 430, name: 'Empty Garbage',      room: 'Cafeteria' },  // near trash bin (bottom-left)
-          { x: 1420, y: 520, name: 'Fix Wiring',         room: 'Cafeteria' },
           // Weapons (floor x:2066-2544, y:112-454, center 2305,283)
           { x: 2200, y: 200, name: 'Clear Asteroids',    room: 'Weapons', visual: true },  // turret
           { x: 2450, y: 160, name: 'Download Data',      room: 'Weapons' },
-          { x: 2410, y: 370, name: 'Accept Diverted Power', room: 'Weapons' },
+          { x: 2410, y: 466, name: 'Accept Diverted Power', room: 'Weapons' },
           // Navigation (floor x:2566-3046, y:566-934, center 2806,750)
           { x: 2575, y: 671, name: 'Chart Course',       room: 'Navigation' },
           { x: 2940, y: 640, name: 'Fix Wiring',         room: 'Navigation' },
           { x: 2768, y: 857, name: 'Stabilize Steering', room: 'Navigation' },
           { x: 2940, y: 840, name: 'Download Data',      room: 'Navigation' },
-          { x: 2780, y: 745, name: 'Accept Diverted Power', room: 'Navigation' },
+          { x: 2780, y: 590, name: 'Accept Diverted Power', room: 'Navigation' },
           // O2 (floor x:1936-2310, y:596-904, center 2110,750)
           { x: 1960, y: 648, name: 'Clean O2 Filter',    room: 'O2' },   // left plant tank
-          { x: 2066, y: 664, name: 'Water Plants',        room: 'O2' },   // right plant tank
-          { x: 1960, y: 820, name: 'Fix Wiring',          room: 'O2' },
-          { x: 2180, y: 820, name: 'Download Data',       room: 'O2' },
           // Admin (floor x:1396-1784, y:676-974, center 1590,825)
           { x: 1400, y: 760, name: 'Swipe Card',          room: 'Admin' },  // at entrance card reader
           { x: 1608, y: 750, name: 'Upload Data',         room: 'Admin' },  // on admin table (centred)
           { x: 1470, y: 900, name: 'Fix Wiring',          room: 'Admin' },
-          { x: 1700, y: 900, name: 'Accept Diverted Power', room: 'Admin' },
           // Shields (floor x:2196-2544, y:1116-1494, center 2370,1305)
           { x: 2240, y: 1250, name: 'Prime Shields',      room: 'Shields', visual: true },  // left generator
-          { x: 2450, y: 1200, name: 'Fix Wiring',         room: 'Shields' },
-          { x: 2320, y: 1430, name: 'Calibrate Distributor', room: 'Shields' }, // control panel
-          { x: 2460, y: 1380, name: 'Download Data',      room: 'Shields' },
           // Communications (floor x:1740-2084, y:1370-1750, center 1912,1560)
           { x: 1780, y: 1450, name: 'Download Data',      room: 'Communications' },
-          { x: 2020, y: 1510, name: 'Fix Wiring',         room: 'Communications' },
-          { x: 1860, y: 1560, name: 'Restore Comms',      room: 'Communications' },
-          { x: 2045, y: 1618, name: 'Upload Data',        room: 'Communications' },
           { x: 1800, y: 1650, name: 'Accept Diverted Power', room: 'Communications' },
           // Storage (floor x:1036-1524, y:1116-1614, center 1280,1365)
           { x: 1070, y: 1190, name: 'Fuel Engines',       room: 'Storage' },  // fuel canisters top-left
-          { x: 1460, y: 1310, name: 'Fuel Engines',       room: 'Storage' },  // second fuel stack
           { x: 1400, y: 1190, name: 'Empty Garbage',      room: 'Storage' },
           { x: 1100, y: 1470, name: 'Fix Wiring',         room: 'Storage' },
-          { x: 1390, y: 1460, name: 'Download Data',      room: 'Storage' },
           // Electrical (floor x:536-904, y:940-1290, center 720,1115)
           { x: 548, y: 1080,  name: 'Fix Wiring',         room: 'Electrical' },  // near breaker panel
           { x: 830, y: 1010,  name: 'Divert Power',       room: 'Electrical' },
-          { x: 700, y: 1080,  name: 'Calibrate Distributor', room: 'Electrical' },
+          { x: 700, y: 964,  name: 'Calibrate Distributor', room: 'Electrical' },
           { x: 830, y: 1210,  name: 'Download Data',      room: 'Electrical' },
           // Lower Engine (floor x:156-414, y:1226-1508, center 285,1367)
           { x: 200, y: 1400,  name: 'Fuel Engines',       room: 'Lower Engine' },
-          { x: 314, y: 1408,  name: 'Align Engine Output',room: 'Lower Engine' },
-          { x: 196, y: 1428,  name: 'Fix Wiring',         room: 'Lower Engine' },
+          { x: 390, y: 1408,  name: 'Align Engine Output',room: 'Lower Engine' },
           // Upper Engine (floor x:156-414, y:146-394, center 285,270)
           { x: 196, y: 196,   name: 'Fuel Engines',       room: 'Upper Engine' },
           { x: 340, y: 196,   name: 'Align Engine Output',room: 'Upper Engine' },
-          { x: 196, y: 372,   name: 'Fix Wiring',         room: 'Upper Engine' },
           // Reactor (floor x:16-244, y:394-1226, center 130,810)
           { x: 118, y: 548,   name: 'Start Reactor',      room: 'Reactor', visual: true },  // north hand-pad
-          { x: 118, y: 978,   name: 'Start Reactor',      room: 'Reactor', visual: true },  // south hand-pad
           { x: 56,  y: 760,   name: 'Unlock Manifolds',   room: 'Reactor' },
-          { x: 56,  y: 960,   name: 'Fix Wiring',         room: 'Reactor' },
-          { x: 56,  y: 1148,  name: 'Reset Breakers',     room: 'Reactor' },
           // Security (floor x:380-596, y:576-844, center 488,710)
           { x: 412, y: 650,   name: 'View Camera',        room: 'Security' },  // left monitor
           { x: 510, y: 648,   name: 'Fix Wiring',         room: 'Security' },  // right monitor
           // MedBay (floor x:536-864, y:280-600, center 700,440)
           { x: 632, y: 356,   name: 'Submit Scan',        room: 'MedBay', visual: true },  // scanner
           { x: 764, y: 366,   name: 'Inspect Sample',     room: 'MedBay' },  // sample station
-          { x: 600, y: 510,   name: 'Fix Wiring',         room: 'MedBay' },
-          { x: 762, y: 510,   name: 'Download Data',      room: 'MedBay' },
           // Additional tasks
-          { x: 988,  y: 216,  name: 'Swipe Card',           room: 'Cafeteria' },
-          { x: 538,  y: 758,  name: 'Download Data',         room: 'Security' },
           { x: 606,  y: 694,  name: 'Accept Diverted Power', room: 'Security' },
-          { x: 830,  y: 325,  name: 'Reset Breakers',        room: 'MedBay' },
-          { x: 1822, y: 827,  name: 'Calibrate Distributor', room: 'Admin' },
-          { x: 1058, y: 1448, name: 'Calibrate Distributor', room: 'Storage' },
           { x: 820,  y: 968,  name: 'Reset Breakers',        room: 'Electrical' },
           { x: 2262, y: 644,  name: 'Accept Diverted Power', room: 'O2' },
-          { x: 2310, y: 188,  name: 'Calibrate Distributor', room: 'Weapons' },
-          { x: 2950, y: 730,  name: 'Upload Data',           room: 'Navigation' },
           { x: 2388, y: 1144, name: 'Accept Diverted Power', room: 'Shields' },
-          { x: 220,  y: 648,  name: 'Download Data',         room: 'Reactor' },
           { x: 356,  y: 218,  name: 'Accept Diverted Power', room: 'Upper Engine' },
           { x: 356,  y: 1392, name: 'Accept Diverted Power', room: 'Lower Engine' },
-          { x: 2060, y: 1492, name: 'Reset Breakers',        room: 'Communications' },
           // Wave 2 — new tasks
-          { x: 1610, y: 460,  name: 'Check Manifest',      room: 'Cafeteria' },
-          { x: 2230, y: 710,  name: 'Test Air Quality',    room: 'O2' },
-          { x: 1924, y: 1476, name: 'Reboot WiFi',         room: 'Communications' },
-          { x: 830,  y: 480,  name: 'Replace Filters',     room: 'MedBay' },
-          { x: 185,  y: 860,  name: 'Lubricate Valves',    room: 'Reactor' },
-          { x: 618,  y: 966,  name: 'Patch Cables',        room: 'Electrical' },
-          { x: 2656, y: 790,  name: 'Log Velocity',        room: 'Navigation' },
-          { x: 1244, y: 1378, name: 'Sort Samples',        room: 'Storage' },
-          { x: 456,  y: 770,  name: 'Rewind Tapes',        room: 'Security' },
-          { x: 2352, y: 1310, name: 'Deflect Meteorites',  room: 'Shields' },
-          { x: 2156, y: 346,  name: 'Charge Batteries',    room: 'Weapons' },
           // Wave 3 — room-unique tasks
-          { x: 1740, y: 495,  name: 'Buy Beverage',        room: 'Cafeteria' },
+          { x: 1960, y: 880, name: 'Empty Garbage', room: 'O2' },  // added (canonical)
         ],
         decObjects: [
           // Cafeteria
@@ -3309,7 +3268,7 @@
           // Decontamination (x:820-1080, y:660-1020)
           { x: 870, y: 750,  name: 'Clean Filter',       room: 'Decontamination' },
           { x: 1010,y: 750,  name: 'Fix Wiring',         room: 'Decontamination' },
-          { x: 940, y: 940,  name: 'Replace UV Bulb',    room: 'Decontamination' },
+          { x: 940, y: 996,  name: 'Replace UV Bulb',    room: 'Decontamination' },
           // Launchpad (x:60-740, y:1020-1720)
           { x: 160, y: 1130, name: 'Run Diagnostics',    room: 'Launchpad' },
           { x: 580, y: 1130, name: 'Fix Wiring',         room: 'Launchpad' },
@@ -3336,19 +3295,19 @@
           { x: 2620,y: 1140, name: 'Fix Wiring',         room: 'Cafeteria' },
           { x: 1990,y: 1640, name: 'Empty Garbage',      room: 'Cafeteria' },
           { x: 2620,y: 1640, name: 'Download Data',      room: 'Cafeteria' },
-          { x: 2310,y: 1390, name: 'Clean Table',        room: 'Cafeteria' },
+          { x: 2310,y: 1736, name: 'Clean Table',        room: 'Cafeteria' },
           // MedBay (x:820-1480, y:1680-2040)
           { x: 940, y: 1780, name: 'Submit Scan',        room: 'MedBay', visual: true },
           { x: 1380,y: 1780, name: 'Inspect Sample',     room: 'MedBay' },
           { x: 940, y: 1960, name: 'Fix Wiring',         room: 'MedBay' },
           { x: 1380,y: 1960, name: 'Clean MedBay',       room: 'MedBay' },
           // Balcony (x:1480-2760, y:1760-1960)
-          { x: 1620,y: 1840, name: 'View Balcony',       room: 'Balcony' },
-          { x: 2120,y: 1840, name: 'Fix Wiring',         room: 'Balcony' },
-          { x: 2620,y: 1840, name: 'Download Data',      room: 'Balcony' },
+          { x: 1620,y: 1936, name: 'View Balcony',       room: 'Balcony' },
+          { x: 2120,y: 1784, name: 'Fix Wiring',         room: 'Balcony' },
+          { x: 2620,y: 1936, name: 'Download Data',      room: 'Balcony' },
           // Dropship (x:60-440, y:60-260)
-          { x: 160, y: 140,  name: 'Prep Launch',        room: 'Dropship' },
-          { x: 360, y: 140,  name: 'Fix Wiring',         room: 'Dropship' },
+          { x: 160, y: 84,  name: 'Prep Launch',        room: 'Dropship' },
+          { x: 416, y: 140,  name: 'Fix Wiring',         room: 'Dropship' },
         ],
         vents: [
           { x: 200,  y: 500,  partner: 1  }, // 0  Reactor A
@@ -3586,7 +3545,9 @@
           w.push({ x:1110,y:1840,w:720, h:16  }); // top
           w.push({ x:1110,y:2314,w:720, h:16  }); // bottom
           w.push({ x:1110,y:1840,w:16,  h:490 }); // left
-          w.push({ x:1814,y:1840,w:16,  h:490 }); // right
+          // right wall split to add a door gap (y:2040-2140) into the corridor — Admin was fully sealed
+          w.push({ x:1814,y:1840,w:16,  h:200 }); // right upper (y:1840-2040)
+          w.push({ x:1814,y:2140,w:16,  h:190 }); // right lower (y:2140-2330)
           return w;
         })(),
         rooms: [
@@ -3680,13 +3641,13 @@
           // Fix Wiring: wiring panel on left-lower wall
           { x:185,  y:2150, name:'Fix Wiring',             room:'Boiler Room' },
           // Clean Boiler: at the boiler drum furnace door (center-right)
-          { x:335,  y:2050, name:'Clean Boiler',           room:'Boiler Room' },
+          { x: 486,  y: 2050, name:'Clean Boiler',           room:'Boiler Room' },
 
           // STORAGE (x:1000-1530, y:550-950)
           // Fuel Engines: fuel drum racks on left side
           { x:1060, y:700,  name:'Fuel Engines',           room:'Storage' },
           // Fix Wiring: wiring conduit center-right
-          { x:1270, y:700,  name:'Fix Wiring',             room:'Storage' },
+          { x: 1506, y: 700,  name:'Fix Wiring',             room:'Storage' },
           // Empty Garbage: waste bins on far right lower corner
           { x:1460, y:880,  name:'Empty Garbage',          room:'Storage' },
           // Download Data: inventory management terminal right wall
@@ -3706,7 +3667,7 @@
           // Align Telescope: large telescope instrument at far-right end of lab
           { x:3070, y:340,  name:'Align Telescope',        room:'Laboratory' },
           // Inspect Sample: microscope/specimen analysis station center-lab
-          { x:2700, y:420,  name:'Inspect Sample',         room:'Laboratory' },
+          { x: 2404, y: 420,  name:'Inspect Sample',         room:'Laboratory' },
           // Fix Wiring: electrical panel near decon door (left wall lower)
           { x:2460, y:680,  name:'Fix Wiring',             room:'Laboratory' },
           // Start Reactor: reactor control console right-center (visual task)
@@ -3726,7 +3687,7 @@
           // Clear Asteroids: main targeting console (center, visual)
           { x:2360, y:1420, name:'Clear Asteroids',        room:'Weapons', visual:true },
           // Download Data: fire control terminal center-left
-          { x:2200, y:1490, name:'Download Data',          room:'Weapons' },
+          { x: 2064, y: 1490, name:'Download Data',          room:'Weapons' },
           // Calibrate Distributor: power distributor panel on right wall
           { x:2600, y:1570, name:'Calibrate Distributor',  room:'Weapons' },
           // Fix Wiring: wiring behind ammo crate rack (left)
@@ -3744,14 +3705,14 @@
         ],
         vents: [
           // Vent grates positioned near walls / under equipment
-          { x:340,  y:734,  partner:1 },  // 0 Security: floor grate under desk right corner
+          { x:352,  y:734,  partner:1 },  // 0 Security: floor grate under desk right corner
           { x:880,  y:906,  partner:0 },  // 1 Electrical: floor grate near panel base (right)
           { x:1030, y:908,  partner:3 },  // 2 Storage: floor grate bottom-left corner
           { x:3128, y:740,  partner:2 },  // 3 Laboratory: floor grate far-right corner
           { x:1030, y:1792, partner:5 },  // 4 Specimen Room: floor grate bottom-left
           { x:2650, y:1288, partner:4 },  // 5 Weapons: floor grate top-right corner
-          { x:1120, y:2300, partner:7 },  // 6 Admin: floor grate bottom-left corner
-          { x:490,  y:2196, partner:6 },  // 7 Boiler Room: floor grate bottom-right corner
+          { x:1140, y:2300, partner:7 },  // 6 Admin: floor grate bottom-left corner
+          { x:478,  y:2184, partner:6 },  // 7 Boiler Room: floor grate bottom-right corner
         ],
         doors: [
           { x:364,  y:600,  w:16, h:140, room:'Security',      dir:'v' },
@@ -3999,7 +3960,7 @@
           { x: 780,  y: 220,  name: 'Fix Wiring',           room: 'Security' },
           { x: 700,  y: 380,  name: 'Download Data',        room: 'Security' },
           // Communications (floor x:76-364, y:696-964)
-          { x: 160,  y: 780,  name: 'Restore Comms',        room: 'Communications' },
+          { x: 100,  y: 780,  name: 'Restore Comms',        room: 'Communications' },
           { x: 300,  y: 780,  name: 'Fix Wiring',           room: 'Communications' },
           { x: 220,  y: 900,  name: 'Upload Data',          room: 'Communications' },
           // Brig (floor x:466-854, y:716-1094)
@@ -4508,22 +4469,49 @@
       gridH = Math.ceil(MAP_H / GRID_SIZE);
       walkGrid = new Uint8Array(gridW * gridH);
       const flrs = mapTheme.floors;
-      if (!flrs) return;
+
+      // Pass 1: every in-bounds cell whose NPC-sized hitbox clears all walls.
+      // (Smaller-than-NPC 26×34 box keeps doorways passable; tryMove handles sliding.)
+      const open = new Uint8Array(gridW * gridH);
       for (let gy = 0; gy < gridH; gy++) {
         for (let gx = 0; gx < gridW; gx++) {
-          const cx = (gx + 0.5) * GRID_SIZE;
-          const cy = (gy + 0.5) * GRID_SIZE;
-          let onFloor = false;
-          for (const f of flrs) {
-            if (cx >= f.x && cx < f.x + f.w && cy >= f.y && cy < f.y + f.h) {
-              onFloor = true; break;
+          const cx = (gx + 0.5) * GRID_SIZE, cy = (gy + 0.5) * GRID_SIZE;
+          if (cx < 22 || cy < 22 || cx > MAP_W - 22 || cy > MAP_H - 22) continue;
+          if (!isBlockedAt(cx - 13, cy - 17, 26, 34)) open[gy * gridW + gx] = 1;
+        }
+      }
+
+      // Pass 2: seed from the floor tiles, then flood through wall-free space so that
+      // gaps in the map's floor data (missing doorway/corridor tiles) get bridged —
+      // this is what the player can actually traverse. Exterior void that is sealed
+      // off by hull walls is never reached by the flood, so it stays non-walkable.
+      const stack = [];
+      if (flrs && flrs.length) {
+        for (let gy = 0; gy < gridH; gy++) {
+          for (let gx = 0; gx < gridW; gx++) {
+            if (!open[gy * gridW + gx]) continue;
+            const cx = (gx + 0.5) * GRID_SIZE, cy = (gy + 0.5) * GRID_SIZE;
+            for (const f of flrs) {
+              if (cx >= f.x && cx < f.x + f.w && cy >= f.y && cy < f.y + f.h) {
+                walkGrid[gy * gridW + gx] = 1; stack.push(gy * gridW + gx); break;
+              }
             }
           }
-          if (!onFloor) continue;
-          // Mark walkable using a hitbox slightly smaller than the NPC (32×40)
-          // so narrow doorways appear passable in the grid; tryMove handles wall sliding
-          if (!isBlockedAt(cx - 13, cy - 17, 26, 34)) {
-            walkGrid[gy * gridW + gx] = 1;
+        }
+      }
+      if (!stack.length) {
+        // No floor data for this map — use the raw wall-free region.
+        for (let i = 0; i < open.length; i++) if (open[i]) walkGrid[i] = 1;
+      } else {
+        const DX = [0, 0, -1, 1], DY = [-1, 1, 0, 0];
+        while (stack.length) {
+          const c = stack.pop(), cx = c % gridW, cy = (c / gridW) | 0;
+          for (let d = 0; d < 4; d++) {
+            const nx = cx + DX[d], ny = cy + DY[d];
+            if (nx < 0 || nx >= gridW || ny < 0 || ny >= gridH) continue;
+            const ni = ny * gridW + nx;
+            if (walkGrid[ni] || !open[ni]) continue;
+            walkGrid[ni] = 1; stack.push(ni);
           }
         }
       }
@@ -6446,6 +6434,35 @@
       return npc;
     }
 
+    // Find a clear, walkable spawn position near a desired top-left (x,y) for a w×h entity.
+    // Prevents players/NPCs from spawning inside furniture or walls (where they'd be stuck).
+    // `avoid` is an optional array of already-placed {x,y} top-lefts to keep spawns from overlapping.
+    function findSafeSpawn(x, y, w, h, avoid) {
+      const MIN_SEP = w * 0.9;
+      const clearOfOthers = (tx, ty) => !avoid || avoid.every(p =>
+        Math.hypot((tx + w / 2) - (p.x + w / 2), (ty + h / 2) - (p.y + h / 2)) >= MIN_SEP);
+      const fits = (tx, ty) =>
+        tx >= 25 && ty >= 25 && tx + w <= MAP_W - 25 && ty + h <= MAP_H - 25 &&
+        !isBlockedAt(tx, ty, w, h) && clearOfOthers(tx, ty);
+      if (fits(x, y)) return { x: Math.round(x), y: Math.round(y) };
+      // Spiral outward over grid cells from the entity centre, snapping to clear cell centres.
+      const cgx = Math.round((x + w / 2) / GRID_SIZE), cgy = Math.round((y + h / 2) / GRID_SIZE);
+      for (let r = 1; r <= 40; r++) {
+        for (let oy = -r; oy <= r; oy++) {
+          for (let ox = -r; ox <= r; ox++) {
+            if (Math.abs(ox) !== r && Math.abs(oy) !== r) continue; // perimeter only
+            const gx = cgx + ox, gy = cgy + oy;
+            if (gx < 0 || gx >= gridW || gy < 0 || gy >= gridH) continue;
+            if (walkGrid && !walkGrid[gy * gridW + gx]) continue;
+            const tx = (gx + 0.5) * GRID_SIZE - w / 2;
+            const ty = (gy + 0.5) * GRID_SIZE - h / 2;
+            if (fits(tx, ty)) return { x: Math.round(tx), y: Math.round(ty) };
+          }
+        }
+      }
+      return { x: Math.round(x), y: Math.round(y) }; // give up — return original
+    }
+
     function init() {
       loadMap(selectedMap);
       const m = MAPS[selectedMap];
@@ -6465,6 +6482,14 @@
       for (let i = spawnPositions.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [spawnPositions[i], spawnPositions[j]] = [spawnPositions[j], spawnPositions[i]];
+      }
+      // Snap every spawn to a clear, walkable, non-overlapping spot so no one
+      // starts wedged inside the cafeteria table or other furniture.
+      const _placedSpawns = [];
+      for (const sp of spawnPositions) {
+        const safe = findSafeSpawn(sp.x, sp.y, 40, 50, _placedSpawns);
+        sp.x = safe.x; sp.y = safe.y;
+        _placedSpawns.push({ x: safe.x, y: safe.y });
       }
 
       player = { x: spawnPositions[0].x, y: spawnPositions[0].y, w: 40, h: 50, color: COLORS[selectedColor].hex, name, speed: baseSpeed, alive: true, isImpostor: false, visible: true };
@@ -10487,6 +10512,12 @@
       if (inVent) return; // can't move while in vent
       // Crewmate ghosts (and Guardian Angels) can still do tasks; impostor ghosts cannot
       if (playerDoingTask && (!isGhost || !isImpostor)) { updatePlayerTask(); return; }
+      // Safety net: if the player ends up wedged inside a wall/object (e.g. a door
+      // closing on them or a platform push), nudge to the nearest walkable spot.
+      if (!isGhost && isBlockedAt(player.x, player.y, player.w, player.h)) {
+        const _safe = findSafeSpawn(player.x, player.y, player.w, player.h);
+        player.x = _safe.x; player.y = _safe.y;
+      }
       let dx = 0, dy = 0;
       if (keys['w'] || keys['arrowup']) dy = -player.speed;
       if (keys['s'] || keys['arrowdown']) dy = player.speed;
@@ -10702,7 +10733,9 @@
             hint.style.display = 'block';
           }
         }
-        for (const task of taskLocations) {
+        // Only prompt for tasks actually assigned to this player, not every task on the map.
+        const _myTasks = (player.taskList && player.taskList.length) ? player.taskList : taskLocations;
+        for (const task of _myTasks) {
           if (task.done) continue;
           if (dist(player, task) < 60) {
             hint.textContent = 'Press E - ' + task.name;
@@ -23271,8 +23304,9 @@
         mc.strokeRect(d.x*sc, d.y*sc, dw, dh);
       }
 
-      // Task dots (gold = pending, grey = done)
-      for (const t of taskLocations) {
+      // Task dots (gold = pending, grey = done) — only the player's assigned tasks
+      const _miniTasks = (player.taskList && player.taskList.length) ? player.taskList : taskLocations;
+      for (const t of (isImpostor ? [] : _miniTasks)) {
         mc.fillStyle = t.done ? 'rgba(100,100,100,0.3)' : 'rgba(255,215,0,0.65)';
         mc.beginPath(); mc.arc(t.x*sc, t.y*sc, t.done ? 1 : 2, 0, Math.PI*2); mc.fill();
       }
@@ -24265,10 +24299,11 @@
           ctx.restore();
         }
 
-        // Gold arrows → nearest incomplete task
+        // Gold arrows → nearest incomplete task (only the player's own tasks)
         if (!isImpostor) {
           let nearestTask = null, nearestDist = Infinity;
-          for (const t of taskLocations) {
+          const _arrowTasks = (player.taskList && player.taskList.length) ? player.taskList : taskLocations;
+          for (const t of _arrowTasks) {
             if (t.done) continue;
             const tx = t.x + 8, ty = t.y + 17;
             const td = Math.sqrt((tx - pCX)**2 + (ty - pCY)**2);
@@ -26261,6 +26296,7 @@
 
     function openTaskMiniGame(task) {
       if (!task || taskModalOpen) return;
+      if (task.done) return; // already completed — can't repeat a finished task
       if (gameMode === 'hideseek' && finalHide) return;
       taskModalOpen = true;
       document.getElementById('taskModal').style.display = 'flex';
@@ -26286,13 +26322,22 @@
       if (miniGameAnimId) { cancelAnimationFrame(miniGameAnimId); miniGameAnimId = null; }
       const doneTaskName = activeMiniGame && activeMiniGame.taskName;
       setTimeout(() => {
-        const task = taskLocations.find(t => t.name === doneTaskName && !t.done);
-        if (task) { task.done = true; tasksCompleted++; statsTasksCompleted++; updateTaskBar(); mpPublishEvent('task', null, { taskName: doneTaskName }); }
-        else { tasksCompleted = Math.min(tasksCompleted + 1, totalTasks); statsTasksCompleted++; updateTaskBar(); mpPublishEvent('task', null, { taskName: doneTaskName }); }
-        if (gameMode === 'hideseek' && gameSettings.hsTasksEnabled && hsSeekTimer > 0) {
-          hsSeekTimer = Math.max(0, hsSeekTimer - gameSettings.hsTaskReduction * 60);
+        // Mark the exact task the player started (currentPlayerTask) so the correct
+        // instance is flagged done — a name lookup can hit a duplicate in another room,
+        // which would leave the player's task repeatable and over-count the task bar.
+        const task = (currentPlayerTask && !currentPlayerTask.done)
+          ? currentPlayerTask
+          : taskLocations.find(t => t.name === doneTaskName && !t.done);
+        if (task && !task.done) {
+          task.done = true; tasksCompleted++; statsTasksCompleted++;
+          updateTaskBar(); mpPublishEvent('task', null, { taskName: task.name });
+          if (gameMode === 'hideseek' && gameSettings.hsTasksEnabled && hsSeekTimer > 0) {
+            hsSeekTimer = Math.max(0, hsSeekTimer - gameSettings.hsTaskReduction * 60);
+          }
         }
+        currentPlayerTask = null;
         closeTaskModal();
+        updateTaskList();
       }, 800);
     }
 
