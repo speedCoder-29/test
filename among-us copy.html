@@ -3242,7 +3242,6 @@
           // Reactor (x:60-500, y:260-780)
           { x: 150, y: 370,  name: 'Start Reactor',     room: 'Reactor', visual: true },
           { x: 390, y: 370,  name: 'Unlock Manifolds',  room: 'Reactor' },
-          { x: 150, y: 590,  name: 'Fix Wiring',         room: 'Reactor' },
           { x: 390, y: 590,  name: 'Reset Breakers',     room: 'Reactor' },
           { x: 270, y: 710,  name: 'Divert Power',       room: 'Reactor' },
           // Laboratory (x:1240-1900, y:200-760)
@@ -3252,9 +3251,7 @@
           { x: 1780,y: 640,  name: 'Upload Data',        room: 'Laboratory' },
           // Office (x:1900-2280, y:400-760)
           { x: 1980,y: 490,  name: 'Process Data',       room: 'Office' },
-          { x: 2200,y: 490,  name: 'Fix Wiring',         room: 'Office' },
           { x: 1980,y: 690,  name: 'Download Data',      room: 'Office' },
-          { x: 2200,y: 690,  name: 'Swipe Card',         room: 'Office' },
           // Admin (x:1900-2280, y:60-400)
           { x: 1980,y: 150,  name: 'Swipe Card',         room: 'Admin' },
           { x: 2200,y: 150,  name: 'Fix Wiring',         room: 'Admin' },
@@ -3262,52 +3259,31 @@
           { x: 2200,y: 310,  name: 'Download Data',      room: 'Admin' },
           // Greenhouse (x:2280-2760, y:60-820)
           { x: 2370,y: 180,  name: 'Water Plants',       room: 'Greenhouse' },
-          { x: 2660,y: 180,  name: 'Fix Wiring',         room: 'Greenhouse' },
-          { x: 2370,y: 600,  name: 'Fertilize Plants',   room: 'Greenhouse' },
-          { x: 2660,y: 600,  name: 'Measure Humidity',   room: 'Greenhouse' },
           // Decontamination (x:820-1080, y:660-1020)
-          { x: 870, y: 750,  name: 'Clean Filter',       room: 'Decontamination' },
-          { x: 1010,y: 750,  name: 'Fix Wiring',         room: 'Decontamination' },
-          { x: 940, y: 996,  name: 'Replace UV Bulb',    room: 'Decontamination' },
           // Launchpad (x:60-740, y:1020-1720)
           { x: 160, y: 1130, name: 'Run Diagnostics',    room: 'Launchpad' },
           { x: 580, y: 1130, name: 'Fix Wiring',         room: 'Launchpad' },
           { x: 160, y: 1400, name: 'Fuel Engines',       room: 'Launchpad' },
-          { x: 580, y: 1400, name: 'Clean Engine',       room: 'Launchpad' },
-          { x: 380, y: 1630, name: 'Recharge Battery',   room: 'Launchpad' },
           // Locker Room (x:820-1340, y:1020-1380)
           { x: 920, y: 1110, name: 'Empty Garbage',      room: 'Locker Room' },
-          { x: 1240,y: 1110, name: 'Fix Wiring',         room: 'Locker Room' },
           { x: 920, y: 1300, name: 'Fix Shower',         room: 'Locker Room' },
-          { x: 1240,y: 1300, name: 'Download Data',      room: 'Locker Room' },
           // Communications (x:820-1340, y:1380-1680)
           { x: 900, y: 1460, name: 'Fix Wiring',         room: 'Communications' },
           { x: 1240,y: 1460, name: 'Upload Data',        room: 'Communications' },
-          { x: 900, y: 1600, name: 'Restore Comms',      room: 'Communications' },
           { x: 1240,y: 1600, name: 'Download Data',      room: 'Communications' },
           // Storage (x:1340-1880, y:1020-1580)
           { x: 1430,y: 1130, name: 'Sort Samples',       room: 'Storage' },
-          { x: 1790,y: 1130, name: 'Fix Wiring',         room: 'Storage' },
           { x: 1430,y: 1480, name: 'Empty Garbage',      room: 'Storage' },
-          { x: 1790,y: 1480, name: 'Fuel Canisters',     room: 'Storage' },
           // Cafeteria (x:1880-2760, y:1020-1760)
-          { x: 1990,y: 1140, name: 'Buy Beverage',       room: 'Cafeteria' },
           { x: 2620,y: 1140, name: 'Fix Wiring',         room: 'Cafeteria' },
           { x: 1990,y: 1640, name: 'Empty Garbage',      room: 'Cafeteria' },
           { x: 2620,y: 1640, name: 'Download Data',      room: 'Cafeteria' },
-          { x: 2310,y: 1736, name: 'Clean Table',        room: 'Cafeteria' },
           // MedBay (x:820-1480, y:1680-2040)
           { x: 940, y: 1780, name: 'Submit Scan',        room: 'MedBay', visual: true },
           { x: 1380,y: 1780, name: 'Inspect Sample',     room: 'MedBay' },
-          { x: 940, y: 1960, name: 'Fix Wiring',         room: 'MedBay' },
-          { x: 1380,y: 1960, name: 'Clean MedBay',       room: 'MedBay' },
           // Balcony (x:1480-2760, y:1760-1960)
-          { x: 1620,y: 1936, name: 'View Balcony',       room: 'Balcony' },
-          { x: 2120,y: 1784, name: 'Fix Wiring',         room: 'Balcony' },
-          { x: 2620,y: 1936, name: 'Download Data',      room: 'Balcony' },
           // Dropship (x:60-440, y:60-260)
-          { x: 160, y: 84,  name: 'Prep Launch',        room: 'Dropship' },
-          { x: 416, y: 140,  name: 'Fix Wiring',         room: 'Dropship' },
+          { x: 2320, y: 794, name: 'Clean O2 Filter', room: 'Greenhouse' },  // added (canonical)
         ],
         vents: [
           { x: 200,  y: 500,  partner: 1  }, // 0  Reactor A
@@ -3597,15 +3573,12 @@
         tasks: [
           // DROPSHIP (x:910-1470, y:40-420)
           // Fix Wiring: side wiring conduit on left cabin wall
-          { x:970,  y:360,  name:'Fix Wiring',            room:'Dropship' },
           // Prep Launch: main launch control console at front of cockpit
-          { x:1190, y:100,  name:'Prep Launch',            room:'Dropship' },
 
           // SECURITY (x:70-380, y:530-760)
           // View Security: monitor wall across top of room
           { x:175,  y:565,  name:'View Security',          room:'Security', visual:true },
           // Fix Wiring: wiring panel on right wall near floor
-          { x:330,  y:720,  name:'Fix Wiring',             room:'Security' },
 
           // ELECTRICAL (x:380-910, y:490-940)
           // Calibrate Distributor: upper section of the breaker/electrical panel (right wall)
@@ -3621,7 +3594,6 @@
           // Fill Canisters: at left O2 pressurized canister bank
           { x:155,  y:1060, name:'Fill Canisters',         room:'O2' },
           // Fix Wiring: wiring panel on right wall
-          { x:385,  y:1050, name:'Fix Wiring',             room:'O2' },
           // Clean O2 Filter: filter/scrubber unit on south wall (below canisters)
           { x:240,  y:1175, name:'Clean O2 Filter',        room:'O2' },
 
@@ -3631,7 +3603,6 @@
           // Fix Wiring: wiring conduit on center floor
           { x:560,  y:1650, name:'Fix Wiring',             room:'Communications' },
           // Restore Comms: satellite relay control panel on right side
-          { x:780,  y:1470, name:'Restore Comms',          room:'Communications' },
           // Download Data: downlink/receive terminal, left-center
           { x:370,  y:1640, name:'Download Data',          room:'Communications' },
 
@@ -3639,9 +3610,7 @@
           // Replace Water Jug: water supply corner on left side
           { x:130,  y:1940, name:'Replace Water Jug',      room:'Boiler Room' },
           // Fix Wiring: wiring panel on left-lower wall
-          { x:185,  y:2150, name:'Fix Wiring',             room:'Boiler Room' },
           // Clean Boiler: at the boiler drum furnace door (center-right)
-          { x: 486,  y: 2050, name:'Clean Boiler',           room:'Boiler Room' },
 
           // STORAGE (x:1000-1530, y:550-950)
           // Fuel Engines: fuel drum racks on left side
@@ -3657,7 +3626,6 @@
           // Swipe Card: ID card reader at the main entrance (left wall, near door)
           { x:1710, y:760,  name:'Swipe Card',             room:'Office' },
           // Align Telescope: roof-mounted telescope eyepiece station (top-right)
-          { x:2180, y:590,  name:'Align Telescope',        room:'Office' },
           // Fix Wiring: wiring panel behind file cabinet bank (right)
           { x:2175, y:870,  name:'Fix Wiring',             room:'Office' },
           // Download Data: main desktop terminal on center desk
@@ -3669,7 +3637,6 @@
           // Inspect Sample: microscope/specimen analysis station center-lab
           { x: 2404, y: 420,  name:'Inspect Sample',         room:'Laboratory' },
           // Fix Wiring: electrical panel near decon door (left wall lower)
-          { x:2460, y:680,  name:'Fix Wiring',             room:'Laboratory' },
           // Start Reactor: reactor control console right-center (visual task)
           { x:2900, y:500,  name:'Start Reactor',          room:'Laboratory', visual:true },
 
@@ -3681,7 +3648,6 @@
           // Store Samples: sample shelf/storage locker on left wall
           { x:1065, y:1700, name:'Store Samples',          room:'Specimen Room' },
           // Fix Wiring: wiring panel lower-right
-          { x:1720, y:1700, name:'Fix Wiring',             room:'Specimen Room' },
 
           // WEAPONS (x:2040-2680, y:1260-1750)
           // Clear Asteroids: main targeting console (center, visual)
@@ -3689,9 +3655,7 @@
           // Download Data: fire control terminal center-left
           { x: 2064, y: 1490, name:'Download Data',          room:'Weapons' },
           // Calibrate Distributor: power distributor panel on right wall
-          { x:2600, y:1570, name:'Calibrate Distributor',  room:'Weapons' },
           // Fix Wiring: wiring behind ammo crate rack (left)
-          { x:2105, y:1640, name:'Fix Wiring',             room:'Weapons' },
 
           // ADMIN (x:1110-1830, y:1840-2330)
           // Chart Course: navigation display screen on left wall (top)
@@ -3957,10 +3921,8 @@
           { x: 370,  y: 490,  name: 'Chart Course',         room: 'Cockpit' },
           // Security (floor x:546-854, y:136-464)
           { x: 630,  y: 220,  name: 'View Cameras',         room: 'Security' },
-          { x: 780,  y: 220,  name: 'Fix Wiring',           room: 'Security' },
           { x: 700,  y: 380,  name: 'Download Data',        room: 'Security' },
           // Communications (floor x:76-364, y:696-964)
-          { x: 100,  y: 780,  name: 'Restore Comms',        room: 'Communications' },
           { x: 300,  y: 780,  name: 'Fix Wiring',           room: 'Communications' },
           { x: 220,  y: 900,  name: 'Upload Data',          room: 'Communications' },
           // Brig (floor x:466-854, y:716-1094)
@@ -3970,27 +3932,21 @@
           { x: 760,  y: 1000, name: 'Download Data',        room: 'Brig' },
           // Kitchen (floor x:966-1354, y:316-684)
           { x: 1060, y: 410,  name: 'Empty Garbage',        room: 'Kitchen' },
-          { x: 1260, y: 410,  name: 'Fix Wiring',           room: 'Kitchen' },
-          { x: 1060, y: 600,  name: 'Grill Steak',          room: 'Kitchen' },
           { x: 1260, y: 600,  name: 'Download Data',        room: 'Kitchen' },
           // Meeting Room (floor x:1516-2024, y:96-424)
           { x: 1620, y: 190,  name: 'Enter ID Code',        room: 'Meeting Room' },
-          { x: 1900, y: 190,  name: 'Fix Wiring',           room: 'Meeting Room' },
           { x: 1620, y: 360,  name: 'Download Data',        room: 'Meeting Room' },
-          { x: 1900, y: 360,  name: 'Polish Ruby',          room: 'Meeting Room' },
           // Main Hall (floor x:1366-2054, y:546-944)
           { x: 1460, y: 650,  name: 'Polish Ruby',          room: 'Main Hall' },
           { x: 1800, y: 650,  name: 'Fix Wiring',           room: 'Main Hall' },
           { x: 1460, y: 860,  name: 'Empty Garbage',        room: 'Main Hall' },
           { x: 1800, y: 860,  name: 'Download Data',        room: 'Main Hall' },
           // Lounge (floor x:2166-2534, y:136-464)
-          { x: 2260, y: 230,  name: 'Fix Wiring',           room: 'Lounge' },
           { x: 2440, y: 230,  name: 'Download Data',        room: 'Lounge' },
           { x: 2260, y: 390,  name: 'Fuel Engines',         room: 'Lounge' },
           { x: 2440, y: 390,  name: 'Sort Records',         room: 'Lounge' },
           // Records (floor x:2166-2574, y:596-944)
           { x: 2260, y: 690,  name: 'Sort Records',         room: 'Records' },
-          { x: 2480, y: 690,  name: 'Fix Wiring',           room: 'Records' },
           { x: 2260, y: 870,  name: 'Download Data',        room: 'Records' },
           { x: 2480, y: 870,  name: 'Store Artifacts',      room: 'Records' },
           // Engine Room (floor x:3166-3684, y:96-504)
@@ -3999,17 +3955,13 @@
           { x: 3260, y: 410,  name: 'Fuel Engines',         room: 'Engine Room' },
           { x: 3580, y: 410,  name: 'Align Engine Output',  room: 'Engine Room' },
           // Viewing Deck (floor x:2696-3064, y:116-424)
-          { x: 2780, y: 210,  name: 'Clear Asteroids',      room: 'Viewing Deck', visual: true },
-          { x: 2980, y: 210,  name: 'Fix Wiring',           room: 'Viewing Deck' },
           { x: 2880, y: 394,  name: 'Download Data',        room: 'Viewing Deck' },
           // Cargo Bay (floor x:116-734, y:1116-1684)
           { x: 220,  y: 1220, name: 'Unlock Safe',          room: 'Cargo Bay' },
-          { x: 620,  y: 1220, name: 'Fix Wiring',           room: 'Cargo Bay' },
           { x: 220,  y: 1560, name: 'Empty Garbage',        room: 'Cargo Bay' },
           { x: 620,  y: 1560, name: 'Download Data',        room: 'Cargo Bay' },
           // Showers (floor x:866-1234, y:1116-1504)
           { x: 960,  y: 1200, name: 'Pick Up Towels',       room: 'Showers' },
-          { x: 1140, y: 1200, name: 'Fix Wiring',           room: 'Showers' },
           { x: 960,  y: 1410, name: 'Replace Soap',         room: 'Showers' },
           // Electrical (floor x:1386-1754, y:1116-1504)
           { x: 1470, y: 1200, name: 'Calibrate Distributor',room: 'Electrical' },
@@ -4019,18 +3971,14 @@
           // Medical (floor x:1916-2304, y:1116-1504)
           { x: 2000, y: 1200, name: 'Submit Scan',          room: 'Medical', visual: true },
           { x: 2210, y: 1200, name: 'Inspect Sample',       room: 'Medical' },
-          { x: 2000, y: 1410, name: 'Fix Wiring',           room: 'Medical' },
           { x: 2210, y: 1410, name: 'Download Data',        room: 'Medical' },
           // Vault (floor x:2736-3224, y:596-1004)
           { x: 2840, y: 700,  name: 'Dress Mannequin',      room: 'Vault' },
-          { x: 3120, y: 700,  name: 'Fix Wiring',           room: 'Vault' },
           { x: 2840, y: 920,  name: 'Download Data',        room: 'Vault' },
           { x: 3120, y: 920,  name: 'Sort Artifacts',       room: 'Vault' },
           // Armory (floor x:2566-2984, y:1116-1504)
           { x: 2660, y: 1200, name: 'Put Away Pistols',     room: 'Armory' },
-          { x: 2880, y: 1200, name: 'Fix Wiring',           room: 'Armory' },
           { x: 2660, y: 1410, name: 'Download Data',        room: 'Armory' },
-          { x: 2880, y: 1410, name: 'Clean Armory',         room: 'Armory' },
         ],
         vents: [
           // Cargo-Showers-Medical cluster
@@ -4445,6 +4393,8 @@
       doorCooldown = 0;
       // Update minimap aspect ratio
       minimapCanvas.height = Math.round(180 * (MAP_H / MAP_W));
+      // Build spatial wall hash first (used by isBlockedAt during grid build)
+      _buildWallGrid();
       // Build walkable grid for pathfinding
       buildWalkableGrid();
       _staticMapCanvas = null; // will be built lazily on first drawMap() call inside RAF
@@ -4604,6 +4554,68 @@
           }
         }
       }
+      // LOS-only edges leave the graph in many disconnected islands (rooms reachable
+      // only through winding corridors). Stitch them into one connected graph using
+      // real grid paths so waypointAStar succeeds for long routes instead of always
+      // falling back to the heavier full-grid A*.
+      _stitchWaypointComponents();
+    }
+
+    // Merge disconnected waypoint components by inserting the points of an actual
+    // grid path between each island and the main component. Every inserted edge is a
+    // string-pulled (LOS-clear) segment, so NPCs can still walk it directly.
+    function _stitchWaypointComponents() {
+      for (let pass = 0; pass < 4; pass++) {
+        const n = waypoints.length;
+        if (n < 2) return;
+        const comp = new Int32Array(n).fill(-1);
+        let nc = 0;
+        for (let s = 0; s < n; s++) {
+          if (comp[s] !== -1) continue;
+          comp[s] = nc;
+          const q = [s];
+          while (q.length) { const u = q.pop(); for (const e of waypointAdj[u]) if (comp[e.to] === -1) { comp[e.to] = nc; q.push(e.to); } }
+          nc++;
+        }
+        if (nc < 2) return;
+        const sizeOf = new Array(nc).fill(0);
+        for (let i = 0; i < n; i++) sizeOf[comp[i]]++;
+        let mainC = 0;
+        for (let c = 1; c < nc; c++) if (sizeOf[c] > sizeOf[mainC]) mainC = c;
+        let added = false;
+        for (let c = 0; c < nc; c++) {
+          if (c === mainC) continue;
+          // nearest cross-component waypoint pair (this island ↔ main component)
+          let bi = -1, bj = -1, bestD = Infinity;
+          for (let i = 0; i < n; i++) {
+            if (comp[i] !== c) continue;
+            for (let j = 0; j < n; j++) {
+              if (comp[j] !== mainC) continue;
+              const dx = waypoints[i].x - waypoints[j].x, dy = waypoints[i].y - waypoints[j].y;
+              const dd = dx * dx + dy * dy;
+              if (dd < bestD) { bestD = dd; bi = i; bj = j; }
+            }
+          }
+          if (bi < 0) continue;
+          const gp = findPath(waypoints[bi].x, waypoints[bi].y, waypoints[bj].x, waypoints[bj].y);
+          if (!gp || !gp.length) continue; // not grid-reachable — leave to grid-A* fallback
+          let prev = bi;
+          for (let k = 0; k < gp.length; k++) {
+            const idx = waypoints.length;
+            waypoints.push({ x: gp[k].x, y: gp[k].y, room: 'link' });
+            waypointAdj.push([]);
+            const dd = Math.hypot(waypoints[idx].x - waypoints[prev].x, waypoints[idx].y - waypoints[prev].y);
+            waypointAdj[prev].push({ to: idx, dist: dd });
+            waypointAdj[idx].push({ to: prev, dist: dd });
+            prev = idx;
+          }
+          const dl = Math.hypot(waypoints[prev].x - waypoints[bj].x, waypoints[prev].y - waypoints[bj].y);
+          waypointAdj[prev].push({ to: bj, dist: dl });
+          waypointAdj[bj].push({ to: prev, dist: dl });
+          added = true;
+        }
+        if (!added) return;
+      }
     }
 
     // A* on the waypoint graph. Returns [{x,y}…] path to (toX,toY), or null if unreachable.
@@ -4626,6 +4638,8 @@
       return out;
     }
 
+    // Reusable A* scratch buffers (grown on demand) to avoid per-call allocation.
+    let _wpG = null, _wpParent = null, _wpClosed = null, _wpCap = 0;
     function waypointAStar(fromX, fromY, toX, toY) {
       if (!waypoints.length) return null;
       // Direct LOS — no graph search needed
@@ -4650,9 +4664,9 @@
       if (si === gi) return [{ x: toX, y: toY }];
 
       // A* with binary min-heap — O(E log V) vs previous O(V²) open-list scan
-      const gScore = new Float32Array(n).fill(Infinity);
-      const parent = new Int32Array(n).fill(-1);
-      const closed = new Uint8Array(n);
+      if (_wpCap < n) { _wpG = new Float32Array(n); _wpParent = new Int32Array(n); _wpClosed = new Uint8Array(n); _wpCap = n; }
+      const gScore = _wpG, parent = _wpParent, closed = _wpClosed;
+      gScore.fill(Infinity, 0, n); parent.fill(-1, 0, n); closed.fill(0, 0, n);
       const gx2 = waypoints[gi].x, gy2 = waypoints[gi].y;
       gScore[si] = 0;
 
@@ -7855,7 +7869,32 @@
         }
       }
 
-      if (totalPct >= 100 && !gameOver) { if (gameMode === 'hideseek') endGameHS(false); else endGame(false); }
+      if (!gameOver) {
+        if (gameMode === 'hideseek') { if (totalPct >= 100) endGameHS(false); }
+        else if (allTasksComplete()) endGame(false);
+      }
+    }
+
+    // True when every crew task is finished (the player's own tasks + all crew NPC tasks).
+    // An impostor player has no tasks of their own, so only the NPC crew tasks gate the win.
+    function allTasksComplete() {
+      if (gameMode === 'hideseek') return false;
+      const playerDone = isImpostor || !player.taskList || player.taskList.every(t => t.done);
+      const npcDone = npcTasksTotal === 0 || npcTasksDone >= npcTasksTotal;
+      return playerDone && npcDone;
+    }
+
+    // Single source of truth for classic win conditions. Cheap; safe to call every frame.
+    //   Crewmates win  → all impostors eliminated (killed/voted out) OR all tasks finished.
+    //   Impostors win  → they reach numerical parity with the crew (killed almost everyone).
+    //                    (Unresolved critical sabotage is handled in updateSabotage.)
+    function checkWinConditions() {
+      if (gameOver || !gameStarted || dropshipPhase || inMeeting || gameMode === 'hideseek') return;
+      const impAlive  = npcs.filter(n => n.alive && n.isImpostor).length  + (isImpostor  && player.alive && !isGhost ? 1 : 0);
+      const crewAlive = npcs.filter(n => n.alive && !n.isImpostor).length + (!isImpostor && player.alive && !isGhost ? 1 : 0);
+      if (impAlive === 0) { endGame(false); return; }      // crew: every impostor gone
+      if (impAlive >= crewAlive) { endGame(true); return; } // impostors: parity reached
+      if (allTasksComplete()) { endGame(false); return; }   // crew: all tasks done
     }
 
     function dist(a, b) {
@@ -7870,11 +7909,50 @@
       return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
     }
 
-    function isBlockedAt(nx, ny, ew, eh) {
-      for (const w of walls) {
-        if (rectCollision(nx, ny, ew, eh, w.x, w.y, w.w, w.h)) return true;
+    // ── Spatial hash of walls ────────────────────────────────────────────────
+    // walls is static per map but can hold hundreds of rects; isBlockedAt and the
+    // vision raycaster used to scan every wall on every call. Bucketing walls into a
+    // coarse grid means each query only tests the handful of walls nearby.
+    let _wallCells = null, _wallCellSize = 128, _wallGridW = 0, _wallGridH = 0;
+    function _buildWallGrid() {
+      _wallCellSize = 128;
+      _wallGridW = Math.max(1, Math.ceil(MAP_W / _wallCellSize) + 1);
+      _wallGridH = Math.max(1, Math.ceil(MAP_H / _wallCellSize) + 1);
+      _wallCells = new Array(_wallGridW * _wallGridH);
+      for (let i = 0; i < _wallCells.length; i++) _wallCells[i] = [];
+      for (let wi = 0; wi < walls.length; wi++) {
+        const w = walls[wi];
+        const gx0 = Math.max(0, (w.x / _wallCellSize) | 0);
+        const gy0 = Math.max(0, (w.y / _wallCellSize) | 0);
+        const gx1 = Math.min(_wallGridW - 1, ((w.x + w.w) / _wallCellSize) | 0);
+        const gy1 = Math.min(_wallGridH - 1, ((w.y + w.h) / _wallCellSize) | 0);
+        for (let gy = gy0; gy <= gy1; gy++)
+          for (let gx = gx0; gx <= gx1; gx++)
+            _wallCells[gy * _wallGridW + gx].push(wi);
       }
-      // Closed doors act as walls
+    }
+
+    function isBlockedAt(nx, ny, ew, eh) {
+      if (_wallCells) {
+        const gx0 = Math.max(0, (nx / _wallCellSize) | 0);
+        const gy0 = Math.max(0, (ny / _wallCellSize) | 0);
+        const gx1 = Math.min(_wallGridW - 1, ((nx + ew) / _wallCellSize) | 0);
+        const gy1 = Math.min(_wallGridH - 1, ((ny + eh) / _wallCellSize) | 0);
+        for (let gy = gy0; gy <= gy1; gy++) {
+          for (let gx = gx0; gx <= gx1; gx++) {
+            const cell = _wallCells[gy * _wallGridW + gx];
+            for (let k = 0; k < cell.length; k++) {
+              const w = walls[cell[k]];
+              if (nx < w.x + w.w && nx + ew > w.x && ny < w.y + w.h && ny + eh > w.y) return true;
+            }
+          }
+        }
+      } else {
+        for (const w of walls) {
+          if (rectCollision(nx, ny, ew, eh, w.x, w.y, w.w, w.h)) return true;
+        }
+      }
+      // Closed doors act as walls (few of them — linear scan is fine)
       for (const d of doors) {
         if (d.closed && rectCollision(nx, ny, ew, eh, d.x, d.y, d.w, d.h)) return true;
       }
@@ -7908,21 +7986,33 @@
     function _buildShadowPolygon(worldPX, worldPY, visionR, ox, oy) {
       const N = 360;
       const pts = new Float32Array(N * 2);
+      // Pre-cull: only walls/doors whose nearest point is within the vision circle can
+      // ever be hit by a ray, so build that short list once instead of per-ray.
+      const R2 = (visionR + 4) * (visionR + 4);
+      const near = [];
+      for (let wi = 0; wi < walls.length; wi++) {
+        const w = walls[wi];
+        if (w.obj) continue; // furniture/equipment doesn't cast shadows
+        const cx = worldPX < w.x ? w.x : (worldPX > w.x + w.w ? w.x + w.w : worldPX);
+        const cy = worldPY < w.y ? w.y : (worldPY > w.y + w.h ? w.y + w.h : worldPY);
+        const ddx = worldPX - cx, ddy = worldPY - cy;
+        if (ddx * ddx + ddy * ddy <= R2) near.push(w);
+      }
+      for (const d of doors) {
+        if (!d.closed) continue;
+        const cx = worldPX < d.x ? d.x : (worldPX > d.x + d.w ? d.x + d.w : worldPX);
+        const cy = worldPY < d.y ? d.y : (worldPY > d.y + d.h ? d.y + d.h : worldPY);
+        const ddx = worldPX - cx, ddy = worldPY - cy;
+        if (ddx * ddx + ddy * ddy <= R2) near.push(d);
+      }
       for (let i = 0; i < N; i++) {
         const ang = (i / N) * Math.PI * 2;
         const dx = Math.cos(ang), dy = Math.sin(ang);
         let t = visionR;
-        for (const w of walls) {
-          if (w.obj) continue; // furniture/equipment doesn't cast shadows
+        for (let k = 0; k < near.length; k++) {
+          const w = near[k];
           const hit = _rayRect(worldPX, worldPY, dx, dy, w.x, w.y, w.w, w.h);
           if (hit !== null && hit > 3 && hit < t) t = hit;
-        }
-        // Also stop at closed doors
-        for (const d of doors) {
-          if (d.closed) {
-            const hit = _rayRect(worldPX, worldPY, dx, dy, d.x, d.y, d.w, d.h);
-            if (hit !== null && hit > 3 && hit < t) t = hit;
-          }
         }
         pts[i * 2]     = worldPX + dx * t - ox;
         pts[i * 2 + 1] = worldPY + dy * t - oy;
@@ -7997,22 +8087,19 @@
 
       const moved = tryMove(npc, mx, my);
 
-      // Wall separation: push NPC away from walls to self-centre in corridors and doorways
-      {
+      // Wall clearance: keep NPCs off walls so they glide down corridor centres and
+      // never lean on / clip a wall. Each pass probes the body shifted toward a side by
+      // the desired clearance; if that hits a wall there's a wall within range on that
+      // side, so push away. Walls on both sides cancel → the NPC self-centres in tight
+      // openings. tryMove keeps each push collision-safe. Decreasing probe sizes resolve
+      // the gap quickly without overshooting in narrow doorways.
+      for (const _cm of [8, 6, 4]) {
         let _sx = 0, _sy = 0;
-        const _m = 8;
-        if (isBlockedAt(npc.x - _m, npc.y, npc.w, npc.h)) _sx += 3;
-        if (isBlockedAt(npc.x + _m, npc.y, npc.w, npc.h)) _sx -= 3;
-        if (isBlockedAt(npc.x, npc.y - _m, npc.w, npc.h)) _sy += 3;
-        if (isBlockedAt(npc.x, npc.y + _m, npc.w, npc.h)) _sy -= 3;
-        if (_sx !== 0 || _sy !== 0) tryMove(npc, _sx, _sy);
-        // Second pass with tighter probe to fine-tune centre in narrow openings
-        _sx = 0; _sy = 0;
-        const _m2 = 4;
-        if (isBlockedAt(npc.x - _m2, npc.y, npc.w, npc.h)) _sx += 2;
-        if (isBlockedAt(npc.x + _m2, npc.y, npc.w, npc.h)) _sx -= 2;
-        if (isBlockedAt(npc.x, npc.y - _m2, npc.w, npc.h)) _sy += 2;
-        if (isBlockedAt(npc.x, npc.y + _m2, npc.w, npc.h)) _sy -= 2;
+        const _push = _cm >= 6 ? 3 : 2;
+        if (isBlockedAt(npc.x - _cm, npc.y, npc.w, npc.h)) _sx += _push;
+        if (isBlockedAt(npc.x + _cm, npc.y, npc.w, npc.h)) _sx -= _push;
+        if (isBlockedAt(npc.x, npc.y - _cm, npc.w, npc.h)) _sy += _push;
+        if (isBlockedAt(npc.x, npc.y + _cm, npc.w, npc.h)) _sy -= _push;
         if (_sx !== 0 || _sy !== 0) tryMove(npc, _sx, _sy);
       }
 
@@ -25940,6 +26027,7 @@
       }
       checkInteractions();
       updateActionButtons();
+      checkWinConditions();
       if (frameCount % 60 === 0) updateActivityLog();
 
       // H&S: vent hide duration countdown

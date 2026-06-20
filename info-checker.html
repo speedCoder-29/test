@@ -4,20 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Info Checker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', system-ui, Arial, sans-serif;
-      background: #0a0a14;
+      font-family: 'Inter', 'Segoe UI', system-ui, Arial, sans-serif;
+      background:
+        radial-gradient(ellipse at 15% 0%,  rgba(78,205,196,0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 100%, rgba(255,140,60,0.04) 0%, transparent 50%),
+        #0a0a14;
       color: #e0e0f0;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 28px 16px 60px;
+      animation: pageIn 0.35s ease both;
     }
+    @keyframes pageIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
     h1 {
       font-size: 2rem;
       color: #4ecdc4;
@@ -210,44 +219,217 @@
     .leaflet-control-zoom a { background: #181830 !important; color: #c0c0e0 !important; border-color: rgba(255,255,255,0.1) !important; }
     .leaflet-control-zoom a:hover { background: #222244 !important; }
     .map-legend {
-      margin-top: 12px;
-      display: flex;
-      gap: 12px;
-      font-size: 0.76rem;
-      color: #555;
-      flex-wrap: wrap;
-      padding: 10px 12px;
-      background: rgba(255,255,255,0.03);
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.05);
+      margin-top: 14px;
+      padding: 16px 18px;
+      background: #0e0e22;
+      border-radius: 12px;
+      border: 1px solid rgba(78,205,196,0.25);
+      box-shadow: 0 0 0 1px rgba(78,205,196,0.06), 0 6px 24px rgba(0,0,0,0.5);
+      display: none;
     }
-    .map-legend span { display: flex; align-items: center; gap: 5px; }
+    .legend-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #4ecdc4;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(78,205,196,0.15);
+    }
+    .legend-section { margin-bottom: 12px; }
+    .legend-section:last-child { margin-bottom: 0; }
+    .legend-section-title {
+      font-size: 0.66rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #5a5a7a;
+      margin-bottom: 8px;
+    }
+    .legend-rows { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+    .legend-row {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.8rem; color: #c0c0d8;
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      padding: 5px 10px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
     .legend-dot {
-      width: 11px; height: 11px;
+      width: 13px; height: 13px;
       border-radius: 50%;
-      display: inline-block;
+      flex-shrink: 0;
+      box-shadow: 0 0 6px currentColor;
+    }
+    .legend-sq {
+      width: 22px; height: 22px;
+      border-radius: 6px;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+    }
+    .legend-count {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #4ecdc4;
+      margin-left: 2px;
+      background: rgba(78,205,196,0.12);
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+
+    /* ── Disaster Dashboard extras ──────────────────────────── */
+    #disasterLocBtn {
+      background: rgba(255,140,60,0.1);
+      border: 1px solid rgba(255,140,60,0.3);
+      border-radius: 10px;
+      color: #ff8c3c;
+      padding: 11px 13px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.15s;
       flex-shrink: 0;
     }
+    #disasterLocBtn:hover { background: rgba(255,140,60,0.2); }
+    #disasterLocBtn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .dr-results { margin-top: 18px; display: flex; flex-direction: column; gap: 14px; animation: pageIn 0.3s ease; }
+    .dr-section-title {
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+      color: #4ecdc4; margin-bottom: 10px; display: flex; align-items: center; gap: 7px;
+    }
+    /* Risks */
+    .risk-list { display: flex; flex-direction: column; gap: 8px; }
+    .risk-card {
+      background: #0d0d1f; border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px; padding: 12px 14px;
+    }
+    .risk-card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+    .risk-rank {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(255,140,60,0.15); color: #ff8c3c;
+      font-size: 0.68rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .risk-icon { font-size: 1.2rem; line-height: 1; flex-shrink: 0; }
+    .risk-name { font-size: 0.88rem; font-weight: 600; color: #d0d0e8; flex: 1; }
+    .risk-desc { font-size: 0.72rem; color: #44445a; }
+    .risk-bar-bg { height: 5px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; margin-bottom: 7px; }
+    .risk-bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
+    .risk-advice { font-size: 0.76rem; color: #555; line-height: 1.5; }
+    /* Time slider */
+    .time-slider-wrap {
+      background: #0d0d1f; border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px; padding: 14px 16px; margin-top: 12px;
+    }
+    .time-slider-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+    .time-slider-year { font-size: 1.2rem; font-weight: 800; color: #4ecdc4; }
+    #timeSlider { width: 100%; accent-color: #4ecdc4; cursor: pointer; }
+    .time-play-btn {
+      background: rgba(78,205,196,0.1); border: 1px solid rgba(78,205,196,0.3);
+      border-radius: 8px; color: #4ecdc4; padding: 5px 12px;
+      font-size: 0.76rem; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .time-play-btn:hover { background: rgba(78,205,196,0.18); }
+    .time-hist-count { font-size: 0.72rem; color: #44445a; margin-top: 5px; }
+    /* AI Checklist */
+    .checklist-wrap {
+      background: #0d0d1f; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 16px;
+    }
+    .checklist-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px; }
+    .confidence-badge {
+      font-size: 0.63rem; font-weight: 700; padding: 3px 8px; border-radius: 10px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .conf-ai  { background: rgba(78,205,196,0.12); color: #4ecdc4; border: 1px solid rgba(78,205,196,0.3); }
+    .conf-rule{ background: rgba(255,170,44,0.12);  color: #ffaa2c; border: 1px solid rgba(255,170,44,0.3); }
+    .checklist-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.83rem; color: #b0b0cc; line-height: 1.55; cursor: pointer;
+      transition: color 0.15s;
+    }
+    .checklist-item:last-child { border-bottom: none; }
+    .checklist-item input[type=checkbox] { accent-color: #4ecdc4; flex-shrink: 0; width: 15px; height: 15px; margin-top: 2px; cursor: pointer; }
+    .checklist-item.ci-done { color: #33334a; }
+    .checklist-item.ci-done span { text-decoration: line-through; }
+    /* Kit */
+    .kit-wrap {
+      background: #0d0d1f; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 16px;
+    }
+    .kit-prog-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .kit-prog-bg { flex: 1; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+    .kit-prog-fill { height: 100%; background: linear-gradient(90deg, #4ecdc4, #44bb66); border-radius: 4px; transition: width 0.5s ease; }
+    .kit-prog-lbl { font-size: 0.75rem; color: #4ecdc4; font-weight: 700; min-width: 32px; text-align: right; }
+    .kit-item {
+      display: flex; align-items: flex-start; gap: 9px;
+      padding: 8px 10px; background: rgba(255,255,255,0.02);
+      border-radius: 8px; border: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.81rem; color: #aaa; cursor: pointer; transition: background 0.12s;
+      margin-bottom: 5px;
+    }
+    .kit-item:last-child { margin-bottom: 0; }
+    .kit-item:hover { background: rgba(255,255,255,0.05); }
+    .kit-item.ki-done { color: #33334a; }
+    .kit-item.ki-done .kit-label { text-decoration: line-through; }
+    .kit-item input[type=checkbox] { accent-color: #44bb66; flex-shrink: 0; width: 14px; height: 14px; margin-top: 2px; cursor: pointer; }
+    /* Household */
+    .household-wrap {
+      background: #0d0d1f; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 16px;
+    }
+    .hh-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .hh-label { font-size: 0.8rem; color: #777; min-width: 160px; }
+    .hh-stepper { display: flex; align-items: center; gap: 8px; }
+    .hh-step-btn {
+      width: 26px; height: 26px; background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #c0c0d8;
+      font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit;
+    }
+    .hh-step-btn:hover { background: rgba(255,255,255,0.12); }
+    .hh-val { font-size: 1.05rem; font-weight: 700; color: #4ecdc4; min-width: 28px; text-align: center; }
+    .hh-score-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 4px;
+    }
+    .hh-score-num { font-size: 1.7rem; font-weight: 800; line-height: 1; }
+    .hh-score-num.s-poor  { color: #ff4444; }
+    .hh-score-num.s-fair  { color: #ffaa22; }
+    .hh-score-num.s-good  { color: #44bb66; }
+    .hh-score-num.s-great { color: #4ecdc4; }
+    /* Share */
+    .share-btn {
+      width: 100%; background: rgba(78,205,196,0.07); border: 1px solid rgba(78,205,196,0.22);
+      border-radius: 10px; color: #4ecdc4; padding: 12px; font-size: 0.87rem; font-weight: 600;
+      cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center;
+      gap: 8px; transition: background 0.15s;
+    }
+    .share-btn:hover { background: rgba(78,205,196,0.14); }
+    .share-btn .share-feedback { font-size: 0.78rem; color: #44bb66; display: none; }
 
     /* ── Weather App ─────────────────────────────────────────── */
     .wa-top-bar {
       width: 100%;
       max-width: 660px;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
       text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
     .wa-top-title {
       font-size: 2rem;
-      color: #e8e8ff;
       font-weight: 700;
-      letter-spacing: 0.5px;
+      letter-spacing: -0.5px;
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 7px;
+      background: linear-gradient(135deg, #e8e8ff 0%, #9898cc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     .wa-top-subtitle {
-      font-size: 0.85rem;
-      color: #445;
-      letter-spacing: 0.5px;
+      font-size: 0.82rem;
+      color: #55557a;
+      letter-spacing: 0.8px;
     }
     .wa-refresh-btn {
       background: rgba(78,205,196,0.08);
@@ -309,9 +491,9 @@
     }
     .wa-stat:nth-child(3n) { border-right: none; }
     .wa-stat:nth-child(n+4) { border-top: 1px solid rgba(255,255,255,0.04); }
-    .wa-stat-lbl { font-size: 0.62rem; color: #444; text-transform: uppercase; letter-spacing: 0.5px; }
-    .wa-stat-val { font-size: 0.92rem; font-weight: 600; color: #d8d8f0; line-height: 1.2; }
-    .wa-stat-sub { font-size: 0.68rem; color: #3a3a5a; }
+    .wa-stat-lbl { font-size: 0.68rem; color: #55556a; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 500; }
+    .wa-stat-val { font-size: 0.94rem; font-weight: 600; color: #d8d8f0; line-height: 1.2; }
+    .wa-stat-sub { font-size: 0.7rem; color: #47475e; }
     .wa-card {
       background: #131325;
       border: 1px solid rgba(255,255,255,0.06);
@@ -322,7 +504,9 @@
       max-width: 660px;
       margin-bottom: 14px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      transition: box-shadow 0.2s, border-color 0.2s;
     }
+    .wa-card:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.45); }
     .wa-card-accent-teal   { border-top-color: #4ecdc4; }
     .wa-card-accent-blue   { border-top-color: #6699ff; }
     .wa-card-accent-amber  { border-top-color: #ffaa44; }
@@ -412,27 +596,44 @@
     .wa-loading { text-align: center; padding: 40px 20px; color: #555; font-size: 0.9rem; line-height: 2; }
     .wa-error { color: #ff5555; font-size: 0.85rem; padding: 24px; text-align: center; line-height: 1.8; }
     /* Hourly tabs */
-    .wa-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+    .wa-tabs {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 4px;
+    }
     .wa-tab {
-      background: #0a0a14;
-      border: 1px solid rgba(255,255,255,0.07);
+      background: transparent;
+      border: none;
       color: #555;
-      border-radius: 6px;
-      padding: 5px 14px;
-      font-size: 0.75rem;
+      border-radius: 9px;
+      padding: 7px 14px;
+      font-size: 0.76rem;
       font-weight: 600;
       cursor: pointer;
       font-family: inherit;
-      transition: all 0.15s;
+      transition: background 0.15s, color 0.15s;
+      flex: 1;
+      text-align: center;
     }
-    .wa-tab.active { background: rgba(78,205,196,0.12); border-color: rgba(78,205,196,0.35); color: #4ecdc4; }
-    .wa-tab:hover:not(.active) { color: #888; border-color: rgba(255,255,255,0.12); }
+    .wa-tab.active { background: rgba(78,205,196,0.14); color: #4ecdc4; }
+    .wa-tab:hover:not(.active) { background: rgba(255,255,255,0.04); color: #888; }
     /* Detail conditions */
     .detail-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .detail-item { background: #0a0a14; border-radius: 8px; padding: 12px 13px; }
-    .detail-lbl { font-size: 0.67rem; color: #555; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 5px; }
+    .detail-item {
+      background: #0d0d1f;
+      border-radius: 10px;
+      padding: 13px 14px;
+      border: 1px solid rgba(255,255,255,0.04);
+      transition: border-color 0.2s;
+    }
+    .detail-item:hover { border-color: rgba(255,255,255,0.09); }
+    .detail-lbl { font-size: 0.68rem; color: #55556a; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; font-weight: 500; }
     .detail-val { font-size: 1.05rem; font-weight: 600; color: #e0e0f0; }
-    .detail-sub { font-size: 0.72rem; color: #555; margin-top: 3px; }
+    .detail-sub { font-size: 0.73rem; color: #4a4a62; margin-top: 3px; }
     .uv-bar-wrap {
       height: 6px;
       border-radius: 4px;
@@ -443,11 +644,11 @@
     .uv-needle { position: absolute; top: -3px; width: 3px; height: 12px; background: #fff; border-radius: 2px; transform: translateX(-50%); box-shadow: 0 1px 4px rgba(0,0,0,0.6); }
     /* Sun & Moon */
     .sun-moon-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .sun-block, .moon-block { background: #0a0a14; border-radius: 8px; padding: 13px 14px; }
-    .sm-title { font-size: 0.67rem; color: #555; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
-    .sm-row { display: flex; justify-content: space-between; font-size: 0.8rem; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .sun-block, .moon-block { background: #0d0d1f; border-radius: 10px; padding: 14px 16px; border: 1px solid rgba(255,255,255,0.04); }
+    .sm-title { font-size: 0.68rem; color: #55556a; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; font-weight: 500; }
+    .sm-row { display: flex; justify-content: space-between; font-size: 0.82rem; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
     .sm-row:last-child { border-bottom: none; }
-    .sm-key { color: #555; }
+    .sm-key { color: #55556a; }
     .sm-val { color: #c0c0d8; font-weight: 500; }
     .moon-emoji { text-align: center; font-size: 2.4rem; margin-bottom: 6px; }
     .moon-name  { text-align: center; font-size: 0.82rem; color: #aaa; font-weight: 600; margin-bottom: 2px; }
@@ -460,9 +661,9 @@
     .aqi-desc-name { font-size: 0.95rem; font-weight: 600; color: #e0e0f0; margin-bottom: 3px; }
     .aqi-desc-note { font-size: 0.78rem; color: #666; line-height: 1.4; }
     .aqi-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 7px; margin-top: 12px; }
-    .aqi-item { background: #0a0a14; border-radius: 7px; padding: 9px 10px; }
+    .aqi-item { background: #0d0d1f; border-radius: 9px; padding: 10px 11px; border: 1px solid rgba(255,255,255,0.04); }
     .aqi-item-val { font-size: 0.95rem; font-weight: 600; color: #e0e0f0; }
-    .aqi-item-lbl { font-size: 0.65rem; color: #555; margin-top: 2px; }
+    .aqi-item-lbl { font-size: 0.67rem; color: #55556a; margin-top: 3px; font-weight: 500; }
     /* Tools divider */
     /* ── Section ordering (body is flex-column) ─────────────── */
     .wa-top-bar      { order: -10; }
@@ -502,7 +703,7 @@
     /* ── Disaster Guide ────────────────────────────────────── */
     .guide-card {
       background: #131325;
-      border: 1px solid rgba(255,140,60,0.2);
+      border: 1px solid rgba(255,180,40,0.2);
       border-radius: 16px;
       width: 100%;
       max-width: 660px;
@@ -511,17 +712,17 @@
       box-shadow: 0 4px 24px rgba(0,0,0,0.35);
     }
     .guide-header {
-      background: linear-gradient(135deg, #221308 0%, #181225 60%, #131325 100%);
-      border-bottom: 1px solid rgba(255,140,60,0.16);
+      background: linear-gradient(135deg, #1e1400 0%, #181610 60%, #131325 100%);
+      border-bottom: 1px solid rgba(255,180,40,0.15);
       padding: 20px 24px;
       display: flex;
       align-items: center;
       gap: 14px;
     }
-    .guide-header-icon { font-size: 1.7rem; filter: drop-shadow(0 0 8px rgba(255,140,60,0.55)); flex-shrink: 0; }
+    .guide-header-icon { font-size: 1.7rem; filter: drop-shadow(0 0 8px rgba(255,180,40,0.55)); flex-shrink: 0; }
     .guide-header-text h2 {
       font-size: 1rem;
-      color: #ff8c3c;
+      color: #ffaa44;
       font-weight: 700;
       letter-spacing: 0.4px;
       margin-bottom: 3px;
@@ -531,12 +732,12 @@
     details.guide-item {
       background: #0e0e20;
       border-radius: 10px;
-      border-left: 3px solid rgba(255,140,60,0.5);
+      border-left: 3px solid rgba(255,180,40,0.35);
       overflow: hidden;
       transition: border-left-color 0.2s;
     }
-    details.guide-item:hover { border-left-color: #ff8c3c; }
-    details.guide-item[open] { border-left-color: #ff6622; }
+    details.guide-item:hover { border-left-color: rgba(255,180,40,0.7); }
+    details.guide-item[open] { border-left-color: #ffaa44; }
     summary.guide-summary {
       display: flex;
       align-items: center;
@@ -547,7 +748,7 @@
       user-select: none;
       transition: background 0.15s;
     }
-    summary.guide-summary:hover { background: rgba(255,140,60,0.04); }
+    summary.guide-summary:hover { background: rgba(255,180,40,0.04); }
     summary.guide-summary::-webkit-details-marker { display: none; }
     .guide-summary-icon { font-size: 1.25rem; flex-shrink: 0; }
     .guide-summary-text { flex: 1; }
@@ -559,7 +760,7 @@
       transition: transform 0.22s;
       flex-shrink: 0;
     }
-    details.guide-item[open] .guide-chevron { transform: rotate(180deg); color: #ff8c3c; }
+    details.guide-item[open] .guide-chevron { transform: rotate(180deg); color: #ffaa44; }
     .guide-body {
       padding: 4px 16px 16px;
       display: flex;
@@ -573,7 +774,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: #ff8c3c;
+      color: #ffaa44;
       margin-bottom: 6px;
     }
     .guide-section-body {
@@ -601,7 +802,7 @@
     /* ── Interactive Disaster Survival ──────────────────────── */
     .dsg-card {
       background: #131325;
-      border: 1px solid rgba(255,140,60,0.2);
+      border: 1px solid rgba(255,70,50,0.2);
       border-radius: 16px;
       width: 100%;
       max-width: 660px;
@@ -610,15 +811,15 @@
       box-shadow: 0 4px 24px rgba(0,0,0,0.35);
     }
     .dsg-header {
-      background: linear-gradient(135deg, #221308 0%, #181225 60%, #131325 100%);
-      border-bottom: 1px solid rgba(255,140,60,0.16);
+      background: linear-gradient(135deg, #200808 0%, #1a0e18 60%, #131325 100%);
+      border-bottom: 1px solid rgba(255,70,50,0.15);
       padding: 20px 24px;
       display: flex;
       align-items: center;
       gap: 14px;
     }
-    .dsg-header-icon { font-size: 1.7rem; filter: drop-shadow(0 0 8px rgba(255,140,60,0.55)); flex-shrink: 0; }
-    .dsg-header-text h2 { font-size: 1rem; color: #ff8c3c; font-weight: 700; letter-spacing: 0.4px; margin-bottom: 3px; }
+    .dsg-header-icon { font-size: 1.7rem; filter: drop-shadow(0 0 8px rgba(255,70,50,0.6)); flex-shrink: 0; }
+    .dsg-header-text h2 { font-size: 1rem; color: #ff5544; font-weight: 700; letter-spacing: 0.4px; margin-bottom: 3px; }
     .dsg-header-text p  { font-size: 0.8rem; color: #555; }
     .dsg-body { padding: 18px 20px; }
     .dsg-grid {
@@ -629,7 +830,7 @@
     }
     .dsg-btn {
       background: #0e0e20;
-      border: 1px solid rgba(255,140,60,0.15);
+      border: 1px solid rgba(255,70,50,0.15);
       border-radius: 12px;
       padding: 12px 6px 10px;
       cursor: pointer;
@@ -642,24 +843,24 @@
       font-family: inherit;
     }
     .dsg-btn:hover {
-      background: rgba(255,140,60,0.08);
-      border-color: rgba(255,140,60,0.38);
+      background: rgba(255,70,50,0.08);
+      border-color: rgba(255,70,50,0.38);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255,140,60,0.1);
+      box-shadow: 0 4px 12px rgba(255,70,50,0.1);
     }
     .dsg-btn.active {
-      background: rgba(255,140,60,0.13);
-      border-color: #ff8c3c;
-      box-shadow: 0 0 0 1px rgba(255,140,60,0.2);
+      background: rgba(255,70,50,0.13);
+      border-color: #ff5544;
+      box-shadow: 0 0 0 1px rgba(255,70,50,0.2);
     }
     .dsg-btn-icon { font-size: 1.5rem; line-height: 1; }
     .dsg-btn-name { font-size: 0.66rem; color: #777; line-height: 1.25; }
-    .dsg-btn.active .dsg-btn-name { color: #ff8c3c; font-weight: 600; }
+    .dsg-btn.active .dsg-btn-name { color: #ff5544; font-weight: 600; }
     .dsg-panel {
       margin-top: 14px;
       background: #0d0d1a;
       border-radius: 10px;
-      border: 1px solid rgba(255,140,60,0.15);
+      border: 1px solid rgba(255,70,50,0.15);
       overflow: hidden;
       animation: dsg-slide 0.18s ease;
     }
@@ -669,11 +870,11 @@
       align-items: center;
       gap: 12px;
       padding: 14px 16px;
-      background: rgba(255,140,60,0.06);
-      border-bottom: 1px solid rgba(255,140,60,0.12);
+      background: rgba(255,70,50,0.06);
+      border-bottom: 1px solid rgba(255,70,50,0.12);
     }
     .dsg-panel-head-icon { font-size: 1.8rem; }
-    .dsg-panel-head-name { font-size: 1rem; font-weight: 700; color: #ff8c3c; }
+    .dsg-panel-head-name { font-size: 1rem; font-weight: 700; color: #ff5544; }
     .dsg-panel-head-tag  { font-size: 0.75rem; color: #666; }
     .dsg-sections { padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
     .dsg-sec-title {
@@ -780,29 +981,133 @@
     <div id="waKitContent"></div>
   </div>
 
-  <!-- ── Natural Disaster Area Map ────────────────────────────── -->
+  <!-- ── Natural Disaster Dashboard ──────────────────────────── -->
   <div class="disaster-card">
     <div class="disaster-header">
       <div class="disaster-header-icon">🌍</div>
       <div class="disaster-header-text">
-        <h2>Natural Disaster Map</h2>
-        <p>Enter a region or country to see active disaster events on the map</p>
+        <h2>Disaster Risk Dashboard</h2>
+        <p>Live events · Risk analysis · AI preparedness planning</p>
       </div>
     </div>
     <div class="disaster-body">
+
+      <!-- Search row -->
       <div class="disaster-input-row">
         <input type="text" id="disasterInput" placeholder="e.g. Japan, California, Bangladesh…">
-        <button id="disasterCheckBtn" onclick="showAreaMap()">Show Map</button>
+        <button id="disasterLocBtn" onclick="useMyLocation()" title="Use my location">📍</button>
+        <button id="disasterCheckBtn" onclick="showAreaMap()">Analyze</button>
       </div>
+
+      <!-- Status line -->
       <div id="disasterStatus" style="display:none;font-size:0.83rem;color:#888;margin-bottom:10px;line-height:1.6"></div>
+
+      <!-- Map -->
       <div id="disasterMap"></div>
-      <div class="map-legend" id="mapLegend" style="display:none">
-        <span><span class="legend-dot" style="background:#ff2222"></span>M6+ Quake</span>
-        <span><span class="legend-dot" style="background:#ffaa22"></span>M2.5–5 Quake</span>
-        <span><span class="legend-dot" style="background:#ff5533;border-radius:3px"></span>Wildfire</span>
-        <span><span class="legend-dot" style="background:#3399ff;border-radius:3px"></span>Flood/Storm</span>
-        <span><span class="legend-dot" style="background:#ff8833;border-radius:3px"></span>Volcano</span>
+
+      <!-- Time-machine slider (shown after historical fetch) -->
+      <div id="timeSliderWrap" class="time-slider-wrap" style="display:none">
+        <div class="time-slider-top">
+          <div>
+            <div class="dr-section-title" style="margin-bottom:2px">⏱ Historical View</div>
+            <div style="font-size:0.69rem;color:#33334a">M4.5+ earthquakes · drag or press Play</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="time-slider-year" id="timeSliderYear">–</span>
+            <button class="time-play-btn" id="timePlayBtn" onclick="toggleTimeline()">▶ Play</button>
+          </div>
+        </div>
+        <input type="range" id="timeSlider" min="2015" max="2025" value="2025">
+        <div class="time-hist-count" id="timeHistCount"></div>
       </div>
+
+      <!-- Map legend -->
+      <div class="map-legend" id="mapLegend"></div>
+
+      <!-- Results (hidden until data loads) -->
+      <div id="drResults" class="dr-results" style="display:none">
+
+        <!-- Top 3 risks -->
+        <div>
+          <div class="dr-section-title">🎯 Top Risks for this Region</div>
+          <div class="risk-list" id="riskList"></div>
+        </div>
+
+        <!-- AI Checklist -->
+        <div class="checklist-wrap">
+          <div class="checklist-topbar">
+            <div class="dr-section-title" style="margin-bottom:0">🤖 AI Preparedness Checklist</div>
+            <span class="confidence-badge" id="confidenceBadge"></span>
+          </div>
+          <div id="checklistLoading" style="display:none;padding:10px 0 4px;color:#555;font-size:0.81rem">
+            <span class="d-spinner"></span>Generating tailored checklist…
+          </div>
+          <div id="checklistItems"></div>
+        </div>
+
+        <!-- Emergency Kit Builder -->
+        <div class="kit-wrap">
+          <div class="dr-section-title">🎒 Emergency Kit Builder</div>
+          <div class="kit-prog-row">
+            <div class="kit-prog-bg"><div class="kit-prog-fill" id="kitFill" style="width:0%"></div></div>
+            <span class="kit-prog-lbl" id="kitPct">0%</span>
+          </div>
+          <div id="kitGrid"></div>
+        </div>
+
+        <!-- Household Tracker -->
+        <div class="household-wrap">
+          <div class="dr-section-title">🏠 Household Preparedness Tracker</div>
+          <div class="hh-row">
+            <span class="hh-label">👥 People in household</span>
+            <div class="hh-stepper">
+              <button class="hh-step-btn" onclick="adjHH('people',-1)">−</button>
+              <span class="hh-val" id="hhPeople">2</span>
+              <button class="hh-step-btn" onclick="adjHH('people',1)">+</button>
+            </div>
+          </div>
+          <div class="hh-row">
+            <span class="hh-label">💧 Days of water stored</span>
+            <div class="hh-stepper">
+              <button class="hh-step-btn" onclick="adjHH('water',-1)">−</button>
+              <span class="hh-val" id="hhWater">0</span>
+              <button class="hh-step-btn" onclick="adjHH('water',1)">+</button>
+            </div>
+          </div>
+          <div class="hh-row">
+            <span class="hh-label">🥫 Days of food stored</span>
+            <div class="hh-stepper">
+              <button class="hh-step-btn" onclick="adjHH('food',-1)">−</button>
+              <span class="hh-val" id="hhFood">0</span>
+              <button class="hh-step-btn" onclick="adjHH('food',1)">+</button>
+            </div>
+          </div>
+          <div class="hh-row" style="margin-bottom:0">
+            <span class="hh-label">📋 Emergency plan written</span>
+            <label style="display:flex;align-items:center;gap:7px;cursor:pointer">
+              <input type="checkbox" id="hhPlan" onchange="saveHH();updateHHScore()" style="accent-color:#4ecdc4;width:16px;height:16px">
+              <span style="font-size:0.82rem;color:#666">Yes</span>
+            </label>
+          </div>
+          <div class="hh-score-row">
+            <div>
+              <div style="font-size:0.78rem;color:#555">Preparedness Score</div>
+              <div style="font-size:0.67rem;color:#2a2a3a">Based on FEMA guidelines</div>
+            </div>
+            <div style="text-align:right">
+              <div class="hh-score-num" id="hhScore">–</div>
+              <div style="font-size:0.72rem;color:#33334a" id="hhScoreLabel"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Share / Save -->
+        <button class="share-btn" onclick="shareResults()">
+          <span>📤 Share this Risk Report</span>
+          <span class="share-feedback" id="shareFeedback">Copied!</span>
+        </button>
+
+      </div><!-- /drResults -->
     </div>
   </div>
 
@@ -1393,25 +1698,165 @@
       if (e.key === 'Enter') doLookup();
     });
 
-    // ── Natural Disaster Area Map ────────────────────────────────────────────
+    // ── Natural Disaster Dashboard ───────────────────────────────────────────
 
     document.getElementById('disasterInput').addEventListener('keydown', e => {
       if (e.key === 'Enter') showAreaMap();
     });
 
-    let disasterMap = null;
+    // Auto-load from URL ?region= param
+    (function() {
+      const p = new URLSearchParams(location.search).get('region');
+      if (p) { document.getElementById('disasterInput').value = p; showAreaMap(); }
+    })();
+
+    let disasterMap    = null;
     let disasterLayers = [];
+    let countriesLayer = null;
+    let countriesData  = null;
 
     const EONET_STYLE = {
-      wildfires:     { icon: '🔥', color: '#ff5533' },
-      severeStorms:  { icon: '⛈️', color: '#5599ff' },
-      volcanoes:     { icon: '🌋', color: '#ff8833' },
-      floods:        { icon: '🌊', color: '#3399ff' },
-      drought:       { icon: '☀️', color: '#ffcc22' },
-      earthquakes:   { icon: '🌍', color: '#ff4444' },
-      tempExtremes:  { icon: '🌡️', color: '#ff6688' },
-      landslides:    { icon: '⛰️', color: '#aa8855' },
+      wildfires:    { icon: '🔥', color: '#ff5533', label: 'Wildfire' },
+      severeStorms: { icon: '⛈️', color: '#5599ff', label: 'Severe Storm' },
+      volcanoes:    { icon: '🌋', color: '#ff8833', label: 'Volcano' },
+      floods:       { icon: '🌊', color: '#3399ff', label: 'Flood' },
+      drought:      { icon: '☀️', color: '#ffcc22', label: 'Drought' },
+      earthquakes:  { icon: '🌍', color: '#ff4444', label: 'Earthquake (EONET)' },
+      tempExtremes: { icon: '🌡️', color: '#ff6688', label: 'Temp Extreme' },
+      landslides:   { icon: '⛰️', color: '#aa8855', label: 'Landslide' },
     };
+
+    const FEMA_STYLE = {
+      'Hurricane':         { icon: '🌀', color: '#8877ff' },
+      'Severe Storm(s)':   { icon: '⛈️', color: '#5599ff' },
+      'Flood':             { icon: '🌊', color: '#3399ff' },
+      'Earthquake':        { icon: '🌍', color: '#ff4444' },
+      'Fire':              { icon: '🔥', color: '#ff5533' },
+      'Tornado':           { icon: '🌪️', color: '#cc88ff' },
+      'Winter Storm':      { icon: '❄️', color: '#aaddff' },
+      'Severe Ice Storm':  { icon: '🧊', color: '#88ddff' },
+      'Snow':              { icon: '❄️', color: '#aaddff' },
+      'Tropical Storm':    { icon: '🌀', color: '#8899ff' },
+      'Drought':           { icon: '☀️', color: '#ffcc22' },
+      'Mudslide':          { icon: '⛰️', color: '#aa8855' },
+      'Coastal Storm':     { icon: '🌊', color: '#4488ff' },
+      'Typhoon':           { icon: '🌀', color: '#9988ff' },
+    };
+
+    // US state centroids for FEMA (no lat/lon in API response)
+    const STATE_XY = {
+      AL:[32.8,-86.8],AK:[64.2,-153.4],AZ:[34.3,-111.1],AR:[34.9,-92.4],
+      CA:[36.8,-119.4],CO:[39.1,-105.4],CT:[41.6,-72.7],DE:[39.0,-75.5],
+      FL:[27.8,-81.7],GA:[32.2,-83.4],HI:[19.7,-155.1],ID:[44.4,-114.6],
+      IL:[40.3,-89.0],IN:[40.3,-86.1],IA:[41.9,-93.4],KS:[38.5,-98.4],
+      KY:[37.5,-85.3],LA:[31.2,-92.1],ME:[44.7,-69.4],MD:[39.1,-76.8],
+      MA:[42.2,-71.5],MI:[43.3,-84.5],MN:[46.4,-93.1],MS:[32.7,-89.7],
+      MO:[38.5,-92.5],MT:[47.0,-110.5],NE:[41.5,-99.9],NV:[38.5,-117.1],
+      NH:[43.5,-71.6],NJ:[40.1,-74.7],NM:[34.5,-106.1],NY:[42.9,-75.5],
+      NC:[35.6,-79.8],ND:[47.5,-100.5],OH:[40.4,-82.8],OK:[35.6,-96.9],
+      OR:[44.6,-122.1],PA:[40.6,-77.2],RI:[41.7,-71.5],SC:[33.9,-80.9],
+      SD:[44.4,-100.2],TN:[35.9,-86.7],TX:[31.5,-99.3],UT:[39.3,-111.1],
+      VT:[44.1,-72.7],VA:[37.8,-79.5],WA:[47.4,-120.5],WV:[38.9,-80.5],
+      WI:[44.3,-89.6],WY:[42.8,-107.6],DC:[38.9,-77.0],PR:[18.2,-66.5],
+    };
+
+    async function ensureCountryBorders() {
+      if (countriesLayer) return;
+      try {
+        if (!countriesData) {
+          const res  = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json');
+          const topo = await res.json();
+          countriesData = topojson.feature(topo, topo.objects.countries);
+        }
+        countriesLayer = L.geoJSON(countriesData, {
+          style: { color: 'rgba(255,255,255,0.18)', weight: 1.2, fill: false, interactive: false }
+        }).addTo(disasterMap);
+      } catch (_) {}
+    }
+
+    function mkIcon(html, size) {
+      return L.divIcon({ className: '', html, iconSize: [size, size], iconAnchor: [size/2, size/2] });
+    }
+
+    function quakeMarker(mag, source) {
+      const size  = Math.max(10, Math.min(32, mag * 5));
+      const color = mag >= 6 ? '#ff2222' : mag >= 5 ? '#ff6633' : mag >= 4 ? '#ffaa22' : '#ffdd77';
+      const border = source === 'nrc' ? '2px solid #ff4444' : '2px solid rgba(255,255,255,0.3)';
+      return mkIcon(`<div style="width:${size}px;height:${size}px;background:${color};border-radius:50%;opacity:0.88;border:${border};box-shadow:0 2px 8px rgba(0,0,0,0.7)"></div>`, size);
+    }
+
+    function femaMarker(incidentType) {
+      const s = FEMA_STYLE[incidentType] || { icon: '⚠️', color: '#ff9900' };
+      // Diamond shape = rotated square
+      const html = `<div style="width:26px;height:26px;background:${s.color}22;border:2px solid ${s.color};transform:rotate(45deg);border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center"><span style="transform:rotate(-45deg);font-size:13px;line-height:1">${s.icon}</span></div>`;
+      return { leafletIcon: mkIcon(html, 28), style: s };
+    }
+
+    function ecMarker(alertType) {
+      const t   = (alertType || '').toLowerCase();
+      const col = t.includes('warning') ? '#ff8800' : t.includes('watch') ? '#ffcc00' : '#4ecdc4';
+      const em  = t.includes('snow') || t.includes('blizzard') ? '❄️'
+                : t.includes('rain') || t.includes('flood')    ? '🌊'
+                : t.includes('wind')                           ? '💨'
+                : t.includes('thunder') || t.includes('storm') ? '⛈️'
+                : t.includes('fog')                            ? '🌫️'
+                : t.includes('frost') || t.includes('freeze')  ? '🧊'
+                : '⚠️';
+      const html = `<div style="width:28px;height:28px;background:${col}22;border:2px solid ${col};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,0.6)">${em}</div>`;
+      return { leafletIcon: mkIcon(html, 28), color: col, emoji: em };
+    }
+
+    function buildLegend({ quakeBuckets, nrcCount, eonetCounts, femaCounts, ecCount }) {
+      const legend = document.getElementById('mapLegend');
+      const parts  = [];
+      const MAG_TIERS = [
+        { key: 'M6+',  color: '#ff2222', label: 'M6+ Major' },
+        { key: 'M5',   color: '#ff6633', label: 'M5–6 Strong' },
+        { key: 'M4',   color: '#ffaa22', label: 'M4–5 Moderate' },
+        { key: 'M2.5', color: '#ffdd77', label: 'M2.5–4 Light' },
+      ];
+
+      if (quakeBuckets.size > 0 || nrcCount > 0) {
+        const rows = MAG_TIERS
+          .filter(t => quakeBuckets.has(t.key))
+          .map(t => `<div class="legend-row"><span class="legend-dot" style="background:${t.color};color:${t.color}"></span>${t.label}<span class="legend-count">×${quakeBuckets.get(t.key)}</span></div>`)
+          .join('');
+        const nrcRow = nrcCount > 0
+          ? `<div class="legend-row"><span style="font-size:15px;line-height:1">🍁</span>NRC Canada<span class="legend-count">+${nrcCount}</span></div>` : '';
+        parts.push(`<div class="legend-section"><div class="legend-section-title">Earthquakes — USGS &amp; NRC Canada</div><div class="legend-rows">${rows}${nrcRow}</div></div>`);
+      }
+
+      if (eonetCounts.size > 0) {
+        const rows = [...eonetCounts.entries()]
+          .map(([id, n]) => {
+            const s = EONET_STYLE[id] || { icon: '⚠️', color: '#ffaa22', label: id };
+            return `<div class="legend-row"><span class="legend-sq" style="background:${s.color}22;border:1px solid ${s.color}66">${s.icon}</span>${s.label}<span class="legend-count">×${n}</span></div>`;
+          }).join('');
+        parts.push(`<div class="legend-section"><div class="legend-section-title">Active Events — NASA EONET</div><div class="legend-rows">${rows}</div></div>`);
+      }
+
+      if (femaCounts.size > 0) {
+        const rows = [...femaCounts.entries()]
+          .map(([type, n]) => {
+            const s = FEMA_STYLE[type] || { icon: '⚠️', color: '#ff9900' };
+            return `<div class="legend-row"><span class="legend-sq" style="background:${s.color}22;border:1px solid ${s.color}66;transform:rotate(45deg);border-radius:3px"><span style="transform:rotate(-45deg);display:block">${s.icon}</span></span>${type}<span class="legend-count">×${n}</span></div>`;
+          }).join('');
+        parts.push(`<div class="legend-section"><div class="legend-section-title">Disaster Declarations — FEMA (US)</div><div class="legend-rows">${rows}</div></div>`);
+      }
+
+      if (ecCount > 0) {
+        parts.push(`<div class="legend-section"><div class="legend-section-title">Weather Alerts — Environment Canada</div><div class="legend-rows">
+          <div class="legend-row"><span class="legend-dot" style="background:#ff8800;color:#ff8800"></span>Warning</div>
+          <div class="legend-row"><span class="legend-dot" style="background:#ffcc00;color:#ffcc00"></span>Watch / Advisory</div>
+          <div class="legend-row"><span class="legend-count" style="font-size:0.78rem;margin-left:0">×${ecCount} total</span></div>
+        </div></div>`);
+      }
+
+      if (parts.length === 0) return;
+      legend.innerHTML = `<div class="legend-title">What's on the map</div>` + parts.join('') +
+        `<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.05);font-size:0.68rem;color:#44445a">Click any marker for details &nbsp;·&nbsp; USGS · NRC Canada · NASA EONET · FEMA · Environment Canada</div>`;
+      legend.style.display = 'block';
+    }
 
     async function showAreaMap() {
       const input = document.getElementById('disasterInput').value.trim();
@@ -1423,43 +1868,52 @@
       status.style.display = 'block';
       status.innerHTML = '<span class="d-spinner"></span>Looking up location…';
 
+      const legend = document.getElementById('mapLegend');
+      legend.style.display = 'none';
+      legend.innerHTML = '';
+
       try {
         const geoRes  = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(input)}&format=json&polygon_geojson=1&limit=1`);
         const geoData = await geoRes.json();
         if (!geoData.length) throw new Error('Location not found. Try a different name.');
 
         const place = geoData[0];
-        const lat = parseFloat(place.lat);
-        const lon = parseFloat(place.lon);
-        const bb  = place.boundingbox; // [minLat, maxLat, minLon, maxLon]
+        const lat   = parseFloat(place.lat), lon = parseFloat(place.lon);
+        const bb    = place.boundingbox;
         const minLat = parseFloat(bb[0]), maxLat = parseFloat(bb[1]);
         const minLon = parseFloat(bb[2]), maxLon = parseFloat(bb[3]);
         const padLat = (maxLat - minLat) * 0.5, padLon = (maxLon - minLon) * 0.5;
         const sMinLat = minLat - padLat, sMaxLat = maxLat + padLat;
         const sMinLon = minLon - padLon, sMaxLon = maxLon + padLon;
+        const inBounds = (la, lo) => la >= sMinLat && la <= sMaxLat && lo >= sMinLon && lo <= sMaxLon;
 
-        status.innerHTML = '<span class="d-spinner"></span>Loading live disaster data…';
+        status.innerHTML = '<span class="d-spinner"></span>Loading live data from 5 sources…';
 
-        // Init map
         const mapDiv = document.getElementById('disasterMap');
         mapDiv.style.display = 'block';
-        document.getElementById('mapLegend').style.display = 'flex';
 
         if (!disasterMap) {
           disasterMap = L.map('disasterMap', { zoomControl: true, attributionControl: true });
-          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd', maxZoom: 19
+          }).addTo(disasterMap);
+        }
+
+        await ensureCountryBorders();
+
+        if (!disasterMap._labelsLayer) {
+          disasterMap._labelsLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', {
+            subdomains: 'abcd', maxZoom: 19, pane: 'overlayPane'
           }).addTo(disasterMap);
         }
 
         disasterLayers.forEach(l => disasterMap.removeLayer(l));
         disasterLayers = [];
 
-        // Draw region boundary
         if (place.geojson) {
           const poly = L.geoJSON(place.geojson, {
-            style: { color: '#ff8c3c', weight: 2, fillColor: '#ff8c3c', fillOpacity: 0.07, dashArray: '5 5' }
+            style: { color: '#4ecdc4', weight: 4, fillColor: '#4ecdc4', fillOpacity: 0.07, lineJoin: 'round' }
           }).addTo(disasterMap);
           disasterLayers.push(poly);
           disasterMap.fitBounds(poly.getBounds(), { padding: [24, 24] });
@@ -1467,73 +1921,138 @@
           disasterMap.setView([lat, lon], 6);
         }
 
-        // Fetch USGS earthquakes + NASA EONET in parallel
-        const [usgsRes, eonetRes] = await Promise.allSettled([
+        const d30 = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
+        const d90 = new Date(Date.now() - 90 * 86400000).toISOString().split('T')[0];
+
+        const [usgsR, eonetR, nrcR, femaR, ecR] = await Promise.allSettled([
           fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_month.geojson'),
-          fetch('https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200')
+          fetch('https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200'),
+          fetch(`https://earthquakescanada.nrcan.gc.ca/fdsnws/event/1/query?format=geojson&minmagnitude=3.0&orderby=time&limit=300&starttime=${d30}`),
+          fetch(`https://www.fema.gov/api/open/v2/disasterDeclarationsSummaries?$format=json&$top=200&$filter=declarationDate%20ge%20'${d90}'&$orderby=declarationDate%20desc&$select=state,designatedArea,incidentType,declarationDate,disasterNumber`),
+          fetch('https://geo.weather.gc.ca/geomet?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ALERTS&OUTPUTFORMAT=application/json&COUNT=500'),
         ]);
 
-        let quakeCount = 0, eventCount = 0;
+        let quakeCount = 0, nrcCount = 0, eventCount = 0, femaCount = 0, ecCount = 0;
+        const quakeBuckets = new Map();
+        const eonetCounts  = new Map();
+        const femaCounts   = new Map();
 
-        // USGS earthquakes
-        if (usgsRes.status === 'fulfilled' && usgsRes.value.ok) {
-          const usgs = await usgsRes.value.json();
+        // USGS
+        if (usgsR.status === 'fulfilled' && usgsR.value.ok) {
+          const usgs = await usgsR.value.json();
           for (const f of (usgs.features || [])) {
             const [eLon, eLat] = f.geometry.coordinates;
-            if (eLat < sMinLat || eLat > sMaxLat || eLon < sMinLon || eLon > sMaxLon) continue;
-            const mag   = f.properties.mag;
-            const size  = Math.max(10, Math.min(30, mag * 5));
-            const color = mag >= 6 ? '#ff2222' : mag >= 5 ? '#ff6633' : mag >= 4 ? '#ffaa22' : '#ffcc66';
-            const qIcon = L.divIcon({
-              className: '',
-              html: `<div style="width:${size}px;height:${size}px;background:${color};border-radius:50%;opacity:0.85;border:2px solid rgba(255,255,255,0.25);box-shadow:0 2px 6px rgba(0,0,0,0.6)"></div>`,
-              iconSize: [size, size], iconAnchor: [size/2, size/2]
-            });
+            if (!inBounds(eLat, eLon)) continue;
+            const mag    = f.properties.mag;
+            const bucket = mag >= 6 ? 'M6+' : mag >= 5 ? 'M5' : mag >= 4 ? 'M4' : 'M2.5';
+            quakeBuckets.set(bucket, (quakeBuckets.get(bucket) || 0) + 1);
             const date = new Date(f.properties.time).toLocaleDateString();
-            const pop  = `<b>🌍 M${mag} Earthquake</b><br>${f.properties.place}<br><span style="color:#aaa;font-size:0.78rem">${date}</span>`;
-            disasterLayers.push(L.marker([eLat, eLon], { icon: qIcon }).bindPopup(pop).addTo(disasterMap));
+            const pop  = `<b>🌍 M${mag} Earthquake</b><br>${f.properties.place}<br><span style="color:#aaa;font-size:0.78rem">${date} · USGS</span>`;
+            disasterLayers.push(L.marker([eLat, eLon], { icon: quakeMarker(mag, 'usgs') }).bindPopup(pop).addTo(disasterMap));
             quakeCount++;
           }
         }
 
-        // NASA EONET events
-        if (eonetRes.status === 'fulfilled' && eonetRes.value.ok) {
-          const eonet = await eonetRes.value.json();
+        // NRC Canada
+        if (nrcR.status === 'fulfilled' && nrcR.value.ok) {
+          const nrc = await nrcR.value.json();
+          for (const f of (nrc.features || [])) {
+            const [eLon, eLat] = f.geometry.coordinates;
+            if (!inBounds(eLat, eLon)) continue;
+            const mag    = f.properties.mag ?? f.properties.magnitude ?? 3;
+            const region = f.properties.place || f.properties.flynn_region || 'Canada';
+            const date   = new Date(f.properties.time).toLocaleDateString();
+            const pop    = `<b>🍁 M${mag} Earthquake</b><br>${region}<br><span style="color:#aaa;font-size:0.78rem">${date} · NRC Canada</span>`;
+            disasterLayers.push(L.marker([eLat, eLon], { icon: quakeMarker(mag, 'nrc') }).bindPopup(pop).addTo(disasterMap));
+            nrcCount++;
+          }
+        }
+
+        // NASA EONET
+        if (eonetR.status === 'fulfilled' && eonetR.value.ok) {
+          const eonet = await eonetR.value.json();
           for (const ev of (eonet.events || [])) {
             const geom = ev.geometry?.[0];
             if (!geom || geom.type !== 'Point') continue;
             const [eLon, eLat] = geom.coordinates;
-            if (eLat < sMinLat || eLat > sMaxLat || eLon < sMinLon || eLon > sMaxLon) continue;
+            if (!inBounds(eLat, eLon)) continue;
             const cat = ev.categories?.[0] || {};
-            const { icon: eIcon, color: eColor } = EONET_STYLE[cat.id] || { icon: '⚠️', color: '#ffaa22' };
-            const eMarker = L.divIcon({
-              className: '',
-              html: `<div style="width:28px;height:28px;background:${eColor};border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:15px;opacity:0.9;box-shadow:0 2px 6px rgba(0,0,0,0.5)">${eIcon}</div>`,
-              iconSize: [28, 28], iconAnchor: [14, 14]
-            });
+            const s   = EONET_STYLE[cat.id] || { icon: '⚠️', color: '#ffaa22', label: cat.id || 'Event' };
+            eonetCounts.set(cat.id, (eonetCounts.get(cat.id) || 0) + 1);
+            const icon = mkIcon(`<div style="width:28px;height:28px;background:${s.color}33;border:1.5px solid ${s.color};border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,0.6)">${s.icon}</div>`, 28);
             const date = new Date(geom.date).toLocaleDateString();
-            const pop  = `<b>${eIcon} ${ev.title}</b><br><span style="color:#aaa;font-size:0.78rem">${date}</span>`;
-            disasterLayers.push(L.marker([eLat, eLon], { icon: eMarker }).bindPopup(pop).addTo(disasterMap));
+            const pop  = `<b>${s.icon} ${ev.title}</b><br><span style="color:#aaa;font-size:0.78rem">${date} · NASA EONET</span>`;
+            disasterLayers.push(L.marker([eLat, eLon], { icon }).bindPopup(pop).addTo(disasterMap));
             eventCount++;
           }
         }
 
-        const total   = quakeCount + eventCount;
+        // FEMA OpenFEMA
+        if (femaR.status === 'fulfilled' && femaR.value.ok) {
+          const fema = await femaR.value.json();
+          const seen = new Set();
+          for (const d of (fema.DisasterDeclarationsSummaries || [])) {
+            if (seen.has(d.disasterNumber)) continue;
+            const xy = STATE_XY[d.state];
+            if (!xy || !inBounds(xy[0], xy[1])) continue;
+            seen.add(d.disasterNumber);
+            femaCounts.set(d.incidentType, (femaCounts.get(d.incidentType) || 0) + 1);
+            const { leafletIcon, style: fs } = femaMarker(d.incidentType);
+            const date = new Date(d.declarationDate).toLocaleDateString();
+            const pop  = `<b>${fs.icon} FEMA — ${d.incidentType}</b><br>${d.designatedArea}, ${d.state}<br><span style="color:#aaa;font-size:0.78rem">Declared ${date} · #${d.disasterNumber}</span>`;
+            disasterLayers.push(L.marker([xy[0], xy[1]], { icon: leafletIcon }).bindPopup(pop).addTo(disasterMap));
+            femaCount++;
+          }
+        }
+
+        // Environment Canada (GeoMet WFS)
+        if (ecR.status === 'fulfilled' && ecR.value.ok) {
+          const ecData = await ecR.value.json();
+          for (const f of (ecData.features || [])) {
+            let eLat, eLon;
+            const g = f.geometry;
+            if (!g) continue;
+            if (g.type === 'Point') {
+              [eLon, eLat] = g.coordinates;
+            } else if (g.type === 'Polygon') {
+              const ring = g.coordinates[0];
+              eLon = ring.reduce((s, c) => s + c[0], 0) / ring.length;
+              eLat = ring.reduce((s, c) => s + c[1], 0) / ring.length;
+            } else if (g.type === 'MultiPolygon') {
+              const ring = g.coordinates[0][0];
+              eLon = ring.reduce((s, c) => s + c[0], 0) / ring.length;
+              eLat = ring.reduce((s, c) => s + c[1], 0) / ring.length;
+            } else continue;
+            if (!inBounds(eLat, eLon)) continue;
+            const p    = f.properties || {};
+            const type = p.alert_type || p.type || 'Weather Alert';
+            const { leafletIcon, emoji } = ecMarker(type);
+            const area   = p.area_description || p.description || '';
+            const expiry = p.expiry_time ? new Date(p.expiry_time).toLocaleString() : '';
+            const pop    = `<b>${emoji} ${type}</b>${area ? '<br>' + area : ''}<br><span style="color:#aaa;font-size:0.78rem">${expiry ? 'Expires ' + expiry + ' · ' : ''}Environment Canada</span>`;
+            disasterLayers.push(L.marker([eLat, eLon], { icon: leafletIcon }).bindPopup(pop).addTo(disasterMap));
+            ecCount++;
+          }
+        }
+
+        const total   = quakeCount + nrcCount + eventCount + femaCount + ecCount;
         const locName = place.display_name.split(',').slice(0, 2).join(',').trim();
         if (total > 0) {
-          const parts = [];
-          if (quakeCount) parts.push(`${quakeCount} earthquake${quakeCount !== 1 ? 's' : ''}`);
-          if (eventCount) parts.push(`${eventCount} other event${eventCount !== 1 ? 's' : ''}`);
-          status.innerHTML = `<span style="color:#44bb66">✓</span> ${parts.join(', ')} near <b>${escHtml(locName)}</b>. Click any marker for details.`;
+          const sumParts = [];
+          if (quakeCount + nrcCount) sumParts.push(`${quakeCount + nrcCount} earthquake${quakeCount + nrcCount !== 1 ? 's' : ''}`);
+          if (eventCount)  sumParts.push(`${eventCount} EONET event${eventCount !== 1 ? 's' : ''}`);
+          if (femaCount)   sumParts.push(`${femaCount} FEMA declaration${femaCount !== 1 ? 's' : ''}`);
+          if (ecCount)     sumParts.push(`${ecCount} weather alert${ecCount !== 1 ? 's' : ''}`);
+          status.innerHTML = `<span style="color:#44bb66">✓</span> ${sumParts.join(', ')} near <b>${escHtml(locName)}</b>. Click any marker for details.`;
         } else {
           status.innerHTML = `<span style="color:#888">No active events recorded near <b>${escHtml(locName)}</b> right now.</span>`;
         }
 
+        buildLegend({ quakeBuckets, nrcCount, eonetCounts, femaCounts, ecCount });
         setTimeout(() => disasterMap.invalidateSize(), 150);
       } catch (e) {
         status.innerHTML = `<span style="color:#ff5555">⚠️ ${escHtml(e.message)}</span>`;
         document.getElementById('disasterMap').style.display = 'none';
-        document.getElementById('mapLegend').style.display = 'none';
       } finally {
         btn.disabled = false;
       }
