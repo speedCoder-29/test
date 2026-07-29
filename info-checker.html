@@ -14,78 +14,61 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Inter', 'Segoe UI', system-ui, Arial, sans-serif;
-      background:
-        radial-gradient(ellipse at 15% 0%,  rgba(78,205,196,0.05) 0%, transparent 50%),
-        radial-gradient(ellipse at 85% 100%, rgba(255,140,60,0.04) 0%, transparent 50%),
-        #0a0a14;
-      color: #e0e0f0;
+      background: #eef1f8;
+      color: #0f1120;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 28px 16px 60px;
+      align-items: stretch;
+      padding: 0 24px 80px;
       animation: pageIn 0.35s ease both;
     }
-    @keyframes pageIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-    h1 {
-      font-size: 2rem;
-      color: #4ecdc4;
-      margin-bottom: 8px;
-      letter-spacing: 1px;
-    }
-    p.subtitle {
-      color: #888;
-      margin-bottom: 36px;
-      font-size: 0.95rem;
-    }
+    @keyframes pageIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    h1 { font-size: 2rem; color: #0ea8a0; margin-bottom: 8px; letter-spacing: 1px; }
+    p.subtitle { color: #6b7280; margin-bottom: 36px; font-size: 0.95rem; }
     .card {
-      background: #131325;
-      border: 1px solid rgba(78,205,196,0.15);
-      border-radius: 14px;
+      background: #ffffff;
+      border: 1px solid rgba(15,17,32,0.08);
+      border-radius: 16px;
       padding: 24px 28px;
       width: 100%;
-      max-width: 660px;
       margin-bottom: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+      box-shadow: 0 2px 12px rgba(15,17,32,0.07);
       transition: box-shadow 0.2s;
     }
-    .card:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.5); }
+    .card:hover { box-shadow: 0 4px 24px rgba(15,17,32,0.12); }
     .card h2 {
       font-size: 0.72rem;
-      color: #4ecdc4;
+      color: #0ea8a0;
       margin-bottom: 14px;
       text-transform: uppercase;
       letter-spacing: 1.2px;
       font-weight: 700;
       padding-bottom: 10px;
-      border-bottom: 1px solid rgba(78,205,196,0.1);
+      border-bottom: 1px solid rgba(14,168,160,0.15);
     }
     .row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 9px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(15,17,32,0.05);
       font-size: 0.87rem;
       gap: 12px;
     }
     .row:last-child { border-bottom: none; }
-    .label { color: #666; flex-shrink: 0; }
-    .value { color: #c8c8e8; font-weight: 500; word-break: break-all; text-align: right; }
-    .value.ok   { color: #44dd88; }
-    .value.warn { color: #ffcc44; }
-    .value.err  { color: #ff5555; }
-    .input-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
+    .label { color: #6b7280; flex-shrink: 0; }
+    .value { color: #111827; font-weight: 500; word-break: break-all; text-align: right; }
+    .value.ok   { color: #059669; }
+    .value.warn { color: #d97706; }
+    .value.err  { color: #dc2626; }
+    .input-row { display: flex; gap: 10px; margin-bottom: 14px; }
     input[type="text"] {
       flex: 1;
-      background: #0a0a14;
-      border: 1px solid rgba(78,205,196,0.25);
+      background: #f7f9fd;
+      border: 1.5px solid rgba(15,17,32,0.12);
       border-radius: 10px;
-      color: #e0e0f0;
+      color: #0f1120;
       padding: 11px 16px;
       font-size: 0.9rem;
       outline: none;
@@ -93,13 +76,13 @@
       transition: border-color 0.2s, box-shadow 0.2s;
     }
     input[type="text"]:focus {
-      border-color: #4ecdc4;
-      box-shadow: 0 0 0 3px rgba(78,205,196,0.1);
+      border-color: #0ea8a0;
+      box-shadow: 0 0 0 3px rgba(14,168,160,0.12);
     }
-    input[type="text"]::placeholder { color: #3a3a5a; }
+    input[type="text"]::placeholder { color: #c0c8d4; }
     button {
-      background: linear-gradient(135deg, #4ecdc4, #38b2aa);
-      color: #0a0a14;
+      background: linear-gradient(135deg, #0ea8a0, #0c9691);
+      color: #fff;
       border: none;
       border-radius: 10px;
       padding: 11px 22px;
@@ -110,83 +93,92 @@
       font-family: inherit;
       letter-spacing: 0.3px;
     }
-    button:hover { opacity: 0.88; transform: translateY(-1px); }
+    button:hover { opacity: 0.9; transform: translateY(-1px); }
     button:active { transform: translateY(0); }
-    button:disabled { background: #222238; color: #444; cursor: not-allowed; transform: none; opacity: 1; }
-    #lookupResult { margin-top: 6px; font-size: 0.85rem; color: #888; line-height: 1.6; }
+    button:disabled { background: #e5e7eb; color: #9ca3af; cursor: not-allowed; transform: none; opacity: 1; }
+    #lookupResult { margin-top: 6px; font-size: 0.85rem; color: #6b7280; line-height: 1.6; }
 
     /* ── Disaster Area Map ────────────────────────────────── */
     .disaster-card {
-      background: #131325;
-      border: 1px solid rgba(255,140,60,0.25);
-      border-radius: 16px;
+      background: #ffffff;
+      border: none;
+      border-radius: 20px;
       width: 100%;
-      max-width: 660px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       overflow: hidden;
-      box-shadow: 0 6px 32px rgba(0,0,0,0.45);
+      box-shadow: 0 4px 28px rgba(15,17,32,0.13);
     }
     .disaster-header {
-      background: linear-gradient(135deg, #271608 0%, #1a1020 60%, #131325 100%);
-      border-bottom: 1px solid rgba(255,140,60,0.18);
-      padding: 22px 26px;
+      background: linear-gradient(135deg, #ff6b2e 0%, #e63900 55%, #c22000 100%);
+      padding: 30px 34px;
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .disaster-header::after {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 240px; height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
     }
     .disaster-header-icon {
-      font-size: 2rem;
-      filter: drop-shadow(0 0 10px rgba(255,140,60,0.6));
+      font-size: 3.2rem;
+      filter: drop-shadow(0 4px 16px rgba(0,0,0,0.25));
       flex-shrink: 0;
     }
     .disaster-header-text h2 {
-      font-size: 1.1rem;
-      color: #ff8c3c;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      margin-bottom: 3px;
+      font-size: 1.5rem;
+      color: #ffffff;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      margin-bottom: 5px;
     }
-    .disaster-header-text p { font-size: 0.82rem; color: #666; line-height: 1.4; }
-    .disaster-body { padding: 22px; }
+    .disaster-header-text p { font-size: 0.92rem; color: rgba(255,255,255,0.72); line-height: 1.4; }
+    .disaster-body { padding: 28px 32px; background: #fff; }
     .disaster-input-row { display: flex; gap: 10px; margin-bottom: 14px; }
     #disasterInput {
       flex: 1;
-      background: #0a0a14;
-      border: 1px solid rgba(255,140,60,0.22);
+      background: #f7f9fd;
+      border: 1.5px solid rgba(15,17,32,0.12);
       border-radius: 10px;
-      color: #e0e0f0;
-      padding: 11px 16px;
-      font-size: 0.92rem;
+      color: #0f1120;
+      padding: 14px 18px;
+      font-size: 1rem;
       outline: none;
       font-family: inherit;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
     #disasterInput:focus {
-      border-color: #ff8c3c;
-      box-shadow: 0 0 0 3px rgba(255,140,60,0.1);
+      border-color: #e63900;
+      box-shadow: 0 0 0 3px rgba(230,57,0,0.1);
     }
-    #disasterInput::placeholder { color: #3a3050; }
+    #disasterInput::placeholder { color: #c0c8d4; }
     #disasterCheckBtn {
-      background: linear-gradient(135deg, #ff8c3c, #e06820);
+      background: linear-gradient(135deg, #ff6b2e, #e63900);
       color: #fff;
       border: none;
       border-radius: 10px;
-      padding: 11px 22px;
+      padding: 14px 28px;
       font-weight: 700;
-      font-size: 0.92rem;
+      font-size: 1rem;
       cursor: pointer;
       transition: opacity 0.2s, transform 0.1s;
       white-space: nowrap;
       font-family: inherit;
       letter-spacing: 0.3px;
     }
-    #disasterCheckBtn:hover { opacity: 0.88; transform: translateY(-1px); }
+    #disasterCheckBtn:hover { opacity: 0.9; transform: translateY(-1px); }
     #disasterCheckBtn:active { transform: translateY(0); }
-    #disasterCheckBtn:disabled { background: #2a1a0a; color: #554433; cursor: not-allowed; transform: none; opacity: 1; }
+    #disasterCheckBtn:disabled { background: #e5e7eb; color: #9ca3af; cursor: not-allowed; transform: none; opacity: 1; }
     .d-spinner {
       width: 16px; height: 16px;
-      border: 2px solid rgba(255,140,60,0.2);
-      border-top-color: #ff8c3c;
+      border: 2px solid rgba(230,57,0,0.15);
+      border-top-color: #e63900;
       border-radius: 50%;
       animation: d-spin 0.75s linear infinite;
       display: inline-block;
@@ -196,35 +188,35 @@
     @keyframes d-spin { to { transform: rotate(360deg); } }
     #disasterMap {
       display: none;
-      height: 400px;
+      height: 520px;
       border-radius: 12px;
       overflow: hidden;
       margin-top: 14px;
-      border: 1px solid rgba(255,140,60,0.18);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      border: 1px solid rgba(15,17,32,0.08);
+      box-shadow: 0 4px 20px rgba(15,17,32,0.1);
     }
     .leaflet-popup-content-wrapper {
-      background: #181830;
-      color: #e0e0f0;
-      border: 1px solid rgba(255,255,255,0.12);
+      background: #ffffff;
+      color: #0f1120;
+      border: 1px solid rgba(15,17,32,0.1);
       border-radius: 10px;
-      font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+      font-family: 'Inter', system-ui, Arial, sans-serif;
       font-size: 0.84rem;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      box-shadow: 0 8px 24px rgba(15,17,32,0.15);
     }
-    .leaflet-popup-tip { background: #181830; }
-    .leaflet-popup-close-button { color: #666 !important; font-size: 1.1rem !important; }
-    .leaflet-control-attribution { background: rgba(10,10,20,0.85) !important; color: #3a3a5a !important; font-size: 0.72rem !important; }
-    .leaflet-control-attribution a { color: #4ecdc4 !important; }
-    .leaflet-control-zoom a { background: #181830 !important; color: #c0c0e0 !important; border-color: rgba(255,255,255,0.1) !important; }
-    .leaflet-control-zoom a:hover { background: #222244 !important; }
+    .leaflet-popup-tip { background: #ffffff; }
+    .leaflet-popup-close-button { color: #9ca3af !important; font-size: 1.1rem !important; }
+    .leaflet-control-attribution { background: rgba(255,255,255,0.92) !important; color: #9ca3af !important; font-size: 0.72rem !important; }
+    .leaflet-control-attribution a { color: #0ea8a0 !important; }
+    .leaflet-control-zoom a { background: #fff !important; color: #374151 !important; border-color: rgba(15,17,32,0.1) !important; }
+    .leaflet-control-zoom a:hover { background: #f3f4f6 !important; }
     .map-legend {
       margin-top: 14px;
       padding: 16px 18px;
-      background: #0e0e22;
-      border-radius: 12px;
-      border: 1px solid rgba(78,205,196,0.25);
-      box-shadow: 0 0 0 1px rgba(78,205,196,0.06), 0 6px 24px rgba(0,0,0,0.5);
+      background: #f7f9fd;
+      border-radius: 14px;
+      border: 1.5px solid rgba(15,17,32,0.08);
+      box-shadow: 0 2px 8px rgba(15,17,32,0.05);
       display: none;
     }
     .legend-title {
@@ -232,10 +224,10 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: #4ecdc4;
+      color: #0ea8a0;
       margin-bottom: 14px;
       padding-bottom: 10px;
-      border-bottom: 1px solid rgba(78,205,196,0.15);
+      border-bottom: 1px solid rgba(14,168,160,0.15);
     }
     .legend-section { margin-bottom: 12px; }
     .legend-section:last-child { margin-bottom: 0; }
@@ -244,17 +236,17 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      color: #5a5a7a;
+      color: #9ca3af;
       margin-bottom: 8px;
     }
-    .legend-rows { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+    .legend-rows { display: flex; flex-wrap: wrap; gap: 8px 16px; }
     .legend-row {
       display: flex; align-items: center; gap: 8px;
-      font-size: 0.8rem; color: #c0c0d8;
-      background: rgba(255,255,255,0.04);
+      font-size: 0.8rem; color: #374151;
+      background: #fff;
       border-radius: 8px;
       padding: 5px 10px;
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid rgba(15,17,32,0.07);
     }
     .legend-dot {
       width: 13px; height: 13px;
@@ -272,189 +264,242 @@
     .legend-count {
       font-size: 0.72rem;
       font-weight: 700;
-      color: #4ecdc4;
+      color: #0ea8a0;
       margin-left: 2px;
-      background: rgba(78,205,196,0.12);
+      background: rgba(14,168,160,0.1);
       padding: 1px 6px;
       border-radius: 10px;
     }
 
     /* ── Disaster Dashboard extras ──────────────────────────── */
     #disasterLocBtn {
-      background: rgba(255,140,60,0.1);
-      border: 1px solid rgba(255,140,60,0.3);
+      background: rgba(230,57,0,0.07);
+      border: 1.5px solid rgba(230,57,0,0.25);
       border-radius: 10px;
-      color: #ff8c3c;
+      color: #e63900;
       padding: 11px 13px;
       font-size: 1rem;
       cursor: pointer;
       transition: background 0.15s;
       flex-shrink: 0;
     }
-    #disasterLocBtn:hover { background: rgba(255,140,60,0.2); }
+    #disasterLocBtn:hover { background: rgba(230,57,0,0.14); }
     #disasterLocBtn:disabled { opacity: 0.45; cursor: not-allowed; }
-    .dr-results { margin-top: 18px; display: flex; flex-direction: column; gap: 14px; animation: pageIn 0.3s ease; }
+    .dr-results { margin-top: 18px; display: flex; flex-direction: column; gap: 16px; animation: pageIn 0.3s ease; }
     .dr-section-title {
-      font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-      color: #4ecdc4; margin-bottom: 10px; display: flex; align-items: center; gap: 7px;
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+      color: #0ea8a0; margin-bottom: 12px; display: flex; align-items: center; gap: 7px;
     }
+    /* Stats bar */
+    .dr-stats-bar {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, #fff7f0, #fff9f5);
+      border: 1.5px solid rgba(230,57,0,0.12);
+      border-radius: 14px;
+      align-items: center;
+    }
+    .dr-stat-chip {
+      display: flex; align-items: center; gap: 7px;
+      padding: 6px 14px; border-radius: 20px;
+      background: #fff;
+      border: 1px solid rgba(15,17,32,0.08);
+      box-shadow: 0 1px 4px rgba(15,17,32,0.06);
+    }
+    .dr-stat-chip-icon { font-size: 1.05rem; line-height: 1; }
+    .dr-stat-chip-val { font-size: 1.05rem; font-weight: 800; color: #0f1120; }
+    .dr-stat-chip-lbl { font-size: 0.72rem; color: #6b7280; }
     /* Risks */
-    .risk-list { display: flex; flex-direction: column; gap: 8px; }
+    .risk-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .risk-card {
-      background: #0d0d1f; border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 10px; padding: 12px 14px;
+      position: relative; border-radius: 18px; overflow: hidden;
+      min-height: 280px; display: flex; flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(15,17,32,0.15);
     }
-    .risk-card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
-    .risk-rank {
-      width: 22px; height: 22px; border-radius: 50%;
-      background: rgba(255,140,60,0.15); color: #ff8c3c;
-      font-size: 0.68rem; font-weight: 800;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    .risk-card:hover { transform: translateY(-5px); box-shadow: 0 18px 52px rgba(15,17,32,0.22); }
+    .risk-card-bg { position: absolute; inset: 0; }
+    .risk-card-glow {
+      position: absolute; top: -60px; right: -60px;
+      width: 200px; height: 200px; border-radius: 50%; opacity: 0.45;
     }
-    .risk-icon { font-size: 1.2rem; line-height: 1; flex-shrink: 0; }
-    .risk-name { font-size: 0.88rem; font-weight: 600; color: #d0d0e8; flex: 1; }
-    .risk-desc { font-size: 0.72rem; color: #44445a; }
-    .risk-bar-bg { height: 5px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; margin-bottom: 7px; }
-    .risk-bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
-    .risk-advice { font-size: 0.76rem; color: #555; line-height: 1.5; }
+    .risk-card-content {
+      position: relative; padding: 22px 20px;
+      display: flex; flex-direction: column; flex: 1;
+    }
+    .risk-num {
+      font-size: 0.6rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 1.8px; color: rgba(255,255,255,0.5); margin-bottom: 12px;
+    }
+    .risk-big-icon {
+      font-size: 3.2rem; line-height: 1; margin-bottom: 12px;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
+    }
+    .risk-type-name {
+      font-size: 1.1rem; font-weight: 800; color: #fff;
+      letter-spacing: -0.3px; margin-bottom: 7px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .risk-sev-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 0.63rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; padding: 3px 10px; border-radius: 20px;
+      background: rgba(255,255,255,0.22); color: #fff;
+      border: 1px solid rgba(255,255,255,0.35);
+      margin-bottom: 16px; width: fit-content;
+    }
+    .risk-count-num {
+      font-size: 3.2rem; font-weight: 900; line-height: 1;
+      letter-spacing: -2px; margin-top: auto; margin-bottom: 2px;
+      color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .risk-count-label {
+      font-size: 0.64rem; color: rgba(255,255,255,0.55);
+      text-transform: uppercase; letter-spacing: 0.9px; margin-bottom: 14px;
+    }
+    .risk-bar-bg { height: 4px; background: rgba(255,255,255,0.22); border-radius: 3px; overflow: hidden; margin-bottom: 12px; }
+    .risk-bar-fill { height: 100%; background: rgba(255,255,255,0.7); border-radius: 3px; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
+    .risk-advice { font-size: 0.73rem; color: rgba(255,255,255,0.65); line-height: 1.6; }
+    /* Bottom grid */
+    .dr-bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     /* Time slider */
     .time-slider-wrap {
-      background: #0d0d1f; border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 10px; padding: 14px 16px; margin-top: 12px;
+      background: #f7f9fd; border: 1.5px solid rgba(15,17,32,0.08);
+      border-radius: 14px; padding: 16px 18px; margin-top: 12px;
     }
     .time-slider-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
-    .time-slider-year { font-size: 1.2rem; font-weight: 800; color: #4ecdc4; }
-    #timeSlider { width: 100%; accent-color: #4ecdc4; cursor: pointer; }
+    .time-slider-year { font-size: 1.2rem; font-weight: 800; color: #0ea8a0; }
+    #timeSlider { width: 100%; accent-color: #0ea8a0; cursor: pointer; }
     .time-play-btn {
-      background: rgba(78,205,196,0.1); border: 1px solid rgba(78,205,196,0.3);
-      border-radius: 8px; color: #4ecdc4; padding: 5px 12px;
+      background: rgba(14,168,160,0.1); border: 1.5px solid rgba(14,168,160,0.3);
+      border-radius: 8px; color: #0ea8a0; padding: 6px 14px;
       font-size: 0.76rem; font-weight: 600; cursor: pointer; font-family: inherit;
     }
-    .time-play-btn:hover { background: rgba(78,205,196,0.18); }
-    .time-hist-count { font-size: 0.72rem; color: #44445a; margin-top: 5px; }
+    .time-play-btn:hover { background: rgba(14,168,160,0.18); }
+    .time-hist-count { font-size: 0.72rem; color: #6b7280; margin-top: 5px; }
     /* AI Checklist */
     .checklist-wrap {
-      background: #0d0d1f; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 16px;
+      background: #f0fdf9; border: 1.5px solid rgba(14,168,160,0.2); border-radius: 16px; padding: 20px;
     }
     .checklist-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px; }
     .confidence-badge {
-      font-size: 0.63rem; font-weight: 700; padding: 3px 8px; border-radius: 10px;
+      font-size: 0.63rem; font-weight: 700; padding: 3px 9px; border-radius: 10px;
       text-transform: uppercase; letter-spacing: 0.5px;
     }
-    .conf-ai  { background: rgba(78,205,196,0.12); color: #4ecdc4; border: 1px solid rgba(78,205,196,0.3); }
-    .conf-rule{ background: rgba(255,170,44,0.12);  color: #ffaa2c; border: 1px solid rgba(255,170,44,0.3); }
+    .conf-ai  { background: rgba(14,168,160,0.12); color: #0ea8a0; border: 1px solid rgba(14,168,160,0.3); }
+    .conf-rule{ background: rgba(217,119,6,0.1); color: #d97706; border: 1px solid rgba(217,119,6,0.3); }
     .checklist-item {
       display: flex; align-items: flex-start; gap: 10px;
-      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
-      font-size: 0.83rem; color: #b0b0cc; line-height: 1.55; cursor: pointer;
+      padding: 10px 0; border-bottom: 1px solid rgba(15,17,32,0.06);
+      font-size: 0.86rem; color: #374151; line-height: 1.6; cursor: pointer;
       transition: color 0.15s;
     }
     .checklist-item:last-child { border-bottom: none; }
-    .checklist-item input[type=checkbox] { accent-color: #4ecdc4; flex-shrink: 0; width: 15px; height: 15px; margin-top: 2px; cursor: pointer; }
-    .checklist-item.ci-done { color: #33334a; }
+    .checklist-item input[type=checkbox] { accent-color: #0ea8a0; flex-shrink: 0; width: 15px; height: 15px; margin-top: 2px; cursor: pointer; }
+    .checklist-item.ci-done { color: #c0c8d4; }
     .checklist-item.ci-done span { text-decoration: line-through; }
     /* Kit */
     .kit-wrap {
-      background: #0d0d1f; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 16px;
+      background: #f0fff8; border: 1.5px solid rgba(5,150,105,0.2); border-radius: 16px; padding: 20px;
     }
     .kit-prog-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-    .kit-prog-bg { flex: 1; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
-    .kit-prog-fill { height: 100%; background: linear-gradient(90deg, #4ecdc4, #44bb66); border-radius: 4px; transition: width 0.5s ease; }
-    .kit-prog-lbl { font-size: 0.75rem; color: #4ecdc4; font-weight: 700; min-width: 32px; text-align: right; }
+    .kit-prog-bg { flex: 1; height: 10px; background: rgba(5,150,105,0.1); border-radius: 5px; overflow: hidden; }
+    .kit-prog-fill { height: 100%; background: linear-gradient(90deg, #059669, #10b981); border-radius: 5px; transition: width 0.5s ease; }
+    .kit-prog-lbl { font-size: 0.8rem; color: #059669; font-weight: 800; min-width: 36px; text-align: right; }
     .kit-item {
-      display: flex; align-items: flex-start; gap: 9px;
-      padding: 8px 10px; background: rgba(255,255,255,0.02);
-      border-radius: 8px; border: 1px solid rgba(255,255,255,0.04);
-      font-size: 0.81rem; color: #aaa; cursor: pointer; transition: background 0.12s;
-      margin-bottom: 5px;
+      display: flex; align-items: flex-start; gap: 11px;
+      padding: 10px 12px; background: rgba(5,150,105,0.04);
+      border-radius: 10px; border: 1px solid rgba(5,150,105,0.12);
+      font-size: 0.83rem; color: #374151; cursor: pointer; transition: background 0.12s;
+      margin-bottom: 6px;
     }
+    .kit-item-emoji { font-size: 1.3rem; line-height: 1; flex-shrink: 0; margin-top: 1px; }
     .kit-item:last-child { margin-bottom: 0; }
-    .kit-item:hover { background: rgba(255,255,255,0.05); }
-    .kit-item.ki-done { color: #33334a; }
+    .kit-item:hover { background: rgba(5,150,105,0.09); }
+    .kit-item.ki-done { color: #9ca3af; }
     .kit-item.ki-done .kit-label { text-decoration: line-through; }
-    .kit-item input[type=checkbox] { accent-color: #44bb66; flex-shrink: 0; width: 14px; height: 14px; margin-top: 2px; cursor: pointer; }
+    .kit-item input[type=checkbox] { accent-color: #059669; flex-shrink: 0; width: 14px; height: 14px; margin-top: 2px; cursor: pointer; }
     /* Household */
     .household-wrap {
-      background: #0d0d1f; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 16px;
+      background: #eff6ff; border: 1.5px solid rgba(37,99,235,0.15); border-radius: 16px; padding: 20px;
     }
-    .hh-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-    .hh-label { font-size: 0.8rem; color: #777; min-width: 160px; }
-    .hh-stepper { display: flex; align-items: center; gap: 8px; }
+    .hh-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .hh-label { font-size: 0.85rem; color: #4b5563; min-width: 180px; }
+    .hh-stepper { display: flex; align-items: center; gap: 10px; }
     .hh-step-btn {
-      width: 26px; height: 26px; background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #c0c0d8;
-      font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit;
+      width: 32px; height: 32px; background: rgba(37,99,235,0.08);
+      border: 1.5px solid rgba(37,99,235,0.2); border-radius: 8px; color: #2563eb;
+      font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit;
     }
-    .hh-step-btn:hover { background: rgba(255,255,255,0.12); }
-    .hh-val { font-size: 1.05rem; font-weight: 700; color: #4ecdc4; min-width: 28px; text-align: center; }
+    .hh-step-btn:hover { background: rgba(37,99,235,0.15); }
+    .hh-val { font-size: 1.3rem; font-weight: 800; color: #2563eb; min-width: 34px; text-align: center; }
     .hh-score-row {
       display: flex; align-items: center; justify-content: space-between;
-      padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 4px;
+      padding-top: 16px; border-top: 1px solid rgba(37,99,235,0.1); margin-top: 8px;
     }
-    .hh-score-num { font-size: 1.7rem; font-weight: 800; line-height: 1; }
-    .hh-score-num.s-poor  { color: #ff4444; }
-    .hh-score-num.s-fair  { color: #ffaa22; }
-    .hh-score-num.s-good  { color: #44bb66; }
-    .hh-score-num.s-great { color: #4ecdc4; }
+    .hh-score-num { font-size: 3rem; font-weight: 900; line-height: 1; }
+    .hh-score-num.s-poor  { color: #dc2626; }
+    .hh-score-num.s-fair  { color: #d97706; }
+    .hh-score-num.s-good  { color: #059669; }
+    .hh-score-num.s-great { color: #2563eb; }
     /* Share */
     .share-btn {
-      width: 100%; background: rgba(78,205,196,0.07); border: 1px solid rgba(78,205,196,0.22);
-      border-radius: 10px; color: #4ecdc4; padding: 12px; font-size: 0.87rem; font-weight: 600;
+      width: 100%; background: rgba(37,99,235,0.07); border: 1.5px solid rgba(37,99,235,0.2);
+      border-radius: 12px; color: #2563eb; padding: 14px; font-size: 0.87rem; font-weight: 600;
       cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center;
       gap: 8px; transition: background 0.15s;
     }
-    .share-btn:hover { background: rgba(78,205,196,0.14); }
-    .share-btn .share-feedback { font-size: 0.78rem; color: #44bb66; display: none; }
+    .share-btn:hover { background: rgba(37,99,235,0.12); }
+    .share-btn .share-feedback { font-size: 0.78rem; color: #059669; display: none; }
 
     /* ── Weather App ─────────────────────────────────────────── */
     .wa-top-bar {
       width: 100%;
-      max-width: 660px;
       margin-bottom: 28px;
       text-align: center;
       padding-bottom: 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1.5px solid rgba(15,17,32,0.07);
     }
     .wa-top-title {
-      font-size: 2rem;
-      font-weight: 700;
+      font-size: 2.2rem;
+      font-weight: 800;
       letter-spacing: -0.5px;
       display: block;
       margin-bottom: 7px;
-      background: linear-gradient(135deg, #e8e8ff 0%, #9898cc 100%);
+      background: linear-gradient(135deg, #0ea8a0 0%, #2563eb 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
     .wa-top-subtitle {
       font-size: 0.82rem;
-      color: #55557a;
+      color: #6b7280;
       letter-spacing: 0.8px;
     }
     .wa-refresh-btn {
-      background: rgba(78,205,196,0.08);
-      border: 1px solid rgba(78,205,196,0.25);
-      color: #4ecdc4;
+      background: rgba(14,168,160,0.07);
+      border: 1.5px solid rgba(14,168,160,0.25);
+      color: #0ea8a0;
       border-radius: 8px;
-      padding: 7px 16px;
+      padding: 8px 18px;
       font-size: 0.8rem;
       cursor: pointer;
       font-family: inherit;
       transition: background 0.2s, border-color 0.2s;
       letter-spacing: 0.3px;
+      font-weight: 600;
     }
-    .wa-refresh-btn:hover { background: rgba(78,205,196,0.15); border-color: rgba(78,205,196,0.45); }
+    .wa-refresh-btn:hover { background: rgba(14,168,160,0.14); border-color: rgba(14,168,160,0.45); }
     .wa-hero {
-      background: linear-gradient(160deg, #162030 0%, #131325 55%, #0a0a14 100%);
-      border: 1px solid rgba(78,205,196,0.15);
+      background: linear-gradient(160deg, #e8f8f7 0%, #eff6ff 55%, #f0f9ff 100%);
+      border: 1.5px solid rgba(14,168,160,0.2);
       border-radius: 20px;
       padding: 30px 30px 24px;
       width: 100%;
-      max-width: 660px;
       margin-bottom: 14px;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      box-shadow: 0 8px 32px rgba(14,168,160,0.1);
     }
     .wa-hero::before {
       content: '';
@@ -462,24 +507,24 @@
       top: -60px; right: -60px;
       width: 240px; height: 240px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(78,205,196,0.06) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(14,168,160,0.12) 0%, transparent 70%);
       pointer-events: none;
     }
-    .wa-loc { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: #666; margin-bottom: 20px; }
-    .wa-loc-name { color: #b0b0c8; font-weight: 500; }
+    .wa-loc { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: #9ca3af; margin-bottom: 20px; }
+    .wa-loc-name { color: #374151; font-weight: 600; }
     .wa-main-row { display: flex; align-items: center; gap: 18px; margin-bottom: 6px; }
     .wa-big-icon { font-size: 4rem; line-height: 1; flex-shrink: 0; }
     .wa-temp-col { display: flex; flex-direction: column; }
-    .wa-temp-big { font-size: 4.2rem; font-weight: 200; color: #f0f0ff; line-height: 1; letter-spacing: -2px; }
-    .wa-temp-unit { font-size: 1.6rem; color: #555; font-weight: 300; }
-    .wa-condition { font-size: 1rem; color: #aaa; margin-top: 6px; }
-    .wa-feels { font-size: 0.8rem; color: #555; margin-top: 3px; }
+    .wa-temp-big { font-size: 4.2rem; font-weight: 200; color: #0f1120; line-height: 1; letter-spacing: -2px; }
+    .wa-temp-unit { font-size: 1.6rem; color: #9ca3af; font-weight: 300; }
+    .wa-condition { font-size: 1rem; color: #4b5563; margin-top: 6px; font-weight: 500; }
+    .wa-feels { font-size: 0.8rem; color: #9ca3af; margin-top: 3px; }
     .wa-stats-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       margin-top: 22px;
       padding-top: 18px;
-      border-top: 1px solid rgba(255,255,255,0.06);
+      border-top: 1px solid rgba(15,17,32,0.08);
       gap: 1px;
     }
     .wa-stat {
@@ -487,52 +532,51 @@
       flex-direction: column;
       gap: 3px;
       padding: 10px 8px;
-      border-right: 1px solid rgba(255,255,255,0.04);
+      border-right: 1px solid rgba(15,17,32,0.06);
     }
     .wa-stat:nth-child(3n) { border-right: none; }
-    .wa-stat:nth-child(n+4) { border-top: 1px solid rgba(255,255,255,0.04); }
-    .wa-stat-lbl { font-size: 0.68rem; color: #55556a; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 500; }
-    .wa-stat-val { font-size: 0.94rem; font-weight: 600; color: #d8d8f0; line-height: 1.2; }
-    .wa-stat-sub { font-size: 0.7rem; color: #47475e; }
+    .wa-stat:nth-child(n+4) { border-top: 1px solid rgba(15,17,32,0.06); }
+    .wa-stat-lbl { font-size: 0.68rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 500; }
+    .wa-stat-val { font-size: 0.94rem; font-weight: 600; color: #0f1120; line-height: 1.2; }
+    .wa-stat-sub { font-size: 0.7rem; color: #9ca3af; }
     .wa-card {
-      background: #131325;
-      border: 1px solid rgba(255,255,255,0.06);
-      border-top: 2px solid transparent;
-      border-radius: 16px;
+      background: #ffffff;
+      border: 1px solid rgba(15,17,32,0.07);
+      border-top: 2.5px solid transparent;
+      border-radius: 18px;
       padding: 22px 24px;
       width: 100%;
-      max-width: 660px;
       margin-bottom: 14px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 16px rgba(15,17,32,0.07);
       transition: box-shadow 0.2s, border-color 0.2s;
     }
-    .wa-card:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.45); }
-    .wa-card-accent-teal   { border-top-color: #4ecdc4; }
-    .wa-card-accent-blue   { border-top-color: #6699ff; }
-    .wa-card-accent-amber  { border-top-color: #ffaa44; }
-    .wa-card-accent-gold   { border-top-color: #ffd060; }
-    .wa-card-accent-red    { border-top-color: #ff5555; }
-    .wa-card-accent-green  { border-top-color: #44cc88; }
-    .wa-card-accent-purple { border-top-color: #cc55ff; }
+    .wa-card:hover { box-shadow: 0 8px 32px rgba(15,17,32,0.12); }
+    .wa-card-accent-teal   { border-top-color: #0ea8a0; }
+    .wa-card-accent-blue   { border-top-color: #2563eb; }
+    .wa-card-accent-amber  { border-top-color: #d97706; }
+    .wa-card-accent-gold   { border-top-color: #f59e0b; }
+    .wa-card-accent-red    { border-top-color: #dc2626; }
+    .wa-card-accent-green  { border-top-color: #059669; }
+    .wa-card-accent-purple { border-top-color: #7c3aed; }
     .wa-card-title {
       font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: #4ecdc4;
+      color: #0ea8a0;
       margin-bottom: 16px;
       padding-bottom: 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(15,17,32,0.07);
       display: flex;
       align-items: center;
       gap: 7px;
     }
-    .wa-card-title.amber  { color: #ffaa44; }
-    .wa-card-title.blue   { color: #6699ff; }
-    .wa-card-title.gold   { color: #ffd060; }
-    .wa-card-title.red    { color: #ff6666; }
-    .wa-card-title.green  { color: #44cc88; }
-    .wa-card-title.purple { color: #cc55ff; }
+    .wa-card-title.amber  { color: #d97706; }
+    .wa-card-title.blue   { color: #2563eb; }
+    .wa-card-title.gold   { color: #f59e0b; }
+    .wa-card-title.red    { color: #dc2626; }
+    .wa-card-title.green  { color: #059669; }
+    .wa-card-title.purple { color: #7c3aed; }
     /* Daily forecast */
     .wa-day-row {
       display: grid;
@@ -540,75 +584,75 @@
       align-items: center;
       gap: 10px;
       padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(15,17,32,0.06);
     }
     .wa-day-row:last-child { border-bottom: none; }
-    .wa-day-name { font-size: 0.85rem; color: #888; font-weight: 500; }
+    .wa-day-name { font-size: 0.85rem; color: #6b7280; font-weight: 500; }
     .wa-day-icon { font-size: 1.25rem; text-align: center; }
     .wa-day-bar-col { display: flex; flex-direction: column; gap: 3px; }
-    .wa-day-trange { position: relative; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.05); }
+    .wa-day-trange { position: relative; height: 5px; border-radius: 3px; background: rgba(15,17,32,0.07); }
     .wa-day-trange-fill { position: absolute; top: 0; height: 5px; border-radius: 3px; }
-    .wa-day-pp { font-size: 0.7rem; color: rgba(102,153,255,0.7); }
+    .wa-day-pp { font-size: 0.7rem; color: #2563eb; opacity: 0.8; }
     .wa-day-temps { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
-    .wa-day-max { font-size: 0.88rem; color: #d8d8f0; font-weight: 600; }
-    .wa-day-min { font-size: 0.78rem; color: #444; }
+    .wa-day-max { font-size: 0.88rem; color: #0f1120; font-weight: 600; }
+    .wa-day-min { font-size: 0.78rem; color: #9ca3af; }
     /* Alerts */
     .wa-alert-item {
       display: flex;
       gap: 10px;
       align-items: flex-start;
       padding: 10px 12px;
-      border-radius: 8px;
+      border-radius: 10px;
       margin-bottom: 8px;
       font-size: 0.84rem;
       line-height: 1.55;
     }
     .wa-alert-item:last-child { margin-bottom: 0; }
-    .wa-alert-item.warn   { background: rgba(255,204,68,0.07);  border-left: 3px solid #ffcc44; color: #ccbb88; }
-    .wa-alert-item.danger { background: rgba(255,68,68,0.07);   border-left: 3px solid #ff4444; color: #cc8888; }
-    .wa-alert-item.info   { background: rgba(78,205,196,0.07);  border-left: 3px solid #4ecdc4; color: #88bbbb; }
-    .wa-no-alerts { color: #444; font-size: 0.85rem; }
+    .wa-alert-item.warn   { background: rgba(217,119,6,0.07);  border-left: 3px solid #d97706; color: #92400e; }
+    .wa-alert-item.danger { background: rgba(220,38,38,0.07);  border-left: 3px solid #dc2626; color: #991b1b; }
+    .wa-alert-item.info   { background: rgba(14,168,160,0.07); border-left: 3px solid #0ea8a0; color: #065f5b; }
+    .wa-no-alerts { color: #9ca3af; font-size: 0.85rem; }
     /* Emergency kit */
     .wa-kit-section { margin-bottom: 16px; }
     .wa-kit-section:last-child { margin-bottom: 0; }
-    .wa-kit-section-title { font-size: 0.7rem; color: #4ecdc4; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+    .wa-kit-section-title { font-size: 0.7rem; color: #0ea8a0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
     .wa-kit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; }
-    .wa-kit-item { display: flex; align-items: flex-start; gap: 6px; font-size: 0.81rem; color: #888; padding: 4px 0; line-height: 1.4; }
-    .wa-kit-item::before { content: '✓'; color: #4ecdc4; font-size: 0.72rem; flex-shrink: 0; margin-top: 2px; }
+    .wa-kit-item { display: flex; align-items: flex-start; gap: 6px; font-size: 0.81rem; color: #4b5563; padding: 4px 0; line-height: 1.4; }
+    .wa-kit-item::before { content: '✓'; color: #059669; font-size: 0.72rem; flex-shrink: 0; margin-top: 2px; }
     /* No-geo fallback */
     .wa-no-geo { text-align: center; padding: 28px 16px; }
-    .wa-no-geo p { color: #666; font-size: 0.88rem; margin-bottom: 14px; line-height: 1.6; }
+    .wa-no-geo p { color: #6b7280; font-size: 0.88rem; margin-bottom: 14px; line-height: 1.6; }
     .wa-manual-row { display: flex; gap: 10px; }
     #waManualInput {
       flex: 1;
-      background: #0a0a14;
-      border: 1px solid rgba(78,205,196,0.25);
+      background: #f7f9fd;
+      border: 1.5px solid rgba(14,168,160,0.25);
       border-radius: 8px;
-      color: #e0e0f0;
+      color: #0f1120;
       padding: 10px 14px;
       font-size: 0.88rem;
       outline: none;
       font-family: inherit;
     }
-    #waManualInput:focus { border-color: #4ecdc4; }
-    #waManualBtn { background: #4ecdc4; color: #0a0a14; border: none; border-radius: 8px; padding: 10px 18px; font-weight: 700; font-size: 0.85rem; cursor: pointer; white-space: nowrap; font-family: inherit; }
-    #waManualBtn:hover { background: #38b2aa; }
-    .wa-loading { text-align: center; padding: 40px 20px; color: #555; font-size: 0.9rem; line-height: 2; }
-    .wa-error { color: #ff5555; font-size: 0.85rem; padding: 24px; text-align: center; line-height: 1.8; }
+    #waManualInput:focus { border-color: #0ea8a0; }
+    #waManualBtn { background: #0ea8a0; color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-weight: 700; font-size: 0.85rem; cursor: pointer; white-space: nowrap; font-family: inherit; }
+    #waManualBtn:hover { background: #0c9691; }
+    .wa-loading { text-align: center; padding: 40px 20px; color: #9ca3af; font-size: 0.9rem; line-height: 2; }
+    .wa-error { color: #dc2626; font-size: 0.85rem; padding: 24px; text-align: center; line-height: 1.8; }
     /* Hourly tabs */
     .wa-tabs {
       display: flex;
       gap: 3px;
       margin-bottom: 14px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
+      background: #f7f9fd;
+      border: 1px solid rgba(15,17,32,0.07);
       border-radius: 12px;
       padding: 4px;
     }
     .wa-tab {
       background: transparent;
       border: none;
-      color: #555;
+      color: #9ca3af;
       border-radius: 9px;
       padding: 7px 14px;
       font-size: 0.76rem;
@@ -619,21 +663,21 @@
       flex: 1;
       text-align: center;
     }
-    .wa-tab.active { background: rgba(78,205,196,0.14); color: #4ecdc4; }
-    .wa-tab:hover:not(.active) { background: rgba(255,255,255,0.04); color: #888; }
+    .wa-tab.active { background: rgba(14,168,160,0.12); color: #0ea8a0; }
+    .wa-tab:hover:not(.active) { background: rgba(15,17,32,0.04); color: #4b5563; }
     /* Detail conditions */
     .detail-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
     .detail-item {
-      background: #0d0d1f;
-      border-radius: 10px;
+      background: #f7f9fd;
+      border-radius: 12px;
       padding: 13px 14px;
-      border: 1px solid rgba(255,255,255,0.04);
-      transition: border-color 0.2s;
+      border: 1px solid rgba(15,17,32,0.07);
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .detail-item:hover { border-color: rgba(255,255,255,0.09); }
-    .detail-lbl { font-size: 0.68rem; color: #55556a; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; font-weight: 500; }
-    .detail-val { font-size: 1.05rem; font-weight: 600; color: #e0e0f0; }
-    .detail-sub { font-size: 0.73rem; color: #4a4a62; margin-top: 3px; }
+    .detail-item:hover { border-color: rgba(14,168,160,0.3); box-shadow: 0 2px 8px rgba(14,168,160,0.08); }
+    .detail-lbl { font-size: 0.68rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; font-weight: 500; }
+    .detail-val { font-size: 1.05rem; font-weight: 600; color: #0f1120; }
+    .detail-sub { font-size: 0.73rem; color: #9ca3af; margin-top: 3px; }
     .uv-bar-wrap {
       height: 6px;
       border-radius: 4px;
@@ -641,29 +685,29 @@
       position: relative;
       margin: 7px 0 3px;
     }
-    .uv-needle { position: absolute; top: -3px; width: 3px; height: 12px; background: #fff; border-radius: 2px; transform: translateX(-50%); box-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+    .uv-needle { position: absolute; top: -3px; width: 3px; height: 12px; background: #0f1120; border-radius: 2px; transform: translateX(-50%); box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
     /* Sun & Moon */
     .sun-moon-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .sun-block, .moon-block { background: #0d0d1f; border-radius: 10px; padding: 14px 16px; border: 1px solid rgba(255,255,255,0.04); }
-    .sm-title { font-size: 0.68rem; color: #55556a; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; font-weight: 500; }
-    .sm-row { display: flex; justify-content: space-between; font-size: 0.82rem; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .sun-block, .moon-block { background: #f7f9fd; border-radius: 12px; padding: 14px 16px; border: 1px solid rgba(15,17,32,0.07); }
+    .sm-title { font-size: 0.68rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; font-weight: 500; }
+    .sm-row { display: flex; justify-content: space-between; font-size: 0.82rem; padding: 6px 0; border-bottom: 1px solid rgba(15,17,32,0.06); }
     .sm-row:last-child { border-bottom: none; }
-    .sm-key { color: #55556a; }
-    .sm-val { color: #c0c0d8; font-weight: 500; }
+    .sm-key { color: #9ca3af; }
+    .sm-val { color: #0f1120; font-weight: 500; }
     .moon-emoji { text-align: center; font-size: 2.4rem; margin-bottom: 6px; }
-    .moon-name  { text-align: center; font-size: 0.82rem; color: #aaa; font-weight: 600; margin-bottom: 2px; }
-    .moon-illum { text-align: center; font-size: 0.72rem; color: #555; }
+    .moon-name  { text-align: center; font-size: 0.82rem; color: #374151; font-weight: 600; margin-bottom: 2px; }
+    .moon-illum { text-align: center; font-size: 0.72rem; color: #9ca3af; }
     /* AQI */
     .aqi-top { display: flex; align-items: center; gap: 16px; }
     .aqi-circle { width: 66px; height: 66px; border-radius: 50%; border: 2.5px solid; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
     .aqi-circle-num { font-size: 1.3rem; line-height: 1; }
     .aqi-circle-lbl { font-size: 0.58rem; letter-spacing: 0.5px; opacity: 0.8; }
-    .aqi-desc-name { font-size: 0.95rem; font-weight: 600; color: #e0e0f0; margin-bottom: 3px; }
-    .aqi-desc-note { font-size: 0.78rem; color: #666; line-height: 1.4; }
+    .aqi-desc-name { font-size: 0.95rem; font-weight: 600; color: #0f1120; margin-bottom: 3px; }
+    .aqi-desc-note { font-size: 0.78rem; color: #6b7280; line-height: 1.4; }
     .aqi-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 7px; margin-top: 12px; }
-    .aqi-item { background: #0d0d1f; border-radius: 9px; padding: 10px 11px; border: 1px solid rgba(255,255,255,0.04); }
-    .aqi-item-val { font-size: 0.95rem; font-weight: 600; color: #e0e0f0; }
-    .aqi-item-lbl { font-size: 0.67rem; color: #55556a; margin-top: 3px; font-weight: 500; }
+    .aqi-item { background: #f7f9fd; border-radius: 10px; padding: 10px 11px; border: 1px solid rgba(15,17,32,0.07); }
+    .aqi-item-val { font-size: 0.95rem; font-weight: 600; color: #0f1120; }
+    .aqi-item-lbl { font-size: 0.67rem; color: #9ca3af; margin-top: 3px; font-weight: 500; }
     /* Tools divider */
     /* ── Section ordering (body is flex-column) ─────────────── */
     .wa-top-bar      { order: -10; }
@@ -677,7 +721,6 @@
 
     .tools-divider {
       width: 100%;
-      max-width: 660px;
       text-align: center;
       position: relative;
       margin: 22px 0 26px;
@@ -686,15 +729,15 @@
       content: '';
       position: absolute;
       top: 50%; left: 0; right: 0;
-      height: 1px;
-      background: rgba(255,255,255,0.07);
+      height: 1.5px;
+      background: rgba(15,17,32,0.09);
     }
     .tools-divider span {
       position: relative;
-      background: #0a0a14;
+      background: #eef1f8;
       padding: 0 18px;
       font-size: 0.72rem;
-      color: #444;
+      color: #9ca3af;
       letter-spacing: 2px;
       text-transform: uppercase;
       font-weight: 600;
@@ -702,42 +745,41 @@
 
     /* ── Disaster Guide ────────────────────────────────────── */
     .guide-card {
-      background: #131325;
-      border: 1px solid rgba(255,180,40,0.2);
-      border-radius: 16px;
+      background: #ffffff;
+      border: 1px solid rgba(217,119,6,0.15);
+      border-radius: 20px;
       width: 100%;
-      max-width: 660px;
       margin-bottom: 16px;
       overflow: hidden;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+      box-shadow: 0 4px 24px rgba(217,119,6,0.08);
     }
     .guide-header {
-      background: linear-gradient(135deg, #1e1400 0%, #181610 60%, #131325 100%);
-      border-bottom: 1px solid rgba(255,180,40,0.15);
-      padding: 20px 24px;
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 55%, #b45309 100%);
+      border-bottom: none;
+      padding: 22px 26px;
       display: flex;
       align-items: center;
       gap: 14px;
     }
-    .guide-header-icon { font-size: 1.7rem; filter: drop-shadow(0 0 8px rgba(255,180,40,0.55)); flex-shrink: 0; }
+    .guide-header-icon { font-size: 1.8rem; flex-shrink: 0; }
     .guide-header-text h2 {
-      font-size: 1rem;
-      color: #ffaa44;
-      font-weight: 700;
+      font-size: 1.05rem;
+      color: #ffffff;
+      font-weight: 800;
       letter-spacing: 0.4px;
       margin-bottom: 3px;
     }
-    .guide-header-text p { font-size: 0.8rem; color: #555; }
+    .guide-header-text p { font-size: 0.8rem; color: rgba(255,255,255,0.7); }
     .guide-list { padding: 14px 18px; display: flex; flex-direction: column; gap: 6px; }
     details.guide-item {
-      background: #0e0e20;
-      border-radius: 10px;
-      border-left: 3px solid rgba(255,180,40,0.35);
+      background: #fffbf0;
+      border-radius: 12px;
+      border-left: 3px solid rgba(217,119,6,0.3);
       overflow: hidden;
-      transition: border-left-color 0.2s;
+      transition: border-left-color 0.2s, box-shadow 0.2s;
     }
-    details.guide-item:hover { border-left-color: rgba(255,180,40,0.7); }
-    details.guide-item[open] { border-left-color: #ffaa44; }
+    details.guide-item:hover { border-left-color: rgba(217,119,6,0.7); box-shadow: 0 2px 8px rgba(217,119,6,0.1); }
+    details.guide-item[open] { border-left-color: #d97706; }
     summary.guide-summary {
       display: flex;
       align-items: center;
@@ -748,25 +790,25 @@
       user-select: none;
       transition: background 0.15s;
     }
-    summary.guide-summary:hover { background: rgba(255,180,40,0.04); }
+    summary.guide-summary:hover { background: rgba(217,119,6,0.04); }
     summary.guide-summary::-webkit-details-marker { display: none; }
     .guide-summary-icon { font-size: 1.25rem; flex-shrink: 0; }
     .guide-summary-text { flex: 1; }
-    .guide-summary-name { font-size: 0.92rem; font-weight: 600; color: #e0e0f0; }
-    .guide-summary-tag  { font-size: 0.76rem; color: #555; margin-top: 2px; }
+    .guide-summary-name { font-size: 0.92rem; font-weight: 600; color: #0f1120; }
+    .guide-summary-tag  { font-size: 0.76rem; color: #9ca3af; margin-top: 2px; }
     .guide-chevron {
       font-size: 0.72rem;
-      color: #444;
+      color: #9ca3af;
       transition: transform 0.22s;
       flex-shrink: 0;
     }
-    details.guide-item[open] .guide-chevron { transform: rotate(180deg); color: #ffaa44; }
+    details.guide-item[open] .guide-chevron { transform: rotate(180deg); color: #d97706; }
     .guide-body {
       padding: 4px 16px 16px;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      border-top: 1px solid rgba(255,255,255,0.04);
+      border-top: 1px solid rgba(217,119,6,0.1);
     }
     .guide-section { margin-top: 10px; }
     .guide-section-title {
@@ -774,12 +816,12 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: #ffaa44;
+      color: #d97706;
       margin-bottom: 6px;
     }
     .guide-section-body {
       font-size: 0.83rem;
-      color: #888;
+      color: #4b5563;
       line-height: 1.65;
     }
     .guide-section-body li { margin-left: 16px; margin-bottom: 3px; }
@@ -791,36 +833,35 @@
       font-weight: 600;
       letter-spacing: 0.3px;
     }
-    .guide-tag.wind    { background: rgba(78,205,196,0.1);  color: #4ecdc4; }
-    .guide-tag.fire    { background: rgba(255,68,68,0.1);   color: #ff6666; }
-    .guide-tag.water   { background: rgba(68,130,255,0.1);  color: #6699ff; }
-    .guide-tag.earth   { background: rgba(180,130,60,0.1);  color: #cc9944; }
-    .guide-tag.cold    { background: rgba(140,200,255,0.1); color: #88ccff; }
-    .guide-tag.heat    { background: rgba(255,160,40,0.1);  color: #ffaa44; }
-    .guide-tag.bio     { background: rgba(100,200,80,0.1);  color: #77cc55; }
+    .guide-tag.wind    { background: rgba(14,168,160,0.1);  color: #0ea8a0; }
+    .guide-tag.fire    { background: rgba(220,38,38,0.1);   color: #dc2626; }
+    .guide-tag.water   { background: rgba(37,99,235,0.1);   color: #2563eb; }
+    .guide-tag.earth   { background: rgba(180,130,60,0.1);  color: #92400e; }
+    .guide-tag.cold    { background: rgba(96,165,250,0.12); color: #3b82f6; }
+    .guide-tag.heat    { background: rgba(217,119,6,0.1);   color: #d97706; }
+    .guide-tag.bio     { background: rgba(5,150,105,0.1);   color: #059669; }
 
     /* ── Interactive Disaster Survival ──────────────────────── */
     .dsg-card {
-      background: #131325;
-      border: 1px solid rgba(255,70,50,0.2);
-      border-radius: 16px;
+      background: #ffffff;
+      border: 1px solid rgba(220,38,38,0.12);
+      border-radius: 20px;
       width: 100%;
-      max-width: 660px;
       margin-bottom: 16px;
       overflow: hidden;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+      box-shadow: 0 4px 24px rgba(220,38,38,0.07);
     }
     .dsg-header {
-      background: linear-gradient(135deg, #200808 0%, #1a0e18 60%, #131325 100%);
-      border-bottom: 1px solid rgba(255,70,50,0.15);
-      padding: 20px 24px;
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 55%, #b91c1c 100%);
+      border-bottom: none;
+      padding: 22px 26px;
       display: flex;
       align-items: center;
       gap: 14px;
     }
-    .dsg-header-icon { font-size: 1.7rem; filter: drop-shadow(0 0 8px rgba(255,70,50,0.6)); flex-shrink: 0; }
-    .dsg-header-text h2 { font-size: 1rem; color: #ff5544; font-weight: 700; letter-spacing: 0.4px; margin-bottom: 3px; }
-    .dsg-header-text p  { font-size: 0.8rem; color: #555; }
+    .dsg-header-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .dsg-header-text h2 { font-size: 1.05rem; color: #ffffff; font-weight: 800; letter-spacing: 0.4px; margin-bottom: 3px; }
+    .dsg-header-text p  { font-size: 0.8rem; color: rgba(255,255,255,0.7); }
     .dsg-body { padding: 18px 20px; }
     .dsg-grid {
       display: grid;
@@ -829,8 +870,8 @@
       margin-bottom: 0;
     }
     .dsg-btn {
-      background: #0e0e20;
-      border: 1px solid rgba(255,70,50,0.15);
+      background: #fff5f5;
+      border: 1.5px solid rgba(220,38,38,0.12);
       border-radius: 12px;
       padding: 12px 6px 10px;
       cursor: pointer;
@@ -843,24 +884,24 @@
       font-family: inherit;
     }
     .dsg-btn:hover {
-      background: rgba(255,70,50,0.08);
-      border-color: rgba(255,70,50,0.38);
+      background: rgba(220,38,38,0.06);
+      border-color: rgba(220,38,38,0.35);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255,70,50,0.1);
+      box-shadow: 0 4px 12px rgba(220,38,38,0.1);
     }
     .dsg-btn.active {
-      background: rgba(255,70,50,0.13);
-      border-color: #ff5544;
-      box-shadow: 0 0 0 1px rgba(255,70,50,0.2);
+      background: rgba(220,38,38,0.1);
+      border-color: #dc2626;
+      box-shadow: 0 0 0 2px rgba(220,38,38,0.15);
     }
     .dsg-btn-icon { font-size: 1.5rem; line-height: 1; }
-    .dsg-btn-name { font-size: 0.66rem; color: #777; line-height: 1.25; }
-    .dsg-btn.active .dsg-btn-name { color: #ff5544; font-weight: 600; }
+    .dsg-btn-name { font-size: 0.66rem; color: #6b7280; line-height: 1.25; }
+    .dsg-btn.active .dsg-btn-name { color: #dc2626; font-weight: 600; }
     .dsg-panel {
       margin-top: 14px;
-      background: #0d0d1a;
-      border-radius: 10px;
-      border: 1px solid rgba(255,70,50,0.15);
+      background: #fff9f9;
+      border-radius: 12px;
+      border: 1.5px solid rgba(220,38,38,0.12);
       overflow: hidden;
       animation: dsg-slide 0.18s ease;
     }
@@ -870,12 +911,12 @@
       align-items: center;
       gap: 12px;
       padding: 14px 16px;
-      background: rgba(255,70,50,0.06);
-      border-bottom: 1px solid rgba(255,70,50,0.12);
+      background: rgba(220,38,38,0.05);
+      border-bottom: 1px solid rgba(220,38,38,0.1);
     }
     .dsg-panel-head-icon { font-size: 1.8rem; }
-    .dsg-panel-head-name { font-size: 1rem; font-weight: 700; color: #ff5544; }
-    .dsg-panel-head-tag  { font-size: 0.75rem; color: #666; }
+    .dsg-panel-head-name { font-size: 1rem; font-weight: 700; color: #dc2626; }
+    .dsg-panel-head-tag  { font-size: 0.75rem; color: #9ca3af; }
     .dsg-sections { padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
     .dsg-sec-title {
       font-size: 0.68rem;
@@ -884,30 +925,32 @@
       letter-spacing: 0.8px;
       margin-bottom: 6px;
     }
-    .dsg-sec-title.what   { color: #4ecdc4; }
-    .dsg-sec-title.signs  { color: #ffaa44; }
-    .dsg-sec-title.during { color: #ff6666; }
-    .dsg-sec-title.after  { color: #8bc34a; }
-    .dsg-sec-title.avoid  { color: #e040fb; }
-    .dsg-sec-body { font-size: 0.83rem; color: #888; line-height: 1.65; }
+    .dsg-sec-title.what   { color: #0ea8a0; }
+    .dsg-sec-title.signs  { color: #d97706; }
+    .dsg-sec-title.during { color: #dc2626; }
+    .dsg-sec-title.after  { color: #059669; }
+    .dsg-sec-title.avoid  { color: #7c3aed; }
+    .dsg-sec-body { font-size: 0.83rem; color: #4b5563; line-height: 1.65; }
     .dsg-sec-body li { margin-left: 16px; margin-bottom: 3px; }
 
     /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 860px) {
+      .risk-list { grid-template-columns: repeat(2, 1fr); }
+    }
     @media (max-width: 600px) {
       body { padding: 18px 12px 48px; }
-      .disaster-card, .dsg-card, .guide-card,
-      .wa-hero, .wa-card, .card,
-      .tools-divider { max-width: 100%; }
       .wa-top-title { font-size: 1.6rem; }
-      .disaster-body { padding: 16px; }
+      .disaster-body { padding: 16px 18px; }
+      .risk-list { grid-template-columns: 1fr; }
+      .dr-bottom-grid { grid-template-columns: 1fr; }
       .dsg-grid { grid-template-columns: repeat(4, 1fr); }
       .detail-grid { grid-template-columns: repeat(2, 1fr); }
       .aqi-grid { grid-template-columns: repeat(3, 1fr); }
-      #disasterMap { height: 320px; }
+      #disasterMap { height: 360px; }
       .wa-stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .wa-stat:nth-child(3n) { border-right: 1px solid rgba(255,255,255,0.04); }
+      .wa-stat:nth-child(3n) { border-right: 1px solid rgba(15,17,32,0.06); }
       .wa-stat:nth-child(2n) { border-right: none; }
-      .wa-stat:nth-child(n+3) { border-top: 1px solid rgba(255,255,255,0.04); }
+      .wa-stat:nth-child(n+3) { border-top: 1px solid rgba(15,17,32,0.06); }
       .sun-moon-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 400px) {
@@ -930,7 +973,7 @@
 
   <div class="tools-divider" id="weatherDivider"><span>Weather</span></div>
 
-  <div style="width:100%;max-width:640px;display:flex;justify-content:flex-end;margin-bottom:6px">
+  <div style="width:100%;display:flex;justify-content:flex-end;margin-bottom:6px">
     <button class="wa-refresh-btn" onclick="initWeatherApp()">↺ Refresh</button>
   </div>
 
@@ -968,7 +1011,7 @@
 
   <div class="wa-card" id="waAirQualCard" style="display:none">
     <div class="wa-card-title" id="waAirQualTitle">💨 Air Quality</div>
-    <div id="waAirQualContent"><div style="color:#444;font-size:0.82rem">Loading…</div></div>
+    <div id="waAirQualContent"><div style="color:#9ca3af;font-size:0.82rem">Loading…</div></div>
   </div>
 
   <div class="wa-card" id="waAlertsCard" style="display:none">
@@ -1000,7 +1043,7 @@
       </div>
 
       <!-- Status line -->
-      <div id="disasterStatus" style="display:none;font-size:0.83rem;color:#888;margin-bottom:10px;line-height:1.6"></div>
+      <div id="disasterStatus" style="display:none;font-size:0.83rem;color:#6b7280;margin-bottom:10px;line-height:1.6"></div>
 
       <!-- Map -->
       <div id="disasterMap"></div>
@@ -1010,7 +1053,7 @@
         <div class="time-slider-top">
           <div>
             <div class="dr-section-title" style="margin-bottom:2px">⏱ Historical View</div>
-            <div style="font-size:0.69rem;color:#33334a">M4.5+ earthquakes · drag or press Play</div>
+            <div style="font-size:0.69rem;color:#9ca3af">M4.5+ earthquakes · drag or press Play</div>
           </div>
           <div style="display:flex;align-items:center;gap:10px">
             <span class="time-slider-year" id="timeSliderYear">–</span>
@@ -1027,33 +1070,41 @@
       <!-- Results (hidden until data loads) -->
       <div id="drResults" class="dr-results" style="display:none">
 
-        <!-- Top 3 risks -->
+        <!-- Live event summary chips -->
+        <div class="dr-stats-bar" id="drStatsBar"></div>
+
+        <!-- Top 3 risks (large visual cards) -->
         <div>
           <div class="dr-section-title">🎯 Top Risks for this Region</div>
           <div class="risk-list" id="riskList"></div>
         </div>
 
-        <!-- AI Checklist -->
-        <div class="checklist-wrap">
-          <div class="checklist-topbar">
-            <div class="dr-section-title" style="margin-bottom:0">🤖 AI Preparedness Checklist</div>
-            <span class="confidence-badge" id="confidenceBadge"></span>
-          </div>
-          <div id="checklistLoading" style="display:none;padding:10px 0 4px;color:#555;font-size:0.81rem">
-            <span class="d-spinner"></span>Generating tailored checklist…
-          </div>
-          <div id="checklistItems"></div>
-        </div>
+        <!-- AI Checklist + Emergency Kit side by side -->
+        <div class="dr-bottom-grid">
 
-        <!-- Emergency Kit Builder -->
-        <div class="kit-wrap">
-          <div class="dr-section-title">🎒 Emergency Kit Builder</div>
-          <div class="kit-prog-row">
-            <div class="kit-prog-bg"><div class="kit-prog-fill" id="kitFill" style="width:0%"></div></div>
-            <span class="kit-prog-lbl" id="kitPct">0%</span>
+          <!-- AI Checklist -->
+          <div class="checklist-wrap">
+            <div class="checklist-topbar">
+              <div class="dr-section-title" style="margin-bottom:0">🤖 AI Preparedness Checklist</div>
+              <span class="confidence-badge" id="confidenceBadge"></span>
+            </div>
+            <div id="checklistLoading" style="display:none;padding:10px 0 4px;color:#6b7280;font-size:0.81rem">
+              <span class="d-spinner"></span>Generating tailored checklist…
+            </div>
+            <div id="checklistItems"></div>
           </div>
-          <div id="kitGrid"></div>
-        </div>
+
+          <!-- Emergency Kit Builder -->
+          <div class="kit-wrap">
+            <div class="dr-section-title">🎒 Emergency Kit Builder</div>
+            <div class="kit-prog-row">
+              <div class="kit-prog-bg"><div class="kit-prog-fill" id="kitFill" style="width:0%"></div></div>
+              <span class="kit-prog-lbl" id="kitPct">0%</span>
+            </div>
+            <div id="kitGrid"></div>
+          </div>
+
+        </div><!-- /dr-bottom-grid -->
 
         <!-- Household Tracker -->
         <div class="household-wrap">
@@ -1085,18 +1136,18 @@
           <div class="hh-row" style="margin-bottom:0">
             <span class="hh-label">📋 Emergency plan written</span>
             <label style="display:flex;align-items:center;gap:7px;cursor:pointer">
-              <input type="checkbox" id="hhPlan" onchange="saveHH();updateHHScore()" style="accent-color:#4ecdc4;width:16px;height:16px">
-              <span style="font-size:0.82rem;color:#666">Yes</span>
+              <input type="checkbox" id="hhPlan" onchange="saveHH();updateHHScore()" style="accent-color:#2563eb;width:16px;height:16px">
+              <span style="font-size:0.82rem;color:#4b5563">Yes</span>
             </label>
           </div>
           <div class="hh-score-row">
             <div>
-              <div style="font-size:0.78rem;color:#555">Preparedness Score</div>
-              <div style="font-size:0.67rem;color:#2a2a3a">Based on FEMA guidelines</div>
+              <div style="font-size:0.78rem;color:#4b5563;font-weight:600">Preparedness Score</div>
+              <div style="font-size:0.67rem;color:#9ca3af">Based on FEMA guidelines</div>
             </div>
             <div style="text-align:right">
               <div class="hh-score-num" id="hhScore">–</div>
-              <div style="font-size:0.72rem;color:#33334a" id="hhScoreLabel"></div>
+              <div style="font-size:0.72rem;color:#6b7280" id="hhScoreLabel"></div>
             </div>
           </div>
         </div>
@@ -1710,10 +1761,13 @@
       if (p) { document.getElementById('disasterInput').value = p; showAreaMap(); }
     })();
 
-    let disasterMap    = null;
-    let disasterLayers = [];
-    let countriesLayer = null;
-    let countriesData  = null;
+    let disasterMap      = null;
+    let disasterLayers   = [];
+    let historicalLayers = [];
+    let allHistQuakes    = [];
+    let timelineTimer    = null;
+    let countriesLayer   = null;
+    let countriesData    = null;
 
     const EONET_STYLE = {
       wildfires:    { icon: '🔥', color: '#ff5533', label: 'Wildfire' },
@@ -1758,6 +1812,47 @@
       SD:[44.4,-100.2],TN:[35.9,-86.7],TX:[31.5,-99.3],UT:[39.3,-111.1],
       VT:[44.1,-72.7],VA:[37.8,-79.5],WA:[47.4,-120.5],WV:[38.9,-80.5],
       WI:[44.3,-89.6],WY:[42.8,-107.6],DC:[38.9,-77.0],PR:[18.2,-66.5],
+    };
+
+    const RISK_ADVICE = {
+      wildfires:    'Create 100-ft defensible space. Have two evacuation routes. Keep gas tank at least half full.',
+      severeStorms: 'Know your nearest shelter. Have a battery radio for alerts. Secure outdoor items.',
+      volcanoes:    'Stock N95 masks for ash. Know your evacuation zone. Keep water containers sealed.',
+      floods:       'Never drive through floodwater. Elevate valuables. Know your FEMA flood zone.',
+      drought:      'Store water now (1 gal/person/day). Use water-efficient fixtures. Document belongings.',
+      earthquakes:  'Drop, cover, hold on. Secure heavy furniture. Know gas/water shut-off locations.',
+      tempExtremes: 'Check on neighbours. Have a cooling/heating plan. Stock extra medications.',
+      landslides:   'Know local slope stability. Avoid building near steep hills. Heed evacuation orders early.',
+      hurricane:    'Board windows before the storm. Stock 7-day supplies. Know your evacuation zone.',
+      fire:         'Create 30-ft defensible space. Have fire extinguishers. Identify two escape routes.',
+      tornado:      'Go to basement or interior room on lowest floor. Stay away from windows.',
+      flood:        'Never walk or drive through floodwater. Move to higher ground immediately.',
+      earthquake:   'Drop, cover, hold on. Secure heavy furniture. Know gas/water shut-off locations.',
+    };
+
+    const DEFAULT_KIT = [
+      { id:'water',    icon:'💧', label:'Water – 1 gallon per person per day (3-day min)' },
+      { id:'food',     icon:'🥫', label:'Non-perishable food – 3-day supply' },
+      { id:'firstaid', icon:'🩺', label:'First aid kit with manual' },
+      { id:'torch',    icon:'🔦', label:'Flashlight + extra batteries' },
+      { id:'radio',    icon:'📻', label:'Battery/hand-crank weather radio' },
+      { id:'meds',     icon:'💊', label:'7-day supply of prescription medications' },
+      { id:'docs',     icon:'📄', label:'Copies of important documents (ID, insurance, bank)' },
+      { id:'cash',     icon:'💵', label:'Cash in small bills' },
+      { id:'whistle',  icon:'📯', label:'Whistle to signal for help' },
+      { id:'sanit',    icon:'🧻', label:'Sanitation supplies (sanitizer, wipes, trash bags)' },
+      { id:'warmth',   icon:'🧥', label:'Warm clothing + emergency blanket per person' },
+      { id:'tools',    icon:'🔧', label:'Multi-tool or wrench to shut off gas and water' },
+    ];
+
+    const CHECKLIST_RULES = {
+      Earthquake:    ['Secure heavy furniture and water heaters to walls','Store shoes under your bed (broken glass hazard)','Know drop-cover-hold-on technique and practice it','Identify the safest spot in every room of your home','Learn gas, water, and electrical shut-off locations','Store 3 days of water and food per person minimum','Have a battery radio for post-quake information','Establish an out-of-state family contact point'],
+      Wildfire:      ['Create 100-ft defensible space around your home','Have two pre-planned evacuation routes','Keep your vehicle gas tank at least half full all season','Stock N95 masks for smoke and ash inhalation','Sign up for local Wireless Emergency Alerts','Prepare a go-bag you can grab in under 2 minutes','Remove flammable debris from gutters and roof regularly','Keep important documents in a fireproof bag or cloud storage'],
+      Flood:         ['Know your FEMA flood zone designation','Never drive through flooded roads — turn around, don\'t drown','Move electrical panels and valuables above flood level','Install check valves in plumbing to prevent backflow','Prepare a waterproof go-bag with documents and medications','Have sandbags ready if you are in a low-lying area','Store 3 days of food and water in case of contamination','Sign up for local flash-flood warning alerts'],
+      Hurricane:     ['Board or shutter windows before the storm arrives','Stock a 7-day supply of food, water, and medications','Charge all devices and have a portable battery bank','Secure or store all loose outdoor items before the storm','Know your evacuation zone and route in advance','Fill your car with fuel and have cash on hand','Have a waterproof bag with copies of critical documents','Trim trees near your home to reduce wind damage'],
+      Tornado:       ['Identify the lowest interior room of your home with no windows','Have helmets available for head protection during a tornado','Keep shoes accessible to protect feet from debris','Practice a tornado drill with every member of your household','Have a weather radio for sirens when power is out','Secure your home: check roof, windows, and foundation','Store a go-bag in your shelter room for grab-and-go','Never shelter in a car or under a bridge — find a sturdy building'],
+      'Severe Storm':['Have a battery or hand-crank weather radio','Secure loose outdoor furniture and decorations beforehand','Charge devices and have backup power banks ready','Know the difference: watch = possible, warning = take shelter now','Stay indoors and away from windows during the storm','Have a 72-hour kit with food, water, and medications','Keep trees around your home trimmed to reduce debris risk','Know your household evacuation plan if flooding occurs'],
+      Volcano:       ['Know your volcanic evacuation zone (A–E zones)','Stock N95 or P100 respirators for ash inhalation protection','Keep a 2-week supply of food and sealed bottled water','Protect electronics from corrosive volcanic ash','Have eye protection (goggles) ready for ashfall events','Monitor civil defense alerts before and during volcanic events','Prepare your car: ash clogs air intakes, cover with plastic','Keep gutters and roof cleared of ash — collapse is a risk'],
     };
 
     async function ensureCountryBorders() {
@@ -1806,6 +1901,306 @@
       return { leafletIcon: mkIcon(html, 28), color: col, emoji: em };
     }
 
+    // ── Location ─────────────────────────────────────────────────
+    async function useMyLocation() {
+      const btn = document.getElementById('disasterLocBtn');
+      btn.textContent = '⏳'; btn.disabled = true;
+      const status = document.getElementById('disasterStatus');
+      status.style.display = 'block';
+      status.innerHTML = '<span class="d-spinner"></span>Getting your location…';
+      try {
+        const pos = await new Promise((res, rej) =>
+          navigator.geolocation.getCurrentPosition(res, rej, { timeout: 8000 }));
+        const { latitude: la, longitude: lo } = pos.coords;
+        const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${la}&lon=${lo}&format=json`);
+        const d = await r.json();
+        const name = d.address?.city || d.address?.county || d.address?.state || d.display_name.split(',')[0];
+        document.getElementById('disasterInput').value = name;
+        showAreaMap();
+      } catch (e) {
+        status.innerHTML = `<span style="color:#ff5555">⚠️ ${escHtml(e.message || 'Could not get location')}</span>`;
+      } finally {
+        btn.textContent = '📍'; btn.disabled = false;
+      }
+    }
+
+    // ── Top-3 risks ───────────────────────────────────────────────
+    function computeTopRisks(quakeBuckets, nrcCount, eonetCounts, femaCounts, ecCount) {
+      const SEV  = { wildfires:4, severeStorms:4, volcanoes:5, floods:3, drought:2, earthquakes:4, tempExtremes:2, landslides:3 };
+      const FSEV = { Hurricane:5, Earthquake:5, Tornado:5, Fire:4, Flood:4, 'Tropical Storm':4, 'Severe Storm(s)':4, 'Winter Storm':3, Drought:2 };
+      const risks = [];
+
+      const qTotal = [...quakeBuckets.values()].reduce((a,b)=>a+b,0) + nrcCount;
+      if (qTotal > 0) {
+        const sev   = quakeBuckets.has('M6+') ? 5 : quakeBuckets.has('M5') ? 4 : quakeBuckets.has('M4') ? 3 : 2;
+        const worst = quakeBuckets.has('M6+') ? 'Major (M6+) detected' : quakeBuckets.has('M5') ? 'Strong (M5+) detected' : 'Moderate activity';
+        risks.push({ type:'Earthquake', icon:'🌍', severity:sev, count:qTotal,
+          desc:`${qTotal} recorded · ${worst}`,
+          color: sev>=5 ? '#ff2222' : sev>=4 ? '#ff6633' : '#ffaa22',
+          advice: RISK_ADVICE.earthquakes });
+      }
+      for (const [id, count] of eonetCounts) {
+        const s = EONET_STYLE[id]; if (!s) continue;
+        const sev = Math.min(5, (SEV[id]||3) + (count>=5?1:0));
+        risks.push({ type:s.label, icon:s.icon, severity:sev, count,
+          desc:`${count} active event${count>1?'s':''} · NASA EONET`,
+          color:s.color, advice: RISK_ADVICE[id] || 'Stay informed via official emergency management channels.' });
+      }
+      for (const [type, count] of femaCounts) {
+        const fs  = FEMA_STYLE[type] || { icon:'⚠️', color:'#ff9900' };
+        const key = type.toLowerCase().replace(/[^a-z]/g,'');
+        risks.push({ type, icon:fs.icon, severity: FSEV[type]||3, count,
+          desc:`${count} FEMA declaration${count>1?'s':''}`, color:fs.color,
+          advice: RISK_ADVICE[key] || 'Follow official emergency management guidance.' });
+      }
+      if (ecCount > 0) {
+        risks.push({ type:'Weather Alert', icon:'⛈️', severity:3, count:ecCount,
+          desc:`${ecCount} active alert${ecCount>1?'s':''} · Environment Canada`, color:'#5599ff',
+          advice:'Monitor Environment Canada alerts. Have an indoor shelter plan for severe weather.' });
+      }
+      risks.sort((a,b) => b.severity - a.severity || b.count - a.count);
+      const seen = new Set();
+      return risks.filter(r => !seen.has(r.type) && seen.add(r.type)).slice(0, 3);
+    }
+
+    function renderTopRisks(risks) {
+      const el = document.getElementById('riskList');
+      if (!risks.length) {
+        el.innerHTML = '<div style="grid-column:1/-1;font-size:0.9rem;color:#9ca3af;padding:24px 0;text-align:center">No significant risks detected in this region right now.</div>';
+        return;
+      }
+      const sevLabels = ['','Minimal','Low','Moderate','High','Severe'];
+      el.innerHTML = risks.map((r, i) => `
+        <div class="risk-card">
+          <div class="risk-card-bg" style="background:linear-gradient(160deg,${r.color}ee 0%,${r.color}bb 60%,${r.color}99 100%)"></div>
+          <div class="risk-card-glow" style="background:radial-gradient(circle,rgba(255,255,255,0.18) 0%,transparent 70%)"></div>
+          <div class="risk-card-content">
+            <div class="risk-num">Risk #${i+1}</div>
+            <div class="risk-big-icon">${r.icon}</div>
+            <div class="risk-type-name">${escHtml(r.type)}</div>
+            <div class="risk-sev-badge">
+              ${'●'.repeat(r.severity)}&ensp;${sevLabels[r.severity] || ''}
+            </div>
+            <div class="risk-count-num">${r.count}</div>
+            <div class="risk-count-label">events detected</div>
+            <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:${r.severity*20}%"></div></div>
+            <div class="risk-advice">${escHtml((r.advice || '').slice(0, 100))}${(r.advice || '').length > 100 ? '…' : ''}</div>
+          </div>
+        </div>`).join('');
+    }
+
+    // ── AI Checklist ──────────────────────────────────────────────
+    function getDefaultChecklist(topRisks) {
+      if (!topRisks.length) return CHECKLIST_RULES.Earthquake;
+      const topType = topRisks[0].type;
+      const key = Object.keys(CHECKLIST_RULES).find(k =>
+        topType.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(topType.split(' ')[0].toLowerCase()));
+      const base   = CHECKLIST_RULES[key || 'Earthquake'].slice(0, 6);
+      const second = topRisks[1] && Object.keys(CHECKLIST_RULES).find(k =>
+        (topRisks[1].type || '').toLowerCase().includes(k.toLowerCase()));
+      const extras = second ? CHECKLIST_RULES[second].slice(0, 2) : CHECKLIST_RULES.Earthquake.slice(0, 2);
+      return [...base, ...extras];
+    }
+
+    async function generateChecklist(topRisks, locName) {
+      const loadEl  = document.getElementById('checklistLoading');
+      const badgeEl = document.getElementById('confidenceBadge');
+      loadEl.style.display = 'block';
+      document.getElementById('checklistItems').innerHTML = '';
+      badgeEl.textContent = '';
+
+      const risks  = topRisks.map(r => r.type).join(', ') || 'general hazards';
+      const prompt = `You are a disaster preparedness expert. Create an 8-item emergency preparedness checklist for people in ${locName} who face these risks: ${risks}. Return ONLY a valid JSON array of 8 strings. Each string is one specific, actionable item tailored to these exact risks. No markdown, no explanation — just the JSON array.`;
+      let items = null;
+      try {
+        const ctrl = new AbortController();
+        const tid  = setTimeout(() => ctrl.abort(), 10000);
+        const res  = await fetch('https://text.pollinations.ai/', {
+          method:'POST', signal: ctrl.signal,
+          headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify({ messages:[{ role:'user', content:prompt }], model:'openai', seed:42 })
+        });
+        clearTimeout(tid);
+        if (res.ok) {
+          const text  = await res.text();
+          const match = text.match(/\[[\s\S]*?\]/);
+          if (match) items = JSON.parse(match[0]);
+        }
+      } catch (_) {}
+
+      if (items && items.length >= 4) {
+        badgeEl.textContent = 'AI generated'; badgeEl.className = 'confidence-badge conf-ai';
+      } else {
+        items = getDefaultChecklist(topRisks);
+        badgeEl.textContent = 'Rule-based · verified'; badgeEl.className = 'confidence-badge conf-rule';
+      }
+      loadEl.style.display = 'none';
+      document.getElementById('checklistItems').innerHTML = items.map((item, i) => {
+        const key  = `dr_chk_${i}`;
+        const done = localStorage.getItem(key) === '1';
+        return `<label class="checklist-item${done?' ci-done':''}">
+          <input type="checkbox" ${done?'checked':''} onchange="toggleChk(this,'${key}')">
+          <span>${escHtml(item)}</span></label>`;
+      }).join('');
+    }
+
+    function toggleChk(cb, key) {
+      localStorage.setItem(key, cb.checked ? '1' : '0');
+      cb.closest('.checklist-item').classList.toggle('ci-done', cb.checked);
+    }
+
+    // ── Kit Builder ───────────────────────────────────────────────
+    function renderKit() {
+      document.getElementById('kitGrid').innerHTML = DEFAULT_KIT.map(item => {
+        const key  = `dr_kit_${item.id}`;
+        const done = localStorage.getItem(key) === '1';
+        return `<label class="kit-item${done?' ki-done':''}">
+          <input type="checkbox" ${done?'checked':''} onchange="toggleKit(this,'${key}')">
+          <span class="kit-item-emoji">${item.icon}</span>
+          <span class="kit-label">${escHtml(item.label)}</span></label>`;
+      }).join('');
+      updateKitProgress();
+    }
+
+    function toggleKit(cb, key) {
+      localStorage.setItem(key, cb.checked ? '1' : '0');
+      cb.closest('.kit-item').classList.toggle('ki-done', cb.checked);
+      updateKitProgress();
+    }
+
+    function updateKitProgress() {
+      const done = DEFAULT_KIT.filter(i => localStorage.getItem(`dr_kit_${i.id}`) === '1').length;
+      const pct  = Math.round(done / DEFAULT_KIT.length * 100);
+      document.getElementById('kitFill').style.width = pct + '%';
+      document.getElementById('kitPct').textContent  = pct + '%';
+    }
+
+    // ── Household Tracker ─────────────────────────────────────────
+    function loadHH() { try { return JSON.parse(localStorage.getItem('dr_hh') || '{}'); } catch(_) { return {}; } }
+    function saveHH() {
+      localStorage.setItem('dr_hh', JSON.stringify({
+        people: +document.getElementById('hhPeople').textContent,
+        water:  +document.getElementById('hhWater').textContent,
+        food:   +document.getElementById('hhFood').textContent,
+        plan:   document.getElementById('hhPlan').checked,
+      }));
+    }
+
+    function initHH() {
+      const s = { people:2, water:0, food:0, plan:false, ...loadHH() };
+      document.getElementById('hhPeople').textContent = s.people;
+      document.getElementById('hhWater').textContent  = s.water;
+      document.getElementById('hhFood').textContent   = s.food;
+      document.getElementById('hhPlan').checked       = !!s.plan;
+      updateHHScore();
+    }
+
+    function adjHH(field, delta) {
+      const id  = { people:'hhPeople', water:'hhWater', food:'hhFood' }[field];
+      const min = field === 'people' ? 1 : 0;
+      const el  = document.getElementById(id);
+      el.textContent = Math.max(min, Math.min(30, +el.textContent + delta));
+      saveHH(); updateHHScore();
+    }
+
+    function updateHHScore() {
+      const water  = +document.getElementById('hhWater').textContent;
+      const food   = +document.getElementById('hhFood').textContent;
+      const plan   = document.getElementById('hhPlan').checked;
+      const kitPct = DEFAULT_KIT.filter(i => localStorage.getItem(`dr_kit_${i.id}`) === '1').length / DEFAULT_KIT.length;
+      const wScore = water >= 7 ? 30 : water >= 3 ? 20 : water >= 1 ? 10 : 0;
+      const fScore = food  >= 7 ? 30 : food  >= 3 ? 20 : food  >= 1 ? 10 : 0;
+      const pScore = plan  ? 20 : 0;
+      const kScore = Math.round(kitPct * 20);
+      const total  = wScore + fScore + pScore + kScore;
+      const [grade, cls, label] = total >= 85 ? ['A','s-great','Excellent'] : total >= 65 ? ['B','s-good','Good'] : total >= 40 ? ['C','s-fair','Fair'] : ['D','s-poor','Needs work'];
+      const el = document.getElementById('hhScore');
+      el.textContent = grade; el.className = 'hh-score-num ' + cls;
+      document.getElementById('hhScoreLabel').textContent = label;
+    }
+
+    // ── Historical / Time Slider ──────────────────────────────────
+    async function fetchHistoricalData(sMinLat, sMaxLat, sMinLon, sMaxLon) {
+      const d10 = new Date(Date.now() - 10 * 365.25 * 86400000).toISOString().split('T')[0];
+      const d0  = new Date().toISOString().split('T')[0];
+      const url = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&minmagnitude=4.5&starttime=${d10}&endtime=${d0}&minlatitude=${sMinLat.toFixed(4)}&maxlatitude=${sMaxLat.toFixed(4)}&minlongitude=${sMinLon.toFixed(4)}&maxlongitude=${sMaxLon.toFixed(4)}&limit=2000`;
+      try {
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const data = await res.json();
+        allHistQuakes = (data.features || []).map(f => ({
+          lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0],
+          mag: f.properties.mag, year: new Date(f.properties.time).getFullYear(),
+          place: f.properties.place,
+        }));
+        if (!allHistQuakes.length) return;
+        const years  = allHistQuakes.map(q => q.year);
+        const minY   = Math.min(...years), maxY = Math.max(...years);
+        const slider = document.getElementById('timeSlider');
+        slider.min = minY; slider.max = maxY; slider.value = maxY;
+        document.getElementById('timeSliderYear').textContent = maxY;
+        document.getElementById('timeSliderWrap').style.display = 'block';
+        slider.oninput = () => {
+          const yr = +slider.value;
+          document.getElementById('timeSliderYear').textContent = yr;
+          filterByYear(yr);
+        };
+        filterByYear(maxY);
+      } catch (_) {}
+    }
+
+    function filterByYear(year) {
+      historicalLayers.forEach(l => disasterMap.removeLayer(l));
+      historicalLayers = [];
+      const quakes = allHistQuakes.filter(q => q.year === year);
+      quakes.forEach(q => {
+        const size  = Math.max(8, Math.min(28, q.mag * 4));
+        const color = q.mag >= 6 ? '#ff2222' : q.mag >= 5 ? '#ff6633' : '#ffaa22';
+        const icon  = mkIcon(`<div style="width:${size}px;height:${size}px;background:${color};border-radius:50%;opacity:0.5;border:1px solid rgba(255,255,255,0.2);box-shadow:0 1px 4px rgba(0,0,0,0.5)"></div>`, size);
+        const pop   = `<b>🕰 M${q.mag} Earthquake</b><br>${q.place||''}<br><span style="color:#aaa;font-size:0.78rem">${year} · Historical (USGS)</span>`;
+        historicalLayers.push(L.marker([q.lat, q.lon], { icon }).bindPopup(pop).addTo(disasterMap));
+      });
+      document.getElementById('timeHistCount').textContent =
+        quakes.length ? `${quakes.length} M4.5+ event${quakes.length>1?'s':''} in ${year}` : `No M4.5+ events recorded in ${year}`;
+    }
+
+    function toggleTimeline() {
+      const btn    = document.getElementById('timePlayBtn');
+      const slider = document.getElementById('timeSlider');
+      if (timelineTimer) {
+        clearInterval(timelineTimer); timelineTimer = null;
+        btn.textContent = '▶ Play'; return;
+      }
+      if (+slider.value >= +slider.max) slider.value = slider.min;
+      btn.textContent = '⏸ Pause';
+      timelineTimer = setInterval(() => {
+        const next = +slider.value + 1;
+        if (next > +slider.max) {
+          clearInterval(timelineTimer); timelineTimer = null;
+          btn.textContent = '▶ Play'; return;
+        }
+        slider.value = next;
+        document.getElementById('timeSliderYear').textContent = next;
+        filterByYear(next);
+      }, 900);
+    }
+
+    // ── Share ─────────────────────────────────────────────────────
+    function shareResults() {
+      const region = document.getElementById('disasterInput').value.trim();
+      const url    = `${location.origin}${location.pathname}?region=${encodeURIComponent(region)}`;
+      const fb     = document.getElementById('shareFeedback');
+      if (navigator.share) {
+        navigator.share({ title:`Disaster Risk — ${region}`, url }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(url).then(() => {
+          fb.style.display = 'inline';
+          setTimeout(() => { fb.style.display = 'none'; }, 2200);
+        }).catch(() => { prompt('Copy this link:', url); });
+      }
+    }
+
+    // ── Legend ────────────────────────────────────────────────────
     function buildLegend({ quakeBuckets, nrcCount, eonetCounts, femaCounts, ecCount }) {
       const legend = document.getElementById('mapLegend');
       const parts  = [];
@@ -1854,7 +2249,7 @@
 
       if (parts.length === 0) return;
       legend.innerHTML = `<div class="legend-title">What's on the map</div>` + parts.join('') +
-        `<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.05);font-size:0.68rem;color:#44445a">Click any marker for details &nbsp;·&nbsp; USGS · NRC Canada · NASA EONET · FEMA · Environment Canada</div>`;
+        `<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(15,17,32,0.07);font-size:0.68rem;color:#9ca3af">Click any marker for details &nbsp;·&nbsp; USGS · NRC Canada · NASA EONET · FEMA · Environment Canada</div>`;
       legend.style.display = 'block';
     }
 
@@ -1871,6 +2266,11 @@
       const legend = document.getElementById('mapLegend');
       legend.style.display = 'none';
       legend.innerHTML = '';
+      document.getElementById('drResults').style.display = 'none';
+      document.getElementById('timeSliderWrap').style.display = 'none';
+      if (timelineTimer) { clearInterval(timelineTimer); timelineTimer = null; }
+      historicalLayers.forEach(l => disasterMap && disasterMap.removeLayer(l));
+      historicalLayers = []; allHistQuakes = [];
 
       try {
         const geoRes  = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(input)}&format=json&polygon_geojson=1&limit=1`);
@@ -2043,13 +2443,37 @@
           if (eventCount)  sumParts.push(`${eventCount} EONET event${eventCount !== 1 ? 's' : ''}`);
           if (femaCount)   sumParts.push(`${femaCount} FEMA declaration${femaCount !== 1 ? 's' : ''}`);
           if (ecCount)     sumParts.push(`${ecCount} weather alert${ecCount !== 1 ? 's' : ''}`);
-          status.innerHTML = `<span style="color:#44bb66">✓</span> ${sumParts.join(', ')} near <b>${escHtml(locName)}</b>. Click any marker for details.`;
+          status.innerHTML = `<span style="color:#059669">✓</span> ${sumParts.join(', ')} near <b>${escHtml(locName)}</b>. Click any marker for details.`;
         } else {
-          status.innerHTML = `<span style="color:#888">No active events recorded near <b>${escHtml(locName)}</b> right now.</span>`;
+          status.innerHTML = `<span style="color:#9ca3af">No active events recorded near <b>${escHtml(locName)}</b> right now.</span>`;
         }
 
         buildLegend({ quakeBuckets, nrcCount, eonetCounts, femaCounts, ecCount });
         setTimeout(() => disasterMap.invalidateSize(), 150);
+
+        // Results panel
+        const topRisks = computeTopRisks(quakeBuckets, nrcCount, eonetCounts, femaCounts, ecCount);
+        document.getElementById('drResults').style.display = 'flex';
+
+        // Stats bar chips
+        const statsBar = document.getElementById('drStatsBar');
+        const chips = [
+          { icon: '🌍', val: quakeCount + nrcCount, lbl: 'earthquakes' },
+          { icon: '🔥', val: eventCount,             lbl: 'EONET events' },
+          { icon: '🚨', val: femaCount,              lbl: 'FEMA declarations' },
+          { icon: '⚠️', val: ecCount,               lbl: 'weather alerts' },
+        ].filter(c => c.val > 0);
+        statsBar.innerHTML = chips.length
+          ? chips.map(c => `<div class="dr-stat-chip"><span class="dr-stat-chip-icon">${c.icon}</span><span class="dr-stat-chip-val">${c.val}</span><span class="dr-stat-chip-lbl">${c.lbl}</span></div>`).join('')
+          + `<span style="margin-left:auto;font-size:0.75rem;color:#6b7280">near <b style="color:#374151">${escHtml(locName)}</b></span>`
+          : `<span style="font-size:0.82rem;color:#9ca3af">No active events recorded near <b>${escHtml(locName)}</b></span>`;
+
+        renderTopRisks(topRisks);
+        renderKit();
+        initHH();
+        generateChecklist(topRisks, locName);        // async — fills in while user reads
+        fetchHistoricalData(sMinLat, sMaxLat, sMinLon, sMaxLon); // async — slider appears when ready
+
       } catch (e) {
         status.innerHTML = `<span style="color:#ff5555">⚠️ ${escHtml(e.message)}</span>`;
         document.getElementById('disasterMap').style.display = 'none';
@@ -2156,7 +2580,7 @@
         const aqiData = (ar.status === 'fulfilled' && ar.value.ok) ? await ar.value.json() : null;
         renderWeatherApp(wd, locName, aqiData);
       } catch (e) {
-        document.getElementById('waHero').innerHTML = `<div class="wa-error">⚠️ ${escHtml(e.message)}<br><small style="color:#444">Check your connection and try refreshing.</small></div>`;
+        document.getElementById('waHero').innerHTML = `<div class="wa-error">⚠️ ${escHtml(e.message)}<br><small style="color:#9ca3af">Check your connection and try refreshing.</small></div>`;
       }
     }
 
@@ -2257,7 +2681,7 @@
       const si    = Math.max(hourly.time.findIndex(t => new Date(t) >= now), 0);
       const times = hourly.time.slice(si, si + 25);
       const n     = times.length;
-      if (n < 2) { wrap.innerHTML = '<p style="color:#444;font-size:0.8rem">No data.</p>'; return; }
+      if (n < 2) { wrap.innerHTML = '<p style="color:#9ca3af;font-size:0.8rem">No data.</p>'; return; }
 
       const W = 530, H = 130, pL = 32, pR = 8, pT = 24, pB = 26;
       const gW = W - pL - pR, gH = H - pT - pB;
@@ -2276,22 +2700,22 @@
           bars += `<rect x="${(x-bW/2).toFixed(1)}" y="${(pT+gH-bH).toFixed(1)}" width="${bW.toFixed(1)}" height="${bH.toFixed(1)}" fill="rgba(100,150,255,0.5)" rx="1"/>`;
           probPts.push(`${x.toFixed(1)},${(pT + gH - ((prob[i]||0)/100) * gH * 0.85).toFixed(1)}`);
           if (i % step === 0) {
-            marks += `<text x="${x.toFixed(1)}" y="${H-6}" text-anchor="middle" fill="#444" font-size="9">${i===0?'Now':new Date(times[i]).getHours()+':00'}</text>`;
-            if ((precip[i]||0) > 0) marks += `<text x="${x.toFixed(1)}" y="${(pT+gH-bH-4).toFixed(1)}" text-anchor="middle" fill="#99aaff" font-size="8">${precip[i].toFixed(1)}</text>`;
+            marks += `<text x="${x.toFixed(1)}" y="${H-6}" text-anchor="middle" fill="#9ca3af" font-size="9">${i===0?'Now':new Date(times[i]).getHours()+':00'}</text>`;
+            if ((precip[i]||0) > 0) marks += `<text x="${x.toFixed(1)}" y="${(pT+gH-bH-4).toFixed(1)}" text-anchor="middle" fill="#6699ff" font-size="8">${precip[i].toFixed(1)}</text>`;
           }
         }
-        const pLine = probPts.length > 1 ? `<path d="M ${probPts.join(' L ')}" fill="none" stroke="#ffaa44" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.7"/>` : '';
+        const pLine = probPts.length > 1 ? `<path d="M ${probPts.join(' L ')}" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.7"/>` : '';
         wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">${bars}${marks}${pLine}</svg>
-        <div style="font-size:0.68rem;color:#333;margin-top:4px;display:flex;gap:14px">
+        <div style="font-size:0.68rem;color:#6b7280;margin-top:4px;display:flex;gap:14px">
           <span><span style="display:inline-block;width:8px;height:8px;background:rgba(100,150,255,0.5);vertical-align:middle;margin-right:4px;border-radius:1px"></span>Precip (mm)</span>
-          <span><span style="display:inline-block;width:10px;height:2px;background:#ffaa44;vertical-align:middle;margin-right:4px;border-radius:2px;opacity:0.8"></span>Probability %</span>
+          <span><span style="display:inline-block;width:10px;height:2px;background:#d97706;vertical-align:middle;margin-right:4px;border-radius:2px;opacity:0.8"></span>Probability %</span>
         </div>`;
         return;
       }
 
       const isWind  = mode === 'wind';
       const values  = isWind ? hourly.wind_speed_10m.slice(si, si + 25) : hourly.temperature_2m.slice(si, si + 25);
-      const color   = isWind ? '#ffaa44' : '#4ecdc4';
+      const color   = isWind ? '#d97706' : '#0ea8a0';
       const gradId  = isWind ? 'wGrad' : 'tGrad2';
       const unitStr = isWind ? ' km/h' : '°';
       const legend  = isWind ? 'Wind Speed' : 'Temperature';
@@ -2306,7 +2730,7 @@
       let marks = '';
       for (let i = 0; i < n; i += step) {
         const tx = xOf(i).toFixed(1), ty = yOf(values[i]).toFixed(1);
-        marks += `<text x="${tx}" y="${H-6}" text-anchor="middle" fill="#444" font-size="9">${i===0?'Now':new Date(times[i]).getHours()+':00'}</text>`;
+        marks += `<text x="${tx}" y="${H-6}" text-anchor="middle" fill="#9ca3af" font-size="9">${i===0?'Now':new Date(times[i]).getHours()+':00'}</text>`;
         marks += `<text x="${tx}" y="${(parseFloat(ty)-5).toFixed(1)}" text-anchor="middle" fill="${color}" font-size="9" opacity="0.9">${Math.round(values[i])}${unitStr}</text>`;
         marks += `<circle cx="${tx}" cy="${ty}" r="2.5" fill="${color}" opacity="0.8"/>`;
       }
@@ -2316,7 +2740,7 @@
         <path d="M ${pts}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
         ${marks}
       </svg>
-      <div style="font-size:0.68rem;color:#333;margin-top:4px"><span style="display:inline-block;width:10px;height:2px;background:${color};vertical-align:middle;margin-right:4px;border-radius:2px"></span>${legend}</div>`;
+      <div style="font-size:0.68rem;color:#6b7280;margin-top:4px"><span style="display:inline-block;width:10px;height:2px;background:${color};vertical-align:middle;margin-right:4px;border-radius:2px"></span>${legend}</div>`;
     }
 
     function renderDailyForecast(daily) {
@@ -2573,7 +2997,7 @@
       card.style.display = 'block';
       const el = document.getElementById('waAirQualContent');
       if (!aqiData || !aqiData.current) {
-        el.innerHTML = '<p style="color:#444;font-size:0.85rem">Air quality data unavailable.</p>';
+        el.innerHTML = '<p style="color:#9ca3af;font-size:0.85rem">Air quality data unavailable.</p>';
         return;
       }
       const c   = aqiData.current;
@@ -2603,11 +3027,11 @@
 
       const circleHtml = eAqi != null
         ? `<div class="aqi-top"><div class="aqi-circle" style="border-color:${circleColor}"><div class="aqi-circle-num" style="color:${circleColor}">${eAqi}</div><div class="aqi-circle-lbl">EU AQI</div></div><div><div class="aqi-desc-name" style="color:${circleColor}">${circleLabel}</div>${uAqi != null ? `<div class="aqi-desc-note">US AQI: ${uAqi}</div>` : ''}<div class="aqi-desc-note">European Air Quality Index</div></div></div>`
-        : '<p style="color:#444;font-size:0.85rem">AQI unavailable.</p>';
+        : '<p style="color:#9ca3af;font-size:0.85rem">AQI unavailable.</p>';
 
       const pollHtml = `<div class="aqi-grid">${pollutants.map(p => {
         const v = c[p.k];
-        return `<div class="aqi-item"><div style="font-size:0.7rem;color:#555;margin-bottom:2px">${p.lbl}</div><div style="font-size:0.95rem;font-weight:600;color:#ccc">${v != null ? v.toFixed(1) : '—'}</div><div style="font-size:0.65rem;color:#444">${p.unit}</div></div>`;
+        return `<div class="aqi-item"><div style="font-size:0.7rem;color:#9ca3af;margin-bottom:2px">${p.lbl}</div><div style="font-size:0.95rem;font-weight:600;color:#0f1120">${v != null ? v.toFixed(1) : '—'}</div><div style="font-size:0.65rem;color:#9ca3af">${p.unit}</div></div>`;
       }).join('')}</div>`;
 
       el.innerHTML = circleHtml + pollHtml;
